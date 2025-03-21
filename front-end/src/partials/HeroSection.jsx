@@ -27,9 +27,9 @@ const HeroSection = () => {
       </div>
 
       <div className="w-full flex justify-end">
-        <img src="assets/img/image-4.png" alt="hero" className="rounded-lg w-5/6" />
+        <img src="assets/img/Hero.png" alt="hero" className="rounded-lg w-5/6" />
       </div>
-      <div className="absolute z-50 grid grid-cols-3 gap-5 px-14 right-0 left-0 -bottom-8">
+      <div className="absolute z-50 grid grid-cols-3 gap-5 px-14 right-0 left-0 -bottom-10">
       <div
         className={`group w-full p-7 rounded-2xl flex items-center gap-6 shadow-lg transition-all duration-300 bg-white text-gray-900 hover:bg-blue-600 hover:text-white
           ${hoveredCard === "card1" || hoveredCard === "card3" ? "bg-white text-gray-900" : "hover:bg-blue-600 hover:text-white"}`}

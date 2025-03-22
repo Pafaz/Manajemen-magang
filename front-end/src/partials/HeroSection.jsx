@@ -5,7 +5,7 @@ const HeroSection = () => {
 
   return (
     <div
-      className="relative px-14 py-20 flex items-center gap-10 w-full bg-gradient-to-t from-blue-100 to-white"
+    className="relative px-14 py-20 flex items-center gap-10 w-full bg-gradient-to-t from-blue-100 to-white"
       id="hero"
     >
       <div className="text-left">
@@ -20,7 +20,7 @@ const HeroSection = () => {
           terintegrasi. Dari pendaftaran, pemantauan, hingga evaluasi, semuanya
           dapat dilakukan dalam satu platform.
         </p>
-        <button className="bg-color-blue rounded-xl text-white px-6 py-3 mt-6 flex items-center gap-2 hover:bg-blue-700 transition cursor-pointer">
+        <button className="bg-color-blue rounded-xl text-white px-6 py-2 mt-6 flex items-center gap-2 hover:bg-blue-700 transition cursor-pointer">
           <i className="bi bi-rocket-takeoff text-white text-sm"></i> GET
           STARTED
         </button>

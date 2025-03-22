@@ -18,7 +18,7 @@ const Navbar = () => {
         {router_link.map((item, index) => (
           <NavLink link={item.link} name={item.name} key={index + 1} active={item.active}/>
         ))}
-        <button className="bg-[#0069AB] text-white text-sm py-2 px-8 block rounded-lg cursor-pointer">
+        <button className="bg-[#0069AB] text-white text-sm py-2 px-8 block rounded-lg cursor-pointer hover:bg-[#619dc2]">
           Login <i class="bi bi-arrow-right"></i>
         </button>
       </div>

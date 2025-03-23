@@ -1,8 +1,14 @@
-import HeaderLanPage from "../partials/HeroSection";
+import AboutSection from "../partials/AboutSection";
+import HeroSection from "../partials/HeroSection";
+import InternshipDivisions from "../partials/InternshipDivisions";
+import StatsSection from "../partials/StatsSection";
 
 const Index = () => {
   return <>
-  <HeaderLanPage/>
+    <HeroSection/>
+    <AboutSection/>
+    <InternshipDivisions/>
+    <StatsSection/>
   </>;
 };
 

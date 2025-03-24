@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "../components/Button";
+import Button from "../Button";
 
 const HeroSection = () => {
   const [hoveredCard, setHoveredCard] = useState(null);

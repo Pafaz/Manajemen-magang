@@ -1,4 +1,5 @@
-import Button from "../components/Button";
+import Badge from "../Badge";
+import Button from "../Button";
 
 const AboutSection = () => {
   const data = [
@@ -38,9 +39,7 @@ const AboutSection = () => {
         </div>
 
         <div className="w-full lg:w-1/2 text-center lg:text-left px-10">
-          <p className="text-blue-600 font-medium uppercase tracking-wide">
-            More About Us
-          </p>
+         <Badge>More About Us</Badge>
           <h2 className="text-3xl font-bold text-gray-900 mt-2 leading-snug">
             Sistem Manajemen Magang <br /> Terintegrasi untuk Perusahaan Anda
           </h2>

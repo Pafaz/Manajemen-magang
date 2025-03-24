@@ -13,3 +13,51 @@
 .bg-color-blue{
   background-color:#0069AB;
 }
+
+.swiper-pagination {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+  width: auto !important;
+}
+
+.custom-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+
+.swiper-pagination-bullet {
+  width: 15px;
+  height: 15px;
+  background-color: transparent;
+  border: 1px solid rgba(129, 129, 141, 0.5);
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swiper-pagination-bullet::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background-color: transparent;
+  border-radius: 50%;
+}
+
+.swiper-pagination-bullet-active {
+  border: 2px solid blue;
+}
+
+.swiper-pagination-bullet-active::after {
+  background-color: blue;
+}
+

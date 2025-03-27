@@ -58,7 +58,7 @@ const InternshipDivisions = () => {
               </div>
             </div>
             <button className="w-10 h-10 flex items-center justify-center border border-blue-500 rounded-full hover:bg-blue-500 hover:text-white transition cursor-pointer">
-              <i className="bi bi-arrow-right font-semibold text-blue-700"></i>
+              <i className="bi bi-arrow-right font-semibold text-blue-500 hover:text-blue-200"></i>
             </button>
           </div>
         ))}

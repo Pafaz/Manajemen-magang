@@ -16,7 +16,7 @@ const CustomCursor = () => {
 
     const handleHover = () => {
       gsap.to(cursorRef.current, {
-        scale: 1.5,
+        scale: 2,
         duration: 0.5,
         borderColor: "#0077FF",
       });

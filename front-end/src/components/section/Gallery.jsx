@@ -36,8 +36,8 @@ const Gallery = () => {
               />
             </SwiperSlide>
           ))}
-        </Swiper>
         <div className="custom-pagination"></div>
+        </Swiper>
       </div>
     </section>
   );

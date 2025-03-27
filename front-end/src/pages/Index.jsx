@@ -1,3 +1,4 @@
+import Footer from "../components/Footer";
 import AboutSection from "../components/section/AboutSection";
 import CarierStart from "../components/section/CarierStart";
 import Gallery from "../components/section/Gallery";
@@ -19,6 +20,7 @@ const Index = () => {
     <CarierStart/>
     <MyPartner/>
     <Testimonials/>
+    <Footer/>
   </>;
 };
 

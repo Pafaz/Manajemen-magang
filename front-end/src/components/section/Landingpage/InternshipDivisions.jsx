@@ -1,4 +1,4 @@
-import Button from "../Button";
+import Button from "../../Button";
 
 const InternshipDivisions = () => {
   const divisions = [
@@ -57,8 +57,8 @@ const InternshipDivisions = () => {
                 </p>
               </div>
             </div>
-            <button className="w-10 h-10 flex items-center justify-center border border-blue-500 rounded-full hover:bg-blue-500 hover:text-white transition cursor-pointer">
-              <i className="bi bi-arrow-right font-semibold text-blue-500 hover:text-blue-200"></i>
+            <button className="w-10 h-10 flex items-center justify-center border border-blue-500 rounded-full hover:bg-blue-500 hover:text-white transition cursor-pointer group">
+              <i className="bi bi-arrow-right font-semibold text-blue-500 group-hover:text-blue-200"></i>
             </button>
           </div>
         ))}

@@ -1,4 +1,4 @@
-import Badge from "../Badge";
+import Badge from "../../Badge";
 
 const CarierStart = () => {
   return (
@@ -8,10 +8,12 @@ const CarierStart = () => {
       </div>
       <div className="flex justify-between gap-5 items-center">
         <div className="">
-          <img src="assets/img/vector_3.png" alt="vector_3.png" />
+          <img src="assets/img/vector_3.png" alt="vector_3.png" className="w-2xl"/>
         </div>
         <div className="flex flex-col gap-5 w-2xl">
+          <div>
           <Badge>Why Choose Us</Badge>
+          </div>
           <h1 className="text-slate-800 font-semibold text-3xl">
             Let’s Get Started Your Carrer With Edura Education
           </h1>

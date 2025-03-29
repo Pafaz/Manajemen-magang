@@ -1,5 +1,5 @@
-import Button from "../Button";
-import LogoCompany from "../LogoCompany";
+import Button from "../../Button";
+import LogoCompany from "../../LogoCompany";
 
 const MyPartner = () => {
   const data = ["airbnb", "Amazon", "FeedEx", "Google", "HubSpot", "Microsoft"];

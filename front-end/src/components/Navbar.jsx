@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import NavLink from "./NavbarLink";
+import { useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [active,setActive] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,12 +17,16 @@ const Navbar = () => {
   }, []);
 
   const router_link = [
-    { link: "/", name: "Home", active: true },
+    { link: "/", name: "Home" },
     { link: "/about_us", name: "About us" },
     { link: "/gallery", name: "Gallery" },
     { link: "/procedure", name: "Procedure" },
     { link: "/contact_us", name: "Contact us" },
   ];
+
+  useEffect(() => {
+    setActive(location.pathname)
+  },[location.pathname])
 
   return (
     <nav
@@ -42,7 +49,7 @@ const Navbar = () => {
             link={item.link}
             name={item.name}
             key={index}
-            active={item.active}
+            active={active === item.link}
             className="relative text-gray-700 hover:text-[#0069AB] after:content-[''] after:block after:w-0 after:h-[2px] after:bg-[#0069AB] after:transition-all after:duration-300 hover:after:w-full"
           />
         ))}

@@ -17,7 +17,7 @@ const CustomCursor = () => {
     const handleHover = () => {
       gsap.to(cursorRef.current, {
         scale: 2,
-        duration: 0.5,
+        duration: 0.3,
         borderColor: "#0077FF",
       });
     };
@@ -25,12 +25,31 @@ const CustomCursor = () => {
     const handleLeave = () => {
       gsap.to(cursorRef.current, {
         scale: 1,
-        duration: 0.5,
+        duration: 0.3,
+        borderColor: "#00AAFF",
+      });
+    };
+
+    const handleClick = () => {
+      gsap.to(cursorRef.current, {
+        scale: 2,
+        duration: 0.1,
+        borderColor: "#00AAFF",
+      });
+    };
+
+    const handleRelease = () => {
+      gsap.to(cursorRef.current, {
+        scale: 1,
+        duration: 0.2,
         borderColor: "#00AAFF",
       });
     };
 
     document.addEventListener("mousemove", moveCursor);
+    document.addEventListener("mousedown", handleClick);
+    document.addEventListener("mouseup", handleRelease);
+
     document.querySelectorAll("a, button, input").forEach((el) => {
       el.addEventListener("mouseenter", handleHover);
       el.addEventListener("mouseleave", handleLeave);
@@ -38,6 +57,9 @@ const CustomCursor = () => {
 
     return () => {
       document.removeEventListener("mousemove", moveCursor);
+      document.removeEventListener("mousedown", handleClick);
+      document.removeEventListener("mouseup", handleRelease);
+
       document.querySelectorAll("a, button, input").forEach((el) => {
         el.removeEventListener("mouseenter", handleHover);
         el.removeEventListener("mouseleave", handleLeave);

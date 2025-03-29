@@ -1,5 +1,5 @@
-import Badge from "../Badge";
-import Button from "../Button";
+import Badge from "../../Badge";
+import Button from "../../Button";
 
 const AboutSection = () => {
   const data = [

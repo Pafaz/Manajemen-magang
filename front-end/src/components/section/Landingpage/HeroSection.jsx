@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Button from "../Button";
+import Button from "../../Button";
 
 const HeroSection = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -16,7 +16,7 @@ const HeroSection = () => {
         <p className="text-2xl text-blue-600 font-bold mt-2">
           Kelola Program Magang dengan Mudah & Efektif
         </p>
-        <p className="text-gray-600 mt-4 text-lg">
+        <p className="text-gray-600 mt-4 text-lg font-normal">
           Bantu perusahaan Anda mengelola program magang dengan sistem yang
           terintegrasi. Dari pendaftaran, pemantauan, hingga evaluasi, semuanya
           dapat dilakukan dalam satu platform.

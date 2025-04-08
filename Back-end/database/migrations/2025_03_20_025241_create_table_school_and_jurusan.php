@@ -24,14 +24,14 @@ return new class extends Migration
         });
 
         Schema::create('jurusan_sekolah', function (Blueprint $table) {
-            $table->id();
-            $table->id('id_jurusan');
-            $table->id('id_sekolah');
-
+            $table->unsignedBigInteger('id_jurusan');
+            $table->unsignedBigInteger('id_sekolah');
+        
+            $table->primary(['id_jurusan', 'id_sekolah']);
+        
             $table->foreign('id_jurusan')->references('id')->on('jurusan')->onDelete('cascade');
             $table->foreign('id_sekolah')->references('id')->on('sekolah')->onDelete('cascade');
-        });
-
+        });        
 
     }
 
@@ -40,8 +40,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sekolah');
-        Schema::dropIfExists('jurusan');
         Schema::dropIfExists('jurusan_sekolah');
+        Schema::dropIfExists('jurusan');
+        Schema::dropIfExists('sekolah');
     }
 };

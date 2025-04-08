@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('projek', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_peserta');
-            $table->id('id_divisi_cabang');
+            $table->unsignedBigInteger('id_divisi_cabang');
             $table->string('name');
             $table->string('deskripsi');
             $table->date('batas_waktu');
@@ -26,15 +26,14 @@ return new class extends Migration
         });
 
         Schema::create('kategori', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->string('name');
             $table->string('deskripsi');
         });
 
         Schema::create('projek_kategori', function (Blueprint $table) {
-            $table->id();
-            $table->id('id_projek');
-            $table->id('id_kategori');
+            $table->unsignedBigInteger('id_projek');
+            $table->unsignedBigInteger('id_kategori');
 
             $table->foreign('id_projek')->references('id')->on('projek')->onDelete('cascade');
             $table->foreign('id_kategori')->references('id')->on('kategori')->onDelete('cascade');

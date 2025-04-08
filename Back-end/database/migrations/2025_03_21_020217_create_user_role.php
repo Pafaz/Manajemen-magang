@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('peserta', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
             $table->uuid('id_user');
-            $table->bigInteger('id_jurusan');
-            $table->bigInteger('id_sekolah');
+            $table->unsignedBigInteger('id_jurusan');
+            $table->unsignedBigInteger('id_sekolah');
             $table->string('nomor_identitas');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
@@ -30,7 +30,7 @@ return new class extends Migration
         });
 
         Schema::create('perusahaan', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary();
             $table->uuid('id_user');
             $table->string('deskripsi');
             $table->string('alamat');
@@ -46,21 +46,14 @@ return new class extends Migration
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         });
 
-        Schema::create('admin_perusahaan', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->uuid('id_cabang');
+        Schema::create('notifikasi', function (Blueprint $table) {
+            $table->id();
             $table->uuid('id_user');
+            $table->string('judul');
+            $table->text('isi');
+            $table->boolean('status')->default(false);
+            $table->timestamps();
 
-            $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-        });
-
-        Schema::create('mentor', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->uuid('id_divisi_cabang');
-            $table->uuid('id_user');
-
-            $table->foreign('id_divisi_cabang')->references('id')->on('divisi_cabang')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         });
     }
@@ -70,9 +63,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('peserta_magang');
+        Schema::dropIfExists('notifikasi');
         Schema::dropIfExists('perusahaan');
-        Schema::dropIfExists('admin_perusahaan');
-        Schema::dropIfExists('mentor');
+        Schema::dropIfExists('peserta');
     }
 };

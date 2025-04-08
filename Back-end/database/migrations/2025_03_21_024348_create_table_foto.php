@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->uuid('id_referensi');
             $table->string('path');
-            $table->enum('type', ['profile', 'banner', 'presentasi','cv', 'surat_pernyataan_diri', 'surat_pernyataan_orang_tua']);
+            $table->enum('type', ['profile', 'banner', 'presentasi','cv', 'surat_pernyataan_diri', 'surat_pernyataan_orang_tua','jurnal']);
             $table->timestamps();
         });
     }

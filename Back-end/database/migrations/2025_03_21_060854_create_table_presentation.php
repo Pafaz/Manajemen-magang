@@ -38,7 +38,7 @@ return new class extends Migration
         });
 
         Schema::create('revisi', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->unsignedBigInteger('id_presentasi');
             $table->string('deskripsi');
             $table->boolean('status');
@@ -56,7 +56,7 @@ return new class extends Migration
         });
 
         Schema::create('progress', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->unsignedBigInteger('id_mentor_magang');
             $table->string('deskripsi');
             $table->boolean('status');

@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('magang', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_peserta');
             $table->uuid('id_mentor');
             $table->unsignedBigInteger('id_divisi_cabang');
@@ -28,7 +28,7 @@ return new class extends Migration
         });
 
         Schema::create('surat', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_peserta');
             $table->uuid('id_admin');
             $table->enum('jenis', ['penerimaan', 'peringatan']);
@@ -42,7 +42,7 @@ return new class extends Migration
         });
 
         Schema::create('jam_kantor', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->unsignedBigInteger('id_divisi_cabang');
             $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
             $table->enum('jenis_sesi', ['pagi', 'siang', 'mahasiswa']);

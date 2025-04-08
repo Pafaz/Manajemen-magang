@@ -47,7 +47,7 @@ return new class extends Migration
         });
 
         Schema::create('notifikasi', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_user');
             $table->string('judul');
             $table->text('isi');

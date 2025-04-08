@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('foto', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_referensi');
             $table->string('path');
             $table->enum('type', ['profile', 'banner', 'presentasi','cv', 'surat_pernyataan_diri', 'surat_pernyataan_orang_tua','jurnal']);

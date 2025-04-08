@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('jurnal', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_peserta');
             $table->string('judul');
             $table->text('deskripsi');
@@ -22,7 +22,7 @@ return new class extends Migration
         });
 
         Schema::create('absensi', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_peserta');
             $table->date('tanggal');
             $table->time('masuk');
@@ -35,7 +35,7 @@ return new class extends Migration
         });
 
         Schema::create('piket', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_peserta');
             $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
             $table->timestamps();

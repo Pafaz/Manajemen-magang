@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cabang', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_perusahaan');
             $table->string('name');
             $table->string('alamat');
@@ -23,12 +23,12 @@ return new class extends Migration
         });
 
         Schema::create('divisi', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->string('name');
         });
 
         Schema::create('divisi_cabang', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->unsignedBigInteger('id_divisi');
             $table->unsignedBigInteger('id_cabang');
             $table->integer('kuota');
@@ -38,7 +38,7 @@ return new class extends Migration
         });
 
         Schema::create('lowongan', function (Blueprint $table) {
-            $table->id();
+            $table->id()->primary();
             $table->uuid('id_perusahaan');
             $table->unsignedBigInteger('id_divisi_cabang');
             $table->integer('max_kuota');

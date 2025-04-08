@@ -1,5 +1,5 @@
 import Footer from "../components/Footer";
-import AboutSection from "../components/section/Landingpage/HeroSection";
+import AboutSection from "../components/section/Landingpage/AboutSection";
 import CarierStart from "../components/section/Landingpage/CarierStart";
 import Gallery from "../components/section/Landingpage/Gallery";
 import HeroSection from "../components/section/Landingpage/HeroSection";
@@ -20,7 +20,6 @@ const Index = () => {
     <CarierStart/>
     <MyPartner/>
     <Testimonials/>
-    <Footer/>
   </>;
 };
 

@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import NavLink from "./NavbarLink";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [active,setActive] = useState(false);
+  const [active, setActive] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -25,8 +25,8 @@ const Navbar = () => {
   ];
 
   useEffect(() => {
-    setActive(location.pathname)
-  },[location.pathname])
+    setActive(location.pathname);
+  }, [location.pathname]);
 
   return (
     <nav
@@ -37,11 +37,13 @@ const Navbar = () => {
       }`}
     >
       <div>
-        <img
-          src="assets/img/Logo.png"
-          alt="Logo"
-          className="w-48 transition-all duration-300"
-        />
+        <Link to={``}>
+          <img
+            src="assets/img/Logo.png"
+            alt="Logo"
+            className="w-48 transition-all duration-300"
+          />
+        </Link>
       </div>
       <div className="flex gap-7 items-center">
         {router_link.map((item, index) => (
@@ -53,14 +55,15 @@ const Navbar = () => {
             className="relative text-gray-700 hover:text-[#0069AB] after:content-[''] after:block after:w-0 after:h-[2px] after:bg-[#0069AB] after:transition-all after:duration-300 hover:after:w-full"
           />
         ))}
-        <button
+        <Link
+          to={`/auth/login`}
           className="relative overflow-hidden bg-[#0069AB] text-white text-sm py-2 px-6 rounded-lg cursor-pointer transition-all duration-300 ease-in-out 
       hover:bg-gradient-to-r hover:from-[#005588] hover:to-[#619dc2] 
       hover:shadow-lg hover:scale-105 flex items-center gap-2 group"
         >
           Login
           <i className="bi bi-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
-        </button>
+        </Link>
       </div>
     </nav>
   );

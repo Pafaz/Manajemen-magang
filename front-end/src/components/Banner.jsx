@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-const Banner = ({ title, subtitle, backgroundImage }) => {
+const Banner = ({ title, subtitle, backgroundImage,possitionIlustration,ilustration }) => {
   return (
     <div className="relative w-full top-0 h-[425px] flex items-center justify-center text-center overflow-hidden">
       <div
@@ -39,9 +39,9 @@ const Banner = ({ title, subtitle, backgroundImage }) => {
       </div>
 
       <motion.img
-        src="assets/img/banner/ilustration_blue.png"
+        src={`assets/img/banner/${ilustration}.png`}
         alt="Illustration"
-        className="absolute right-0 top-18 w-full h-screen z-10"
+        className={`absolute ${possitionIlustration}`}
         initial={{ x: 100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 1, ease: "easeOut" }}

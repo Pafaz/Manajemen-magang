@@ -3,6 +3,13 @@ import GuestLayout from "./src/layout/GuestLayout";
 import Index from "./src/pages/Index";
 import NotFound from "./src/pages/Error/NotFound";
 import About from "./src/pages/About";
+import Register from "./src/pages/Auth/Register";
+import Login from "./src/pages/Auth/Login";
+import StudentLayout from "./src/layout/StudentLayout";
+import Dashboard from "./src/pages/student/Dashboard";
+import Gallery from "./src/pages/Gallery";
+import Procedure from "./src/pages/Procedure";
+import Contact from "./src/pages/Contact";
 
 export const router = createBrowserRouter([
   {
@@ -14,13 +21,43 @@ export const router = createBrowserRouter([
         element: <Index />,
       },
       {
-        path:"/about_us",
-        element:<About/>
-      }
+        path: "/about_us",
+        element: <About />,
+      },
+      {
+        path:"/gallery",
+        element:<Gallery/>
+      },
+      {
+        path:"/procedure",
+        element:<Procedure/>
+      },
+      {
+        path:"/contact_us",
+        element:<Contact/>
+      },
     ],
   },
-   {
-      path: "*",
-      element: <NotFound />,
-    },
+  {
+    path: "/auth/register",
+    element: <Register />,
+  },
+  {
+    path:"/student",
+    element:<StudentLayout/>,
+    children: [
+      {
+        path:"dashboard",
+        element:<Dashboard/>
+      }
+    ]
+  },
+  {
+    path: "/auth/login",
+    element: <Login />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
+  },
 ]);

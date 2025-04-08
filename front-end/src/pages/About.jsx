@@ -12,12 +12,13 @@ const About = () => {
         title="ABOUT US"
         subtitle="Home → About Us"
         backgroundImage="/assets/img/banner/study_tim.jpg"
+        possitionIlustration={`right-0 top-18 w-full h-screen z-10`}
+        ilustration={`ilustration_blue`}
       />
       <About_us/>
       <WhyUsSection/>
       <Counter/>
       <Testimonials/>
-      <Footer/>
     </>
   );
 };

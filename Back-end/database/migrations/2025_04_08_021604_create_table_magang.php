@@ -45,7 +45,7 @@ return new class extends Migration
             $table->id()->primary();
             $table->unsignedBigInteger('id_divisi_cabang');
             $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
-            $table->enum('jenis_sesi', ['pagi', 'siang', 'mahasiswa']);
+            $table->enum('jenis_sesi', ['pagi', 'siang', 'penuh']);
             $table->time('masuk');
             $table->time('istirahat_mulai');
             $table->time('istirahat_selesai');

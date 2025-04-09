@@ -38,7 +38,6 @@ return new class extends Migration
             $table->string('instagram');
             $table->boolean('is_premium');
             $table->boolean('status');
-            $table->integer('jumlah_peserta');
             $table->integer('cabang_limit')->default(1);
             $table->integer('admin_limit')->default(1);
             $table->timestamps();

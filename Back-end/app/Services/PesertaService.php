@@ -25,7 +25,7 @@ class PesertaService
         );
     }
 
-    public function createCategoryApi(array $data)
+    public function createPeserta(array $data)
     {
         $category = $this->pesertaInterface->create($data);
         return Api::response(

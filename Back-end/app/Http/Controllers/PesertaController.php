@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Peserta;
+use App\Services\PesertaService;
 use Illuminate\Http\Request;
 
 class PesertaController extends Controller
@@ -10,9 +11,16 @@ class PesertaController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private PesertaService $pesertaService;
+    public function __construct(PesertaService $pesertaService)
+    {
+        $this->pesertaService = $pesertaService;
+    }
+
     public function index()
     {
-        //
+        $data = $this->pesertaService->getAllPeserta();
+        return response()->json($data);
     }
 
     /**

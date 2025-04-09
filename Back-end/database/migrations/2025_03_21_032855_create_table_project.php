@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projek', function (Blueprint $table) {
+        Schema::create('proyek', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
             $table->unsignedBigInteger('id_divisi_cabang');
@@ -31,11 +31,11 @@ return new class extends Migration
             $table->string('deskripsi');
         });
 
-        Schema::create('projek_kategori', function (Blueprint $table) {
-            $table->unsignedBigInteger('id_projek');
+        Schema::create('proyek_kategori', function (Blueprint $table) {
+            $table->unsignedBigInteger('id_proyek');
             $table->unsignedBigInteger('id_kategori');
 
-            $table->foreign('id_projek')->references('id')->on('projek')->onDelete('cascade');
+            $table->foreign('id_proyek')->references('id')->on('proyek')->onDelete('cascade');
             $table->foreign('id_kategori')->references('id')->on('kategori')->onDelete('cascade');
         });
     }
@@ -45,8 +45,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projek');
+        Schema::dropIfExists('proyek');
         Schema::dropIfExists('kategori');
-        Schema::dropIfExists('projek_kategori');
+        Schema::dropIfExists('proyek_kategori');
     }
 };

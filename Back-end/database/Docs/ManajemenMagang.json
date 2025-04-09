@@ -1,0 +1,172 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "title": "Manajemen Magang API",
+        "version": "1.0",
+        "description": "OpenAPI for Manajemen Magang RESTful API",
+        "contact": {
+            "name": "Muhammad Elang Prakoso",
+            "email": "elangprakoso088@gmail.com"
+        },
+        "license": {
+            "name": "APACHE 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0"
+        }
+    },
+    "servers": [
+        {
+            "description": "Manajemen Magang RESTful API",
+            "url": "http://localhost:8000"
+        }
+    ],
+    "security": [
+        {
+            "bearerAuth": []
+        }
+    ],
+    "paths":{
+        "/register": {
+            "post": {
+                "summary": "Register to app",
+                "description": "Register and get new Token",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Register Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Register Success"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid Request"
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "summary": "Login to app",
+                "description": "Login and get new Token",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "afif@gmail.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "afiff.123"
+                                    }
+                                },
+                                "required": ["email", "password"]
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful login",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1..."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized - Invalid credentials"
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "summary": "Logout from app",
+                "description": "Logout and delete token",
+                "security": [{"bearerAuth": []}],
+                "responses": {
+                    "200": {
+                        "description": "Successful logout"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                }
+            }
+        },
+        "forgot-password": {
+            "post": {
+                "summary": "Forgot Password",
+                "description": "Forgot Password",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "afif@gmail.com"
+                                    }
+                                },
+                                "required": ["email"]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "example": "afif"},
+                    "email": {"type": "string", "example": "afif@gmail.com"},
+                    "password": {"type": "string", "example": "afiff.123"},
+                    "password_confirmation": {"type": "string", "example": "afiff.123"}
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}

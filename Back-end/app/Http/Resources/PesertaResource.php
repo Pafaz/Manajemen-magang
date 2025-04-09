@@ -15,7 +15,7 @@ class PesertaResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id_peserta' => $this->id,
+            'id' => $this->id,
             'id_user' => $this->id_user,
             'jurusan' => $this->jurusan->nama,
             'sekolah' => $this->sekolah->nama,

@@ -20,12 +20,13 @@ class JurusanRepository implements JurusanInterface
 
     public function create(array $data): ? Jurusan
     {
-        return Jurusan::create([ $data]);
+        return Jurusan::create($data);
     }
 
-    public function update(int $id, array $data): mixed
-    {
-        return Jurusan::where('id', $id)->update([$data]);
+    public function update(int $id, array $data): Jurusan
+    {   $jurusan = Jurusan::findOrFail($id);
+        $jurusan->update($data);
+        return $jurusan;
     }
 
     public function delete(int $id): void

@@ -21,16 +21,16 @@ class PesertaService
         $data = $this->pesertaInterface->getAll();
         return Api::response(
             PesertaResource::collection($data),
-            'Categories retrieved successfully', 
+            'Peserta Fetched Successfully', 
         );
     }
 
     public function createPeserta(array $data)
     {
-        $category = $this->pesertaInterface->create($data);
+        $peserta = $this->pesertaInterface->create([$data]);
         return Api::response(
-            PesertaResource::make($category),
-            'Category created successfully',
+            PesertaResource::make($peserta),
+            'Peserta created successfully',
             Response::HTTP_CREATED
         );
     }

@@ -19,16 +19,15 @@ class PesertaController extends Controller
 
     public function index()
     {
-        $data = $this->pesertaService->getAllPeserta();
-        return response()->json($data);
+        return $this->pesertaService->getAllPeserta();
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        return $this->pesertaService->createPeserta($request->all());
     }
 
     /**

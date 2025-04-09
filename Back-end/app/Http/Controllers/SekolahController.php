@@ -2,41 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreSekolahRequest;
 use App\Models\Sekolah;
 use Illuminate\Http\Request;
+use App\Services\SekolahService;
 
 class SekolahController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+    private SekolahService $sekolahService;
+    public function __construct(SekolahService $sekolahService)
+    {
+        $this->sekolahService = $sekolahService;
+    }
     public function index()
     {
-        //
+        return $this->sekolahService->getSchools();
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreSekolahRequest $request)
     {
-        //
+        return $this->sekolahService->createSchool($request->validated());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Sekolah $sekolah)
+    public function show($id)
     {
-        //
+        return $this->sekolahService->getSchoolById($id);
     }
 
     /**
@@ -50,16 +57,16 @@ class SekolahController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Sekolah $sekolah)
+    public function update(StoreSekolahRequest $request, $id)
     {
-        //
+        return $this->sekolahService->updateSchool($id, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Sekolah $sekolah)
+    public function destroy($id)
     {
-        //
+        return $this->sekolahService->deleteSchool($id);
     }
 }

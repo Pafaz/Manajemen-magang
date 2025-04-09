@@ -12,10 +12,7 @@ class Jurusan extends Model
 
     protected $table = 'jurusan';
 
-    protected $fillable = [
-        'id',
-        'nama',
-    ];
+    protected $fillable = ['nama'];
 
     public $timestamps = false;
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Jurusan;
+use App\Services\JurusanService;
 use Illuminate\Http\Request;
 
 class JurusanController extends Controller
@@ -10,9 +11,14 @@ class JurusanController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private JurusanService $jurusanService;
+    public function __construct(JurusanService $jurusanService)
+    {
+        $this->jurusanService = $jurusanService;
+    }
     public function index()
     {
-        //
+        return $this->jurusanService->getMajors();
     }
 
     /**
@@ -28,7 +34,7 @@ class JurusanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->jurusanService->createMajor($request->all());
     }
 
     /**
@@ -36,7 +42,7 @@ class JurusanController extends Controller
      */
     public function show(Jurusan $jurusan)
     {
-        //
+        return $this->jurusanService->getMajorById($jurusan->id);
     }
 
     /**
@@ -52,7 +58,7 @@ class JurusanController extends Controller
      */
     public function update(Request $request, Jurusan $jurusan)
     {
-        //
+        return $this->jurusanService->updateMajor($jurusan->id, $request->all());
     }
 
     /**
@@ -60,6 +66,6 @@ class JurusanController extends Controller
      */
     public function destroy(Jurusan $jurusan)
     {
-        //
+        return $this->jurusanService->deleteMajor($jurusan->id);
     }
 }

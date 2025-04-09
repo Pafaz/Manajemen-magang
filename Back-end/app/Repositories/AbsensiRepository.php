@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Interfaces\AbsensiInterface;
 use App\Models\Absensi;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class AbsensiRepository implements AbsensiInterface
 {
@@ -23,9 +24,11 @@ class AbsensiRepository implements AbsensiInterface
         return Absensi::create([$data]);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Model
     {
-        return Absensi::where('id', $id)->update([$data]);
+        $absensi = Absensi::where('id', $id);
+        $absensi->update([$data]);
+        return $absensi;
     }
 
     public function delete(int $id): void

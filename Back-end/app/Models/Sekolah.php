@@ -17,4 +17,6 @@ class Sekolah extends Model
         'alamat',
         'telepon',
     ];
+
+    public $timestamps = false;
 }

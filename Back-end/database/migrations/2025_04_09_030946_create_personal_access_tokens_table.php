@@ -15,7 +15,7 @@ class CreatePersonalAccessTokensTable extends Migration
             $table->json('abilities')->nullable();
             $table->timestamp('last_used_at')->nullable();
             $table->timestamp('expires_at')->nullable();
-            $table->string('tokenable_id'); // Change to string for UUID
+            $table->string('tokenable_id'); 
             $table->string('tokenable_type');
             $table->timestamps();
         });

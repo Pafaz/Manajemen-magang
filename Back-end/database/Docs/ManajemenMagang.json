@@ -16,7 +16,7 @@
     "servers": [
         {
             "description": "Manajemen Magang RESTful API",
-            "url": "http://localhost:8000"
+            "url": "http://localhost:8000/api"
         }
     ],
     "security": [
@@ -75,11 +75,11 @@
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "example": "afif@gmail.com"
+                                        "example": "admin@gmail.com"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "example": "afiff.123"
+                                        "example": "password"
                                     }
                                 },
                                 "required": ["email", "password"]
@@ -156,8 +156,10 @@
                 "properties": {
                     "name": {"type": "string", "example": "afif"},
                     "email": {"type": "string", "example": "afif@gmail.com"},
+                    "telepon": {"type": "string", "example": "08123456789"},
                     "password": {"type": "string", "example": "afiff.123"},
-                    "password_confirmation": {"type": "string", "example": "afiff.123"}
+                    "password_confirmation": {"type": "string", "example": "afiff.123"},
+                    "role": {"type": "string", "example": "peserta"}
                 }
             }
         },

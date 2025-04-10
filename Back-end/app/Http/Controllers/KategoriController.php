@@ -4,15 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use App\Services\KategoriService;
 
 class KategoriController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+    private KategoriService $kategoriService;
+    public function __construct(KategoriService $kategoriService)
+    {
+        $this->kategoriService = $kategoriService;
+    }
     public function index()
     {
-        //
+        return $this->kategoriService->getCategories();
     }
 
     /**
@@ -28,7 +34,7 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->kategoriService->createCategory($request->all());
     }
 
     /**
@@ -36,7 +42,7 @@ class KategoriController extends Controller
      */
     public function show(Kategori $kategori)
     {
-        //
+        return $this->kategoriService->getCategoryById($kategori->id);
     }
 
     /**
@@ -52,7 +58,7 @@ class KategoriController extends Controller
      */
     public function update(Request $request, Kategori $kategori)
     {
-        //
+        return $this->kategoriService->updateCategory($kategori->id, $request->all());
     }
 
     /**
@@ -60,6 +66,6 @@ class KategoriController extends Controller
      */
     public function destroy(Kategori $kategori)
     {
-        //
+        return $this->kategoriService->deleteCategory($kategori->id);
     }
 }

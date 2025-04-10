@@ -6,8 +6,9 @@ use App\Interfaces\Base\FindInterface;
 use App\Interfaces\Base\CreateInterface;
 use App\Interfaces\Base\DeleteInterface;
 use App\Interfaces\Base\GetAllInterface;
+use App\Interfaces\Base\UpdateInterface;
 
-interface KategoriInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface
+interface KategoriInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
     //
 }

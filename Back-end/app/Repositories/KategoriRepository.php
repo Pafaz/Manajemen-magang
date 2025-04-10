@@ -20,12 +20,14 @@ class KategoriRepository implements KategoriInterface
 
     public function create(array $data): ? Kategori
     {
-        return Kategori::create([ $data]);
+        return Kategori::create( $data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Kategori
     {
-        return Kategori::where('id', $id)->update([$data]);
+        $category = Kategori::where('id', $id);
+        $category->update($data);
+        return $category;
     }
 
     public function delete(int $id): void

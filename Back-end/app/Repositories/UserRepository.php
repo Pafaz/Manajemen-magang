@@ -13,14 +13,14 @@ class UserRepository implements UserInterface
         return User::all();
     }
 
-    public function find(int $id): ? User
+    public function find(string $email): ? User
     {
-        return User::findOrFail($id)->first();
+        return User::where( 'email', $email )->first();
     }
 
     public function create(array $data): ? User
     {
-        return User::create([ $data]);
+        return User::create($data);
     }
 
     public function update(int $id, array $data): mixed

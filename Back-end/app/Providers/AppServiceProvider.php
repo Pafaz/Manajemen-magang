@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Providers;
-use Illuminate\Auth\Notifications\ResetPassword;
-
 use App\Interfaces\FotoInterface;
 use App\Interfaces\IzinInterface;
 use App\Interfaces\RfidInterface;
@@ -91,8 +89,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
-            return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
-        });
+        //
     }
 }

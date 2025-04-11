@@ -16,27 +16,25 @@ class UserService
         $this->UserInterface = $UserInterface;
     }
 
+
     public function register(array $data)
     {
-        $user = $this->UserInterface->create($data);
-        $token = $user->createToken('auth_token')->plainTextToken;
-
         $role = session('role');
 
-        if (!in_array($role, ['peserta', 'perusahaan'])) {
-            return Api::response(
-                null,
-                'Unauthorized Invalid Role',
-                Response::HTTP_UNAUTHORIZED
-            );
+        if (empty($role) || !in_array($role, ['peserta', 'perusahaan'])) {
+            return Api::response(null, 'Invalid Role', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+
+        $user = $this->UserInterface->create(array_merge($data, ['role' => $role]));
+
+        $token = $user->createToken('auth_token')->plainTextToken;
 
         $responseData = [
             'user' => new UserResource($user),
             'token' => $token,
         ];
 
-        return Api::response($responseData, 'User registered successfully', Response::HTTP_CREATED);
+        return Api::response($responseData, 'User  registered successfully', Response::HTTP_CREATED);
     }
 
     public function Login(array $data)
@@ -51,22 +49,18 @@ class UserService
             );
         }
 
+        $token = $user->createToken('auth_token')->plainTextToken;
+        $responseData = [
+            'user' => new UserResource($user),
+            'token' => $token,
+        ];
+
         return Api::response(
-            UserResource::make($user),
+            $responseData,
             'User logged in successfully',
             Response::HTTP_OK
         );
     }
-
-    // public function updateSchool(int $id, array $data)
-    // {
-    //     $school = $this->UserInterface->update($id, $data);
-    //     return Api::response(
-    //         SchoolResource::make($school),
-    //         'School updated successfully',
-    //         Response::HTTP_OK
-    //     );
-    // }
 
     public function deleteUser(int $id)
     {
@@ -78,13 +72,4 @@ class UserService
         );
     }
 
-    // public function getSchoolById(int $id)
-    // {
-    //     $school = $this->UserInterface->find($id);
-    //     return Api::response(
-    //         SchoolResource::make($school),
-    //         'School fetched successfully',
-    //         Response::HTTP_OK
-    //     );
-    // }
 }

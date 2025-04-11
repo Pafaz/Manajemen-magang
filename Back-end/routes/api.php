@@ -8,7 +8,6 @@ use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\Auth\PasswordResetController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
@@ -16,7 +15,8 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 });
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register-perusahaan', [AuthController::class, 'register_perusahaan']);
+Route::post('/register-peserta', [AuthController::class, 'register_peserta']);
 
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
 Route::post('/reset-password', [PasswordResetController::class, 'reset']);
@@ -27,7 +27,5 @@ Route::apiResource('jurusan', JurusanController::class);
 Route::apiResource('kategori', KategoriController::class);
 Route::apiResource('foto', FotoController::class);
 Route::post('/foto/{foto}/update', [FotoController::class, 'update']);
-Route::apiResource('magang', MagangController::class);
-Route::apiResource('perusahaan', PerusahaanController::class);
 
 

@@ -2,7 +2,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
-use App\Http\Controllers\MagangController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\SekolahController;

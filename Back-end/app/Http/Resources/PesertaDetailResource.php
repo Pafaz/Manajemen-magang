@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PesertaResource extends JsonResource
+class PesertaDetailResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,6 +24,8 @@ class PesertaResource extends JsonResource
             'jenis_kelamin' => $this->jenis_kelamin,
             'kelas' => $this->kelas,
             'alamat' => $this->alamat,
+            'user' => new UserResource($this->user),
+            'magang' => new MagangResource($this->magang),
         ];
     }
 }

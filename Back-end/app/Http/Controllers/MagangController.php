@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Magang;
+use App\Services\MagangService;
 use Illuminate\Http\Request;
 
 class MagangController extends Controller
@@ -10,9 +11,15 @@ class MagangController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    private MagangService $magangService;
+    public function __construct(MagangService $magangService)
+    {
+        $this->magangService = $magangService;
+    }
     public function index()
     {
-        //
+        return $this->magangService->getAllMagang();
     }
 
     /**
@@ -28,7 +35,7 @@ class MagangController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->magangService->createMagang($request->all());
     }
 
     /**

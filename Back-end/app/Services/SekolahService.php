@@ -3,16 +3,20 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\SchoolResource;
+use Illuminate\Support\Facades\DB;
+use App\Interfaces\JurusanInterface;
 use App\Interfaces\SekolahInterface;
+use App\Http\Resources\SchoolResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class SekolahService 
 {
     private SekolahInterface $SekolahInterface;
+    private JurusanInterface $JurusanInterface;
 
-    public function __construct(SekolahInterface $SekolahInterface)
+    public function __construct(SekolahInterface $SekolahInterface, JurusanInterface $JurusanInterface)
     {
+        $this->JurusanInterface = $JurusanInterface;
         $this->SekolahInterface = $SekolahInterface;
     }
 
@@ -27,12 +31,38 @@ class SekolahService
 
     public function createSchool(array $data)
     {
-        $peserta = $this->SekolahInterface->create($data);
+        DB::beginTransaction();
+    try {
+        $sekolah = $this->SekolahInterface->create([
+            'nama' => $data['nama'],
+            'alamat' => $data['alamat'],
+            'telepon' => $data['telepon'],
+        ]);
+
+        $jurusanIds = [];
+
+        foreach ($data['jurusan'] as $namaJurusan) {
+            $jurusan = $this->JurusanInterface->firstOrCreate(['nama' => $namaJurusan]);
+            $jurusanIds[] = $jurusan->id;
+        }
+
+        $sekolah->jurusan()->sync($jurusanIds);
+
+        DB::commit();
+
         return Api::response(
-            SchoolResource::make($peserta),
-            'School created successfully',
+            SchoolResource::make($sekolah->load('jurusan')),
+            'Sekolah & jurusan berhasil disimpan',
             Response::HTTP_CREATED
         );
+    } catch (\Throwable $th) {
+        DB::rollBack();
+        return Api::response(
+            null,
+            'Failed to create school: ' . $th->getMessage(),
+            Response::HTTP_INTERNAL_SERVER_ERROR
+        );
+    }
     }
 
     public function updateSchool(int $id, array $data)
@@ -47,7 +77,10 @@ class SekolahService
 
     public function deleteSchool(int $id)
     {
-        $this->SekolahInterface->delete($id);
+        $school = $this->SekolahInterface->find($id);
+        
+        $school->jurusan()->detach();
+        $school->delete(); 
         return Api::response(
             null,
             'School deleted successfully',
@@ -58,8 +91,19 @@ class SekolahService
     public function getSchoolById(int $id)
     {
         $school = $this->SekolahInterface->find($id);
+        $jurusan = $school->jurusan()->get();
+
+        $response = [
+            'sekolah' => SchoolResource::make($school),
+            'jurusan' => $jurusan->map(function ($jurusan) {
+                return [
+                    'id' => $jurusan->id,
+                    'nama' => $jurusan->nama,
+                ];
+            }),
+        ];
         return Api::response(
-            SchoolResource::make($school),
+            $response,
             'School fetched successfully',
             Response::HTTP_OK
         );

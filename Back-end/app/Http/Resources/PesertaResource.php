@@ -15,17 +15,16 @@ class PesertaResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->uuid,
             'id_user' => $this->id_user,
-            'jurusan' => $this->jurusan->nama,
-            'sekolah' => $this->sekolah->nama,
+            'jurusan' => $this->id_jurusan,
+            'sekolah' => $this->id_sekolah,
             'nomor_identitas' => $this->nomor_identitas,
             'tempat_lahir' => $this->tempat_lahir,
             'tanggal_lahir' => $this->tanggal_lahir,
             'jenis_kelamin' => $this->jenis_kelamin,
             'kelas' => $this->kelas,
             'alamat' => $this->alamat,
-            'status' => $this->status,
         ];
     }
 }

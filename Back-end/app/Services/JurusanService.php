@@ -3,19 +3,22 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\JurusanResource;
-use App\Http\Resources\SchoolResource;
+use Illuminate\Support\Facades\DB;
 use App\Interfaces\JurusanInterface;
 use App\Interfaces\SekolahInterface;
+use App\Http\Resources\SchoolResource;
+use App\Http\Resources\JurusanResource;
 use Symfony\Component\HttpFoundation\Response;
 
-class JurusanService 
+class JurusanService
 {
     private JurusanInterface $JurusanInterface;
+    private SekolahInterface $SekolahInterface;
 
-    public function __construct(JurusanInterface $JurusanInterface)
+    public function __construct(JurusanInterface $JurusanInterface, SekolahInterface $SekolahInterface)
     {
         $this->JurusanInterface = $JurusanInterface;
+        $this->SekolahInterface = $SekolahInterface;
     }
 
     public function getMajors()
@@ -23,19 +26,38 @@ class JurusanService
         $data = $this->JurusanInterface->getAll();
         return Api::response(
             JurusanResource::collection($data),
-            'Jurusan Fetched Successfully', 
+            'Jurusan Fetched Successfully',
         );
     }
 
     public function createMajor(array $data)
     {
-        $jurusan = $this->JurusanInterface->create($data);
-        return Api::response(
-            JurusanResource::make($jurusan),
-            'Jurusan created successfully',
-            Response::HTTP_CREATED
-        );
+        DB::beginTransaction();
+        try {
+            $jurusan = $this->JurusanInterface->create([
+                'nama' => $data['nama'],
+            ]);
+
+            $sekolah = $this->SekolahInterface->find($data['id_sekolah']);
+            $sekolah->jurusan()->attach($jurusan->id); 
+
+            DB::commit();
+
+            return Api::response(
+                JurusanResource::make($jurusan),
+                'Jurusan created and linked to Sekolah successfully',
+                Response::HTTP_CREATED
+            );
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return Api::response(
+                null,
+                'Failed to create Jurusan: ' . $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
+
 
     public function updateMajor(int $id, array $data)
     {

@@ -16,4 +16,13 @@ class Jurusan extends Model
 
     public $timestamps = false;
 
+    public function peserta()
+    {
+        return $this->hasMany(Peserta::class, 'id_jurusan', 'id');
+    }
+    public function sekolah()
+    {
+        return $this->belongsToMany(Sekolah::class, 'jurusan_sekolah', 'id_jurusan', 'id_sekolah');
+    }
+
 }

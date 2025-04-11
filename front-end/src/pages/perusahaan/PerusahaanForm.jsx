@@ -36,11 +36,10 @@ export default function CompanyRegistrationForm() {
       .catch((error) => console.error("Error fetching provinces:", error));
   }, []);
 
-  // Ambil data kota berdasarkan provinsi yang dipilih
   const handleProvinceChange = (event) => {
     const provinceId = event.target.value;
     setSelectedProvince(provinceId);
-    setSelectedCity(""); // Reset kota jika provinsi berubah
+    setSelectedCity("");
 
     if (provinceId) {
       fetch(
@@ -52,7 +51,6 @@ export default function CompanyRegistrationForm() {
     }
   };
 
-  // Ambil data kecamatan berdasarkan kota yang dipilih
   const handleCityChange = (event) => {
     const cityId = event.target.value;
     setSelectedCity(cityId);
@@ -67,14 +65,13 @@ export default function CompanyRegistrationForm() {
     }
   };
 
-  // Handle perubahan form
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-      ...(name === "province" && { city: "", district: "" }), // Reset kota dan kecamatan kalau provinsi berubah
-      ...(name === "city" && { district: "" }), // Reset kecamatan kalau kota berubah
+      ...(name === "province" && { city: "", district: "" }),
+      ...(name === "city" && { district: "" }),
     }));
   };
 

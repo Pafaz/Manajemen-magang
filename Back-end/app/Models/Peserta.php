@@ -17,20 +17,16 @@ class Peserta extends Model
 
     protected $fillable = [
         'id_user',
+        'id_jurusan',
+        'id_sekolah',
         'nomor_identitas',
-        'kelas',
         'tempat_lahir',
         'tanggal_lahir',
         'jenis_kelamin',
+        'kelas',
         'alamat',
-        'id_magang',
-        'id_jurusan',
-        'id_sekolah',
-        'status',
-        'CV',
-        'pernyataan_diri',
-        'pernyataan_orang_tua',
     ];
+    // public $timestamps = false;
 
     public function user()
     {

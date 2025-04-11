@@ -25,6 +25,8 @@ class SekolahRequest extends FormRequest
             'nama' => 'required|string|max:50',
             'alamat' => 'required|string|max:255',
             'telepon' => 'required|numeric|digits_between:10,12',
+            'jurusan' => 'required|array',
+            'jurusan.*' => 'string|max:50',
         ];
     }
 

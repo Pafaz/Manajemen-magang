@@ -27,15 +27,15 @@ class PesertaController extends Controller
      */
     public function create(Request $request)
     {
-        return $this->pesertaService->createPeserta($request->all());
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        // dd($request->all());
+        return $this->pesertaService->createPeserta($request->all());
     }
 
     /**

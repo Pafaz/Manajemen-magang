@@ -13,8 +13,10 @@ class Foto extends Model
     protected $table = 'foto';
 
     protected $fillable = [
-        'id',
         'type',
-        'reference_id'
+        'id_referensi',
+        'path',
     ];
+
+    public $timestamps = false;
 }

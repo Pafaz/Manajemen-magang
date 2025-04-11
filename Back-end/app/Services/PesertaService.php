@@ -27,11 +27,31 @@ class PesertaService
 
     public function createPeserta(array $data)
     {
-        $peserta = $this->pesertaInterface->create([$data]);
+        $peserta = $this->pesertaInterface->create($data);
         return Api::response(
             PesertaResource::make($peserta),
-            'Peserta created successfully',
+            'Peserta Created Successfully',
             Response::HTTP_CREATED
+        );
+    }
+
+    public function updatePeserta(array $data, int $id)
+    {
+        $peserta = $this->pesertaInterface->update($id, $data);
+        return Api::response(
+            PesertaResource::make($peserta),
+            'Peserta Updated Successfully',
+            Response::HTTP_OK
+        );
+    }
+
+    public function deletePeserta(int $id)
+    {
+        $this->pesertaInterface->delete($id);
+        return Api::response(
+            null,
+            'Peserta Deleted Successfully',
+            Response::HTTP_NO_CONTENT
         );
     }
 

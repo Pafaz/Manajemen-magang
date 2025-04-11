@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Foto;
+use App\Services\FotoService;
 use Illuminate\Http\Request;
 
 class FotoController extends Controller
@@ -10,9 +11,13 @@ class FotoController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private FotoService $fotoService;
+    public function __construct(FotoService $fotoService)
+    {
+        $this->fotoService = $fotoService;
+    }
     public function index()
     {
-        //
     }
 
     /**
@@ -28,15 +33,14 @@ class FotoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->fotoService->createFoto($request->all());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Foto $foto)
+    public function show(Request $request)
     {
-        //
     }
 
     /**
@@ -52,7 +56,8 @@ class FotoController extends Controller
      */
     public function update(Request $request, Foto $foto)
     {
-        //
+
+        return $this->fotoService->updateFoto($foto->id, $request->all());
     }
 
     /**
@@ -60,6 +65,6 @@ class FotoController extends Controller
      */
     public function destroy(Foto $foto)
     {
-        //
+        return $this->fotoService->deleteFoto($foto->id);
     }
 }

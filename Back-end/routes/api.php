@@ -9,13 +9,17 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\MagangController;
 use App\Http\Controllers\FotoController;
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register-perusahaan', [AuthController::class, 'register_perusahaan']);
 Route::post('/register-peserta', [AuthController::class, 'register_peserta']);
+
+// routes/api.php
+Route::post('/auth/google', [AuthController::class, 'googleLogin']);
+
 
 Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
     Route::apiResource('peserta', PesertaController::class);

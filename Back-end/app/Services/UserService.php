@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Interfaces\UserInterface;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserService
@@ -17,21 +19,37 @@ class UserService
     }
 
 
-    public function register(array $data)
+    public function register_peserta(array $data)
     {
-        $role = session('role');
+        $user = $this->UserInterface->create($data);
 
-        if (empty($role) || !in_array($role, ['peserta', 'perusahaan'])) {
-            return Api::response(null, 'Invalid Role', Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        // dd(get_class($user));
 
-        $user = $this->UserInterface->create(array_merge($data, ['role' => $role]));
+        $user->assignRole('peserta');
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         $responseData = [
             'user' => new UserResource($user),
             'token' => $token,
+            'role' => $user->getRoleNames()
+        ];
+
+        return Api::response($responseData, 'User  registered successfully', Response::HTTP_CREATED);
+    }
+
+    public function register_perusahaan(array $data)
+    {
+        $user = $this->UserInterface->create($data);
+
+        $user->assignRole('perusahaan');
+
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        $responseData = [
+            'user' => new UserResource($user),
+            'token' => $token,
+            'role' => $user->getRoleNames()
         ];
 
         return Api::response($responseData, 'User  registered successfully', Response::HTTP_CREATED);
@@ -70,6 +88,22 @@ class UserService
             'School deleted successfully',
             Response::HTTP_OK
         );
+    }
+
+    public function resetPassword(array $data)
+    {
+        $user = $this->UserInterface->find($data['email']);
+
+    }
+
+    public function updatePassword(array $data)
+    {
+        $user = $this->UserInterface->find($data['email']);
+        if (!$user) {
+            return Api::response(null, 'User not found', Response::HTTP_NOT_FOUND);
+        }    
+        $user->password = Hash::make($data['password']);
+        $user->save();
     }
 
 }

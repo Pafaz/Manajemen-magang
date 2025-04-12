@@ -6,11 +6,11 @@ const StudentLayout = () => {
   const [isRinging, setIsRinging] = useState(false);
 
   const sidebarMenus = [
-    { icon: "bi-grid", label: "Dashboard", link: "/dashboard", active: true },
+    { icon: "bi-grid", label: "Dashboard", link: "dashboard", active: true },
     {
       icon: "bi-calendar4-week",
       label: "Absensi",
-      link: "/absensi",
+      link: "absensi",
       active: false,
     },
     {
@@ -69,7 +69,7 @@ const StudentLayout = () => {
 
             return (
               <Link
-                to={menu.link}
+                to={`/student/${menu.link}`}
                 key={idx}
                 className={`px-4 py-2 rounded-lg flex gap-3 items-center transition-all duration-500 ease-in-out ${
                   menu.active
@@ -86,7 +86,7 @@ const StudentLayout = () => {
           <div className="bg-slate-400/[0.5] w-full h-0.5 rounded-full"></div>
           {sidebarMenus.slice(-1).map((menu, idx) => (
             <Link
-              to={menu.link}
+              to={`/student/${menu.link}`}
               key={idx}
               className={`px-4 py-2 rounded-lg flex gap-3 items-center transition-all duration-500 ease-in-out ${
                 menu.active
@@ -148,8 +148,10 @@ const StudentLayout = () => {
           </div>
         </nav>
 
-        <div className="pt-5 px-3 bg-indigo-50 min-h-screen overflow-y-auto">
+        <div className="pt-5 px-3 bg-indigo-50 min-h-screen flex flex-col overflow-y-auto bottom-0">
+          <div className="flex-1">
           <Outlet />
+          </div>
           <div className="mt-3">
             <div className="bg-white rounded-t-xl px-5 py-4 w-full flex justify-between">
               <div className="text-slate-400 font-normal text-sm">

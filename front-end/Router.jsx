@@ -10,6 +10,7 @@ import Dashboard from "./src/pages/student/Dashboard";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
+import Absensi from "./src/pages/student/Absensi";
 
 export const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ export const router = createBrowserRouter([
       {
         path:"dashboard",
         element:<Dashboard/>
+      },
+      {
+        path:"absensi",
+        element:<Absensi/>
       }
     ]
   },

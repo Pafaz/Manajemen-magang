@@ -7,10 +7,16 @@ import Register from "./src/pages/Auth/Register";
 import Login from "./src/pages/Auth/Login";
 import StudentLayout from "./src/layout/StudentLayout";
 import Dashboard from "./src/pages/student/Dashboard";
+import MentorLayout from "./src/layout/MentorLayout";
+import MentorDashboard from "./src/pages/mentor/MentorDashboard";
+import DataSiswa from "./src/pages/mentor/Siswa";
+import TrackRecord from "./src/pages/mentor/trackrecord";
+import OnlinePresentasi from "./src/pages/mentor/PresentasiOnline";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
 import Absensi from "./src/pages/student/Absensi";
+
 
 export const router = createBrowserRouter([
   {
@@ -26,16 +32,16 @@ export const router = createBrowserRouter([
         element: <About />,
       },
       {
-        path:"/gallery",
-        element:<Gallery/>
+        path: "/gallery",
+        element: <Gallery />,
       },
       {
-        path:"/procedure",
-        element:<Procedure/>
+        path: "/procedure",
+        element: <Procedure />,
       },
       {
-        path:"/contact_us",
-        element:<Contact/>
+        path: "/contact_us",
+        element: <Contact />,
       },
     ],
   },
@@ -44,18 +50,36 @@ export const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path:"/student",
-    element:<StudentLayout/>,
+    path: "/student",
+    element: <StudentLayout />,
     children: [
       {
-        path:"dashboard",
-        element:<Dashboard/>
+        path: "dashboard",
+        element: <Dashboard />,
+      },
+    ],
+  },
+  {
+    path: "/mentor",
+    element: <MentorLayout />,
+    children: [
+      {
+        path: "dashboard",
+        element: <MentorDashboard />,
       },
       {
-        path:"absensi",
-        element:<Absensi/>
+        path: "siswa",
+        element: <DataSiswa />,
+      },
+      {
+        path: "track", 
+        element: <TrackRecord />, 
+      },
+      {
+        path: "online",
+        element: <OnlinePresentasi />,
       }
-    ]
+    ],
   },
   {
     path: "/auth/login",

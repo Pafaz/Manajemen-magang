@@ -12,6 +12,8 @@ import MentorDashboard from "./src/pages/mentor/MentorDashboard";
 import DataSiswa from "./src/pages/mentor/Siswa";
 import TrackRecord from "./src/pages/mentor/trackrecord";
 import OnlinePresentasi from "./src/pages/mentor/PresentasiOnline";
+import AdminDashboard from "./src/pages/admin/AdminDashboard";
+import AdminLayout from "./src/layout/AdminLayout";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
@@ -79,6 +81,16 @@ export const router = createBrowserRouter([
         path: "online",
         element: <OnlinePresentasi />,
       }
+    ],
+  },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      {
+        path: "dashboard",
+        element: <AdminDashboard />,
+      },
     ],
   },
   {

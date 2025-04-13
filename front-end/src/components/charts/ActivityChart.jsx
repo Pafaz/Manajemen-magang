@@ -1,56 +1,47 @@
-import React, { useEffect, useRef } from "react";
-import Chart from "chart.js/auto";
-import ChartDataLabels from "chartjs-plugin-datalabels";
+import React from "react";
+import ReactApexChart from "react-apexcharts";
 
 const ActivityChart = () => {
-  const chartRef = useRef(null);
-
-  useEffect(() => {
-    if (chartRef.current) {
-      const ctx = chartRef.current.getContext("2d");
-
-      if (chartRef.current.chart) {
-        chartRef.current.chart.destroy();
+  const chartOptions = {
+    chart: {
+      type: "donut",
+    },
+    labels: ["Complete", "Waiting List", "Revision"],
+    colors: ["#007bff", "#00C897", "#FFA500"],
+    legend: {
+      show: false,
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: (val) => `${val.toFixed(1)}%`,
+      style: {
+        fontSize: '12px',
+        fontWeight: 'bold',
+        colors: ["#fff"]
       }
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          size: "70%",
+        },
+      },
+    },
+  };
 
-      chartRef.current.chart = new Chart(ctx, {
-        type: "doughnut",
-        data: {
-          labels: ["Complete", "Waiting List", "Revision"],
-          datasets: [
-            {
-              data: [65.2, 25.0, 9.8],
-              backgroundColor: ["#007bff", "#00C897", "#FFA500"],
-              hoverOffset: 4,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            datalabels: {
-              color: "#fff",
-              formatter: (value) => `${value}%`,
-              font: {
-                weight: 'bold',
-                size: 12,
-              },
-            },
-          },
-          cutout: "70%",
-        },
-        plugins: [ChartDataLabels],
-      });
-    }
-  }, []);
+  const chartSeries = [65.2, 25.0, 9.8];
 
   return (
     <div className="py-3">
       <div className="flex justify-center py-5">
         <div className="relative w-[200px] h-[200px]">
-          <canvas ref={chartRef} className="w-full h-full"></canvas>
+          <ReactApexChart
+            options={chartOptions}
+            series={chartSeries}
+            type="donut"
+            width="100%"
+            height="100%"
+          />
         </div>
       </div>
 

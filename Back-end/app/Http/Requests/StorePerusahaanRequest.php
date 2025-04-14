@@ -22,13 +22,10 @@ class StorePerusahaanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_user' => 'required|exists:users,id',
             'deskripsi' => 'required|string',
             'alamat' => 'required|string',
             'website' => 'required|url',
             'instagram' => 'required|string',
-            'is_premium' => 'required|boolean',
-            'is_active' => 'required|boolean',
         ];
     }
 }

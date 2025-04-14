@@ -23,8 +23,6 @@ class UserService
     {
         $user = $this->UserInterface->create($data);
 
-        // dd(get_class($user));
-
         $user->assignRole('peserta');
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -59,6 +57,9 @@ class UserService
     {
         $user = $this->UserInterface->find($data['email']);
 
+        if ($user) {
+            # code...
+        }
         if (!$user || !password_verify($data['password'], $user->password)) {
             return Api::response(
                 null,
@@ -76,6 +77,15 @@ class UserService
         return Api::response(
             $responseData,
             'User logged in successfully',
+            Response::HTTP_OK
+        );
+    }
+
+    public function logout($request){
+        $request->user()->currentAccessToken()->delete();
+        return Api::response(
+            null,
+            'User logged out successfully',
             Response::HTTP_OK
         );
     }

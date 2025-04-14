@@ -36,8 +36,8 @@ return new class extends Migration
             $table->string('alamat');
             $table->string('website');
             $table->string('instagram');
-            $table->boolean('is_premium');
-            $table->boolean('is_active');
+            $table->boolean('is_premium')->default(false);
+            $table->boolean('is_active')->default(true);
             $table->integer('cabang_limit')->default(1);
             $table->integer('admin_limit')->default(1);
             $table->timestamps();

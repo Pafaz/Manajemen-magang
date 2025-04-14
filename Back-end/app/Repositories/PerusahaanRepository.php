@@ -21,13 +21,11 @@ class PerusahaanRepository implements PerusahaanInterface
     public function create(array $data): ? Perusahaan
     {
         return Perusahaan::create( [
-            'id_user' => $data['id_user'],
+            'id_user' => auth('sanctum')->user()->id,
             'deskripsi' => $data['deskripsi'],
             'alamat' => $data['alamat'],
             'website' => $data['website'],
             'instagram' => $data['instagram'],
-            'is_premium' => $data['is_premium'], 
-            'is_active' => $data['is_active'],
         ]);
     }
 

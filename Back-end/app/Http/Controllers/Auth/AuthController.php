@@ -28,11 +28,7 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        try {
-            return $this->UserService->Login($request->all());
-        } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
-        }
+        return $this->UserService->Login($request->all());
     }
 
     public function register_peserta(Request $request)
@@ -40,17 +36,11 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'telepon' => 'required|string|unique:users|regex:/^[0-9]+$/',
             'password' => ['required', 'string', 'min:8', 'confirmed', Password::defaults()],
         ], [
-            'telepon.unique' => 'Nomor telepon sudah terdaftar. Silakan gunakan nomor lain.'
         ], ['email.unique' => 'Email sudah terdaftar. Silahkan gunakan email lain.']);
 
-        try {
-            return $this->UserService->register_peserta($request->all());
-        } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
-        }
+        return $this->UserService->register_peserta($request->all());
     }
 
     public function register_perusahaan(Request $request)
@@ -58,17 +48,11 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
-            'telepon' => 'required|string|unique:users|regex:/^[0-9]+$/',
             'password' => ['required', 'string', 'min:8', 'confirmed', Password::defaults()],
         ], [
-            'telepon.unique' => 'Nomor telepon sudah terdaftar. Silakan gunakan nomor lain.'
         ], ['email.unique' => 'Email sudah terdaftar. Silahkan gunakan email lain.']);
 
-        try {
-            return $this->UserService->register_perusahaan($request->all());
-        } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
-        }
+        return $this->UserService->register_perusahaan($request->all());
     }
 
     public function updatePassword(Request $request)
@@ -77,16 +61,11 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed', Password::defaults()],
         ]);
 
-        try {
-            return $this->UserService->UpdatePassword($request->all());
-        } catch (\Throwable $th) {
-            return response()->json(['error' => $th->getMessage()], 500);
-        }
+        return $this->UserService->UpdatePassword($request->all());
     }
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Logged out']);
+        return $this->UserService->Logout($request->user());
     }
 }

@@ -16,15 +16,11 @@ class PerusahaanResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nama' => $this->nama,
             'deskripsi' => $this->deskripsi,
             'alamat' => $this->alamat,
             'instagram' => $this->instagram,
             'website' => $this->website,
-            'is_premium' => $this->is_premium,
-            'cabang_limit' => $this->cabang_limit,
-            'admin_limit' => $this->admin_limit,
-            'status' => $this->status,
+            'user' => new UserResource($this->user),
         ];
     }
 }

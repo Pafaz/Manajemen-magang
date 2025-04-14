@@ -23,9 +23,10 @@ class UserRepository implements UserInterface
         return User::create($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): User
     {
-        return User::where('id', $id)->update([$data]);
+
+        return tap(User::findOrFail('id', $id))->update($data);
     }
 
     public function delete(int $id): void

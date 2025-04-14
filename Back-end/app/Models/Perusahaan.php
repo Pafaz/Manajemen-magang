@@ -21,7 +21,7 @@ class Perusahaan extends Model
         'nama',
         'deskripsi',
         'alamat',
-        'instagran',
+        'instagram',
         'website',
         'is_premium',
         'is_active',
@@ -30,7 +30,7 @@ class Perusahaan extends Model
     ];
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_perusahaan', 'id');
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
     public function cabang()
     {

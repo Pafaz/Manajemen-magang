@@ -8,6 +8,7 @@ use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\MagangController;
+use App\Http\Controllers\FotoController;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
@@ -27,6 +28,9 @@ Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
     Route::apiResource('magang', MagangController::class);
     Route::post('/update-password', [AuthController::class, 'updatePassword']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/foto/{foto}/update', [FotoController::class, 'update']);
+    Route::apiResource('foto', FotoController::class);
+
 });
 
 Route::group(['middleware' => ['auth:sanctum','role:perusahaan']], function () {

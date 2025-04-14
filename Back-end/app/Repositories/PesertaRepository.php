@@ -14,7 +14,7 @@ class PesertaRepository implements PesertaInterface
         return Peserta::all();
     }
 
-    public function find(int $id): ? Peserta
+    public function find( $id): ? Peserta
     {
         return Peserta::findOrFail($id)->first();
     }
@@ -34,24 +34,15 @@ class PesertaRepository implements PesertaInterface
         ]);
     }
 
-    public function update(int $id, array $data): Peserta
+    public function update( $id, array $data): Peserta
     {
         $peserta = Peserta::findOrFail($id);
-        $peserta->update([ 
-            'id_user' => $data['id_user'],
-            'id_jurusan' => $data['id_jurusan'],
-            'id_sekolah' => $data['id_sekolah'],
-            'nomor_identitas' => $data['nomor_identitas'],
-            'tempat_lahir' => $data['tempat_lahir'],
-            'tanggal_lahir' => $data['tanggal_lahir'],
-            'jenis_kelamin' => $data['jenis_kelamin'],
-            'kelas' => $data['kelas'],
-            'alamat' => $data['alamat'],
-        ]);
+        $peserta->update($data);
+        
         return $peserta;
     }
 
-    public function delete(int $id): void
+    public function delete( $id): void
     {
         Peserta::findOrFail($id)->delete();
     }

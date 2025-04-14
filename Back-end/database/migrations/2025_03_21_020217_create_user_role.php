@@ -37,7 +37,7 @@ return new class extends Migration
             $table->string('website');
             $table->string('instagram');
             $table->boolean('is_premium');
-            $table->boolean('status');
+            $table->boolean('is_active');
             $table->integer('cabang_limit')->default(1);
             $table->integer('admin_limit')->default(1);
             $table->timestamps();

@@ -37,25 +37,29 @@ class FotoService
             );
         }
     }
-    public function createFoto(array $data)
+    public function createFoto($file, $idReferensi, $type)
     {
         DB::beginTransaction();
-        try {
-            $path = $data['file']->store('foto/' . $data['type'] . '/' . $data['id_referensi'], 'public');
 
-            $jurusan = $this->FotoInterface->create([
-                'id_referensi' => $data['id_referensi'],
-                'type' => $data['type'],
+        try {
+            $path = $file->store("foto/{$type}/{$idReferensi}", 'public');
+
+            $foto = $this->FotoInterface->create([
+                'id_referensi' => $idReferensi,
+                'type' => $type,
                 'path' => $path,
             ]);
+
             DB::commit();
+
             return Api::response(
-                JurusanResource::make($jurusan),
-                'Foto Uploaded successfully',
+                JurusanResource::make($foto),
+                'Foto uploaded successfully',
                 Response::HTTP_CREATED
             );
         } catch (\Exception $e) {
             DB::rollBack();
+
             return Api::response(
                 null,
                 'Failed to upload foto: ' . $e->getMessage(),
@@ -63,7 +67,6 @@ class FotoService
             );
         }
     }
-
 
     public function updateFoto(int $id, array $data)
     {

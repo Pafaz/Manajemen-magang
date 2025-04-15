@@ -15,7 +15,12 @@ class UserRepository implements UserInterface
 
     public function find(string $email): ? User
     {
-        return User::where( 'email', $email )->first();
+        return User::where('email' , $email)->first();
+    }
+
+    public function findId(string $id): ? User
+    {
+        return User::where('id' , $id)->first();
     }
 
     public function create(array $data): User
@@ -23,10 +28,10 @@ class UserRepository implements UserInterface
         return User::create($data);
     }
 
-    public function update(int $id, array $data): User
+    public function update(string $id, array $data): User
     {
 
-        return tap(User::findOrFail('id', $id))->update($data);
+        return tap(User::findOrFail($id))->update($data);
     }
 
     public function delete(int $id): void

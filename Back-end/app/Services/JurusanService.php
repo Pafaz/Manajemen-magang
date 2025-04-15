@@ -34,9 +34,17 @@ class JurusanService
     {
         DB::beginTransaction();
         try {
-            $jurusan = $this->JurusanInterface->create([
+            $jurusan = $this->JurusanInterface->firstOrCreate([
                 'nama' => $data['nama'],
             ]);
+
+            if ($jurusan->wasRecentlyCreated === false) {
+                return Api::response(
+                    null,
+                    'Jurusan sudah ada dengan nama yang sama.',
+                    Response::HTTP_CONFLICT // 409 Conflict
+                );
+            }
 
             $sekolah = $this->SekolahInterface->find($data['id_sekolah']);
             $sekolah->jurusan()->attach($jurusan->id); 

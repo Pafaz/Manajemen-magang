@@ -34,7 +34,6 @@ class AuthController extends Controller
     public function register_peserta(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
             'password' => ['required', 'string', 'min:8', 'confirmed', Password::defaults()],
         ], [
@@ -46,7 +45,6 @@ class AuthController extends Controller
     public function register_perusahaan(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
             'email' => 'required|string|email|unique:users',
             'password' => ['required', 'string', 'min:8', 'confirmed', Password::defaults()],
         ], [

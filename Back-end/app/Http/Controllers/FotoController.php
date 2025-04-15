@@ -33,7 +33,7 @@ class FotoController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->fotoService->createFoto($request->all());
+        return $this->fotoService->createFoto($request['file'], $request['id_referensi'], $request['type']);
     }
 
     /**

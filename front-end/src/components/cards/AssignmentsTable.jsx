@@ -9,11 +9,17 @@ const students = [
     { name: "Yuta Okkotsu", university: "UCLA", project: "Pre Mini Project", progress: 90 },
     { name: "Kento Nanami", university: "Cambridge University", project: "Pre Mini Project", progress: 61 },
     { name: "Suguru Geto", university: "Columbia University", project: "Pre Mini Project", progress: 73 },
+    { name: "Suguru Geto", university: "Columbia University", project: "Pre Mini Project", progress: 73 },
+    { name: "Suguru Geto", university: "Columbia University", project: "Pre Mini Project", progress: 73 },
+    { name: "Suguru Geto", university: "Columbia University", project: "Pre Mini Project", progress: 73 },
+    { name: "Suguru Geto", university: "Columbia University", project: "Pre Mini Project", progress: 73 },
+
+
   ];
   
   const AssignmentsTable = () => {
     return (
-      <div className="card bg-white shadow mt-6 rounded-xl overflow-hidden border border-[#D5DBE7]">
+      <div className="card bg-white shadow mt-6 rounded-xl overflow-hidden border border-[#D5DBE7] h-full flex flex-col">
         <div className="flex justify-between items-center p-4 flex-wrap gap-2">
           <h4 className="text-lg font-semibold">Progres Presentasi</h4>
           <a href="/student-courses.html" className="text-sm text-blue-600 hover:underline">
@@ -21,7 +27,7 @@ const students = [
           </a>
         </div>
   
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto flex-1">
           <table className="min-w-full table-fixed text-sm text-left">
             <thead>
               <tr className="border-b border-[#D5DBE7] bg-gray-100">
@@ -39,26 +45,20 @@ const students = [
                         <img src="/assets/img/post2.png" alt="profil" className="w-full h-full object-cover" />
                       </div>
                       <div>
-                        <h6 className="font-medium mb-0">{student.name}</h6>
-                        <div className="text-black text-xs flex gap-2">
-                          <span>{student.university}</span>
-                        </div>
+                        <h4 className="font-semibold">{student.name}</h4>
+                        <p className="text-xs text-gray-500">{student.university}</p>
                       </div>
                     </div>
                   </td>
-                  <td className="p-4 text-center align-middle">
-                    <span className="text-black text-sm font-semibold">{student.project}</span>
-                  </td>
+                  <td className="p-4 text-center">{student.project}</td>
                   <td className="p-4 text-center">
-                    <div className="flex items-center gap-2 justify-center">
-                      <div className="w-24 bg-blue-100 rounded-full h-2">
-                        <div
-                          className="bg-[#0069AB] h-2 rounded-full"
-                          style={{ width: `${student.progress}%` }}
-                        ></div>
-                      </div>
-                      <span className="text-[#0069AB] text-xs font-medium">{student.progress}%</span>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5">
+                      <div
+                        className="bg-blue-500 h-2.5 rounded-full"
+                        style={{ width: `${student.progress}%` }}
+                      ></div>
                     </div>
+                    <p className="text-xs mt-1">{student.progress}%</p>
                   </td>
                 </tr>
               ))}
@@ -70,4 +70,7 @@ const students = [
   };
   
   export default AssignmentsTable;
+  
+  
+
   

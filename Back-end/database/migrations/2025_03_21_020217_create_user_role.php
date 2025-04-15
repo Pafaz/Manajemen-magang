@@ -33,7 +33,12 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('id_user');
             $table->string('deskripsi');
+            $table->string('provinsi');
+            $table->string('kota');
+            $table->string('kecamatan');
+            $table->string('desa');
             $table->string('alamat');
+            $table->string('kode_pos');
             $table->string('website');
             $table->string('instagram');
             $table->boolean('is_premium')->default(false);

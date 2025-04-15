@@ -6,6 +6,7 @@ use App\Helpers\Api;
 use App\Models\User;
 use App\Interfaces\UserInterface;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -54,7 +55,7 @@ class UserService
     }
 
     public function Login(array $data)
-    {
+    {      
         $user = $this->UserInterface->find($data['email']);
 
         if ($user) {
@@ -95,7 +96,7 @@ class UserService
         $this->UserInterface->delete($id);
         return Api::response(
             null,
-            'School deleted successfully',
+            'User deleted successfully',
             Response::HTTP_OK
         );
     }
@@ -108,12 +109,27 @@ class UserService
 
     public function updatePassword(array $data)
     {
-        $user = $this->UserInterface->find($data['email']);
+        // $userId = auth()->user();
+        $userId = Auth::user()->id;
+
+        $user = $this->UserInterface->findId($userId);
+
         if (!$user) {
             return Api::response(null, 'User not found', Response::HTTP_NOT_FOUND);
-        }    
-        $user->password = Hash::make($data['password']);
-        $user->save();
+        }
+
+        if (!Hash::check($data['old_password'], $user->password)) {
+            return Api::response(null, 'Password lama tidak sesuai', Response::HTTP_UNAUTHORIZED);
+        }
+
+        $updateData = [
+            'password' => Hash::make($data['new_password']),
+        ];
+
+        $this->UserInterface->update($userId, $updateData);
+
+        return Api::response(null, 'Password berhasil diperbarui', Response::HTTP_OK);
     }
+
 
 }

@@ -1,10 +1,13 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import axios from "axios";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const SelectAuth = () => {
   const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
+  const { tempRegisterData, setToken, setRole } = useContext(AuthContext);
 
   const cardData = [
     {
@@ -23,10 +26,31 @@ const SelectAuth = () => {
     },
   ];
 
-  const handleNext = (e) => {
+  const handleNext = async (e) => {
     e.preventDefault();
-    if (selected) {
-      navigate(`/auth/register/${selected}`);
+    if (!selected || !tempRegisterData) return;
+
+    const role = selected === "a1b2c3d4" ? "company" : "student";
+    const url = role === "company" ? "register-perusahaan" : "register-peserta";
+
+    try {
+      const response = await axios.post(`http://127.0.0.1:8000/api/${url}`, tempRegisterData);
+      const responsAPI = response.data.data;
+
+      if (responsAPI.status === "success") {
+        setToken(responsAPI.token);
+        setRole(responsAPI.role);
+        if (responsAPI.role === "perusahaan") {
+          navigate("/perusahaan/dashboard");
+        } else if (responsAPI.role === "peserta") {
+          navigate("/siswa/dashboard");
+        } else {
+          navigate("/");
+        }
+      }
+    } catch (err) {
+      console.error("Gagal kirim data registrasi:", err);
+      // Handle error, bisa tambahkan setErrors atau toast
     }
   };
 

@@ -138,7 +138,7 @@ export const router = createBrowserRouter([
     element: <AuthLayout />,
     children: [
       {
-        path: "register/:type",
+        path: "register",
         element: <Register />,
       },
       {

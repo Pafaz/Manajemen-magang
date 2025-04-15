@@ -9,24 +9,24 @@ export default function CompanyRegistrationForm() {
   const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [formData, setFormData] = useState({
-    ownerName: "",
-    ownerPhone: "",
-    companyName: "",
-    companyEmail: "",
-    companyPhone: "",
-    companyAddress: "",
-    companyDescription: "",
-    province: "",
-    city: "",
-    district: "",
-    postalCode: "",
+    nama_penanggung_jawab: "",
+    nomor_penanggung_jawab: "",
+    email_penanggung_jawab: "",
+    jabatan_penanggung_jawab: "",
+    tanggal_berdiri:"",
+    nama: "",
+    deskripsi: "",
+    telepon: "",
+    provinsi: "",
+    kota: "",
+    kecamatan: "",
+    alamat: "",
+    bidang_usaha: "",
+    kode_pos: "",
     website: "",
-    ownerPosition: "",
-    dateEstablished: "",
-    businessField: "",
-    companyDocument: null,
-    npwpDocument: null,
-    logoDocument: null,
+    logo: null,
+    npwp: null,
+    surat_legalitas: null,
   });
 
   useEffect(() => {
@@ -43,8 +43,13 @@ export default function CompanyRegistrationForm() {
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: files[0] }));
+    
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files.length > 0 ? files[0] : null
+    }));
   };
+  
 
   const handleProvinceChange = (e) => {
     const selected = provinces.find((p) => p.name === e.target.value);
@@ -53,9 +58,9 @@ export default function CompanyRegistrationForm() {
     setSelectedProvince(selected.name);
     setFormData((prev) => ({
       ...prev,
-      province: selected.name, // Hanya set nama provinsi langsung
-      city: "",
-      district: "",
+      provinsi: selected.name, // Hanya set nama provinsi langsung
+      kota: "",
+      kecamatan: "",
     }));
 
     // Fetch kota-kota setelah memilih provinsi
@@ -76,8 +81,8 @@ export default function CompanyRegistrationForm() {
     setSelectedCity(selected.name); // Memperbarui state terpisah untuk kota
     setFormData((prev) => ({
       ...prev,
-      city: selected.name, // Hanya set nama kota langsung
-      district: "",
+      kota: selected.name, // Hanya set nama kota langsung
+      kecamatan: "",
     }));
 
     // Fetch distrik setelah memilih kota
@@ -95,7 +100,7 @@ export default function CompanyRegistrationForm() {
 
     setFormData((prev) => ({
       ...prev,
-      district: selected.name, // Update district with the selected name
+      kecamatan: selected.name, // Update district with the selected name
     }));
   };
 
@@ -104,11 +109,21 @@ export default function CompanyRegistrationForm() {
   
     const formPayload = new FormData();
     for (const key in formData) {
-      formPayload.append(key, formData[key]);
+      if (formData[key] !== null && formData[key] !== undefined) {
+        formPayload.append(key, formData[key]);
+      }
     }
   
+    formPayload.forEach((value, key) => {
+      console.log(key, value);
+    });
+  
     axios
-      .post("http://127.0.0.1:8000/api/perusahaan", formPayload)
+      .post("http://127.0.0.1:8000/api/perusahaan", formPayload, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((response) => {
         console.log("Success:", response.data);
       })
@@ -116,11 +131,6 @@ export default function CompanyRegistrationForm() {
         console.error("Error:", error);
       });
   };
-
-  useEffect(() => {
-    console.log(formData);
-    
-  },[formData])
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-sm">
@@ -148,7 +158,7 @@ export default function CompanyRegistrationForm() {
               </label>
               <input
                 type="text"
-                name="ownerName"
+                name="nama_penanggung_jawab"
                 placeholder="Masukkan Nama"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.ownerName}
@@ -162,8 +172,9 @@ export default function CompanyRegistrationForm() {
                 Nomor HP Penanggung Jawab<span className="text-red-500">*</span>
               </label>
               <input
-                type="text"
-                name="ownerPhone"
+                type="number"
+                maxLength={13}
+                name="nomor_penanggung_jawab"
                 placeholder="Masukkan Nomor HP"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.ownerPhone}
@@ -177,7 +188,7 @@ export default function CompanyRegistrationForm() {
                 Jabatan Penanggung Jawab<span className="text-red-500">*</span>
               </label>
               <select
-                name="ownerPosition"
+                name="jabatan_penanggung_jawab"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 value={formData.ownerPosition}
                 onChange={handleChange}
@@ -196,7 +207,7 @@ export default function CompanyRegistrationForm() {
               </label>
               <input
                 type="email"
-                name="ownerEmail"
+                name="email_penanggung_jawab"
                 placeholder="Masukkan Email"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.ownerEmail}
@@ -211,7 +222,7 @@ export default function CompanyRegistrationForm() {
               </label>
               <input
                 type="text"
-                name="companyName"
+                name="nama"
                 placeholder="Masukkan Nama Perusahaan"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.companyName}
@@ -227,7 +238,7 @@ export default function CompanyRegistrationForm() {
               <div className="relative">
                 <input
                   type="date"
-                  name="dateEstablished"
+                  name="tanggal_berdiri"
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={formData.dateEstablished}
                   onChange={handleChange}
@@ -242,7 +253,7 @@ export default function CompanyRegistrationForm() {
                 Bidang Usaha<span className="text-red-500">*</span>
               </label>
               <select
-                name="businessField"
+                name="bidang_usaha"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 value={formData.businessField}
                 onChange={handleChange}
@@ -260,7 +271,7 @@ export default function CompanyRegistrationForm() {
           <div className="grid grid-cols-2 gap-3 mt-5">
             <textarea
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-              name="companyDescription"
+              name="deskripsi"
               placeholder="Deskripsi Perusahaan"
               value={formData.companyDescription}
               onChange={handleChange}
@@ -279,7 +290,7 @@ export default function CompanyRegistrationForm() {
                 Provinsi<span className="text-red-500">*</span>
               </label>
               <select
-                name="province"
+                name="provinsi"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 value={selectedProvince}
                 onChange={handleProvinceChange}
@@ -299,7 +310,7 @@ export default function CompanyRegistrationForm() {
                 Kabupaten/Kota<span className="text-red-500">*</span>
               </label>
               <select
-                name="city"
+                name="kota"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 value={selectedCity}
                 onChange={handleCityChange}
@@ -319,9 +330,9 @@ export default function CompanyRegistrationForm() {
                 Kecamatan<span className="text-red-500">*</span>
               </label>
               <select
-                name="district"
+                name="kecamatan"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                value={formData.district}
+                value={formData.kecamatan}
                 onChange={handleDistrictChange}
                 required
               >
@@ -338,8 +349,9 @@ export default function CompanyRegistrationForm() {
                 Kode Pos<span className="text-red-500">*</span>
               </label>
               <input
-                type="text"
-                name="postalCode"
+                type="number"
+                maxLength={5}
+                name="kode_pos"
                 placeholder="Masukkan Kode Pos"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.postalCode}
@@ -369,7 +381,7 @@ export default function CompanyRegistrationForm() {
               </label>
               <input
                 type="text"
-                name="companyPhone"
+                name="telepon"
                 placeholder="Masukkan Nomor Telepon"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.companyPhone}
@@ -397,7 +409,7 @@ export default function CompanyRegistrationForm() {
           <div className="grid grid-cols-2 gap-3 mt-5">
             <textarea
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              name="companyAddress"
+              name="alamat"
               placeholder="Alamat Perusahaan"
               value={formData.companyAddress}
               onChange={handleChange}
@@ -418,7 +430,7 @@ export default function CompanyRegistrationForm() {
               <div className="flex items-center space-x-2 border border-slate-400/[0.5] rounded-lg overflow-hidden">
                 <input
                   type="file"
-                  id="companyDocument" // Add id here
+                  id="surat_legalitas" // Add id here
                   name="companyDocument"
                   accept=".pdf,.docx,.jpeg,.png,.jpg"
                   className="hidden"
@@ -441,7 +453,7 @@ export default function CompanyRegistrationForm() {
               <div className="flex items-center space-x-2 border border-slate-400/[0.5] rounded-lg overflow-hidden">
                 <input
                   type="file"
-                  id="npwpDocument" // Add id here
+                  id="npwp" // Add id here
                   name="npwpDocument"
                   accept=".pdf,.docx,.jpeg,.png,.jpg"
                   className="hidden"
@@ -464,7 +476,7 @@ export default function CompanyRegistrationForm() {
               <div className="flex items-center space-x-2 border border-slate-400/[0.5] rounded-lg overflow-hidden">
                 <input
                   type="file"
-                  id="logoDocument" // Add id here
+                  id="logo" // Add id here
                   name="logoDocument"
                   accept=".jpeg,.png,.jpg"
                   className="hidden"

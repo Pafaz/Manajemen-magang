@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AlertVerification from "../../components/AlertVerification";
 import ActivityChart from "../../components/charts/ActivityChart";
 import PerusahaanChart from "../../components/charts/PerusahaanChart";
@@ -10,10 +10,34 @@ import StatistikJurnalChart from "../../components/charts/StatistikJurnalChart";
 import StatistikPendaftarChartMini from "../../components/charts/StatistikPendaftarChartMini";
 import Title from "../../components/Title";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Dashboard = () => {
   const location = useLocation();
+  const {token} = useContext(AuthContext);
   localStorage.setItem("location", location.pathname);
+  const [companyData, setCompanyData] = useState(null);
+
+  useEffect(() => {
+    const checkComplateRegistered = async () => {
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/api/perusahaan/detail`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setCompanyData(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  
+    checkComplateRegistered();
+  });
 
   const statsData = [
     {
@@ -71,7 +95,7 @@ const Dashboard = () => {
 
           {/* Chart Peserta Magang */}
           <Card>
-          <PesertaMagangChart />
+            <PesertaMagangChart />
           </Card>
         </div>
 

@@ -167,7 +167,7 @@ const Login = () => {
           <h1 className="font-medium text-slate-800 text-sm">
             Don’t have an account?{" "}
             <Link
-              to={`/auth/SelectAuth`}
+              to={`/auth/register`}
               className="text-sky-500 font-semibold"
             >
               Create an account

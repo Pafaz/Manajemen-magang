@@ -7,6 +7,7 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [errors, setErrors] = useState(null);
+  const [tempRegisterData, setTempRegisterData] = useState(null);  // Tambahkan state tempRegisterData
 
   const getUser = useCallback(async () => {
     if (!token) return;
@@ -37,6 +38,7 @@ export default function AuthProvider({ children }) {
       localStorage.removeItem("token");
     }
   }, [token]);
+
   useEffect(() => {
     if (token) {
       getUser();
@@ -46,7 +48,17 @@ export default function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ token, setToken, user, setUser, role, setRole, errors }}
+      value={{
+        token,
+        setToken,
+        user,
+        setUser,
+        role,
+        setRole,
+        errors,
+        tempRegisterData,
+        setTempRegisterData,
+      }}
     >
       {children}
     </AuthContext.Provider>

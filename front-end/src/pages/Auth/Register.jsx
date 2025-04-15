@@ -1,40 +1,18 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import FloatingLabelInput from "../../components/FloatingLabelInput";
 import { motion } from "framer-motion";
-import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 
 const Register = () => {
-  const { type } = useParams();
   const navigate = useNavigate();
-  const [role, setRoles] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [termsChecked, setTermsChecked] = useState(false);
-  const { setToken, setRole } = useContext(AuthContext);
-
-  const allowedTypes = {
-    a1b2c3d4: "company",
-    x9y8z7w6: "student",
-  };
-
-  useEffect(() => {
-    if (!allowedTypes[type]) {
-      navigate("/auth/select");
-    } else {
-      setRoles(allowedTypes[type]);
-    }
-  }, [type, navigate]);
-
-  const getTitle = () => {
-    if (role === "company") return "Selamat Datang, Calon Mitra Perusahaan 👋";
-    if (role === "student") return "Selamat Datang, Calon Siswa Magang 👋";
-    return "";
-  };
+  const { setTempRegisterData } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -57,68 +35,9 @@ const Register = () => {
       password_confirmation: confirmPassword,
     };
 
-    try {
-      const url =
-        role === "company" ? "register-perusahaan" : "register-peserta";
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/${url}`,
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const responsAPI = response.data.data;
-      
-      if (responsAPI.status === "success") {
-        setToken(responsAPI.token);
-        setRole(responsAPI.role);
-        const roles = responsAPI.role;
-        if (roles === "perusahaan") {
-          navigate("/perusahaan/dashboard");
-        } else if (roles === "peserta") {
-          navigate("/siswa/dashboard");
-        } else {
-          console.warn("Role tidak dikenali:", roles);
-          window.location.href("/");
-        }
-      } else {
-        if (responsAPI.meta?.email) {
-          setErrors({ email: responsAPI.meta.email });
-        } else {
-          setErrors(responsAPI.errors || { message: responsAPI.message });
-        }
-      }
-    } catch (err) {
-      if (err.response?.data?.meta?.email) {
-        setErrors({ email: err.response.data.meta.email });
-      } else {
-        setErrors(
-          err.response?.data?.errors || {
-            message: "Terjadi kesalahan. Silakan coba lagi.",
-          }
-        );
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    const redirectUrl = role === "company" ? "perusahaan" : "peserta";
-    try {
-      const response = await axios.get(
-        `http://127.0.0.1:8000/api/auth/${redirectUrl}`
-      );
-      if (response.data && response.data.url) {
-        // console.log(response)
-        window.location.href = response.data.url;
-      }
-    } catch (error) {
-      console.error("Google login gagal:", error);
-    }
+    setTempRegisterData(data);
+    navigate("/auth/SelectAuth");
+    setLoading(false);
   };
 
   return (
@@ -158,13 +77,14 @@ const Register = () => {
         initial={{ x: 100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.4 }}
-        className="w-full max-w-sm absolute z-50 right-55 top-30"
+        className="w-full max-w-sm absolute z-50 right-55 top-45"
       >
         <div className="space-y-5">
-          <h1 className="text-3xl font-bold text-gray-800">{getTitle()}</h1>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Selamat Datang 👋
+          </h1>
           <p className="text-gray-500 text-sm mb-5">
-            Silakan isi data berikut untuk membuat akun{" "}
-            {role === "company" ? "perusahaan" : "siswa"}.
+            Silakan isi data berikut untuk membuat akun.
           </p>
         </div>
 
@@ -222,11 +142,11 @@ const Register = () => {
               className="mr-2"
             />
             <label htmlFor="terms" className="text-gray-500 text-xs">
-              Saya setuju dengan{" "}
+              Saya setuju dengan {" "}
               <a href="/terms" className="text-blue-500">
                 Terms of Service
               </a>{" "}
-              dan{" "}
+              dan {" "}
               <a href="/privacy" className="text-blue-500">
                 Privacy Policy
               </a>
@@ -243,25 +163,6 @@ const Register = () => {
             {loading ? "Mendaftar..." : "Daftar"}
           </button>
         </form>
-
-        <div className="flex items-center my-4">
-          <div className="flex-1 border-t border-gray-300"></div>
-          <p className="mx-4 text-gray-500">Atau daftar dengan</p>
-          <div className="flex-1 border-t border-gray-300"></div>
-        </div>
-
-        <div className="flex justify-center gap-4">
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full border border-blue-500 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out flex gap-2 justify-center"
-          >
-            <img
-              src="/assets/Auth/Google.png"
-              alt="Google"
-              className="w-6 h-6"
-            />
-          </button>
-        </div>
       </motion.div>
     </div>
   );

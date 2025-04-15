@@ -1,37 +1,18 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const StudentLayout = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isRinging, setIsRinging] = useState(false);
+  const location = useLocation(); // 👈 penting untuk deteksi route aktif
 
   const sidebarMenus = [
-    { icon: "bi-grid", label: "Dashboard", link: "dashboard", active: true },
-    {
-      icon: "bi-calendar4-week",
-      label: "Absensi",
-      link: "absensi",
-      active: false,
-    },
-    {
-      icon: "bi-clipboard2-minus",
-      label: "Jurnal",
-      link: "/jurnal",
-      active: false,
-    },
-    {
-      icon: "bi-mortarboard",
-      label: "Presentasi",
-      link: "/presentasi",
-      active: false,
-    },
-    { icon: "bi-pin-map", label: "Piket", link: "/piket", active: false },
-    {
-      icon: "bi-gear",
-      label: "Account Settings",
-      link: "/settings",
-      active: false,
-    },
+    { icon: "bi-grid", label: "Dashboard", link: "dashboard" },
+    { icon: "bi-calendar4-week", label: "Absensi", link: "absensi" },
+    { icon: "bi-clipboard2-minus", label: "Jurnal", link: "jurnal" },
+    { icon: "bi-mortarboard", label: "Presentasi", link: "presentasi" },
+    { icon: "bi-pin-map", label: "Piket", link: "piket" },
+    { icon: "bi-gear", label: "Account Settings", link: "settings" },
   ];
 
   const footerMenus = ["License", "More Themes", "Documentation", "Support"];
@@ -64,15 +45,14 @@ const StudentLayout = () => {
           className="w-48 mx-auto object-cover"
         />
         <div className="flex flex-col gap-3 mt-8">
-          {sidebarMenus.map((menu, idx) => {
-            if (idx === sidebarMenus.length - 1) return null;
-
+          {sidebarMenus.slice(0, -1).map((menu, idx) => {
+            const isActive = location.pathname.includes(`/student/${menu.link}`);
             return (
               <Link
                 to={`/student/${menu.link}`}
                 key={idx}
                 className={`px-4 py-2 rounded-lg flex gap-3 items-center transition-all duration-500 ease-in-out ${
-                  menu.active
+                  isActive
                     ? "bg-sky-800 text-white"
                     : "text-slate-500 hover:text-white hover:bg-sky-800"
                 }`}
@@ -84,20 +64,24 @@ const StudentLayout = () => {
           })}
 
           <div className="bg-slate-400/[0.5] w-full h-0.5 rounded-full"></div>
-          {sidebarMenus.slice(-1).map((menu, idx) => (
-            <Link
-              to={`/student/${menu.link}`}
-              key={idx}
-              className={`px-4 py-2 rounded-lg flex gap-3 items-center transition-all duration-500 ease-in-out ${
-                menu.active
-                  ? "bg-sky-800 text-white"
-                  : "text-slate-500 hover:text-white hover:bg-sky-800"
-              }`}
-            >
-              <i className={`bi ${menu.icon}`}></i>
-              <span className={`font-light text-sm`}>{menu.label}</span>
-            </Link>
-          ))}
+
+          {sidebarMenus.slice(-1).map((menu, idx) => {
+            const isActive = location.pathname.includes(`/student/${menu.link}`);
+            return (
+              <Link
+                to={`/student/${menu.link}`}
+                key={idx}
+                className={`px-4 py-2 rounded-lg flex gap-3 items-center transition-all duration-500 ease-in-out ${
+                  isActive
+                    ? "bg-sky-800 text-white"
+                    : "text-slate-500 hover:text-white hover:bg-sky-800"
+                }`}
+              >
+                <i className={`bi ${menu.icon}`}></i>
+                <span className={`font-light text-sm`}>{menu.label}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
 
@@ -150,7 +134,7 @@ const StudentLayout = () => {
 
         <div className="pt-5 px-3 bg-indigo-50 min-h-screen flex flex-col overflow-y-auto bottom-0">
           <div className="flex-1">
-          <Outlet />
+            <Outlet />
           </div>
           <div className="mt-3">
             <div className="bg-white rounded-t-xl px-5 py-4 w-full flex justify-between">

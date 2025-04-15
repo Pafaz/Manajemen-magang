@@ -16,21 +16,39 @@ const Register = () => {
           className="w-xl"
         />
       </div>
-      <div className="w-full max-w-xl absolute z-50 right-40 top-35">
+      <div className="w-full max-w-sm absolute z-50 right-40 top-35">
         <div className="space-y-5">
           <h1 className="text-4xl font-bold text-gray-800">Sign Up</h1>
           <p className="text-gray-500 text-sm mb-5">
-            Let’s get you all set up so you can access your personal account.
+            Please sign up to your account and start the adventure
           </p>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          <FloatingLabelInput ForName={`FristName`} label="First Name" type="text" />
-          <FloatingLabelInput ForName={`LastName`} label="Last Name" type="text" />
-          <FloatingLabelInput ForName={`Email`} label="Email" type="email" className="mt-4" />
-          <FloatingLabelInput ForName={`PhoneNumber`} label="Phone Number" type="text" className="mt-4"/>
+        <div>
+          <FloatingLabelInput
+            ForName={`Email`}
+            label="Email"
+            type="email"
+            className="mt-4"
+            icon="bi-envelope"
+            placeholder="Type your email address"
+          />
+          <FloatingLabelInput
+            ForName={`Password`}
+            label="Password"
+            type="password"
+            className="mt-4"
+            icon="bi-lock"
+            placeholder="Your Password"
+          />
+          <FloatingLabelInput
+            ForName={`ConfirmPassword`}
+            label="Confirm Password"
+            type="password"
+            className="mt-4"
+            icon="bi-lock"
+            placeholder="Confirm Password"
+          />
         </div>
-        <FloatingLabelInput ForName={`Password`} label="Password" type="password" className="mt-4" />
-        <FloatingLabelInput ForName={`ConfirmPassword`} label="Confirm Password" type="password" className="mt-4"/>
         <div className="flex items-center mt-4">
           <input type="checkbox" id="terms" className="mr-2" />
           <label htmlFor="terms" className="text-sm text-gray-700">
@@ -52,26 +70,13 @@ const Register = () => {
         </div>
 
         <div className="flex justify-center gap-4">
-          <button className="border border-blue-500 w-44 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out">
-            <img
-              src="/assets/Auth/Facebook.png"
-              alt="Facebook"
-              className="w-6 h-6 mx-auto"
-            />
-          </button>
-          <button className="border border-blue-500 w-44 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out">
+          <button className="w-full border border-blue-500 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out flex gap-2 justify-center">
             <img
               src="/assets/Auth/Google.png"
-              alt="Google"
-              className="w-6 h-6 mx-auto"
+              alt="Facebook"
+              className="w-6 h-6"
             />
-          </button>
-          <button className="border border-blue-500 w-44 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out">
-            <img
-              src="/assets/Auth/Apple.png"
-              alt="Apple"
-              className="w-6 h-6 mx-auto"
-            />
+            {/* <span className="font-light  text-gray-900">Google</span> */}
           </button>
         </div>
       </div>

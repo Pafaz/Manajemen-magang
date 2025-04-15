@@ -5,7 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import './calendar-custom.css'
 
-const Calendar = () => {
+const PresentationCalendar = () => {
   const [view, setView] = useState('month')
   const [currentDate, setCurrentDate] = useState(new Date())
   const calendarRef = useRef(null)
@@ -163,4 +163,4 @@ const Calendar = () => {
   )
 }
 
-export default Calendar
+export default PresentationCalendar

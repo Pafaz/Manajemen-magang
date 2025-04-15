@@ -415,7 +415,7 @@ const Calendar = () => {
       
       {/* Modal for adding event */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-[888]">
           <div
             className={`bg-white w-full max-w-3xl rounded-2xl p-6 transition-all duration-300 transform ${
               animateModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
@@ -541,15 +541,14 @@ const Calendar = () => {
         </div>
       )}
       
-      {/* Modal for event details */}
       {showDetailModal && selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
           <div
-            className={`bg-white w-full max-w-4xl rounded-2xl p-6 transition-all duration-300 transform ${
+            className={`bg-white w-full max-w-4xl rounded-2xl p-5 transition-all duration-300 transform ${
               animateDetailModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
-            <div className="flex justify-between items-center mb-4">
+            <div className="flex justify-between items-center mb-7">
               <h3 className="text-lg font-semibold">Detail Jadwal Presentasi</h3>
               <button 
                 onClick={closeDetailModal}
@@ -561,7 +560,7 @@ const Calendar = () => {
             
             <div className="space-y-6">
               {/* Basic info */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex justify-evenly items-center">
                 <div className="space-y-4">
                   <div>
                     <h4 className="font-medium text-gray-600">Judul Presentasi</h4>
@@ -631,7 +630,7 @@ const Calendar = () => {
                     </div>
                   </div>
                   
-                  <div className="border border-gray-200 rounded-lg max-h-80 overflow-y-auto">
+                  <div className="border border-gray-200 rounded-lg max-h-80 w-full overflow-y-auto">
                     {selectedEvent.extendedProps.participants && selectedEvent.extendedProps.participants.length > 0 ? (
                       <table className="min-w-full divide-y divide-gray-200">
                         <thead className="bg-gray-50 sticky top-0">

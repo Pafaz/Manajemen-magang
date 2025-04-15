@@ -17,15 +17,15 @@ const Login = () => {
           className="w-xl"
         />
       </div>
-      <div className="w-full max-w-lg absolute z-50 left-30 top-50">
+      <div className="w-full max-w-sm absolute z-50 left-35 top-45">
         <div className="space-y-5">
-          <h1 className="text-4xl font-bold text-gray-800">Login</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Welcome to Back! 👋</h1>
           <p className="text-gray-500 text-sm mb-5">
-            Login to access your travelwise account
+          Please sign in to your account and start the adventure
           </p>
         </div>
-        <FloatingLabelInput label="Email" type="email" className="mt-4" />
-        <FloatingLabelInput label="Password" type="password" className="mt-4" />
+        <FloatingLabelInput label="Email" type="email" className="mt-4" icon="bi-person" placeholder="Type Your Email"/>
+        <FloatingLabelInput label="Password" type="password" className="mt-4" icon="bi-lock" placeholder="Password"/>
         <div className="flex items-center justify-between mt-2">
           <div>
             <input type="checkbox" id="terms" className="mr-2" />
@@ -33,18 +33,18 @@ const Login = () => {
               Remember Me
             </label>
           </div>
-          <Link className="text-sm font-medium text-red-500">
+          <Link className="text-sm font-medium text-sky-500">
             Forgot Password ?
           </Link>
         </div>
-        <button className="w-full mt-4 p-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600">
+        <button className="w-full mt-4 p-3 bg-blue-500 text-white rounded-full font-bold hover:bg-blue-600">
           Login
         </button>
         <div className="text-center py-5">
           <h1 className="font-medium text-slate-800 text-sm">
             Don’t have an account?{" "}
-            <Link to={`/auth/register`} className="text-red-500 font-semibold">
-              Sign up
+            <Link to={`/auth/register`} className="text-sky-500 font-semibold">
+            Create an account
             </Link>
           </h1>
         </div>
@@ -54,27 +54,14 @@ const Login = () => {
           <div className="flex-1 border-t border-gray-300"></div>
         </div>
 
-        <div className="flex justify-center gap-4">
-          <button className="border border-blue-500 w-44 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out">
-            <img
-              src="/assets/Auth/Facebook.png"
-              alt="Facebook"
-              className="w-6 h-6 mx-auto"
-            />
-          </button>
-          <button className="border border-blue-500 w-44 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out">
+        <div className="">
+          <button className="w-full border border-blue-500 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out flex gap-2 justify-center">
             <img
               src="/assets/Auth/Google.png"
-              alt="Google"
-              className="w-6 h-6 mx-auto"
+              alt="Facebook"
+              className="w-6 h-6"
             />
-          </button>
-          <button className="border border-blue-500 w-44 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out">
-            <img
-              src="/assets/Auth/Apple.png"
-              alt="Apple"
-              className="w-6 h-6 mx-auto"
-            />
+            {/* <span className="font-light text-gray-900">Google</span> */}
           </button>
         </div>
       </div>

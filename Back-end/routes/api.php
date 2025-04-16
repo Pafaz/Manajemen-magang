@@ -12,12 +12,6 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});
-
-// Route::post('/auth/callback', [AuthController::class, 'loginGoogle']);
-// Route::get('/auth/redirect', [AuthController::class, 'redirectGoogle']);
 
 Route::post('/login/google', [GoogleAuthController::class, 'loginWithGoogle']);
 
@@ -45,10 +39,10 @@ Route::group(['middleware' => ['auth:sanctum','role:admin']], function () {
     Route::post('/logout', [LoginController::class, 'logout']);
 });
 
-Route::group(['middleware' => ['auth_santum','role:superadmin']], function () {
+Route::group(['middleware' => ['auth:sanctum','role:superadmin']], function () {
     Route::post('/logout', [LoginController::class, 'logout']);
 });
 
-Route::group(['middleware' => ['auth_santum','role:mentor']], function () {
+Route::group(['middleware' => ['auth:sanctum','role:mentor']], function () {
     Route::post('/logout', [LoginController::class, 'logout']);
 });

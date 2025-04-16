@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegisterRequest;
 use App\Services\UserService;
 use Illuminate\Validation\Rules\Password;
 
@@ -16,29 +17,13 @@ class RegisterController extends Controller
         $this->UserService = $UserService;
     }
 
-    public function registerPeserta(Request $request)
+    public function registerPeserta(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => ['required', 'string', 'min:8', 'confirmed', Password::defaults()],
-        ], [], [
-            'email.unique' => 'Email sudah terdaftar. Silahkan gunakan email lain.'
-        ]);
-
-        return $this->UserService->register_peserta($request->all());
+        return $this->UserService->register($request->validated(), 'peserta');
     }
 
-    public function registerPerusahaan(Request $request)
+    public function registerPerusahaan(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => ['required', 'string', 'min:8', 'confirmed', Password::defaults()],
-        ], [], [
-            'email.unique' => 'Email sudah terdaftar. Silahkan gunakan email lain.'
-        ]);
-
-        return $this->UserService->register_perusahaan($request->all());
+        return $this->UserService->register($request->validated(), 'perusahaan');
     }
 }

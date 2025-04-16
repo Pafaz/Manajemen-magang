@@ -35,7 +35,6 @@ class PesertaController extends Controller
      */
     public function store(PesertaRequest $request)
     {
-        dd($request->all());
         return $this->pesertaService->createPeserta($request->validated());
     }
 

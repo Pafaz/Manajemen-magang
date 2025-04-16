@@ -10,5 +10,5 @@ use App\Interfaces\Base\UpdateInterface;
 
 interface CabangInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
-    //
+    public function getCabangByPerusahaanId($id);
 }

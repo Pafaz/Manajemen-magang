@@ -2,6 +2,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
+use App\Http\Controllers\PiketController;
+use App\Http\Controllers\CabangController;
 use App\Http\Controllers\MagangController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\PesertaController;
@@ -38,17 +40,23 @@ Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
 
 Route::group(['middleware' => ['auth:sanctum','role:perusahaan']], function () {
     Route::apiResource('perusahaan', PerusahaanController::class);
+    Route::apiResource('cabang', CabangController::class);
+    Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
 });
 
 Route::group(['middleware' => ['auth:sanctum','role:admin']], function () {
+    Route::apiResource('piket', PiketController::class);
+    Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
 });
 
 Route::group(['middleware' => ['auth_santum','role:superadmin']], function () {
+    Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
 });
 
 Route::group(['middleware' => ['auth_santum','role:mentor']], function () {
+    Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
 });

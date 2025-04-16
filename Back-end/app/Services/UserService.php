@@ -20,28 +20,11 @@ class UserService
     }
 
 
-    public function register_peserta(array $data)
+    public function register(array $data, $role)
     {
         $user = $this->UserInterface->create($data);
 
-        $user->assignRole('peserta');
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        $responseData = [
-            'user' => new UserResource($user),
-            'token' => $token,
-            'role' => $user->getRoleNames()
-        ];
-
-        return Api::response($responseData, 'User  registered successfully', Response::HTTP_CREATED);
-    }
-
-    public function register_perusahaan(array $data)
-    {
-        $user = $this->UserInterface->create($data);
-
-        $user->assignRole('perusahaan');
+        $user->assignRole($role);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 

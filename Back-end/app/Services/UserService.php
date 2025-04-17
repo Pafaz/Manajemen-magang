@@ -55,6 +55,7 @@ class UserService
         $token = $user->createToken('auth_token')->plainTextToken;
         $responseData = [
             'user' => new UserResource($user),
+            'role' => $user->getRoleNames(),
             'token' => $token,
         ];
 
@@ -65,8 +66,8 @@ class UserService
         );
     }
 
-    public function logout($request){
-        $request->user()->currentAccessToken()->delete();
+    public function logout($user){
+        $user->currentAccessToken()->delete();
         return Api::response(
             null,
             'User logged out successfully',

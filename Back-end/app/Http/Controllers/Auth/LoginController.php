@@ -17,12 +17,12 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
-        return $this->UserService->Login($request->all());
+        return $this->UserService->Login($data);
     }
 
     public function logout(Request $request)

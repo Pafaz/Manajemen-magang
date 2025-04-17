@@ -20,6 +20,7 @@ class CabangController extends Controller
      */
     public function index()
     {
+        dd('dfafaf');
         return $this->cabangService->getAllCabang();
     }
 

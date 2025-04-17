@@ -16,11 +16,12 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 
 
-Route::post('/login/google', [GoogleAuthController::class, 'loginWithGoogle']);
-
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register-perusahaan', [RegisterController::class, 'registerPerusahaan']);
 Route::post('/register-peserta', [RegisterController::class, 'registerPeserta']);
+Route::get('/auth', [GoogleAuthController::class, 'redirectToAuth']);
+Route::get('/auth/callback/peserta', [GoogleAuthController::class, 'callbackPeserta']);
+Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackPerusahaan']);
 
 Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
     Route::apiResource('peserta', PesertaController::class);

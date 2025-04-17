@@ -25,9 +25,18 @@ class StorePerusahaanRequest extends FormRequest
             'nama' => 'required|string',
             'telepon' => 'required|string',
             'deskripsi' => 'required|string',
+            'provinsi' => 'required|string',
+            'kota' => 'required|string',
+            'kecamatan' => 'required|string',
+            'desa' => 'required|string',
             'alamat' => 'required|string',
+            'kode_pos' => 'required|string',
+            'telepon' => 'required|string',
             'website' => 'required|url',
             'instagram' => 'required|string',
+            'logo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'npwp' => 'required|image|mimes:png,jpeg,jpg|max:2048',
+            'surat_legalitas' => 'required|image|mimes:png,jpeg,jpg|max:2048',
         ];
     }
 }

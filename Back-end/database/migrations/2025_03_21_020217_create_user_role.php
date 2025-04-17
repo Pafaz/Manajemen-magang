@@ -40,6 +40,7 @@ return new class extends Migration
             $table->string('website');
             $table->string('instagram');
             $table->string('bidang_usaha');
+
             $table->boolean('is_premium')->default(false);
             $table->boolean('is_active')->default(true);
             $table->integer('cabang_limit')->default(1);

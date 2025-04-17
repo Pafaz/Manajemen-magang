@@ -20,12 +20,12 @@ class MagangRepository implements MagangInterface
 
     public function create(array $data): ? Magang
     {
-        return Magang::create([ $data]);
+        return Magang::create($data);
     }
 
     public function update(int $id, array $data): mixed
     {
-        return Magang::where('id', $id)->update([$data]);
+        return Magang::where('id', $id)->update($data);
     }
 
     public function delete(int $id): void

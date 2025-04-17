@@ -14,23 +14,23 @@ class Perusahaan extends Model
     protected $table = 'perusahaan';
     protected $keyType = 'string';
     public $incrementing = false;
+    public $timestamps = false;
     
     protected $fillable = [
-        'id',
         'id_user',
         'nama',
         'deskripsi',
         'alamat',
-        'instagran',
+        'instagram',
         'website',
         'is_premium',
+        'is_active',
         'cabang_limit',
         'admin_limit',
-        'status',
     ];
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_perusahaan', 'id');
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
     public function cabang()
     {

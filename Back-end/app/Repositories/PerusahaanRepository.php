@@ -13,22 +13,28 @@ class PerusahaanRepository implements PerusahaanInterface
         return Perusahaan::all();
     }
 
-    public function find(int $id): ? Perusahaan
+    public function find( $id): ? Perusahaan
     {
         return Perusahaan::findOrFail($id)->first();
     }
 
     public function create(array $data): ? Perusahaan
     {
-        return Perusahaan::create([ $data]);
+        return Perusahaan::create( [
+            'id_user' => auth('sanctum')->user()->id,
+            'deskripsi' => $data['deskripsi'],
+            'alamat' => $data['alamat'],
+            'website' => $data['website'],
+            'instagram' => $data['instagram'],
+        ]);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update( $id, array $data): Perusahaan
     {
-        return Perusahaan::where('id', $id)->update([$data]);
+        return tap(Perusahaan::findOrFail($id))->update($data);
     }
 
-    public function delete(int $id): void
+    public function delete( $id): void
     {
         Perusahaan::findOrFail($id)->delete();
     }

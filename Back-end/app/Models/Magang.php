@@ -13,7 +13,6 @@ class Magang extends Model
     protected $table = 'magang';
 
     protected $fillable = [
-        'id',
         'id_peserta',
         'id_mentor',
         'id_divisi_cabang',

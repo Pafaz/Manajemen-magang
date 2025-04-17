@@ -20,16 +20,24 @@ class FotoRepository implements FotoInterface
 
     public function create(array $data): ? Foto
     {
-        return Foto::create([ $data]);
+        return Foto::create($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Foto
     {
-        return Foto::where('id', $id)->update([$data]);
+        $foto = Foto::findOrFail($id);
+        $foto->update($data);
+        return $foto;
     }
 
     public function delete(int $id): void
     {
         Foto::findOrFail($id)->delete();
+    }
+
+    public function getByTypeandReferenceId(string $type, int $id_referensi): ?Foto
+    {
+        $foto = Foto::where('type', $type)->where('id_referensi', $id_referensi)->first();
+        return $foto;
     }
 }

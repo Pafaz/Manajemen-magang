@@ -19,4 +19,21 @@ class Sekolah extends Model
     ];
 
     public $timestamps = false;
+
+    public function jurusan()
+    {
+        return $this->belongsToMany(Jurusan::class, 'jurusan_sekolah', 'id_sekolah', 'id_jurusan');
+    }
+    public function peserta()
+    {
+        return $this->hasMany(Peserta::class, 'sekolah_id', 'id');
+    }
+    public function getJurusan()
+    {
+        return $this->hasMany(Jurusan::class, 'id', 'jurusan_id');
+    }
+    public function getPeserta()
+    {
+        return $this->hasMany(Peserta::class, 'sekolah_id', 'id');
+    }
 }

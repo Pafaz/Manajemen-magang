@@ -13,18 +13,25 @@ class JurusanRepository implements JurusanInterface
         return Jurusan::all();
     }
 
-    public function find(int $id): ? Jurusan
+    public function find(int $id): ?Jurusan
     {
         return Jurusan::findOrFail($id)->first();
     }
 
-    public function create(array $data): ? Jurusan
+    public function firstOrCreate(array $attributes): Jurusan
+    {
+        return Jurusan::firstOrCreate($attributes);
+    }
+
+
+    public function create(array $data): ?Jurusan
     {
         return Jurusan::create($data);
     }
 
     public function update(int $id, array $data): Jurusan
-    {   $jurusan = Jurusan::findOrFail($id);
+    {
+        $jurusan = Jurusan::findOrFail($id);
         $jurusan->update($data);
         return $jurusan;
     }

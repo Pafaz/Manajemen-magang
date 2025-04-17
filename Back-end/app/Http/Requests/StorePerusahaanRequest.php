@@ -11,7 +11,7 @@ class StorePerusahaanRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,12 @@ class StorePerusahaanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nama' => 'required|string',
+            'telepon' => 'required|string',
+            'deskripsi' => 'required|string',
+            'alamat' => 'required|string',
+            'website' => 'required|url',
+            'instagram' => 'required|string',
         ];
     }
 }

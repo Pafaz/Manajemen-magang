@@ -40,9 +40,9 @@ class KategoriController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Kategori $kategori)
+    public function show( $id)
     {
-        return $this->kategoriService->getCategoryById($kategori->id);
+        return $this->kategoriService->getCategoryById($id);
     }
 
     /**
@@ -56,16 +56,16 @@ class KategoriController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Kategori $kategori)
+    public function update(Request $request, $id)
     {
-        return $this->kategoriService->updateCategory($kategori->id, $request->all());
+        return $this->kategoriService->updateCategory($id, $request->all());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Kategori $kategori)
+    public function destroy( $id)
     {
-        return $this->kategoriService->deleteCategory($kategori->id);
+        return $this->kategoriService->deleteCategory($id);
     }
 }

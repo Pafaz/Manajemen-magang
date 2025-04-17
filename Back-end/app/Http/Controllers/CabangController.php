@@ -4,15 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use Illuminate\Http\Request;
+use App\Services\CabangService;
+use App\Http\Requests\CabangRequest;
 
 class CabangController extends Controller
 {
+    private CabangService $cabangService;
+
+    public function __construct(CabangService $cabangService)
+    {
+        $this->cabangService = $cabangService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return $this->cabangService->getAllCabang();
     }
 
     /**
@@ -26,9 +34,9 @@ class CabangController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CabangRequest $request)
     {
-        //
+        return $this->cabangService->createCabang($request->validated());
     }
 
     /**
@@ -42,9 +50,10 @@ class CabangController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Cabang $cabang)
+    public function edit(CabangRequest $request)
     {
-        //
+        $id_perusahaan = $this->cabangService->getCabangByPerusahaanId($request->id_perusahaan);
+        return $this->cabangService->updateCabang($request->validated(), $id);
     }
 
     /**

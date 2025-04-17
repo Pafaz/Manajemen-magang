@@ -28,6 +28,15 @@ class PesertaService
         );
     }
 
+    public function getPesertaByCabang($cabang){
+        $data = $this->pesertaInterface->find($cabang);
+        return Api::response(
+            PesertaResource::collection($data),
+            'Peserta Fetched Successfully',
+            Response::HTTP_OK
+        );
+    }
+
     public function getPesertaById($id){
         $peserta = $this->pesertaInterface->find($id);
         return Api::response(

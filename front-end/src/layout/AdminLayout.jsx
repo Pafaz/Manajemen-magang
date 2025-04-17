@@ -8,58 +8,17 @@ const AdminLayout = () => {
 
   const sidebarMenus = [
     { icon: "bi-grid", label: "Dashboard", link: "/admin/dashboard" },
-    {
-      icon: "bi-calendar4-week",
-      label: "Approval",
-      link: "/admin/approval",
-      
-    },
-    {
-      icon: "bi-clipboard2-minus",
-      label: "Pendataan Admin",
-      link: "/admin/pendataan",
-    },
-    {
-      icon: "bi-mortarboard",
-      label: "Surat",
-      link: "/admin/surat",
-    },
-    {
-      icon: "bi-gear",
-      label: "Sekolah / Universitas",
-      link: "/admin/sekolah",
-    },
-    {
-        icon: "bi-gear",
-        label: "Divisi",
-        link: "/admin/divisi",
-      },
-      {
-        icon: "bi-gear",
-        label: "RFID",
-        link: "/admin/rfid",
-      },
-      {
-        icon: "bi-gear",
-        label: "Kategori Project",
-        link: "/admin/kategori",
-      },
-      {
-        icon: "bi-gear",
-        label: "User",
-        link: "/admin/user",
-      },
-      {
-        icon: "bi-gear",
-        label: "Piket",
-        link: "/admin/iket",
-      },
-      {
-        icon: "bi-gear",
-        label: "Lowongan",
-        link: "/admin/lowongan",
-      },
- ];
+    { icon: "bi-calendar4-week", label: "Approval", link: "/admin/approval" },
+    { icon: "bi-clipboard2-minus", label: "Pendataan Admin", link: "/admin/pendataan" },
+    { icon: "bi-mortarboard", label: "Surat", link: "/admin/surat" },
+    { icon: "bi-gear", label: "Sekolah / Universitas", link: "/admin/sekolah" },
+    { icon: "bi-gear", label: "Divisi", link: "/admin/divisi" },
+    { icon: "bi-gear", label: "RFID", link: "/admin/rfid" },
+    { icon: "bi-gear", label: "Kategori Project", link: "/admin/kategori" },
+    { icon: "bi-gear", label: "User", link: "/admin/user" },
+    { icon: "bi-gear", label: "Piket", link: "/admin/iket" },
+    { icon: "bi-gear", label: "Lowongan", link: "/admin/lowongan" },
+  ];
 
   const footerMenus = ["License", "More Themes", "Documentation", "Support"];
 
@@ -170,9 +129,13 @@ const AdminLayout = () => {
           </div>
         </nav>
 
-        {/* Page Content */}
-        <div className="pt-5 px-3 bg-indigo-50 min-h-screen overflow-y-auto">
-          <Outlet />
+        {/* Page Content & Footer */}
+        <div className="flex flex-col min-h-screen bg-indigo-50 pt-5 px-3">
+          <div className="flex-grow">
+            <Outlet />
+          </div>
+
+          {/* Footer */}
           <div className="mt-3">
             <div className="bg-white rounded-t-xl px-5 py-4 w-full flex justify-between">
               <div className="text-slate-400 font-normal text-sm">

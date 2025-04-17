@@ -413,15 +413,23 @@ const Calendar = () => {
         />
       </div>
       
-      {/* Modal for adding event */}
+      {/* Modal for adding event - Fixed the duplicate modal wrapper */}
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-[888]">
+        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
           <div
             className={`bg-white w-full max-w-3xl rounded-2xl p-6 transition-all duration-300 transform ${
               animateModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
             }`}
           >
-            <h3 className="text-lg font-semibold mb-4">Tambah Jadwal Presentasi</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-semibold">Tambah Jadwal Presentasi</h3>
+              <button 
+                onClick={closeModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            </div>
 
             <form className="space-y-4 text-sm" onSubmit={handleSubmit}>
               <div>
@@ -541,6 +549,7 @@ const Calendar = () => {
         </div>
       )}
       
+      {/* Modal for event details */}
       {showDetailModal && selectedEvent && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
           <div
@@ -560,8 +569,8 @@ const Calendar = () => {
             
             <div className="space-y-6">
               {/* Basic info */}
-              <div className="flex justify-evenly items-center">
-                <div className="space-y-4">
+              <div className="flex flex-col md:flex-row justify-evenly items-start md:items-center">
+                <div className="space-y-4 w-full md:w-1/2 mb-4 md:mb-0">
                   <div>
                     <h4 className="font-medium text-gray-600">Judul Presentasi</h4>
                     <p className="text-lg">{selectedEvent.title}</p>
@@ -621,7 +630,7 @@ const Calendar = () => {
                 </div>
                 
                 {/* Participants list */}
-                <div>
+                <div className="w-full md:w-1/2">
                   <div className="flex justify-between items-center mb-2">
                     <h4 className="font-medium text-gray-600">Daftar Peserta</h4>
                     <div className="text-sm">

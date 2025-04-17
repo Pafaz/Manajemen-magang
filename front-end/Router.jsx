@@ -14,6 +14,8 @@ import TrackRecord from "./src/pages/mentor/trackrecord";
 import OnlinePresentasi from "./src/pages/mentor/PresentasiOnline";
 import AdminDashboard from "./src/pages/admin/AdminDashboard";
 import AdminLayout from "./src/layout/AdminLayout";
+import Approval from "./src/pages/admin/Appoval";  
+import PendataanAdmin from "./src/pages/admin/PendataanAdmin";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
@@ -100,6 +102,16 @@ export const router = createBrowserRouter([
         path: "dashboard",
         element: <AdminDashboard />,
       },
+      {
+        path: "approval",
+        element: <Approval />,
+      },
+      {
+        path: "pendataan",
+        element: <PendataanAdmin />,
+      },
+      
+
     ],
   },
   {

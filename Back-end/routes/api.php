@@ -8,6 +8,7 @@ use App\Http\Controllers\MagangController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\SekolahController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -27,8 +28,12 @@ Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
     Route::apiResource('jurusan', JurusanController::class);
     Route::apiResource('magang', MagangController::class);
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
+    
+    //foto
     Route::post('/foto/{foto}/update', [FotoController::class, 'update']);
-    Route::apiResource('foto', FotoController::class);
+    Route::post('/foto', [FotoController::class, 'store']);
+    Route::delete('/foto/{foto}', [FotoController::class, 'destroy']);
+
     Route::post('/logout', [LoginController::class, 'logout']);
 });
 
@@ -39,6 +44,7 @@ Route::group(['middleware' => ['auth:sanctum','role:perusahaan']], function () {
     Route::post('/logout', [LoginController::class, 'logout']);
 });
 
+Route::apiResource('kategori-proyek', KategoriController::class);
 Route::group(['middleware' => ['auth:sanctum','role:admin']], function () {
     Route::apiResource('piket', PiketController::class);
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);

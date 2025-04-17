@@ -17,12 +17,12 @@ class MagangService
         $this->MagangInterface = $MagangInterface;
     }
 
-    public function getMagang()
+    public function getAllMagang()
     {
         $data = $this->MagangInterface->getAll();
         return Api::response(
-            JurusanResource::collection($data),
-            'Jurusan Fetched Successfully', 
+            MagangResource::collection($data),
+            'Magang Fetched Successfully', 
         );
     }
 
@@ -31,7 +31,7 @@ class MagangService
         $magang = $this->MagangInterface->create($data);
         return Api::response(
             MagangResource::make($magang),
-            'Jurusan created successfully',
+            'Magang created successfully',
             Response::HTTP_CREATED
         );
     }
@@ -41,7 +41,7 @@ class MagangService
         $magang = $this->MagangInterface->find($id);
         return Api::response(
             MagangResource::make($magang),
-            'Jurusan fetched successfully',
+            'Magang fetched successfully',
             Response::HTTP_OK
         );
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PesertaRequest;
 use App\Models\Peserta;
 use App\Services\PesertaService;
 use Illuminate\Http\Request;
@@ -27,23 +28,22 @@ class PesertaController extends Controller
      */
     public function create(Request $request)
     {
-        return $this->pesertaService->createPeserta($request->all());
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PesertaRequest $request)
     {
-        //
+        return $this->pesertaService->createPeserta($request->validated());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Peserta $peserta)
+    public function show($id)
     {
-        //
+        return $this->pesertaService->getPesertaById($id);
     }
 
     /**
@@ -57,16 +57,16 @@ class PesertaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Peserta $peserta)
+    public function update(Request $request, $id)
     {
-        //
+        return $this->pesertaService->updatePeserta($request->all(), $id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Peserta $peserta)
+    public function destroy($id)
     {
-        //
+        return $this->pesertaService->deletePeserta($id);
     }
 }

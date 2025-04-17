@@ -15,17 +15,23 @@ class UserRepository implements UserInterface
 
     public function find(string $email): ? User
     {
-        return User::where( 'email', $email )->first();
+        return User::where('email' , $email)->first();
     }
 
-    public function create(array $data): ? User
+    public function findId(string $id): ? User
+    {
+        return User::where('id' , $id)->first();
+    }
+
+    public function create(array $data): User
     {
         return User::create($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(string $id, array $data): User
     {
-        return User::where('id', $id)->update([$data]);
+
+        return tap(User::findOrFail($id))->update($data);
     }
 
     public function delete(int $id): void

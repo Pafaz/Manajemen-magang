@@ -13,7 +13,6 @@ class Jam_Kantor extends Model
     protected $table = 'jam_kantor';
 
     protected $fillable = [
-        'id',
         'hari',
         'jenis_sesi',
         'masuk',

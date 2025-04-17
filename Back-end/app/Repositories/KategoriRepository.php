@@ -25,8 +25,9 @@ class KategoriRepository implements KategoriInterface
 
     public function update(int $id, array $data): Kategori
     {
-        $category = Kategori::where('id', $id);
+        $category = Kategori::findOrFail($id);
         $category->update($data);
+        
         return $category;
     }
 

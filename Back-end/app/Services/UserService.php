@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\UserResource;
+use App\Models\User;
 use App\Interfaces\UserInterface;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserService
@@ -17,30 +20,30 @@ class UserService
     }
 
 
-    public function register(array $data)
+    public function register(array $data, $role)
     {
-        $role = session('role');
+        $user = $this->UserInterface->create($data);
 
-        if (empty($role) || !in_array($role, ['peserta', 'perusahaan'])) {
-            return Api::response(null, 'Invalid Role', Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
-
-        $user = $this->UserInterface->create(array_merge($data, ['role' => $role]));
+        $user->assignRole($role);
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
         $responseData = [
             'user' => new UserResource($user),
             'token' => $token,
+            'role' => $user->getRoleNames()
         ];
 
         return Api::response($responseData, 'User  registered successfully', Response::HTTP_CREATED);
     }
 
     public function Login(array $data)
-    {
+    {      
         $user = $this->UserInterface->find($data['email']);
 
+        if ($user) {
+            # code...
+        }
         if (!$user || !password_verify($data['password'], $user->password)) {
             return Api::response(
                 null,
@@ -62,14 +65,54 @@ class UserService
         );
     }
 
+    public function logout($request){
+        $request->user()->currentAccessToken()->delete();
+        return Api::response(
+            null,
+            'User logged out successfully',
+            Response::HTTP_OK
+        );
+    }
+
     public function deleteUser(int $id)
     {
         $this->UserInterface->delete($id);
         return Api::response(
             null,
-            'School deleted successfully',
+            'User deleted successfully',
             Response::HTTP_OK
         );
     }
+
+    public function resetPassword(array $data)
+    {
+        $user = $this->UserInterface->find($data['email']);
+
+    }
+
+    public function updatePassword(array $data)
+    {
+        // $userId = auth()->user();
+        $userId = Auth::user()->id;
+
+        $user = $this->UserInterface->findId($userId);
+
+        if (!$user) {
+            return Api::response(null, 'User not found', Response::HTTP_NOT_FOUND);
+        }
+
+        if (!Hash::check($data['old_password'], $user->password)) {
+            return Api::response(null, 'Password lama tidak sesuai', Response::HTTP_UNAUTHORIZED);
+        }
+
+        $updateData = [
+            'password' => Hash::make($data['new_password']),
+        ];
+
+        $this->UserInterface->update($userId, $updateData);
+
+        return Api::response(null, 'Password berhasil diperbarui', Response::HTTP_OK);
+    }
+
 
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SekolahRequest;
+use App\Http\Requests\UpdateSekolahRequest;
 use App\Models\Sekolah;
 use Illuminate\Http\Request;
 use App\Services\SekolahService;
@@ -57,7 +58,7 @@ class SekolahController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(SekolahRequest $request, $id)
+    public function update(UpdateSekolahRequest $request, $id)
     {
         return $this->sekolahService->updateSchool($id, $request->validated());
     }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id_mentor');
             $table->unsignedBigInteger('id_divisi_cabang');
             $table->enum('tipe', ['offline', 'online']);
-            $table->enum('status', ['menunggu', 'diterima', 'ditolak']);
+            $table->enum('status', ['menunggu', 'diterima', 'ditolak'])->default('menunggu');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
             $table->timestamps();

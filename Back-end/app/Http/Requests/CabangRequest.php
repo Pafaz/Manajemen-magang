@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePerusahaanRequest extends FormRequest
+class CabangRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,12 +22,19 @@ class StorePerusahaanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nama' => 'required|string',
-            'telepon' => 'required|string',
-            'deskripsi' => 'required|string',
+            'name' => 'required|string|max:255',
             'alamat' => 'required|string',
-            'website' => 'required|url',
-            'instagram' => 'required|string',
+            'id_perusahaan' => 'required|integer',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'required' => ':attribute wajib diisi.',
+            'string' => ':attribute harus berupa teks.',
+            'max' => ':attribute tidak boleh lebih dari :max karakter.',
+            'integer' => ':attribute harus berupa angka.',
         ];
     }
 }

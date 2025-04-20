@@ -22,6 +22,7 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $guard_name = 'api';
     protected $keyType = 'string';
     public $incrementing = false;
     protected $table = 'users';
@@ -30,7 +31,8 @@ class User extends Authenticatable
         'email',
         'telepon',
         'password',
-        'id_google',
+        'google_id',
+        'avatar',
         'email_verified_at',
     ];
 

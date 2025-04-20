@@ -1,6 +1,9 @@
 <?php
 
 return [
+    'default' => [
+        'guard_name' => 'api',
+    ],
 
     'models' => [
 
@@ -199,7 +202,7 @@ return [
 
         'store' => 'default',
         'defaults' => [
-            'guard' => 'sanctum'
+            'guard' => 'api'
         ]
     ],
 ];

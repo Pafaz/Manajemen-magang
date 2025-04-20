@@ -28,6 +28,11 @@ class UserRepository implements UserInterface
         return User::create($data);
     }
 
+    public function firstOrCreateByEmail(array $attributes, array $values): User
+    {
+        return User::firstOrCreate($attributes, $values);
+    }
+
     public function update(string $id, array $data): User
     {
 

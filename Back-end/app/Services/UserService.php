@@ -8,6 +8,8 @@ use App\Interfaces\UserInterface;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserService
@@ -55,6 +57,7 @@ class UserService
         $token = $user->createToken('auth_token')->plainTextToken;
         $responseData = [
             'user' => new UserResource($user),
+            'role' => $user->getRoleNames(),
             'token' => $token,
         ];
 
@@ -65,8 +68,8 @@ class UserService
         );
     }
 
-    public function logout($request){
-        $request->user()->currentAccessToken()->delete();
+    public function logout($user){
+        $user->currentAccessToken()->delete();
         return Api::response(
             null,
             'User logged out successfully',
@@ -112,6 +115,46 @@ class UserService
         $this->UserInterface->update($userId, $updateData);
 
         return Api::response(null, 'Password berhasil diperbarui', Response::HTTP_OK);
+    }
+
+    public function handleGoogleCallback(array $data, string $role)
+    {
+        try {
+            $socialiteUser = Socialite::with('google')->stateless()->userFromCode($data['code']);
+        } catch (ClientException $e) {
+            return Api::response(
+                null,
+                'Invalid Google credentials.',
+                Response::HTTP_UNAUTHORIZED
+            );
+        }
+
+        $user = User::firstOrNew(['email' => $socialiteUser->getEmail()]);
+
+        if (! $user->exists) {
+            $user->fill([
+                'name'              => $socialiteUser->getName(),
+                'email_verified_at' => now(),
+                'google_id'         => $socialiteUser->getId(),
+                'avatar'            => $socialiteUser->getAvatar(),
+            ])->save();
+        }
+
+        $user->assignRole($role);
+
+        $token = $user->createToken('google-token')->plainTextToken;
+
+        $responseData = [
+            'user'  => new UserResource($user),
+            'token' => $token,
+            'role'  => $user->getRoleNames(),
+        ];
+
+        return Api::response(
+            $responseData,
+            'User authenticated via Google',
+            Response::HTTP_OK
+        );
     }
 
 

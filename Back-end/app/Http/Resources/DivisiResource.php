@@ -16,7 +16,8 @@ class DivisiResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nama' => $this->name
+            'nama' => $this->nama,
+            'id_perusahaan' => $this->id_perusahaan
         ];
     }
 }

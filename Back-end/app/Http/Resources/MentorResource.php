@@ -16,8 +16,9 @@ class MentorResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'id_cabang' => $this->id_cabang,
+            'id_divisi' => $this->id_divisi,
             'user' => new UserResource($this->user),
+            'divisi' => new DivisiResource($this->divisi),
             'foto' => FotoResource::collection($this->foto),
         ];
     }

@@ -7,10 +7,8 @@ use Illuminate\Support\Str;
 use App\Services\FotoService;
 use App\Interfaces\UserInterface;
 use Illuminate\Support\Facades\DB;
-use App\Interfaces\CabangInterface;
 use App\Interfaces\MentorInterface;
 use App\Http\Resources\MentorResource;
-use App\Interfaces\PerusahaanInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class MentorService
@@ -32,7 +30,7 @@ class MentorService
         
         return Api::response(
             MentorResource::collection($data),
-            'Admin Fetched Successfully', 
+            'Mentor Berhasil Ditemukan', 
             Response::HTTP_OK
         );
     }
@@ -43,7 +41,7 @@ class MentorService
 
         return Api::response(
             MentorResource::make($data),
-            'Mentor Fetched Successfully',
+            'Mentor Berhasil Ditemukan',
             Response::HTTP_OK
         );
     }
@@ -51,34 +49,40 @@ class MentorService
     public function createMentor(array $data)
     {
         DB::beginTransaction();
-
+    
         try {
-            $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
-
-            // dd($id_perusahaan);
             $user = $this->userInterface->create([
                 'name' => $data['nama'],
                 'email' => $data['email'],
                 'telepon' => $data['telepon'],
                 'password' => bcrypt($data['password']),
             ]);
-
+    
             $user->assignRole('Mentor');
-
+    
             $Mentor = $this->MentorInterface->create([
                 'id_divisi' => $data['id_divisi'],
-                'id_perusahaan' => $id_perusahaan,
                 'id_user' => $user->id,
             ]);
+    
+            // Ensure Mentor is created
+            if (!$Mentor) {
+                DB::rollBack();
+                return Api::response(
+                    null,
+                    'Failed to create Mentor.',
+                    Response::HTTP_INTERNAL_SERVER_ERROR
+                );
+            }
 
             if (!empty($data['foto'])) {
                 $this->foto->createFoto($data['foto'], $Mentor->id, 'profile');
             }
-
+    
             DB::commit();
             return Api::response(
                 MentorResource::make($Mentor),
-                'Mentor Created Successfully',
+                'Berhasil Membuat Mentor',
                 Response::HTTP_CREATED
             );
         } catch (\Exception $e) {
@@ -91,8 +95,9 @@ class MentorService
         }       
     }
     
+    
 
-    public function updateMentor(int $id, array $data)
+    public function updateMentor(string $id, array $data)
     {
         try {
             $Mentor = $this->MentorInterface->find($id);
@@ -115,7 +120,7 @@ class MentorService
     
             return Api::response(
                 MentorResource::make($updatedMentor),
-                'Mentor Updated Successfully',
+                'Berhasil Mengubah Mentor',
                 Response::HTTP_OK
             );
         } catch (\Exception $e) {
@@ -133,12 +138,12 @@ class MentorService
         $id_user = $this->MentorInterface->find($id)->id_user;
 
         $this->MentorInterface->delete($id);
-
+        
         $this->userInterface->delete($id_user);
 
         return Api::response(
             null,
-            'Mentor Deleted Successfully',
+            'Berhasil Menghapus Mentor',
             Response::HTTP_OK
         );
     }

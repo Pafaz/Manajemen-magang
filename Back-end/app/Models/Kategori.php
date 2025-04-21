@@ -21,6 +21,6 @@ class Kategori extends Model
 
     public function foto()
     {
-        return $this->hasMany(Foto::class, 'id_referensi', 'id');
+        return $this->hasOne(Foto::class, 'id_referensi')->where('type', 'card');
     }
 }

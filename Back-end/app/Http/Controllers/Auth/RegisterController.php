@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
@@ -19,6 +20,7 @@ class RegisterController extends Controller
 
     public function registerPeserta(RegisterRequest $request)
     {
+        // Log::info( $request->all());
         return $this->UserService->register($request->validated(), 'peserta');
     }
 

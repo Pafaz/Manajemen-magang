@@ -22,6 +22,7 @@ class UserService
 
     public function register(array $data, $role)
     {
+
         $user = $this->UserInterface->create($data);
 
         $user->assignRole($role);
@@ -38,7 +39,7 @@ class UserService
     }
 
     public function Login(array $data)
-    {      
+    {
         $user = $this->UserInterface->find($data['email']);
 
         if ($user) {
@@ -50,6 +51,10 @@ class UserService
                 'Invalid credentials',
                 Response::HTTP_UNAUTHORIZED
             );
+        }
+
+        if ($data['remember_me']) {
+            $token = $user->createToken('auth_token', ['remember'])->plainTextToken;
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;

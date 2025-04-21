@@ -13,11 +13,12 @@ class RolePermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => 'superadmin']);
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'perusahaan']);
-        Role::create(['name' => 'peserta']);
-        Role::create(['name' => 'mentor']);
+        Role::create(['name' => 'perusahaan', 'guard_name' => 'web']);
+        Role::create(['name' => 'peserta', 'guard_name' => 'web']);
+        Role::create(['name' => 'admin', 'guard_name' => 'web']);
+        Role::create(['name' => 'mentor', 'guard_name' => 'web']);
+        Role::create(['name' => 'superadmin', 'guard_name' => 'web']);
+
 
         // Role::create(['id' => Str::uuid()->toString(), 'name' => 'superadmin']);
         // Role::create(['id' => Str::uuid()->toString(), 'name' => 'admin']);

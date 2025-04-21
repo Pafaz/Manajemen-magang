@@ -16,8 +16,8 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 
 
+Route::get("/get-user",[LoginController::class,'getData'])->middleware('auth:sanctum');
 Route::post('/login/google', [GoogleAuthController::class, 'loginWithGoogle']);
-
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register-perusahaan', [RegisterController::class, 'registerPerusahaan']);
 Route::post('/register-peserta', [RegisterController::class, 'registerPeserta']);
@@ -28,7 +28,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
     Route::apiResource('jurusan', JurusanController::class);
     Route::apiResource('magang', MagangController::class);
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
-    
+
     //foto
     Route::post('/foto/{foto}/update', [FotoController::class, 'update']);
     Route::post('/foto', [FotoController::class, 'store']);

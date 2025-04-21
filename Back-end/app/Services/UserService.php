@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\Api;
 use App\Models\User;
 use App\Interfaces\UserInterface;
+use Illuminate\Support\Facades\Log;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -120,42 +121,86 @@ class UserService
     public function handleGoogleCallback(array $data, string $role)
     {
         try {
-            $socialiteUser = Socialite::with('google')->stateless()->userFromCode($data['code']);
+            $redirectUri = ($role == 'peserta') ? env('GOOGLE_REDIRECT_URI_PESERTA') : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+
+            $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
+
         } catch (ClientException $e) {
-            return Api::response(
-                null,
-                'Invalid Google credentials.',
-                Response::HTTP_UNAUTHORIZED
-            );
+            Log::error("Google Auth Failed: " . $e->getMessage());
+            return Api::response(null, 'Autentikasi Google gagal', 401);
         }
 
-        $user = User::firstOrNew(['email' => $socialiteUser->getEmail()]);
+        $user = User::where('email', $socialiteUser->getEmail())->first();
 
-        if (! $user->exists) {
-            $user->fill([
-                'name'              => $socialiteUser->getName(),
-                'email_verified_at' => now(),
-                'google_id'         => $socialiteUser->getId(),
-                'avatar'            => $socialiteUser->getAvatar(),
-            ])->save();
+        if ($user) {
+            $user->update([
+                'google_id' => $socialiteUser->getId(),
+                'avatar' => $socialiteUser->getAvatar()
+            ]);
+            $user->syncRoles([$role]);
+        } else {
+            // Buat user baru
+            $user = User::create([
+                'name' => $socialiteUser->getName(),
+                'email' => $socialiteUser->getEmail(),
+                'google_id' => $socialiteUser->getId(),
+                'avatar' => $socialiteUser->getAvatar(),
+                'email_verified_at' => now()
+            ]);
+            $user->assignRole($role);
         }
 
-        $user->assignRole($role);
+        $user->tokens()->delete();
 
         $token = $user->createToken('google-token')->plainTextToken;
 
-        $responseData = [
-            'user'  => new UserResource($user),
+        return Api::response([
+            'user' => new UserResource($user),
             'token' => $token,
-            'role'  => $user->getRoleNames(),
-        ];
-
-        return Api::response(
-            $responseData,
-            'User authenticated via Google',
-            Response::HTTP_OK
-        );
+            'role' => $role
+        ], 'Success');
     }
+
+    // public function handleGoogleCallback(array $data, string $role)
+    // {
+    //     try {
+    //         $redirectUri = ($role == 'peserta') 
+    //         ? env('GOOGLE_REDIRECT_URI_PESERTA')
+    //         : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+
+    //         $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
+
+    //     } catch (ClientException $e) {
+    //         Log::error("Google Auth Failed: " . $e->getMessage());
+    //         return Api::response(
+    //             null,
+    //             'Google authentication failed: ' . $e->getMessage(),
+    //             Response::HTTP_UNAUTHORIZED
+    //         );
+    //     }
+
+    //     $user = User::firstOrCreate(['email' => $socialiteUser->getEmail(),
+    //             'name'              => $socialiteUser->getName(),
+    //             'email_verified_at' => now(),
+    //             'google_id'         => $socialiteUser->getId(),
+    //             'avatar'            => $socialiteUser->getAvatar()]);
+
+    //     $user->assignRole($role);
+
+    //     $token = $user->createToken('google-token')->plainTextToken;
+
+    //     $responseData = [
+    //         'user'  => new UserResource($user),
+    //         'token' => $token,
+    //         'role'  => $user->getRoleNames(),
+    //     ];
+
+    //     return Api::response(
+    //         $responseData,
+    //         'User authenticated via Google',
+    //         Response::HTTP_OK
+    //     );
+    // }
 
 
 }

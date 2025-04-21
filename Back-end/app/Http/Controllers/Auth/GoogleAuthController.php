@@ -17,9 +17,27 @@ class GoogleAuthController extends Controller
     {
         $this->userService = $userService;
     }
-    public function redirectToAuth(): JsonResponse
+
+
+
+
+    public function redirectAuth($role): JsonResponse
     {
-        return response()->json(['url' => Socialite::with('google')->stateless()->redirect()->getTargetUrl(),]);
+        if ($role == 'peserta') {
+            $redirectUri = env('GOOGLE_REDIRECT_URI_PESERTA');
+            $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
+        } else if($role == 'perusahaan') {
+            $redirectUri = env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+            $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
+        }
+
+        return response()->json(['url' => $url]);
+        
+    }
+
+    public function callbackPerusahaan(SocialiteCallbackRequest $request)
+    {
+        return $this->userService->handleGooglecallback($request->validated(),'perusahaan');
     }
 
     public function callbackPeserta(SocialiteCallbackRequest $request)
@@ -27,8 +45,22 @@ class GoogleAuthController extends Controller
         return $this->userService->handleGoogleCallback($request->validated(), 'peserta');
     }
 
-    public function callbackPerusahaan(SocialiteCallbackRequest $request)
-    {
-        return $this->userService->handleGoogleCallback($request->validated(),'perusahaan');
-    }
+        // public function redirectPerusahaan()
+    // {
+    //     return $this->redirectWithRole('perusahaan');
+    // }
+
+    // public function redirectPeserta()
+    // {
+    //     return $this->redirectWithRole('peserta');
+    // }
+
+    // protected function redirectWithRole(string $role)
+    // {
+    //     if (!in_array($role, ['perusahaan', 'peserta'])) {
+    //         abort(400, 'Invalid role');
+    //     }
+
+    //     return response()->json(['url' => Socialite::with('google')->stateless()->redirect()->getTargetUrl()]); 
+    // }
 }

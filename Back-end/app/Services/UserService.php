@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Helpers\Api;
 use App\Models\User;
 use App\Interfaces\UserInterface;
+use Illuminate\Support\Facades\Log;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -119,25 +120,26 @@ class UserService
     public function handleGoogleCallback(array $data, string $role)
     {
         try {
-            $socialiteUser = Socialite::with('google')->stateless()->userFromCode($data['code']);
+            $redirectUri = ($role == 'peserta') 
+            ? env('GOOGLE_REDIRECT_URI_PESERTA')
+            : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+
+            $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
+
         } catch (ClientException $e) {
+            Log::error("Google Auth Failed: " . $e->getMessage());
             return Api::response(
                 null,
-                'Invalid Google credentials.',
+                'Google authentication failed: ' . $e->getMessage(),
                 Response::HTTP_UNAUTHORIZED
             );
         }
 
-        $user = User::firstOrNew(['email' => $socialiteUser->getEmail()]);
-
-        if (! $user->exists) {
-            $user->fill([
+        $user = User::firstOrCreate(['email' => $socialiteUser->getEmail(),
                 'name'              => $socialiteUser->getName(),
                 'email_verified_at' => now(),
                 'google_id'         => $socialiteUser->getId(),
-                'avatar'            => $socialiteUser->getAvatar(),
-            ])->save();
-        }
+                'avatar'            => $socialiteUser->getAvatar()]);
 
         $user->assignRole($role);
 

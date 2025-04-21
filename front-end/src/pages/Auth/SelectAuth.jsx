@@ -1,13 +1,20 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+<<<<<<< HEAD
 import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
+=======
+import { useState } from "react";
+>>>>>>> b7f091a (push fe)
 
 const SelectAuth = () => {
   const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
+<<<<<<< HEAD
   const { tempRegisterData, setToken, setRole } = useContext(AuthContext);
+=======
+>>>>>>> b7f091a (push fe)
 
   const cardData = [
     {
@@ -26,6 +33,7 @@ const SelectAuth = () => {
     },
   ];
 
+<<<<<<< HEAD
   const handleNext = async (e) => {
     e.preventDefault();
     if (!selected || !tempRegisterData) return;
@@ -51,6 +59,12 @@ const SelectAuth = () => {
     } catch (err) {
       console.error("Gagal kirim data registrasi:", err);
       // Handle error, bisa tambahkan setErrors atau toast
+=======
+  const handleNext = (e) => {
+    e.preventDefault();
+    if (selected) {
+      navigate(`/auth/register/${selected}`);
+>>>>>>> b7f091a (push fe)
     }
   };
 

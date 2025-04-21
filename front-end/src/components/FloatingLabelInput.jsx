@@ -2,7 +2,7 @@ const FloatingLabelInput = ({ label, type = "text", value, setValue, placeholder
   const inputId = label.toLowerCase();
 
   return (
-    <div className="relative w-full mb-4">
+    <div className="relative w-full mb-2">
       <label htmlFor={inputId} className="block mb-1 font-medium">{label}</label>
       <div className="relative">
         {icon && (

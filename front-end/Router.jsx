@@ -19,6 +19,10 @@ import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
 import Absensi from "./src/pages/student/Absensi";
 import Jurnal from "./src/pages/student/Jurnal";
+import Presentasi from "./src/pages/student/Presentasi";
+import DetailPresentasi from "./src/pages/student/DetailPresentasi";
+import RiwayatPresentasi from "./src/pages/student/RiwayatPresentasi";
+import SelectAuth from "./src/pages/Auth/SelectAuth";
 
 
 export const router = createBrowserRouter([
@@ -49,10 +53,6 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/auth/register",
-    element: <Register />,
-  },
-  {
     path: "/student",
     element: <StudentLayout />,
     children: [
@@ -68,6 +68,18 @@ export const router = createBrowserRouter([
         path:"jurnal",
         element:<Jurnal/>
       },
+      {
+        path:"presentasi",
+        element:<Presentasi/>
+      },
+      {
+        path:"detail-presentasi",
+        element:<DetailPresentasi/>
+      },
+      {
+        path:"riwayat-presentasi",
+        element:<RiwayatPresentasi/>
+      }
     ],
   },
   {
@@ -103,8 +115,16 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    path: "/auth/register/:type",
+    element: <Register />,
+  },
+  {
     path: "/auth/login",
     element: <Login />,
+  },
+  {
+    path:"/auth/SelectAuth",
+    element:<SelectAuth/>
   },
   {
     path: "*",

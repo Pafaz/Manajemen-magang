@@ -46,6 +46,16 @@ class PesertaController extends Controller
         return $this->pesertaService->getPesertaById($id);
     }
 
+    public function showByPerusahaan($id_perusahaan)
+    {
+        return $this->pesertaService->getPesertaByPerusahaan($id_perusahaan);
+    }
+
+    public function showByCabang($id_cabang)
+    {
+        return $this->pesertaService->getPesertaByCabang($id_cabang);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

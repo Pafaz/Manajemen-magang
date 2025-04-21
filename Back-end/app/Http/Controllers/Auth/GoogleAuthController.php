@@ -18,9 +18,6 @@ class GoogleAuthController extends Controller
         $this->userService = $userService;
     }
 
-
-
-
     public function redirectAuth($role): JsonResponse
     {
         if ($role == 'peserta') {
@@ -44,23 +41,4 @@ class GoogleAuthController extends Controller
     {
         return $this->userService->handleGoogleCallback($request->validated(), 'peserta');
     }
-
-        // public function redirectPerusahaan()
-    // {
-    //     return $this->redirectWithRole('perusahaan');
-    // }
-
-    // public function redirectPeserta()
-    // {
-    //     return $this->redirectWithRole('peserta');
-    // }
-
-    // protected function redirectWithRole(string $role)
-    // {
-    //     if (!in_array($role, ['perusahaan', 'peserta'])) {
-    //         abort(400, 'Invalid role');
-    //     }
-
-    //     return response()->json(['url' => Socialite::with('google')->stateless()->redirect()->getTargetUrl()]); 
-    // }
 }

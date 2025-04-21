@@ -120,43 +120,86 @@ class UserService
     public function handleGoogleCallback(array $data, string $role)
     {
         try {
-            $redirectUri = ($role == 'peserta') 
-            ? env('GOOGLE_REDIRECT_URI_PESERTA')
-            : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+            $redirectUri = ($role == 'peserta') ? env('GOOGLE_REDIRECT_URI_PESERTA') : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
 
             $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
 
         } catch (ClientException $e) {
             Log::error("Google Auth Failed: " . $e->getMessage());
-            return Api::response(
-                null,
-                'Google authentication failed: ' . $e->getMessage(),
-                Response::HTTP_UNAUTHORIZED
-            );
+            return Api::response(null, 'Autentikasi Google gagal', 401);
         }
 
-        $user = User::firstOrCreate(['email' => $socialiteUser->getEmail(),
-                'name'              => $socialiteUser->getName(),
-                'email_verified_at' => now(),
-                'google_id'         => $socialiteUser->getId(),
-                'avatar'            => $socialiteUser->getAvatar()]);
+        $user = User::where('email', $socialiteUser->getEmail())->first();
 
-        $user->assignRole($role);
+        if ($user) {
+            $user->update([
+                'google_id' => $socialiteUser->getId(),
+                'avatar' => $socialiteUser->getAvatar()
+            ]);
+            $user->syncRoles([$role]);
+        } else {
+            // Buat user baru
+            $user = User::create([
+                'name' => $socialiteUser->getName(),
+                'email' => $socialiteUser->getEmail(),
+                'google_id' => $socialiteUser->getId(),
+                'avatar' => $socialiteUser->getAvatar(),
+                'email_verified_at' => now()
+            ]);
+            $user->assignRole($role);
+        }
+
+        $user->tokens()->delete();
 
         $token = $user->createToken('google-token')->plainTextToken;
 
-        $responseData = [
-            'user'  => new UserResource($user),
+        return Api::response([
+            'user' => new UserResource($user),
             'token' => $token,
-            'role'  => $user->getRoleNames(),
-        ];
-
-        return Api::response(
-            $responseData,
-            'User authenticated via Google',
-            Response::HTTP_OK
-        );
+            'role' => $role
+        ], 'Success');
     }
+
+    // public function handleGoogleCallback(array $data, string $role)
+    // {
+    //     try {
+    //         $redirectUri = ($role == 'peserta') 
+    //         ? env('GOOGLE_REDIRECT_URI_PESERTA')
+    //         : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+
+    //         $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
+
+    //     } catch (ClientException $e) {
+    //         Log::error("Google Auth Failed: " . $e->getMessage());
+    //         return Api::response(
+    //             null,
+    //             'Google authentication failed: ' . $e->getMessage(),
+    //             Response::HTTP_UNAUTHORIZED
+    //         );
+    //     }
+
+    //     $user = User::firstOrCreate(['email' => $socialiteUser->getEmail(),
+    //             'name'              => $socialiteUser->getName(),
+    //             'email_verified_at' => now(),
+    //             'google_id'         => $socialiteUser->getId(),
+    //             'avatar'            => $socialiteUser->getAvatar()]);
+
+    //     $user->assignRole($role);
+
+    //     $token = $user->createToken('google-token')->plainTextToken;
+
+    //     $responseData = [
+    //         'user'  => new UserResource($user),
+    //         'token' => $token,
+    //         'role'  => $user->getRoleNames(),
+    //     ];
+
+    //     return Api::response(
+    //         $responseData,
+    //         'User authenticated via Google',
+    //         Response::HTTP_OK
+    //     );
+    // }
 
 
 }

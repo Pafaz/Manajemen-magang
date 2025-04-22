@@ -14,7 +14,7 @@ import TrackRecord from "./src/pages/mentor/trackrecord";
 import OnlinePresentasi from "./src/pages/mentor/PresentasiOnline";
 import AdminDashboard from "./src/pages/admin/AdminDashboard";
 import AdminLayout from "./src/layout/AdminLayout";
-import Approval from "./src/pages/admin/Appoval";  
+import Approval from "./src/pages/admin/Appoval";
 import PendataanAdmin from "./src/pages/admin/PendataanAdmin";
 import PerusahaanLayout from "./src/layout/PerusahaanLayout";
 import DashboardPerusahaan from "./src/pages/perusahaan/Dashboard";
@@ -30,8 +30,7 @@ import DetailPresentasi from "./src/pages/student/DetailPresentasi";
 import RiwayatPresentasi from "./src/pages/student/RiwayatPresentasi";
 import SelectAuth from "./src/pages/Auth/SelectAuth";
 import GoogleSuccess from "./src/pages/Auth/GoogleSuccess";
-
-
+import AuthLayout from "./src/layout/AuthLayout";
 
 export const router = createBrowserRouter([
   {
@@ -131,16 +130,26 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/auth/register/:type",
-    element: <Register />,
-  },
-  {
-    path: "/auth/login",
-    element: <Login />,
-  },
-  {
-    path: "/auth/SelectAuth",
-    element: <SelectAuth />,
+    path: "/auth",
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "register/:type",
+        element: <Register />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "SelectAuth",
+        element: <SelectAuth />,
+      },
+      {
+        path: "google/success",
+        element: <GoogleSuccess />,
+      },
+    ],
   },
   {
     path: "/perusahaan",
@@ -161,12 +170,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path:"/google/success",
-    element:<GoogleSuccess/>
-  },
-  {
     path: "*",
     element: <NotFound />,
   },
 ]);
-

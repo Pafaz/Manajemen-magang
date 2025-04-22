@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use App\Models\Cabang;
+use App\Models\Perusahaan;
 use Illuminate\Http\Response;
 use App\Interfaces\CabangInterface;
 use App\Http\Resources\CabangResource;
@@ -36,9 +37,16 @@ class CabangService
 
     public function createCabang(array $data)
     {
-        $perusahaan = $this->perusahaanInterface->find($data['perusahaan_id']);
-        $data['perusahaan'] = $perusahaan;
+        if (!Perusahaan::where('id', $data['id_perusahaan'])->exists()) {
+            throw new \Exception("ID perusahaan tidak ditemukan.");
+        }
+        $jumlahCabang = $this->cabangInterface->getCabangByPerusahaanId($data['id_perusahaan']);
+        if ($jumlahCabang >= 1) {
+            throw new \Exception("Anda sudah mencapai limit cabang. Silakan upgrade ke premium!");
+        }
+
         $cabang = $this->cabangInterface->create($data);
+
         return Api::response(
             CabangResource::make($cabang),
             'Cabang Created Successfully',

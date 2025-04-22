@@ -39,8 +39,8 @@ Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
 });
 
 Route::group(['middleware' => ['auth:sanctum','role:perusahaan']], function () {
-    Route::apiResource('perusahaan', PerusahaanController::class);
     Route::apiResource('cabang', CabangController::class);
+    Route::apiResource('perusahaan', PerusahaanController::class);
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
 });

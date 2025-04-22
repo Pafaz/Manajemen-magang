@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SocialiteCallbackRequest extends FormRequest
+class MagangRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,8 +22,10 @@ class SocialiteCallbackRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => 'required|string',
-            'state' => 'sometimes|string',
+            'mulai' => 'required|date',
+            'selesai' => 'required|date',
+            'tipe' => 'required|string',
+            'id_divisi_cabang' => 'required|id',
         ];
     }
 
@@ -31,6 +33,7 @@ class SocialiteCallbackRequest extends FormRequest
     {
         return [
             'required' => ':attribute wajib diisi.',
+            'date' => ':attribute harus berupa tanggal.',
             'string' => ':attribute harus berupa teks.',
         ];
     }

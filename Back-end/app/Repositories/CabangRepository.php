@@ -17,7 +17,7 @@ class CabangRepository implements CabangInterface
 
     public function getCabangByPerusahaanId($id)
     {
-        return Cabang::where('id_perusahaan', $id)->get();
+        return Cabang::where('id_perusahaan', $id)->count();
     }
 
     public function find(int $id): ? Cabang
@@ -27,7 +27,7 @@ class CabangRepository implements CabangInterface
 
     public function create(array $data): ? Cabang
     {
-        return Cabang::create([ $data]);
+        return Cabang::create($data);
     }
 
     public function update(int $id, array $data): Model

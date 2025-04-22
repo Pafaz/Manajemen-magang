@@ -52,8 +52,8 @@ class CabangController extends Controller
      */
     public function edit(CabangRequest $request)
     {
-        $id_perusahaan = $this->cabangService->getCabangByPerusahaanId($request->id_perusahaan);
-        return $this->cabangService->updateCabang($request->validated(), $id);
+        // $id_perusahaan = $this->cabangService->getCabangByPerusahaanId($request->id_perusahaan);
+        // return $this->cabangService->updateCabang($request->validated(), $id);
     }
 
     /**

@@ -3,14 +3,12 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use App\Services\FotoService;
+use App\Interfaces\FotoInterface;
 use Illuminate\Support\Facades\Log;
-use App\Interfaces\PesertaInterface;
-use App\Http\Resources\PesertaResource;
 use App\Interfaces\PerusahaanInterface;
 use Illuminate\Database\QueryException;
 use App\Http\Resources\PerusahaanResource;
-use App\Http\Resources\PesertaDetailResource;
-use App\Interfaces\FotoInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class PerusahaanService 
@@ -18,8 +16,7 @@ class PerusahaanService
     private PerusahaanInterface $PerusahaanInterface;
     private FotoService $foto;
 
-    public function __construct(PerusahaanInterface $PerusahaanInterface, FotoService $foto)
-    {
+    public function __construct(PerusahaanInterface $PerusahaanInterface, FotoService $foto){
         $this->PerusahaanInterface = $PerusahaanInterface;
         $this->foto = $foto;
     }
@@ -52,6 +49,7 @@ class PerusahaanService
                 'npwp' => 'npwp',
                 'surat_legalitas' => 'surat_legalitas',
             ];
+            
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
                     $this->foto->createFoto($data[$key], $perusahaan->id, $tipe);

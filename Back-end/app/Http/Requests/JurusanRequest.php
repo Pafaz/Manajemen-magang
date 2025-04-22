@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SocialiteCallbackRequest extends FormRequest
+class JurusanRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class SocialiteCallbackRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => 'required|string',
-            'state' => 'sometimes|string',
+            'name' => 'required|string|max:50|unique:jurusan,name',
+            'id_sekolah' => 'required|uuid',
         ];
     }
 
@@ -32,6 +32,8 @@ class SocialiteCallbackRequest extends FormRequest
         return [
             'required' => ':attribute wajib diisi.',
             'string' => ':attribute harus berupa teks.',
+            'max' => ':attribute tidak boleh lebih dari :max karakter.',
+            'unique:jurusan,name' => ':attribute sudah terdaftar.',
         ];
     }
 }

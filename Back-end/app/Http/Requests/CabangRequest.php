@@ -11,7 +11,7 @@ class CabangRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class CabangRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'alamat' => 'required|string',
-            'id_perusahaan' => 'required|integer',
+            'id_perusahaan' => 'required|uuid',
         ];
     }
 

@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Services\UserService;
-use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
 {

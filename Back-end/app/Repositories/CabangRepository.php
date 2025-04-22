@@ -27,13 +27,17 @@ class CabangRepository implements CabangInterface
 
     public function create(array $data): ? Cabang
     {
-        return Cabang::create($data);
+        return Cabang::create([
+            'name' => $data['name'],
+            'alamat' => $data['alamat'],
+            'id_perusahaan' => $data['id_perusahaan']
+        ]);
     }
 
     public function update(int $id, array $data): Model
     {
         $cabang = Cabang::where('id', $id);
-        $cabang->update([$data]);
+        $cabang->update($data);
         return $cabang;
     }
 

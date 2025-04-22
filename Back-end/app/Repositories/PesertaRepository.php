@@ -41,7 +41,7 @@ class PesertaRepository implements PesertaInterface
 
     public function update( $id, array $data): Peserta
     {
-        $peserta = Peserta::findOrFail($id);
+        $peserta = Peserta::findOrFail($id)->first();
         $peserta->update($data);
         
         return $peserta;

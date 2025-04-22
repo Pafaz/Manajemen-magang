@@ -15,7 +15,7 @@ class Cabang extends Model
     protected $fillable = [
         'name',
         'alamat',
-        'id_perusahaan',
+        'id_perusahaan'
     ];
 
     public function adminCabang()

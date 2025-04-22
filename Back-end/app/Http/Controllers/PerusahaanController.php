@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PerusahaanRequest;
 use App\Models\Perusahaan;
-use App\Http\Requests\StorePerusahaanRequest;
-use App\Http\Requests\UpdatePerusahaanRequest;
 use App\Services\PerusahaanService;
 
 class PerusahaanController extends Controller
@@ -34,7 +33,7 @@ class PerusahaanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePerusahaanRequest $request)
+    public function store(PerusahaanRequest $request)
     {
         return $this->perusahaanService->createPerusahaan($request->validated());
     }
@@ -58,7 +57,7 @@ class PerusahaanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePerusahaanRequest $request,  $id)
+    public function update(PerusahaanRequest $request,  $id)
     {
         return $this->perusahaanService->updatePerusahaan($request->validated(), $id);
     }

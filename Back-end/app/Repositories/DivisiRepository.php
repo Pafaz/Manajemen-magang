@@ -20,7 +20,7 @@ class DivisiRepository implements DivisiInterface
 
     public function create(array $data): ? Divisi
     {
-        return Divisi::create([ $data]);
+        return Divisi::firstOrCreate($data);
     }
 
     public function update(int $id, array $data): mixed

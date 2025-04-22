@@ -17,7 +17,7 @@ class CabangResource extends JsonResource
         return [
             'name' => $this->name,
             'alamat' => $this->alamat,
-            'id_perusahaan' => $this->id_perusahaan,
+            // 'id_perusahaan' => $this->id_perusahaan,
         ];
     }
 }

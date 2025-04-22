@@ -175,47 +175,4 @@ class UserService
             'role' => $user->getRoleNames()->first() // Return role yang sebenarnya
         ], 'Login berhasil');
     }
-
-    // public function handleGoogleCallback(array $data, string $role)
-    // {
-    //     try {
-    //         $redirectUri = ($role == 'peserta') 
-    //         ? env('GOOGLE_REDIRECT_URI_PESERTA')
-    //         : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
-
-    //         $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
-
-    //     } catch (ClientException $e) {
-    //         Log::error("Google Auth Failed: " . $e->getMessage());
-    //         return Api::response(
-    //             null,
-    //             'Google authentication failed: ' . $e->getMessage(),
-    //             Response::HTTP_UNAUTHORIZED
-    //         );
-    //     }
-
-    //     $user = User::firstOrCreate(['email' => $socialiteUser->getEmail(),
-    //             'name'              => $socialiteUser->getName(),
-    //             'email_verified_at' => now(),
-    //             'google_id'         => $socialiteUser->getId(),
-    //             'avatar'            => $socialiteUser->getAvatar()]);
-
-    //     $user->assignRole($role);
-
-    //     $token = $user->createToken('google-token')->plainTextToken;
-
-    //     $responseData = [
-    //         'user'  => new UserResource($user),
-    //         'token' => $token,
-    //         'role'  => $user->getRoleNames(),
-    //     ];
-
-    //     return Api::response(
-    //         $responseData,
-    //         'User authenticated via Google',
-    //         Response::HTTP_OK
-    //     );
-    // }
-
-
 }

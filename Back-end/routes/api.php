@@ -1,5 +1,4 @@
 <?php
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
 use App\Http\Controllers\PiketController;
@@ -26,43 +25,47 @@ Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackP
 Route::post('/send-reset-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 Route::post('/update-password', [ForgotPasswordController::class, 'reset']);
 
-Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
-    Route::apiResource('peserta', PesertaController::class);
-    Route::apiResource('sekolah', SekolahController::class);
-    Route::apiResource('jurusan', JurusanController::class);
-    Route::apiResource('magang', MagangController::class);
-    Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
+
+
+Route::group(['middleware' => 'auth:sanctum'], function () {
+
+    //Peserta
+    Route::group(['role:peserta'], function () {
+        Route::apiResource('peserta', PesertaController::class);
+        Route::apiResource('sekolah', SekolahController::class);
+        Route::apiResource('jurusan', JurusanController::class);
+        Route::apiResource('magang', MagangController::class);
+    });
+
+    //Perusahaan
+    Route::group(['role:perusahaan'], function () {
+        Route::apiResource('cabang', CabangController::class);
+        Route::apiResource('perusahaan', PerusahaanController::class);
+        Route::apiResource('cabang', CabangController::class);
+        Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
+    });
+
+    //Admin
+    Route::group(['role:admin'], function () {
+        Route::apiResource('piket', PiketController::class);
+        Route::apiResource('kategori-proyek', KategoriController::class);
+        
+    });
+    
+    //Mentor
+    Route::group(['role:mentor'], function () {
+    });
+
+    //Superadmin
+    Route::group(['role:superadmin'], function () {
+    });
     
     //foto
     Route::post('/foto/{foto}/update', [FotoController::class, 'update']);
     Route::post('/foto', [FotoController::class, 'store']);
     Route::delete('/foto/{foto}', [FotoController::class, 'destroy']);
-    Route::post('/logout', [LoginController::class, 'logout']);
 
-});
-
-Route::group(['middleware' => ['auth:sanctum','role:perusahaan']], function () {
-    Route::apiResource('cabang', CabangController::class);
-    Route::apiResource('perusahaan', PerusahaanController::class);
-    Route::apiResource('cabang', CabangController::class);
-    Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
+    //auth
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
-});
-
-
-Route::apiResource('kategori-proyek', KategoriController::class);
-Route::group(['middleware' => ['auth:sanctum','role:admin']], function () {
-    Route::apiResource('piket', PiketController::class);
-    Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
-
-});
-
-
-Route::group(['middleware' => ['auth:sanctum','role:superadmin']], function () {
-    Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
-});
-
-Route::group(['middleware' => ['auth:sanctum','role:mentor']], function () {
-    Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
 });

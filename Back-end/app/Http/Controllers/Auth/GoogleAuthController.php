@@ -2,56 +2,43 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use Google_Client;
+use Laravel\Socialite\Facades\Socialite;
+use App\Http\Requests\SocialiteCallbackRequest;
+use App\Services\UserService;
 
 class GoogleAuthController extends Controller
+
 {
-    public function loginWithGoogle(Request $request)
+    private UserService $userService;
+
+    public function __construct(UserService $userService)
     {
-        $request->validate([
-            'credential' => 'required|string',
-        ]);
+        $this->userService = $userService;
+    }
 
-        $client = new Google_Client(['client_id' => env('GOOGLE_CLIENT_ID')]);
-        $payload = $client->verifyIdToken($request->credential);
-
-        if (!$payload) {
-            return response()->json(['message' => 'Token Google tidak valid'], 401);
+    public function redirectAuth($role): JsonResponse
+    {
+        if ($role == 'peserta') {
+            $redirectUri = env('GOOGLE_REDIRECT_URI_PESERTA');
+            $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
+        } else if($role == 'perusahaan') {
+            $redirectUri = env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+            $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
         }
 
-        $email = $payload['email'];
-        $name = $payload['name'] ?? 'Pengguna Google';
-        $googleId = $payload['sub'];
+        return response()->json(['url' => $url]);
+        
+    }
 
-        if (!str_ends_with($email, '@gmail.com')) {
-            return response()->json(['message' => 'Email tidak diizinkan. Harus menggunakan @gmail.com'], 403);
-        }
+    public function callbackPerusahaan(SocialiteCallbackRequest $request)
+    {
+        return $this->userService->handleGooglecallback($request->validated(),'perusahaan');
+    }
 
-        $user = User::where('email', $email)->first();
-
-        if (!$user) {
-            // Register user baru
-            $user = User::create([
-                'name' => $name,
-                'email' => $email,
-                'password' => Hash::make(Str::random(16)), // Dummy password
-                'email_verified_at' => now(),
-                'id_google' => $googleId, // Optional field, tambahkan ke migration jika perlu
-            ]);
-
-            $user->assignRole('peserta');
-        }
-
-        $request->session()->regenerate();
-
-        return response()->json([
-            'message' => 'Login Google berhasil',
-            'user' => $user,
-        ]);
+    public function callbackPeserta(SocialiteCallbackRequest $request)
+    {
+        return $this->userService->handleGoogleCallback($request->validated(), 'peserta');
     }
 }

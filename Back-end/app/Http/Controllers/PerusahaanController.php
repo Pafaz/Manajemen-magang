@@ -36,7 +36,6 @@ class PerusahaanController extends Controller
      */
     public function store(StorePerusahaanRequest $request)
     {
-        // dd($request->all());
         return $this->perusahaanService->createPerusahaan($request->validated());
     }
 

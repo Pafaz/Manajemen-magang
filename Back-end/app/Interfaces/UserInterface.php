@@ -15,4 +15,6 @@ interface UserInterface extends GetAllInterface, CreateInterface, DeleteInterfac
     public function findId(string $id): ? User;
     
     public function update(string $id, array $data): User;
+
+    public function firstOrCreateByEmail(array $attributes, array $values): User;
 }

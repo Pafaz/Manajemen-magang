@@ -37,6 +37,15 @@ class PesertaService
         );
     }
 
+    public function getPesertaByPerusahaan($perusahaan){
+        $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
+        return Api::response(
+            PesertaResource::collection($data),
+            'Peserta Fetched Successfully',
+            Response::HTTP_OK
+        );
+    }
+
     public function getPesertaById($id){
         $peserta = $this->pesertaInterface->find($id);
         return Api::response(

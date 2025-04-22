@@ -121,25 +121,40 @@ class UserService
     public function handleGoogleCallback(array $data, string $role)
     {
         try {
-            $redirectUri = ($role == 'peserta') ? env('GOOGLE_REDIRECT_URI_PESERTA') : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
-
+            $redirectUri = ($role == 'peserta') 
+                ? env('GOOGLE_REDIRECT_URI_PESERTA')
+                : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+    
             $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
-
+    
         } catch (ClientException $e) {
             Log::error("Google Auth Failed: " . $e->getMessage());
             return Api::response(null, 'Autentikasi Google gagal', 401);
         }
-
+    
+        // Cek existing user
         $user = User::where('email', $socialiteUser->getEmail())->first();
-
+    
         if ($user) {
+            // Jika user sudah ada, update data Google TAPI JANGAN ubah role
             $user->update([
                 'google_id' => $socialiteUser->getId(),
                 'avatar' => $socialiteUser->getAvatar()
             ]);
-            $user->syncRoles([$role]);
+            
+            // Dapatkan role yang sudah ada
+            $existingRole = $user->getRoleNames()->first();
+            
+            // Jika mencoba login dengan role berbeda, tolak
+            if ($existingRole && $existingRole != $role) {
+                return Api::response(
+                    null,
+                    'Anda sudah terdaftar sebagai ' . $existingRole . '. Tidak bisa login sebagai ' . $role,
+                    403
+                );
+            }
         } else {
-            // Buat user baru
+            // Jika baru, buat user dengan role yang diminta
             $user = User::create([
                 'name' => $socialiteUser->getName(),
                 'email' => $socialiteUser->getEmail(),
@@ -149,15 +164,15 @@ class UserService
             ]);
             $user->assignRole($role);
         }
-
+    
+        // Hapus token lama dan buat baru
         $user->tokens()->delete();
-
         $token = $user->createToken('google-token')->plainTextToken;
-
+    
         return Api::response([
             'user' => new UserResource($user),
             'token' => $token,
-            'role' => $role
-        ], 'Success');
+            'role' => $user->getRoleNames()->first() // Return role yang sebenarnya
+        ], 'Login berhasil');
     }
 }

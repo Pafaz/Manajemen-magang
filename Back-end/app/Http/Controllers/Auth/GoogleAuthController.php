@@ -17,18 +17,28 @@ class GoogleAuthController extends Controller
     {
         $this->userService = $userService;
     }
-    public function redirectToAuth(): JsonResponse
+
+    public function redirectAuth($role): JsonResponse
     {
-        return response()->json(['url' => Socialite::with('google')->stateless()->redirect()->getTargetUrl(),]);
+        if ($role == 'peserta') {
+            $redirectUri = env('GOOGLE_REDIRECT_URI_PESERTA');
+            $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
+        } else if($role == 'perusahaan') {
+            $redirectUri = env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+            $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
+        }
+
+        return response()->json(['url' => $url]);
+        
+    }
+
+    public function callbackPerusahaan(SocialiteCallbackRequest $request)
+    {
+        return $this->userService->handleGooglecallback($request->validated(),'perusahaan');
     }
 
     public function callbackPeserta(SocialiteCallbackRequest $request)
     {
         return $this->userService->handleGoogleCallback($request->validated(), 'peserta');
-    }
-
-    public function callbackPerusahaan(SocialiteCallbackRequest $request)
-    {
-        return $this->userService->handleGoogleCallback($request->validated(),'perusahaan');
     }
 }

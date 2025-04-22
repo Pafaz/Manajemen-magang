@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Providers;
+
+use App\Helpers\Api;
 use App\Interfaces\FotoInterface;
 use App\Interfaces\IzinInterface;
 use App\Interfaces\RfidInterface;
 use App\Interfaces\UserInterface;
+use App\Interfaces\AdminInterface;
 use App\Interfaces\PiketInterface;
 use App\Interfaces\SuratInterface;
 use App\Interfaces\CabangInterface;
@@ -24,8 +27,10 @@ use App\Repositories\UserRepository;
 use App\Interfaces\KategoriInterface;
 use App\Interfaces\LowonganInterface;
 use App\Interfaces\ProgressInterface;
+use App\Repositories\AdminRepository;
 use App\Repositories\PiketRepository;
 use App\Repositories\SuratRepository;
+use Illuminate\Support\Facades\Event;
 use App\Interfaces\JamKantorInterface;
 use App\Repositories\CabangRepository;
 use App\Repositories\DivisiRepository;
@@ -40,6 +45,7 @@ use App\Repositories\AbsensiRepository;
 use App\Repositories\JurusanRepository;
 use App\Repositories\PesertaRepository;
 use App\Repositories\SekolahRepository;
+use Illuminate\Support\ServiceProvider;
 use App\Repositories\KategoriRepository;
 use App\Repositories\LowonganRepository;
 use App\Repositories\ProgressRepository;
@@ -49,8 +55,6 @@ use App\Repositories\PerusahaanRepository;
 use App\Repositories\PresentasiRepository;
 use App\Interfaces\JadwalPresentasiInterface;
 use App\Repositories\JadwalPresentasiRepository;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -83,6 +87,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SekolahInterface::class, SekolahRepository::class);
         $this->app->bind(SuratInterface::class, SuratRepository::class);
         $this->app->bind(UserInterface::class, UserRepository::class);
+        $this->app->bind(AdminInterface::class, AdminRepository::class);
     }
 
     /**

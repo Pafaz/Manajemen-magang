@@ -14,21 +14,8 @@ return new class extends Migration
         Schema::create('cabang', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_perusahaan');
-            $table->string('bidang_usaha');
-            $table->string('provinsi');
-            $table->string('kota');
-            $table->string('website');
-            $table->string('instagram');
-            $table->string('linkedin');
-            $table->timestamps();
-
-            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
-        });
-
-        Schema::create('kategori-proyek', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->uuid('id_perusahaan');
-            $table->string('nama');
+            $table->string('name');
+            $table->string('alamat');
             $table->timestamps();
 
             $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
@@ -41,7 +28,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_kategori-proyek');
             $table->uuid('id_perusahaan');
             $table->timestamps();
-            
+
             $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
             $table->foreign('id_kategori-proyek')->references('id')->on('kategori-proyek')->onDelete('cascade');
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');

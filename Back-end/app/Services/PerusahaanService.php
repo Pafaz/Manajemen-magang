@@ -38,21 +38,21 @@ class PerusahaanService
         );
     }
 
-    public function getPerusahaanById($id){
-        $Perusahaan = $this->PerusahaanInterface->find($id);
-        // dd($Perusahaan);
-        $foto = $this->foto->getByReferenceId($id);
-        // dd($foto);
-        // $responseData = [
-        //     'perusahaan' => $Perusahaan,
-        //     'foto' => $foto
-        // ];
-        return $foto;
-        // return Api::response(
-        //     PerusahaanDetailResource::make($Perusahaan),
-        //     'Perusahaan Fetched Successfully',
-        //     Response::HTTP_OK
-        // );
+    public function getPerusahaan($id)
+    {
+        $data = $this->PerusahaanInterface->find($id);
+        return Api::response(
+            PerusahaanDetailResource::make($data),
+            'Perusahaan Fetched Successfully', 
+        );
+    }
+
+    public function getPerusahaanByAuth(){
+        $data = $this->PerusahaanInterface->findByUser(auth('sanctum')->user()->id);
+        return Api::response(
+            PerusahaanDetailResource::make($data),
+            'Perusahaan Fetched Successfully', 
+        );
     }
 
     public function createPerusahaan(array $data)

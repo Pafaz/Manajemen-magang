@@ -16,6 +16,10 @@ import AdminDashboard from "./src/pages/admin/AdminDashboard";
 import AdminLayout from "./src/layout/AdminLayout";
 import Approval from "./src/pages/admin/Appoval";  
 import PendataanAdmin from "./src/pages/admin/PendataanAdmin";
+import PerusahaanLayout from "./src/layout/PerusahaanLayout";
+import DashboardPerusahaan from "./src/pages/perusahaan/Dashboard";
+import PerusahaanForm from "./src/pages/perusahaan/PerusahaanForm";
+import ApprovalPerusahaan from "./src/pages/perusahaan/AppovalPerusahaan";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
@@ -26,6 +30,7 @@ import DetailPresentasi from "./src/pages/student/DetailPresentasi";
 import RiwayatPresentasi from "./src/pages/student/RiwayatPresentasi";
 import SelectAuth from "./src/pages/Auth/SelectAuth";
 import GoogleSuccess from "./src/pages/Auth/GoogleSuccess";
+
 
 
 export const router = createBrowserRouter([
@@ -64,25 +69,25 @@ export const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path:"absensi",
-        element:<Absensi/>
+        path: "absensi",
+        element: <Absensi />,
       },
       {
-        path:"jurnal",
-        element:<Jurnal/>
+        path: "jurnal",
+        element: <Jurnal />,
       },
       {
-        path:"presentasi",
-        element:<Presentasi/>
+        path: "presentasi",
+        element: <Presentasi />,
       },
       {
-        path:"detail-presentasi",
-        element:<DetailPresentasi/>
+        path: "detail-presentasi",
+        element: <DetailPresentasi />,
       },
       {
-        path:"riwayat-presentasi",
-        element:<RiwayatPresentasi/>
-      }
+        path: "riwayat-presentasi",
+        element: <RiwayatPresentasi />,
+      },
     ],
   },
   {
@@ -98,13 +103,13 @@ export const router = createBrowserRouter([
         element: <DataSiswa />,
       },
       {
-        path: "track", 
-        element: <TrackRecord />, 
+        path: "track",
+        element: <TrackRecord />,
       },
       {
         path: "online",
         element: <OnlinePresentasi />,
-      }
+      },
     ],
   },
   {
@@ -123,8 +128,6 @@ export const router = createBrowserRouter([
         path: "pendataan",
         element: <PendataanAdmin />,
       },
-      
-
     ],
   },
   {
@@ -136,8 +139,26 @@ export const router = createBrowserRouter([
     element: <Login />,
   },
   {
-    path:"/auth/SelectAuth",
-    element:<SelectAuth/>
+    path: "/auth/SelectAuth",
+    element: <SelectAuth />,
+  },
+  {
+    path: "/perusahaan",
+    element: <PerusahaanLayout />,
+    children: [
+      {
+        path: "dashboard",
+        element: <DashboardPerusahaan />,
+      },
+      {
+        path: "settings",
+        element: <PerusahaanForm />,
+      },
+      {
+        path: "approval", // Tidak perlu "/perusahaan" di depan
+        element: <ApprovalPerusahaan />,
+      },
+    ],
   },
   {
     path:"/google/success",
@@ -148,3 +169,4 @@ export const router = createBrowserRouter([
     element: <NotFound />,
   },
 ]);
+

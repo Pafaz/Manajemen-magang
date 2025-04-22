@@ -14,21 +14,49 @@ export default function ApprovalTable() {
   const dataPendaftaran = [
     {
       id: 1,
-    nama: "Arya Pratama",
-    jurusan: "Teknik Mesin",
-    kelas: "11",
-    masaMagang: "15 Februari 2025",
-    sekolah: "SMK NEGERI 5 SURABAYA",
-    image: "/assets/img/post1.png",
-    berkas: [
-      { nama: "CV.jpg", url: "/assets/berkas/CV.jpg" },
-      { nama: "Foto.jpg", url: "/assets/berkas/Foto.jpg" },
-      { nama: "Ijazah.docx", url: "/assets/berkas/Ijazah.docx" }
-    ]
+      nama: "Arya Pratama",
+      jurusan: "Teknik Mesin",
+      kelas: "11",
+      masaMagang: "15 Februari 2025",
+      sekolah: "SMK NEGERI 5 SURABAYA",
+      image: "/assets/img/post1.png",
+      berkas: [
+        { nama: "CV.jpg", url: "/assets/berkas/CV.jpg" },
+        { nama: "Foto.jpg", url: "/assets/berkas/Foto.jpg" },
+        { nama: "Ijazah.docx", url: "/assets/berkas/Ijazah.docx" }
+      ]
     },
-    // Tambah lainnya...
+    {
+      id: 2,
+      nama: "Budi Santoso",
+      jurusan: "Teknik Elektronika",
+      kelas: "12",
+      masaMagang: "1 Maret 2025",
+      sekolah: "SMK NEGERI 7 MALANG",
+      image: "/assets/img/post2.png",
+      berkas: [
+        { nama: "CV.pdf", url: "/assets/berkas/CV.pdf" },
+        { nama: "Foto.jpg", url: "/assets/berkas/Foto.jpg" },
+        { nama: "Ijazah.pdf", url: "/assets/berkas/Ijazah.pdf" }
+      ]
+    },
+    {
+      id: 3,
+      nama: "Cynthia Riana",
+      jurusan: "Teknik Komputer",
+      kelas: "11",
+      masaMagang: "20 Februari 2025",
+      sekolah: "SMK NEGERI 4 JEMBER",
+      image: "/assets/img/post1.png",
+      berkas: [
+        { nama: "CV.docx", url: "/assets/berkas/CV.docx" },
+        { nama: "Foto.png", url: "/assets/berkas/Foto.png" },
+        { nama: "Ijazah.docx", url: "/assets/berkas/Ijazah.docx" }
+      ]
+    },
+    // Tambahkan data lainnya di sini
   ];
-
+  
   const dataIzin = [
     {
       id: 1,
@@ -47,10 +75,32 @@ export default function ApprovalTable() {
       tanggalIzin: "8 April 2025",
       tanggalKembali: "10 April 2025",
       status: "Sakit",
-      image: "/assets/img/post1.png",
+      image: "/assets/img/post2.png",
     },
-    // Tambah lainnya...
+    {
+      id: 3,
+      nama: "Agus Setiawan",
+      sekolah: "SMK NEGERI 3 YOGYAKARTA",
+      tanggalIzin: "5 April 2025",
+      tanggalKembali: "7 April 2025",
+      status: "Izin",
+      image: "/assets/img/post1.png",
+      buktiKegiatan: "/berkas/izin/izin2.jpg"
+    },
+    {
+      id: 4,
+      nama: "Siti Nurhayati",
+      sekolah: "SMK NEGERI 4 SURABAYA",
+      tanggalIzin: "3 April 2025",
+      tanggalKembali: "6 April 2025",
+      status: "Sakit",
+      image: "/assets/img/post2.png",
+      buktiKegiatan: "/berkas/izin/izin2.jpg"
+
+    },
+    // Tambahkan data lainnya di sini
   ];
+  
 
   const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
     <button

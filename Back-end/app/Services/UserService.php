@@ -126,9 +126,12 @@ class UserService
     public function handleGoogleCallback(array $data, string $role)
     {
         try {
-            $redirectUri = ($role == 'peserta') ? env('GOOGLE_REDIRECT_URI_PESERTA') : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+            $redirectUri = ($role === 'peserta') ? env('GOOGLE_REDIRECT_URI_PESERTA') : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
 
-            $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
+            $socialiteUser = Socialite::with('google')
+                ->stateless()
+                ->redirectUrl($redirectUri)
+                ->user();
 
         } catch (ClientException $e) {
             Log::error("Google Auth Failed: " . $e->getMessage());
@@ -159,17 +162,19 @@ class UserService
 
         $token = $user->createToken('google-token')->plainTextToken;
 
-        return Api::response([
-            'user' => new UserResource($user),
-            'token' => $token,
-            'role' => $role
-        ], 'Success');
+        // return  response()->json([
+        //     'user' => new UserResource($user),
+        //     'token' => $token,
+        //     'role' => $role
+        // ],200);
+
+        return redirect("http://localhost:5173/google/success?token=$token&role=$role");
     }
 
     // public function handleGoogleCallback(array $data, string $role)
     // {
     //     try {
-    //         $redirectUri = ($role == 'peserta') 
+    //         $redirectUri = ($role == 'peserta')
     //         ? env('GOOGLE_REDIRECT_URI_PESERTA')
     //         : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
 

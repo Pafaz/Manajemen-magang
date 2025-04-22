@@ -20,17 +20,30 @@ class GoogleAuthController extends Controller
 
     public function redirectAuth($role): JsonResponse
     {
-        if ($role == 'peserta') {
+        // dd($role);
+        if ($role === 'peserta') {
             $redirectUri = env('GOOGLE_REDIRECT_URI_PESERTA');
             $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
-        } else if($role == 'perusahaan') {
+        } else if($role === 'perusahaan') {
             $redirectUri = env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
             $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
         }
 
         return response()->json(['url' => $url]);
-        
     }
+    // public function redirectAuth($role): JsonResponse
+    // {
+    //     // dd($role);
+    //     if ($role == 'peserta') {
+    //         $redirectUri = env('GOOGLE_REDIRECT_URI_PESERTA');
+    //         $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
+    //     } else if($role == 'perusahaan') {
+    //         $redirectUri = env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+    //         $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
+    //     }
+
+    //     return response()->json(['url' => $url]);
+    // }
 
     public function callbackPerusahaan(SocialiteCallbackRequest $request)
     {

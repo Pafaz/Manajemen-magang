@@ -16,7 +16,6 @@ return new class extends Migration
             $table->uuid('id_perusahaan');
             $table->string('name');
             $table->string('alamat');
-            $table->
             $table->timestamps();
 
             $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');

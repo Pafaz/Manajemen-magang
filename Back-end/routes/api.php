@@ -25,6 +25,7 @@ Route::get('/auth/callback/peserta', [GoogleAuthController::class, 'callbackPese
 Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackPerusahaan']);
 Route::post('/send-reset-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
 Route::post('/update-password', [ForgotPasswordController::class, 'reset']);
+Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
 
 Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
     Route::apiResource('peserta', PesertaController::class);
@@ -44,7 +45,7 @@ Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
 Route::group(['middleware' => ['auth:sanctum','role:perusahaan']], function () {
     Route::apiResource('perusahaan', PerusahaanController::class);
     Route::apiResource('cabang', CabangController::class);
-    Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
+    
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
 });

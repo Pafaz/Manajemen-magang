@@ -13,9 +13,11 @@ class FotoRepository implements FotoInterface
         return Foto::all();
     }
 
-    public function find(int $id): ? Foto
+    public function find( $id_referensi)
     {
-        return Foto::findOrFail($id)->first();
+        $p = Foto::where('id_referensi', '01965b92-8ab7-70d7-a81b-439675071244')->get();
+        dd($p);
+        // return 
     }
 
     public function create(array $data): ? Foto
@@ -35,7 +37,7 @@ class FotoRepository implements FotoInterface
         Foto::findOrFail($id)->delete();
     }
 
-    public function getByTypeandReferenceId(string $type, int $id_referensi): ?Foto
+    public function getByTypeandReferenceId(string $type, $id_referensi): ?Foto
     {
         $foto = Foto::where('type', $type)->where('id_referensi', $id_referensi)->first();
         return $foto;

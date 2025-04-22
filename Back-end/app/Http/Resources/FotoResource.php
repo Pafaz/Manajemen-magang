@@ -17,6 +17,7 @@ class FotoResource extends JsonResource
     {
         return [
             'path' => $this->path,
+            'type' => $this->type
         ];
     }
 }

@@ -2,18 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class JurusanRequest extends FormRequest
+class JurusanRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,16 +15,6 @@ class JurusanRequest extends FormRequest
         return [
             'name' => 'required|string|max:50|unique:jurusan,name',
             'id_sekolah' => 'required|uuid',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'required' => ':attribute wajib diisi.',
-            'string' => ':attribute harus berupa teks.',
-            'max' => ':attribute tidak boleh lebih dari :max karakter.',
-            'unique:jurusan,name' => ':attribute sudah terdaftar.',
         ];
     }
 }

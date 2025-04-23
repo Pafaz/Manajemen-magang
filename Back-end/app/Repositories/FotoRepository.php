@@ -15,9 +15,7 @@ class FotoRepository implements FotoInterface
 
     public function find( $id_referensi)
     {
-        $p = Foto::where('id_referensi', '01965b92-8ab7-70d7-a81b-439675071244')->get();
-        dd($p);
-        // return 
+        return Foto::where('id_referensi', $id_referensi)->get();
     }
 
     public function create(array $data): ? Foto

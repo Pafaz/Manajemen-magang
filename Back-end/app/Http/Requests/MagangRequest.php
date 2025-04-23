@@ -2,18 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class MagangRequest extends FormRequest
+class MagangRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -26,15 +17,6 @@ class MagangRequest extends FormRequest
             'selesai' => 'required|date',
             'tipe' => 'required|string',
             'id_divisi_cabang' => 'required|id',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'required' => ':attribute wajib diisi.',
-            'date' => ':attribute harus berupa tanggal.',
-            'string' => ':attribute harus berupa teks.',
         ];
     }
 }

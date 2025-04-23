@@ -43,9 +43,8 @@ class PerusahaanController extends Controller
      */
     public function show( $id)
     {
-        return $this->perusahaanService->getPerusahaanById($id);
+        return $this->perusahaanService->getPerusahaan($id);
     }
-
     /**
      * Show the form for editing the specified resource.
      */

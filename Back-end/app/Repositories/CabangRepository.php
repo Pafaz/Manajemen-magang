@@ -41,7 +41,7 @@ class CabangRepository implements CabangInterface
 
     public function update(int $id, array $data): Model
     {
-        $cabang = Cabang::where('id', $id);
+        $cabang = Cabang::findOrFail($id);
         $cabang->update($data);
         return $cabang;
     }

@@ -1,57 +1,62 @@
-// components/DonutChart.jsx
 import React from 'react';
 import Chart from 'react-apexcharts';
 
-export default function DonutChart() {
-  const series = [361, 483]; // Data: [Free, Premium]
+export default function PieChart() {
+  const series = [40, 5, 15, 15, 10, 15];
+
   const options = {
     chart: {
-      type: 'donut',
+      type: 'pie',
     },
-    labels: ['Free', 'Premium'],
-    colors: ['#FBBF24', '#2563EB'], // Kuning, Biru
+    labels: [
+      'Menunggu Konfirmasi', 
+      'Siswa Ditolak', 
+      'Siswa Online', 
+      'Siswa Offline', 
+      'Siswa Aktif', 
+      'Alumni'
+    ],
+    colors: [
+      '#3B5998',
+      '#5B7EC2',
+      '#8BB2FB',
+      '#A8C7FA',
+      '#D9E7F9',
+      '#F2F6FC'
+    ],
     dataLabels: {
       enabled: false,
     },
     legend: {
       show: false,
     },
-    plotOptions: {
-      pie: {
-        donut: {
-          labels: {
-            show: false,
-          },
-        },
-      },
+    stroke: {
+      width: 2,
+      colors: ['#FFFFFF']
     },
     tooltip: {
       enabled: true,
     },
+    plotOptions: {
+      pie: {
+        expandOnClick: false,
+      }
+    }
   };
 
-  const total = series.reduce((a, b) => a + b, 0);
-  const percentages = series.map(value => ((value / total) * 100).toFixed(1));
-
   return (
-    <div className="flex flex-col items-center justify-center p-4">
-      <Chart options={options} series={series} type="donut" width={300} />
-
-      <div className="flex gap-10 mt-4">
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-yellow-400"></span>
-          <div className="text-center">
-            <p className="text-orange-500 font-semibold">Free</p>
-            <p className="font-bold">{percentages[0]}%</p>
+    <div className="flex items-center justify-between p-2">
+      <div>
+        <Chart options={options} series={series} type="pie" width={180} height={180} />
+      </div>
+      
+      <div className="flex flex-col gap-2 text-[9px] leading-snug">
+        {options.labels.map((label, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: options.colors[index] }}></span>
+            <p className="font-medium text-gray-700">{label}</p>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className="w-3 h-3 rounded-full bg-blue-600"></span>
-          <div className="text-center">
-            <p className="text-blue-600 font-semibold">Premium</p>
-            <p className="font-bold">{percentages[1]}%</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

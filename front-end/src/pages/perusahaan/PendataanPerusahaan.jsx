@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DataApproval from "../../components/cards/DataApproval";
+import Pendataan from "../../components/cards/Pendataan";
 import PerusahaanCard from "../../components/cards/PerusahaanCard"; // Import the new component
 
 const Approval = () => {
@@ -10,7 +10,7 @@ const Approval = () => {
 
       {/* Komponen DataApproval */}
       <div className="mt-8 px-1 pb-6">
-        <DataApproval />
+        <Pendataan />
       </div>
     </div>
   );

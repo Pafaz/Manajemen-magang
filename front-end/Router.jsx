@@ -20,6 +20,9 @@ import PerusahaanLayout from "./src/layout/PerusahaanLayout";
 import DashboardPerusahaan from "./src/pages/perusahaan/Dashboard";
 import PerusahaanForm from "./src/pages/perusahaan/PerusahaanForm";
 import ApprovalPerusahaan from "./src/pages/perusahaan/AppovalPerusahaan";
+import PendataanPerusahaan from "./src/pages/perusahaan/PendataanPerusahaan";
+import Surat from "./src/pages/perusahaan/Surat";
+import CabangPerusahaan from "./src/pages/perusahaan/CabangPerusahaan";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
@@ -164,9 +167,21 @@ export const router = createBrowserRouter([
         element: <PerusahaanForm />,
       },
       {
-        path: "approval", // Tidak perlu "/perusahaan" di depan
+        path: "approval",
         element: <ApprovalPerusahaan />,
       },
+      {
+        path: "pendataan",
+        element: <PendataanPerusahaan />,
+      },
+      {
+        path: "surat",
+        element: <Surat />,
+      },
+      {
+        path :"lembaga",
+        element :<CabangPerusahaan/>,
+      }
     ],
   },
   {

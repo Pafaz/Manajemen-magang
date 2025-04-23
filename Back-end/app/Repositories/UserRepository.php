@@ -13,6 +13,11 @@ class UserRepository implements UserInterface
         return User::all();
     }
 
+    public function getAdminByCabang(int $id): Collection
+    {
+        return User::where('id_cabang', $id)->get();
+    }
+
     public function find(string $email): ? User
     {
         return User::where('email' , $email)->first();

@@ -60,6 +60,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->unsignedBigInteger('id_cabang');
             $table->uuid('id_user');
+            $table->timestamps();
 
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');

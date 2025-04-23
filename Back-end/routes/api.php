@@ -24,7 +24,7 @@ Route::post('/register-peserta', [RegisterController::class, 'registerPeserta'])
 Route::get('/auth/{role}', [GoogleAuthController::class, 'redirectAuth']);
 Route::get('/auth/callback/peserta', [GoogleAuthController::class, 'callbackPeserta']);
 Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackPerusahaan']);
-Route::post('/send-reset-password', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('/send-reset-password', [ForgotPasswordController::class, 'submitForgetPasswordForm']);
 Route::post('/update-password', [ForgotPasswordController::class, 'reset']);
 
 

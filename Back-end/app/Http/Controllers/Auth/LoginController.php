@@ -25,7 +25,10 @@ class LoginController extends Controller
         $data = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'remember_me' => 'nullable|boolean',
         ]);
+
+        $data['remember_me'] = $data['remember_me'] ?? false;
 
         return $this->UserService->Login($data);
     }

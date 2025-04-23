@@ -54,9 +54,6 @@ class UserService
     {
         $user = $this->UserInterface->find($data['email']);
 
-        if ($user) {
-            # code...
-        }
         if (!$user || !password_verify($data['password'], $user->password)) {
             return Api::response(
                 null,
@@ -65,15 +62,16 @@ class UserService
             );
         }
 
-        if ($data['remember_me']) {
-            $token = $user->createToken('auth_token', ['remember'])->plainTextToken;
-        }
+        $remember = $data['remember_me'];
+        $token = $remember
+            ? $user->createToken('auth_token', ['remember'])->plainTextToken
+            : $user->createToken('auth_token')->plainTextToken;
 
-        $token = $user->createToken('auth_token')->plainTextToken;
         $responseData = [
             'user' => new UserResource($user),
-            'role' => $user->getRoleNames(),
+            'role' => $user->getRoleNames()[0],
             'token' => $token,
+            'status' => 'success'
         ];
 
         return Api::response(
@@ -82,6 +80,7 @@ class UserService
             Response::HTTP_OK
         );
     }
+
 
     public function logout($user)
     {

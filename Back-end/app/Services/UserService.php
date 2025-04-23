@@ -22,9 +22,13 @@ class UserService
         $this->UserInterface = $UserInterface;
     }
 
-    public function getData($data)
+    public function getData($user)
     {
-       return Api::response($data, 'success get data user', Response::HTTP_OK);
+        $data = [
+            'user' => new UserResource($user),
+            'role' => $user->getRoleNames()->first(),
+        ];
+        return Api::response($data, 'success get data user', Response::HTTP_OK);
     }
 
     public function register(array $data, $role)
@@ -39,7 +43,8 @@ class UserService
         $responseData = [
             'user' => new UserResource($user),
             'token' => $token,
-            'role' => $user->getRoleNames()
+            'role' => $user->getRoleNames()->first(),
+            'status' => "success"
         ];
 
         return Api::response($responseData, 'User  registered successfully', Response::HTTP_CREATED);

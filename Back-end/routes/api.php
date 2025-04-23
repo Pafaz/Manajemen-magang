@@ -40,7 +40,6 @@ Route::group(['middleware' => ['auth:sanctum', 'role:peserta']], function () {
     Route::post('/foto', [FotoController::class, 'store']);
     Route::delete('/foto/{foto}', [FotoController::class, 'destroy']);
     Route::post('/logout', [LoginController::class, 'logout']);
-
 });
 
 Route::group(['middleware' => ['auth:sanctum','role:perusahaan']], function () {

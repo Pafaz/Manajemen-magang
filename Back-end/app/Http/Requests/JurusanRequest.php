@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 
-class CabangRequest extends BaseFormRequest
+class JurusanRequest extends BaseFormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -13,8 +13,8 @@ class CabangRequest extends BaseFormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'alamat' => 'required|string',
+            'name' => 'required|string|max:50|unique:jurusan,name',
+            'id_sekolah' => 'required|uuid',
         ];
     }
 }

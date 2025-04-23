@@ -17,7 +17,12 @@ class CabangRepository implements CabangInterface
 
     public function getCabangByPerusahaanId($id)
     {
-        return Cabang::where('id_perusahaan', $id)->get();
+        return Cabang::where('id_perusahaan', $id)->count();
+    }
+
+    public function getIdCabangByPerusahaan($id)
+    {
+        return Cabang::where('id_perusahaan', $id)->first();
     }
 
     public function find(int $id): ? Cabang
@@ -27,13 +32,17 @@ class CabangRepository implements CabangInterface
 
     public function create(array $data): ? Cabang
     {
-        return Cabang::create([ $data]);
+        return Cabang::create([
+            'name' => $data['name'],
+            'alamat' => $data['alamat'],
+            'id_perusahaan' => $data['id_perusahaan']
+        ]);
     }
 
     public function update(int $id, array $data): Model
     {
-        $cabang = Cabang::where('id', $id);
-        $cabang->update([$data]);
+        $cabang = Cabang::findOrFail($id);
+        $cabang->update($data);
         return $cabang;
     }
 

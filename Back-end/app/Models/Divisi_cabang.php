@@ -11,6 +11,7 @@ class Divisi_cabang extends Model
     use HasFactory;
 
     protected $table = 'divisi_cabang';
+    public $timestamps = false;
     protected $fillable = ['divisi_id', 'cabang_id', 'kuota'];
 
     public function divisi(){

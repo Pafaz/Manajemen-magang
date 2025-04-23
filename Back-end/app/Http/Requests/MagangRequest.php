@@ -2,18 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePerusahaanRequest extends FormRequest
+class MagangRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return false;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -22,7 +13,10 @@ class UpdatePerusahaanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'mulai' => 'required|date',
+            'selesai' => 'required|date',
+            'tipe' => 'required|string',
+            'id_divisi_cabang' => 'required|id',
         ];
     }
 }

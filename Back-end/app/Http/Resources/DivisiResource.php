@@ -5,19 +5,18 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FotoResource extends JsonResource
+class DivisiResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
+     * Transform the resource collection into an array.
      *
-     * @return array<string, mixed>
+     * @return array<int|string, mixed>
      */
-    
     public function toArray(Request $request): array
     {
         return [
-            'path' => $this->path,
-            'type' => $this->type
+            'id' => $this->id,
+            'nama' => $this->name
         ];
     }
 }

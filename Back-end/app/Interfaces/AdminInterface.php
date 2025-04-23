@@ -8,9 +8,9 @@ use App\Interfaces\Base\DeleteInterface;
 use App\Interfaces\Base\GetAllInterface;
 use App\Interfaces\Base\UpdateInterface;
 
-interface CabangInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
+interface AdminInterface extends CreateInterface, DeleteInterface, FindInterface, GetAllInterface, UpdateInterface
 {
-    public function getCabangByPerusahaanId($id);
-
-    public function getIdCabangByPerusahaan($id);
+    public function getByCabang(int $id_cabang);
+    
+    public function findByUser($id);
 }

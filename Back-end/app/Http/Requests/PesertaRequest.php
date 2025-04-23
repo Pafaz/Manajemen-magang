@@ -2,17 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class PesertaRequest extends FormRequest
+class PesertaRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
 
     /**
      * Get the validation rules that apply to the request.
@@ -46,16 +38,7 @@ class PesertaRequest extends FormRequest
 
     public function messages(): array
     {
-        return [
-            'required' => ':attribute wajib diisi.',
-            'string' => ':attribute harus berupa teks.',
-            'max' => ':attribute tidak boleh lebih dari :max karakter.',
-            'min' => ':attribute tidak boleh kurang dari :min karakter.',
-            'date' => ':attribute harus berupa tanggal yang valid.',
-            'exists' => ':attribute tidak ditemukan.',
-            'in' => ':attribute harus salah satu dari: :values.',
-            'image' => ':attribute harus berupa gambar.',
-            'mimes' => ':attribute harus berupa file dengan tipe: :values.',
+        return parent::messages() + [
             'after' => ':attribute harus setelah :date.',
             'telepon.regex' => 'Nomor telepon tidak valid.',
         ];

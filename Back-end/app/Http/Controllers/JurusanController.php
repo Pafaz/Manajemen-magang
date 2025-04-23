@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\JurusanRequest;
 use App\Models\Jurusan;
 use App\Services\JurusanService;
 use Illuminate\Http\Request;
@@ -32,9 +33,9 @@ class JurusanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(JurusanRequest $request)
     {
-        return $this->jurusanService->createMajor($request->all());
+        return $this->jurusanService->createMajor($request->validated());
     }
 
     /**

@@ -12,6 +12,11 @@ class Cabang extends Model
     use HasFactory;
 
     protected $table = 'cabang';
+    protected $fillable = [
+        'name',
+        'alamat',
+        'id_perusahaan'
+    ];
 
     public function adminCabang()
     {

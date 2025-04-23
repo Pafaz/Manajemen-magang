@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SocialiteCallbackRequest extends FormRequest
+class AdminRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,16 +22,11 @@ class SocialiteCallbackRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'code' => 'required|string',
-            'state' => 'sometimes|string',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'required' => ':attribute wajib diisi.',
-            'string' => ':attribute harus berupa teks.',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:8',
+            'telepon' => 'required|string',
+            'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

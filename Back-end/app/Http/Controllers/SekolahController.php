@@ -58,7 +58,7 @@ class SekolahController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSekolahRequest $request, $id)
+    public function update(SekolahRequest $request, $id)
     {
         return $this->sekolahService->updateSchool($id, $request->validated());
     }

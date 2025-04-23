@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Models\Cabang;
-use Illuminate\Http\Response;
 use App\Interfaces\CabangInterface;
 use App\Http\Resources\CabangResource;
 use App\Interfaces\PerusahaanInterface;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class CabangService
 {
@@ -26,6 +26,7 @@ class CabangService
         return Api::response(
             CabangResource::collection($data),
             'Cabang Fetched Successfully',
+            Response::HTTP_OK
         );
     }
 
@@ -36,14 +37,32 @@ class CabangService
 
     public function createCabang(array $data)
     {
-        $perusahaan = $this->perusahaanInterface->find($data['perusahaan_id']);
-        $data['perusahaan'] = $perusahaan;
+        try {
+
+        $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
+        $jumlahCabang = $this->cabangInterface->getCabangByPerusahaanId($perusahaan->id);
+        if ($jumlahCabang >= 1) {
+            throw new \Exception("Anda sudah mencapai limit cabang. Silakan upgrade ke premium!");
+        }
+        
+        $data['id_perusahaan'] = $perusahaan->id;
+        // dd($data);
         $cabang = $this->cabangInterface->create($data);
+        // $cabang->perusahaan()->attach($perusahaan->id);
+
         return Api::response(
             CabangResource::make($cabang),
             'Cabang Created Successfully',
             Response::HTTP_CREATED
         );
+
+        }catch (\Exception $e) {
+            return Api::response(
+                null,
+                $e->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     public function updateCabang(array $data, $id)
@@ -58,7 +77,7 @@ class CabangService
 
     public function deleteCabang($id)
     {
-        $cabang = $this->cabangInterface->delete($id);
+        $this->cabangInterface->delete($id);
         return Api::response(
             null,
             'Cabang Deleted Successfully',

@@ -20,22 +20,14 @@ class FotoService
         $this->FotoInterface = $FotoInterface;
     }
 
-    public function getByTypeandReferenceId(string $type, int $id_referensi)
+    public function getByReferenceId($id_referensi){
+        return $this->FotoInterface->find($id_referensi);
+
+    }
+    public function getByTypeandReferenceId(string $type, $id_referensi)
     {
         $foto = $this->FotoInterface->getByTypeandReferenceId($type, $id_referensi);
-        if ($foto) {
-            return Api::response(
-                new FotoResource($foto),
-                'Data found',
-                Response::HTTP_OK
-            );
-        } else {
-            return Api::response(
-                null,
-                'Data not found',
-                Response::HTTP_NOT_FOUND
-            );
-        }
+        return $foto;
     }
     public function createFoto($file, $idReferensi, $type)
     {

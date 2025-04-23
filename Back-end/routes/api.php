@@ -3,6 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
 use App\Http\Controllers\PiketController;
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\MagangController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\PesertaController;
@@ -41,6 +42,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Perusahaan
     Route::group(['role:perusahaan'], function () {
         Route::apiResource('admin', AdminCabangController::class);
+        Route::apiResource('divisi', DivisiController::class);
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('perusahaan', PerusahaanController::class);
         Route::apiResource('cabang', CabangController::class);

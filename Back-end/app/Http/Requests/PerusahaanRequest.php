@@ -30,6 +30,10 @@ class PerusahaanRequest extends BaseFormRequest
         }
 
         return [
+            'nama_penanggung_jawab' => 'required|string',
+            'nomor_penanggung_jawab' => 'required|numeric|digits_between:10,12',
+            'email_penanggung_jawab' => 'required|email',
+            'jabatan_penanggung_jawab' => 'required|string',
             'nama' => 'required|string',
             'deskripsi' => 'required|string',
             'telepon' => 'required|numeric|digits_between:10,12|unique:users,telepon',

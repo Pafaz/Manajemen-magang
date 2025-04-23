@@ -11,11 +11,10 @@ class Divisi extends Model
     use HasFactory;
 
     protected $table = 'divisi';
-
+    public $timestamps = false;
     protected $fillable = [
         'id',
-        'id_perusahaan',
-        'nama',
+        'name',
     ];
 
     public function divisiCabang()

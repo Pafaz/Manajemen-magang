@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 class DivisiService
 {
     private DivisiInterface $DivisiInterface;
-
     public function __construct(DivisiInterface $DivisiInterface)
     {
         $this->DivisiInterface = $DivisiInterface; 
@@ -31,65 +30,64 @@ class DivisiService
     {
         DB::beginTransaction();
         try {
-            $divisi = $this->DivisiInterface->create([
-                'nama' => $data['nama'],
-            ]);
+            $divisi = $this->DivisiInterface->create($data);
+            // dd(get_class($divisi), $divisi);
+
 
             if ($divisi->wasRecentlyCreated === false) {
+                DB::rollBack();
+
                 return Api::response(
                     null,
-                    'Jurusan sudah ada dengan nama yang sama.',
-                    Response::HTTP_CONFLICT 
+                    'Divisi sudah ada dengan nama yang sama.',
+                    Response::HTTP_CONFLICT
                 );
             }
-
-            $sekolah = $this->SekolahInterface->find($data['id_sekolah']);
-            $sekolah->jurusan()->attach($jurusan->id); 
 
             DB::commit();
 
             return Api::response(
-                JurusanResource::make($jurusan),
-                'Jurusan created and linked to Sekolah successfully',
+                DivisiResource::make($divisi),
+                'Divisi created successfully',
                 Response::HTTP_CREATED
             );
         } catch (\Throwable $th) {
             DB::rollBack();
             return Api::response(
                 null,
-                'Failed to create Jurusan: ' . $th->getMessage(),
+                'Failed to create Divisi: ' . $th->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
 
 
-    public function updateMajor(int $id, array $data)
+    public function updateDivisi(int $id, array $data)
     {
-        $jurusan = $this->JurusanInterface->update($id, $data);
+        $jurusan = $this->DivisiInterface->update($id, $data);
         return Api::response(
-            JurusanResource::make($jurusan),
-            'Jurusan updated successfully',
+            DivisiResource::make($jurusan),
+            'Divisi updated successfully',
             Response::HTTP_OK
         );
     }
 
-    public function deleteMajor(int $id)
+    public function deleteDivisi(int $id)
     {
-        $this->JurusanInterface->delete($id);
+        $this->DivisiInterface->delete($id);
         return Api::response(
             null,
-            'Jurusan deleted successfully',
+            'Divisi deleted successfully',
             Response::HTTP_OK
         );
     }
 
-    public function getMajorById(int $id)
+    public function getDivisiById(int $id)
     {
-        $jurusan = $this->JurusanInterface->find($id);
+        $divisi = $this->DivisiInterface->find($id);
         return Api::response(
-            JurusanResource::make($jurusan),
-            'Jurusan fetched successfully',
+            DivisiResource::make($divisi),
+            'Divisi fetched successfully',
             Response::HTTP_OK
         );
     }

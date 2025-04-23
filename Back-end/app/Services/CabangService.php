@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Models\Cabang;
-use Illuminate\Http\Response;
 use App\Interfaces\CabangInterface;
 use App\Http\Resources\CabangResource;
 use App\Interfaces\PerusahaanInterface;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class CabangService
 {
@@ -26,6 +26,7 @@ class CabangService
         return Api::response(
             CabangResource::collection($data),
             'Cabang Fetched Successfully',
+            Response::HTTP_OK
         );
     }
 
@@ -56,7 +57,11 @@ class CabangService
         );
 
         }catch (\Exception $e) {
-            throw new \Exception($e->getMessage());
+            return Api::response(
+                null,
+                $e->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
     }
 
@@ -72,7 +77,7 @@ class CabangService
 
     public function deleteCabang($id)
     {
-        $cabang = $this->cabangInterface->delete($id);
+        $this->cabangInterface->delete($id);
         return Api::response(
             null,
             'Cabang Deleted Successfully',

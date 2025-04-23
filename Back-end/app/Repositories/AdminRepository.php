@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Models\Cabang;
+use Illuminate\Support\Str;
+use App\Models\Admin_cabang;
 use App\Interfaces\AdminInterface;
 use Illuminate\Database\Eloquent\Collection;
-use App\Models\Admin_cabang;
 
 class AdminRepository implements AdminInterface
 {
@@ -13,7 +15,7 @@ class AdminRepository implements AdminInterface
         return Admin_cabang::all();
     }
 
-    public function getByCabang(int $id_cabang)
+    public function getByCabang($id_cabang)
     {
         return Admin_cabang::where('id_cabang', $id_cabang)->first();
     }
@@ -23,15 +25,20 @@ class AdminRepository implements AdminInterface
         return Admin_cabang::findOrFail($id)->first();
     }
 
-    public function create(array $data): ? Admin_cabang
+    public function findByUser($id): ? Cabang
     {
-        return Admin_cabang::create([$data]);
+        return Cabang::where('id_cabang', $id)->first();
+    }
+
+    public function create(array $data): ? Admin_cabang
+    {       
+        return Admin_cabang::create($data);
     }
 
     public function update(int $id, array $data): Admin_cabang
     {
-        $admin_cabang = Admin_cabang::where('id', $id);
-        $admin_cabang->update([$data]);
+        $admin_cabang = Admin_cabang::findOrFail($id);
+        $admin_cabang->update($data);
         return $admin_cabang;
     }
 

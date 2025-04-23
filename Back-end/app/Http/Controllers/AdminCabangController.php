@@ -70,6 +70,6 @@ class AdminCabangController extends Controller
      */
     public function destroy(Admin_cabang $admin_cabang)
     {
-        //
+        return $this->adminService->deleteAdmin($admin_cabang->id);
     }
 }

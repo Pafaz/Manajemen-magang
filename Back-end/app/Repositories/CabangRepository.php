@@ -20,6 +20,11 @@ class CabangRepository implements CabangInterface
         return Cabang::where('id_perusahaan', $id)->count();
     }
 
+    public function getIdCabangByPerusahaan($id)
+    {
+        return Cabang::where('id_perusahaan', $id)->first();
+    }
+
     public function find(int $id): ? Cabang
     {
         return Cabang::findOrFail($id)->first();

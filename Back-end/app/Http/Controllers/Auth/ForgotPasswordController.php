@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Helpers\Api;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 
 class ForgotPasswordController extends Controller
@@ -59,37 +64,28 @@ class ForgotPasswordController extends Controller
     // }
 
     public function submitForgetPasswordForm(Request $request)
-
       {
-          $request->validate([
-              'email' => 'required|email|exists:users',
-          ]);
-
-          $token = Str::random(64);
-
-          DB::table('password_resets')->insert([
-
-              'email' => $request->email, 
-
-              'token' => $token, 
-
-              'created_at' => Carbon::now()
-
+        try {
+            $request->validate([
+                'email' => 'required|email|exists:users',
             ]);
-
-  
-
-          Mail::send('email.forgetPassword', ['token' => $token], function($message) use($request){
-
-              $message->to($request->email);
-
-              $message->subject('Reset Password');
-
-          });
-
-  
-
-          return back()->with('message', 'We have e-mailed your password reset link!');
-
+            $token = Str::random(64);
+            DB::table('password_resets')->insert([
+                'email' => $request->email, 
+                'token' => $token, 
+                'created_at' => Carbon::now()
+              ]);
+    
+            Mail::raw('email.forgetPassword', ['token' => $token], function($message) use($request){
+                $message->to($request->email);
+                $message->subject('Reset Password');
+            });
+            return Api::response(null, 'We have e-mailed your password reset link!');
+        } catch (\Exception $e) {
+            // Menangkap dan mengembalikan error database
+            return Api::response(null, 'A database error occurred: ' . $e->getMessage(), 500);
+        }
       }
+
+    
 }

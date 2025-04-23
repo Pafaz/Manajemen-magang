@@ -56,62 +56,62 @@ class PerusahaanService
     }
 
     public function createPerusahaan(array $data)
-{
-    try {
-        $id_user = auth('sanctum')->user()->id;
+    {
+        try {
+            $id_user = auth('sanctum')->user()->id;
 
-        if ($this->PerusahaanInterface->findByUser($id_user)) {
-            return Api::response(null, 'Perusahaan already registered', Response::HTTP_BAD_REQUEST);
-        }
-
-        // Gunakan transaction untuk memastikan integritas data
-        DB::beginTransaction();
-
-        $this->userInterface->update($id_user, [
-            'name' => $data['nama'],
-            'telepon' => $data['telepon'],
-        ]);
-
-        $perusahaan = $this->PerusahaanInterface->create($data);
-
-        $files = [
-            'logo' => 'profile',
-            'npwp' => 'npwp',
-            'surat_legalitas' => 'surat_legalitas',
-        ];
-
-        foreach ($files as $key => $tipe) {
-            if (!empty($data[$key])) {
-                $this->foto->createFoto($data[$key], $perusahaan->id, $tipe);
+            if ($this->PerusahaanInterface->findByUser($id_user)) {
+                return Api::response(null, 'Perusahaan already registered', Response::HTTP_BAD_REQUEST);
             }
+
+            // Gunakan transaction untuk memastikan integritas data
+            DB::beginTransaction();
+
+            $this->userInterface->update($id_user, [
+                'name' => $data['nama'],
+                'telepon' => $data['telepon'],
+            ]);
+
+            $perusahaan = $this->PerusahaanInterface->create($data);
+
+            $files = [
+                'logo' => 'profile',
+                'npwp' => 'npwp',
+                'surat_legalitas' => 'surat_legalitas',
+            ];
+
+            foreach ($files as $key => $tipe) {
+                if (!empty($data[$key])) {
+                    $this->foto->createFoto($data[$key], $perusahaan->id, $tipe);
+                }
+            }
+
+            DB::commit();
+
+            return Api::response(
+                PerusahaanResource::make($perusahaan),
+                'Perusahaan Created Successfully',
+                Response::HTTP_CREATED
+            );
+
+        } catch (QueryException $e) {
+            DB::rollBack();
+            Log::error('DB Error creating Perusahaan: ' . $e->getMessage());
+            return Api::response(
+                null,
+                'Registrasi Perusahaan gagal: ' . $e->getMessage(),
+                Response::HTTP_BAD_REQUEST
+            );
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error('Unexpected error: ' . $e->getMessage());
+            return Api::response(
+                null,
+                'Terjadi kesalahan saat membuat perusahaan.',
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        DB::commit();
-
-        return Api::response(
-            PerusahaanResource::make($perusahaan),
-            'Perusahaan Created Successfully',
-            Response::HTTP_CREATED
-        );
-
-    } catch (QueryException $e) {
-        DB::rollBack();
-        Log::error('DB Error creating Perusahaan: ' . $e->getMessage());
-        return Api::response(
-            null,
-            'Registrasi Perusahaan gagal: ' . $e->getMessage(),
-            Response::HTTP_BAD_REQUEST
-        );
-    } catch (\Throwable $e) {
-        DB::rollBack();
-        Log::error('Unexpected error: ' . $e->getMessage());
-        return Api::response(
-            null,
-            'Terjadi kesalahan saat membuat perusahaan.',
-            Response::HTTP_INTERNAL_SERVER_ERROR
-        );
     }
-}
 
     public function updatePerusahaan(array $data, $id)
     {

@@ -11,4 +11,6 @@ use App\Interfaces\Base\UpdateInterface;
 interface AdminInterface extends CreateInterface, DeleteInterface, FindInterface, GetAllInterface, UpdateInterface
 {
     public function getByCabang(int $id_cabang);
+    
+    public function findByUser($id);
 }

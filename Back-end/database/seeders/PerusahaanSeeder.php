@@ -41,14 +41,14 @@ class PerusahaanSeeder extends Seeder
         Foto::create([
             'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
             'path' => 'uploads/foto/npwp_perusahaan_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
-            'type' => 'npwp_perusahaan',  // Tipe file
+            'type' => 'npwp',  // Tipe file
         ]);
 
         // Menambahkan foto legalitas_perusahaan
         Foto::create([
             'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
             'path' => 'uploads/foto/legalitas_perusahaan_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
-            'type' => 'legalitas_perusahaan',  // Tipe file
+            'type' => 'surat_legalitas',  // Tipe file
         ]);
 
         // Menambahkan foto logo_perusahaan

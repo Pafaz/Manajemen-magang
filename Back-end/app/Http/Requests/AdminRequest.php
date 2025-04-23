@@ -25,9 +25,8 @@ class AdminRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
-            'no_telepon' => 'required|string',
+            'telepon' => 'required|string',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'cabang' => 'required|exists:cabang,id',
         ];
     }
 }

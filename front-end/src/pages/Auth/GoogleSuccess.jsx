@@ -1,25 +1,71 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 const GoogleSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
 
   useEffect(() => {
-    const token = searchParams.get("token");
-    const role = searchParams.get("role");
+    const tokenFromUrl = searchParams.get("token");
+    console.log("token", tokenFromUrl);
 
-    if (token) {
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", role);
-      navigate("/dashboard");
+    try {
+      localStorage.setItem("token", tokenFromUrl.toString());
+    } catch (error) {
+      console.log("error, " + error)
+    }
+    
+    if (tokenFromUrl) {
+      setToken(tokenFromUrl);
+      // localStorage.setItem("token", tokenFromUrl);
+
+      setTimeout(() => {
+        setLoading(false);
+        window.location.href = "http://localhost:5173/perusahaan/dashboard"
+        // navigate("/perusahaan/dashboard");
+      }, 3000);
     } else {
       alert("Login gagal. Token tidak ditemukan.");
-      navigate("/auth/select");
+      // localStorage.removeItem("token");
+      navigate("/auth/SelectAuth");
     }
   }, [navigate, searchParams]);
 
-  return <p className="text-center mt-10">Menyelesaikan proses login...</p>;
+  if (loading) {
+    return (
+      <div className="w-full flex h-screen">
+        <div className="flex-[2] bg-slate-200 animate-pulse py-10 px-5">
+          <div className="bg-slate-300 rounded-xl w-full h-32 animate-pulse"></div>
+          <div className="flex flex-col gap-3 mt-5">
+            {Array(12)
+              .fill(0)
+              .map((_, i) => (
+                <div
+                  key={i}
+                  className="w-full h-10 rounded-lg animate-pulse bg-slate-300"
+                ></div>
+              ))}
+          </div>
+        </div>
+
+        <div className="flex-[8] bg-slate-50 p-6 animate-pulse overflow-y-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Array(4)
+              .fill(0)
+              .map((_, i) => (
+                <div
+                  key={i}
+                  className="w-full h-32 bg-slate-300 rounded-xl animate-pulse"
+                ></div>
+              ))}
+          </div>
+          <div className="bg-slate-200 rounded-xl w-full h-80 mt-5"></div>
+        </div>
+      </div>
+    );
+  }
 };
 
 export default GoogleSuccess;

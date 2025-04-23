@@ -9,9 +9,11 @@ import CabangChart from "../../components/charts/CabangChart";
 import StatistikJurnalChart from "../../components/charts/StatistikJurnalChart";
 import StatistikPendaftarChartMini from "../../components/charts/StatistikPendaftarChartMini"
 import Title from "../../components/Title";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Dashboard = () => {
+  const location = useLocation();
+  localStorage.setItem("location", location.pathname)
   const statsData = [
     {
       title: "Total Cabang",
@@ -39,9 +41,6 @@ const Dashboard = () => {
       data: [3, 5, 4, 6, 2, 3, 4, 2, 5, 3, 4, 5],
     },
   ];
-
-  
-
   return (
     <div className="w-full">
       <AlertVerification />

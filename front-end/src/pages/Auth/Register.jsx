@@ -94,6 +94,19 @@ const Register = () => {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    const redirectUrl = role === "company" ? "perusahaan" : "peserta";
+    try {
+      const response = await axios.get(`http://127.0.0.1:8000/api/auth/${redirectUrl}`);
+      if (response.data && response.data.url) {
+        // console.log(response)
+        window.location.href = response.data.url;
+      }
+    } catch (error) {
+      console.error("Google login gagal:", error);
+    }
+  };
+
   return (
     <div className="w-full h-screen bg-white relative p-8 overflow-hidden">
       <motion.div
@@ -224,7 +237,7 @@ const Register = () => {
         </div>
 
         <div className="flex justify-center gap-4">
-          <button className="w-full border border-blue-500 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out flex gap-2 justify-center">
+          <button onClick={handleGoogleLogin} className="w-full border border-blue-500 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out flex gap-2 justify-center">
             <img
               src="/assets/Auth/Google.png"
               alt="Google"

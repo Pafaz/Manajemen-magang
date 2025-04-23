@@ -17,7 +17,7 @@ class LoginController extends Controller
 
     public function getData(Request $request)
     {
-        return response()->json(['user' => $request->user()],200);
+        return $this->UserService->getData($request->user());
     }
 
     public function login(Request $request)

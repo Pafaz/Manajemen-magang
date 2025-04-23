@@ -8,10 +8,12 @@ import Title from "../../components/Title";
 import RevisionCard from "../../components/cards/RevisionCard";
 import ProjectStats from "../../components/charts/ProjectStats";
 import PresentationHistory from "../../components/cards/PresentationCard";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import PresentationCard from "../../components/cards/PresentationCard";
 
 const Dashboard = () => {
+  const location = useLocation();
+  localStorage.setItem("location", location.pathname) 
   const statsData = [
     {
       title: "Total Absensi",
@@ -75,7 +77,6 @@ const Dashboard = () => {
       statusColor: "text-green-500 bg-green-50",
     },
   ];
-  
 
   return (
     <div className="w-full">

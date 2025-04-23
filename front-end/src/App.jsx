@@ -6,9 +6,9 @@ function App() {
   return (
     <AuthProvider>
       <div className="relative">
-        <CustomCursor/>
+        <CustomCursor />
       </div>
-      <RouterProvider router={router}/>
+      <RouterProvider router={router} />
     </AuthProvider>
   );
 }

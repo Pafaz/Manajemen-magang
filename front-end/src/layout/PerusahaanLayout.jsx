@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 const PerusahaanLayout = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isRinging, setIsRinging] = useState(false);
-  const [openMenu, setOpenMenu] = useState(null); // untuk submenu
+  const [openMenu, setOpenMenu] = useState(null); 
 
   const sidebarMenus = [
     {
@@ -69,8 +69,6 @@ const PerusahaanLayout = () => {
       link: "/perusahaan/settings",
     },
   ];
-  
-
   const footerMenus = ["License", "More Themes", "Documentation", "Support"];
 
   useEffect(() => {

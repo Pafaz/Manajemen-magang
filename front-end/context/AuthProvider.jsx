@@ -11,7 +11,7 @@ export default function AuthProvider({ children }) {
   const getDataUser = () => {
     if (!token) return;
     try {
-      const response = axios.get("/api/getUser", {
+      const response = axios.get("http://127.0.0.1:8000/api/get-user", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -21,7 +21,7 @@ export default function AuthProvider({ children }) {
       if (response.status === 200) {
         setUser(data);
       } else {
-        localStorage.removeItem("token");
+        // localStorage.removeItem("token");
         setUser(null);
         setToken(null);
         setErrors(data.errors || { error: data.error });
@@ -32,13 +32,14 @@ export default function AuthProvider({ children }) {
   };
 
   useEffect(() => {
+    console.log("token", token)
     if (token) {
       getDataUser();
       localStorage.setItem("token", token);
     } else {
-      localStorage.removeItem("token");
+      // localStorage.removeItem("token");
     }
-  }, [token]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ setToken, setUser, user, token, errors }}>

@@ -22,6 +22,10 @@ class UserService
         $this->UserInterface = $UserInterface;
     }
 
+    public function getData($data)
+    {
+       return Api::response($data, 'success get data user', Response::HTTP_OK);
+    }
 
     public function register(array $data, $role)
     {
@@ -74,7 +78,8 @@ class UserService
         );
     }
 
-    public function logout($user){
+    public function logout($user)
+    {
         $user->currentAccessToken()->delete();
         return Api::response(
             null,
@@ -96,7 +101,6 @@ class UserService
     public function resetPassword(array $data)
     {
         $user = $this->UserInterface->find($data['email']);
-
     }
 
     public function updatePassword(array $data)
@@ -132,7 +136,6 @@ class UserService
                 ->stateless()
                 ->redirectUrl($redirectUri)
                 ->user();
-
         } catch (ClientException $e) {
             Log::error("Google Auth Failed: " . $e->getMessage());
             return Api::response(null, 'Autentikasi Google gagal', 401);
@@ -168,7 +171,7 @@ class UserService
         //     'role' => $role
         // ],200);
 
-        return redirect("http://localhost:5173/google/success?token=$token&role=$role");
+        return redirect("http://localhost:5173/auth/google/success?token=$token&role=$role");
     }
 
     // public function handleGoogleCallback(array $data, string $role)

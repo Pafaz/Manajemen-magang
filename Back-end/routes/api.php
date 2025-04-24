@@ -30,6 +30,7 @@ Route::post('/update-password', [ForgotPasswordController::class, 'reset']);
 
 
 
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Peserta
@@ -49,7 +50,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/perusahaan/detail', [PerusahaanController::class, 'show']);
         Route::put('/perusahaan/update', [PerusahaanController::class, 'update']);
         Route::apiResource('cabang', CabangController::class);
-        Route::apiResource('admin/perusahaan', AdminPerusahaanController::class);
+        // Route::apiResource('admin/perusahaan', AdminPerusahaanController::class);
         Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
     });
 

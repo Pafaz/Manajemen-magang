@@ -41,24 +41,15 @@ class UserRepository implements UserInterface
 
     public function update(string $id, array $data): User
     {
-
         return tap(User::findOrFail($id))->update($data);
     }
 
     public function delete($id): void
     {
-        $user = User::find($id);
+        $user = User::findOrFail($id);
     
-        if (!$user) {
-            throw new \Exception('User not found');
-        }
-    
-        // Log sebelum detach
-        Log::info("Detaching roles for user ID: {$id}");
         $user->roles()->detach();
-    
-        // Log sebelum delete
-        Log::info("Deleting user ID: {$id}");
+
         $user->delete();
     }
     

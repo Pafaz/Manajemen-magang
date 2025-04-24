@@ -57,9 +57,6 @@ class AdminService
     public function createAdminCabang(array $data)
     {
         try {
-            // $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
-            // $id_cabang = $this->cabangInterface->getIdCabangByPerusahaan($perusahaan->id)->id;
-    
             $user = $this->userInterface->create([
                 'name' => $data['name'],
                 'email' => $data['email'],

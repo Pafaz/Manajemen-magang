@@ -19,7 +19,7 @@ class AdminRepository implements AdminInterface
 
     public function getByCabang($id_cabang)
     {
-        return Admin_cabang::where('id_cabang', $id_cabang)->first();
+        return Admin_cabang::where('id_cabang', $id_cabang);
     }
 
     public function find($id): ? Admin_cabang
@@ -27,9 +27,9 @@ class AdminRepository implements AdminInterface
         return Admin_cabang::findOrFail($id);
     }
 
-    public function findByUser($id): ? Cabang
+    public function findByUser($id): ? Admin_cabang
     {
-        return Cabang::where('id_cabang', $id)->first();
+        return Admin_cabang::where('id_cabang', $id)->first();
     }
 
     public function create(array $data, $role): ? Model

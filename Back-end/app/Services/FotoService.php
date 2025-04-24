@@ -49,56 +49,53 @@ class FotoService
         return $foto;
     }
 
-    public function updateFoto(int $id, array $data)
+    public function updateFoto($file, $idReferensi, $type)
     {
-        if (!isset($data['file']) || !($data['file'] instanceof \Illuminate\Http\UploadedFile)) {
+        if (!($file instanceof \Illuminate\Http\UploadedFile)) {
             throw new \InvalidArgumentException('Invalid file upload.');
         }
 
         DB::beginTransaction();
+
         try {
-            // Store the new file
             $uuid = Str::uuid()->toString();
-            $ext = $data['file']->getClientOriginalExtension();
-            $path = $data['file']->storeAs("foto/{$data['type']}/{$data['id_referensi']}", "{$uuid}.{$ext}", 'public');
+            $ext = $file->getClientOriginalExtension();
+            $path = $file->storeAs("{$type}/{$idReferensi}", "{$uuid}.{$ext}", 'public');
 
-            // Find the existing photo
-            $foto = $this->FotoInterface->find($id);
+            $foto = $this->FotoInterface->getByTypeandReferenceId($type, $idReferensi);
             if (!$foto) {
-                return Api::response(
-                    null,
-                    'Foto not found',
-                    Response::HTTP_NOT_FOUND
-                );
+                return Api::response(null, 'Foto not found', Response::HTTP_NOT_FOUND);
+            }
+                
+            if (!$foto) {
+                $this->FotoInterface->create([
+                    'id_referensi' => $idReferensi,
+                    'type' => $type,
+                    'path' => $path,
+                ]);
+            } else {
+                if (Storage::disk('public')->exists($foto->path)) {
+                    Storage::disk('public')->delete($foto->path);
+                }
+
+                $this->FotoInterface->update($foto->id, [
+                    'path' => $path,
+                ]);
             }
 
-            // Delete the old file if it exists
-            if (Storage::disk('public')->exists($foto->path)) {
-                Storage::disk('public')->delete($foto->path);
-            }
-
-            // Update the photo record
-            $foto = $this->FotoInterface->update($id, [
-                'id_referensi' => $data['id_referensi'],
-                'type' => $data['type'],
+            $updated = $this->FotoInterface->update($foto->id, [
                 'path' => $path,
             ]);
 
             DB::commit();
-            return Api::response(
-                null,
-                'Foto updated successfully',
-                Response::HTTP_OK
-            );
+
+            return $updated;
         } catch (\Exception $e) {
             DB::rollBack();
-            return Api::response(
-                null,
-                'Failed to update foto: ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return Api::response(null, 'Failed to update foto: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public function deleteFoto(int $id)
     {

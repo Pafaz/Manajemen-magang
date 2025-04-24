@@ -12,9 +12,23 @@ class CabangRequest extends BaseFormRequest
      */
     public function rules(): array
     {
+        if ($this->isUpdate()) {
+            return [
+                'bidang_usaha' => 'sometimes|string',
+                'provinsi' => 'sometimes|string',
+                'kota' => 'sometimes|string',
+                'instagram' => 'sometimes|string',
+                'website' => 'sometimes|string',
+                'linkedin' => 'sometimes|string',
+            ];
+        }
         return [
-            'name' => 'required|string|max:255',
-            'alamat' => 'required|string',
+            'bidang_usaha' => 'required|string',
+            'provinsi' => 'required|string',
+            'kota' => 'required|string',
+            'instagram' => 'required|string',
+            'website' => 'required|string',
+            'linkedin' => 'required|string',
         ];
     }
 }

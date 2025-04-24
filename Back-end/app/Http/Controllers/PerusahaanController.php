@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PerusahaanRequest;
+use App\Helpers\Api;
 use App\Models\Perusahaan;
 use App\Services\PerusahaanService;
+use App\Http\Requests\PerusahaanRequest;
+use App\Http\Resources\PerusahaanResource;
+use Symfony\Component\HttpFoundation\Response;
 
 class PerusahaanController extends Controller
 {
@@ -35,7 +38,9 @@ class PerusahaanController extends Controller
      */
     public function store(PerusahaanRequest $request)
     {
-        return $this->perusahaanService->LengkapiProfilPerusahaan($request->validated());
+    $perusahaan = $this->perusahaanService->simpanProfil($request->all(), false);
+
+    return Api::response(new PerusahaanResource($perusahaan), 'Profil perusahaan berhasil dilengkapi', Response::HTTP_CREATED);
     }
 
     /**
@@ -56,9 +61,12 @@ class PerusahaanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PerusahaanRequest $request,  $id)
+    public function update(PerusahaanRequest $request)
     {
-        return $this->perusahaanService->updateProfilePerusahaan($request->validated(), $id);
+
+        $perusahaan = $this->perusahaanService->simpanProfil($request->all(), true);
+    
+        return Api::response(new PerusahaanResource($perusahaan), 'Profil perusahaan berhasil diperbarui', Response::HTTP_OK);
     }
     
 

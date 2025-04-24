@@ -1,33 +1,81 @@
-import { useState } from 'react';
-import { Calendar, Upload } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Calendar, Upload } from "lucide-react";
 
 export default function CompanyRegistrationForm() {
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState("");
+  const [districts, setDistricts] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
+
   const [formData, setFormData] = useState({
     // General Company Data
-    ownerName: '',
-    ownerPhone: '',
-    ownerPosition: '',
-    ownerEmail: '',
-    companyName: '',
-    dateEstablished: '',
-    businessField: '',
+    ownerName: "",
+    ownerPhone: "",
+    ownerPosition: "",
+    ownerEmail: "",
+    companyName: "",
+    dateEstablished: "",
+    businessField: "",
 
     // Contact Information
-    companyAddress: '',
-    province: '',
-    city: '',
-    postalCode: '',
-    website: '',
-    companyEmail: '',
-    companyPhone: '',
+    companyAddress: "",
+    province: "",
+    city: "",
+    postalCode: "",
+    district: "",
+    website: "",
+    companyEmail: "",
+    companyPhone: "",
   });
 
+  useEffect(() => {
+    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
+      .then((response) => response.json())
+      .then((data) => setProvinces(data))
+      .catch((error) => console.error("Error fetching provinces:", error));
+  }, []);
+
+  // Ambil data kota berdasarkan provinsi yang dipilih
+  const handleProvinceChange = (event) => {
+    const provinceId = event.target.value;
+    setSelectedProvince(provinceId);
+    setSelectedCity(""); // Reset kota jika provinsi berubah
+
+    if (provinceId) {
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`
+      )
+        .then((response) => response.json())
+        .then((data) => setCities(data))
+        .catch((error) => console.error("Error fetching cities:", error));
+    }
+  };
+
+  // Ambil data kecamatan berdasarkan kota yang dipilih
+  const handleCityChange = (event) => {
+    const cityId = event.target.value;
+    setSelectedCity(cityId);
+
+    if (cityId) {
+      fetch(
+        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${cityId}.json`
+      )
+        .then((response) => response.json())
+        .then((data) => setDistricts(data))
+        .catch((error) => console.error("Error fetching districts:", error));
+    }
+  };
+
+  // Handle perubahan form
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "province" && { city: "", district: "" }), // Reset kota dan kecamatan kalau provinsi berubah
+      ...(name === "city" && { district: "" }), // Reset kecamatan kalau kota berubah
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -41,16 +89,22 @@ export default function CompanyRegistrationForm() {
       <form onSubmit={handleSubmit}>
         {/* Header Section */}
         <div className="mb-6">
-          <h1 className="text-xl font-bold text-gray-800">Data Umum Perusahaan</h1>
-          <p className="text-sm text-gray-500">Silahkan Lengkapi Data Terlebih Dahulu</p>
+          <h1 className="text-xl font-bold text-gray-800">
+            Data Umum Perusahaan
+          </h1>
+          <p className="text-sm text-gray-500">
+            Silahkan Lengkapi Data Terlebih Dahulu
+          </p>
         </div>
 
         <div className="border-t border-gray-200 my-6"></div>
 
         {/* General Company Data Section */}
         <div className="mb-8">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Data Umum Perusahaan</h2>
-          
+          <h2 className="text-lg font-bold text-gray-800 mb-4">
+            Data Umum Perusahaan
+          </h2>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -167,43 +221,40 @@ export default function CompanyRegistrationForm() {
               </select>
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-3 mt-5">
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              name=""
+              id=""
+              placeholder="Deskripsi Perusahaan"
+            ></textarea>
+          </div>
         </div>
 
         {/* Contact Information Section */}
         <div className="mb-8">
-          <h2 className="text-lg font-bold text-gray-800 mb-4">Kontak Perusahaan</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Alamat Perusahaan<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="companyAddress"
-                placeholder="Masukkan Alamat"
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={formData.companyAddress}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <h2 className="text-lg font-bold text-gray-800 mb-4">
+            Kontak Perusahaan
+          </h2>
 
-            <div className="space-y-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 Provinsi<span className="text-red-500">*</span>
               </label>
               <select
                 name="province"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                value={formData.province}
-                onChange={handleChange}
+                value={selectedProvince}
+                onChange={handleProvinceChange}
                 required
               >
                 <option value="">Pilih Provinsi</option>
-                <option value="dki">DKI Jakarta</option>
-                <option value="jabar">Jawa Barat</option>
-                <option value="jatim">Jawa Timur</option>
+                {provinces.map((province) => (
+                  <option key={province.id} value={province.id}>
+                    {province.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -214,14 +265,36 @@ export default function CompanyRegistrationForm() {
               <select
                 name="city"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-                value={formData.city}
+                value={selectedCity}
+                onChange={handleCityChange}
+                required
+              >
+                <option value="#">Pilih Kabupaten/Kota</option>
+                {cities.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Kecamatan<span className="text-red-500">*</span>
+              </label>
+              <select
+                name="city"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                value={formData.district}
                 onChange={handleChange}
                 required
               >
-                <option value="">Pilih Kabupaten/Kota</option>
-                <option value="jakarta">Jakarta</option>
-                <option value="bandung">Bandung</option>
-                <option value="surabaya">Surabaya</option>
+                <option value="#">Pilih Kecamatan</option>
+                {districts.map((district) => (
+                  <option key={district.id} value={district.id}>
+                    {district.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -235,21 +308,6 @@ export default function CompanyRegistrationForm() {
                 placeholder="Masukkan Kode Pos"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={formData.postalCode}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Website Perusahaan<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name="website"
-                placeholder="Website Perusahaan"
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={formData.website}
                 onChange={handleChange}
                 required
               />
@@ -283,19 +341,44 @@ export default function CompanyRegistrationForm() {
                 onChange={handleChange}
                 required
               />
+            </div>  
+
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700">
+                Website Perusahaan<span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                name="website"
+                placeholder="Website Perusahaan"
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={formData.website}
+                onChange={handleChange}
+                required
+              />
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-3 mt-5">
+            <textarea
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              name=""
+              id=""
+              placeholder="Alamat Perusahaan"
+            ></textarea>
           </div>
         </div>
 
         {/* Document Upload Section */}
         <div className="mb-8">
           <div className="relative">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">Dokumen Pendukung (opsional)</h2>
+            <h2 className="text-lg font-bold text-gray-800 mb-4">
+              Dokumen Pendukung (opsional)
+            </h2>
             <div className="absolute top-0 right-0 bg-green-500 text-white rounded-full h-6 w-6 flex items-center justify-center">
               <span>A</span>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -303,10 +386,14 @@ export default function CompanyRegistrationForm() {
               </label>
               <div className="flex flex-col gap-2">
                 <div className="border border-gray-300 rounded-md p-2 flex items-center justify-between">
-                  <button className="text-sm px-4 py-1 bg-blue-100 text-blue-700 rounded-md">Choose File</button>
+                  <button className="text-sm px-4 py-1 bg-blue-100 text-blue-700 rounded-md">
+                    Choose File
+                  </button>
                   <span className="text-sm text-gray-500">No File Chosen</span>
                 </div>
-                <p className="text-xs text-red-500">*Foto Harus Berformat .jpg, .jpeg, atau .png</p>
+                <p className="text-xs text-red-500">
+                  *Foto Harus Berformat .jpg, .jpeg, atau .png
+                </p>
               </div>
             </div>
 
@@ -316,10 +403,14 @@ export default function CompanyRegistrationForm() {
               </label>
               <div className="flex flex-col gap-2">
                 <div className="border border-gray-300 rounded-md p-2 flex items-center justify-between">
-                  <button className="text-sm px-4 py-1 bg-blue-100 text-blue-700 rounded-md">Choose File</button>
+                  <button className="text-sm px-4 py-1 bg-blue-100 text-blue-700 rounded-md">
+                    Choose File
+                  </button>
                   <span className="text-sm text-gray-500">No File Chosen</span>
                 </div>
-                <p className="text-xs text-red-500">*Foto Harus Berformat .jpg, .jpeg, atau .png</p>
+                <p className="text-xs text-red-500">
+                  *Foto Harus Berformat .jpg, .jpeg, atau .png
+                </p>
               </div>
             </div>
 
@@ -329,18 +420,22 @@ export default function CompanyRegistrationForm() {
               </label>
               <div className="flex flex-col gap-2">
                 <div className="border border-gray-300 rounded-md p-2 flex items-center justify-between">
-                  <button className="text-sm px-4 py-1 bg-blue-100 text-blue-700 rounded-md">Choose File</button>
+                  <button className="text-sm px-4 py-1 bg-blue-100 text-blue-700 rounded-md">
+                    Choose File
+                  </button>
                   <span className="text-sm text-gray-500">No File Chosen</span>
                 </div>
-                <p className="text-xs text-red-500">*Foto Harus Berformat .jpg, .jpeg, atau .png</p>
+                <p className="text-xs text-red-500">
+                  *Foto Harus Berformat .jpg, .jpeg, atau .png
+                </p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="flex justify-end">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Submit

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Cabang;
 use App\Models\Foto;
 use App\Models\User;
 use App\Models\Perusahaan;
@@ -25,7 +26,7 @@ class PerusahaanSeeder extends Seeder
 
         $perusahaan->assignRole('perusahaan');
 
-        Perusahaan::create([
+        $perusahaan_record = Perusahaan::create([
             'id' => Str::uuid(),  // Membuat UUID baru
             'id_user' => $perusahaan->id,  // Menyambungkan perusahaan ke user pertama
             'deskripsi' => 'Perusahaan teknologi yang bergerak di bidang software development dan IT consulting.',
@@ -61,6 +62,12 @@ class PerusahaanSeeder extends Seeder
             'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
             'path' => 'uploads/foto/profile_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
             'type' => 'profile',  // Tipe file
+        ]);
+
+        Cabang::create([
+            'name' => 'Cabang 1',
+            'alamat' => 'Jl. Cabang 1, Jakarta',
+            'id_perusahaan' => $perusahaan_record->id
         ]);
     }
 }

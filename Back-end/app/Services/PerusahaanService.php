@@ -3,16 +3,13 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\FotoResource;
 use App\Http\Resources\PerusahaanDetailResource;
 use App\Services\FotoService;
-use App\Interfaces\FotoInterface;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\PerusahaanInterface;
 use Illuminate\Database\QueryException;
 use App\Http\Resources\PerusahaanResource;
 use App\Interfaces\UserInterface;
-use App\Models\User;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
 

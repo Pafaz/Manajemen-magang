@@ -2,8 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\UserInterface;
 use App\Models\User;
+use App\Interfaces\UserInterface;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository implements UserInterface
@@ -25,7 +26,7 @@ class UserRepository implements UserInterface
 
     public function findId(string $id): ? User
     {
-        return User::where('id' , $id)->first();
+        return User::findOrFail($id);
     }
 
     public function create(array $data): User
@@ -44,8 +45,21 @@ class UserRepository implements UserInterface
         return tap(User::findOrFail($id))->update($data);
     }
 
-    public function delete(int $id): void
+    public function delete($id): void
     {
-        User::findOrFail($id)->delete();
+        $user = User::find($id);
+    
+        if (!$user) {
+            throw new \Exception('User not found');
+        }
+    
+        // Log sebelum detach
+        Log::info("Detaching roles for user ID: {$id}");
+        $user->roles()->detach();
+    
+        // Log sebelum delete
+        Log::info("Deleting user ID: {$id}");
+        $user->delete();
     }
+    
 }

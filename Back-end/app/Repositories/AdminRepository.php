@@ -6,7 +6,9 @@ use App\Models\Cabang;
 use Illuminate\Support\Str;
 use App\Models\Admin_cabang;
 use App\Interfaces\AdminInterface;
+use App\Models\Admin_perusahaan;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class AdminRepository implements AdminInterface
 {
@@ -20,9 +22,9 @@ class AdminRepository implements AdminInterface
         return Admin_cabang::where('id_cabang', $id_cabang)->first();
     }
 
-    public function find(int $id): ? Admin_cabang
+    public function find($id): ? Admin_cabang
     {
-        return Admin_cabang::findOrFail($id)->first();
+        return Admin_cabang::findOrFail($id);
     }
 
     public function findByUser($id): ? Cabang
@@ -30,8 +32,12 @@ class AdminRepository implements AdminInterface
         return Cabang::where('id_cabang', $id)->first();
     }
 
-    public function create(array $data): ? Admin_cabang
-    {       
+    public function create(array $data, $role): ? Model
+    {
+        if ($role == 'perusahaan') {
+            return Admin_perusahaan::create($data);
+        }
+        
         return Admin_cabang::create($data);
     }
 
@@ -42,7 +48,7 @@ class AdminRepository implements AdminInterface
         return $admin_cabang;
     }
 
-    public function delete(int $id): void
+    public function delete($id): void
     {
         Admin_cabang::findOrFail($id)->delete();
     }

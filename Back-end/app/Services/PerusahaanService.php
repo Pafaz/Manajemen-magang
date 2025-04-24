@@ -137,6 +137,11 @@ class PerusahaanService
     public function deletePerusahaan($id)
     {
         $this->PerusahaanInterface->delete($id);
+
+        $id_user = $this->PerusahaanInterface->find($id)->id_user;
+        
+        $this->userInterface->delete($id_user);
+
         return Api::response(
             null,
             'Perusahaan Deleted Successfully',

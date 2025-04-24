@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('magang', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
-            $table->uuid('id_mentor');
+            $table->uuid('id_mentor')->nullable();
             $table->unsignedBigInteger('id_divisi_cabang');
             $table->enum('tipe', ['offline', 'online']);
             $table->enum('status', ['menunggu', 'diterima', 'ditolak'])->default('menunggu');

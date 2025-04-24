@@ -41,6 +41,7 @@ return new class extends Migration
             $table->string('alamat');
             $table->string('provinsi');
             $table->string('kota');
+            $table->string('kecamatan');
             $table->string('kode_pos');
             $table->string('website');
             $table->string('bidang_usaha');

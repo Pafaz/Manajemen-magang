@@ -14,13 +14,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
 
 
-class PerusahaanService 
+class PerusahaanService
 {
     private PerusahaanInterface $PerusahaanInterface;
     private FotoService $foto;
     private UserInterface $userInterface;
 
-    public function __construct(PerusahaanInterface $PerusahaanInterface, FotoService $foto, UserInterface $userInterface){
+    public function __construct(PerusahaanInterface $PerusahaanInterface, FotoService $foto, UserInterface $userInterface)
+    {
         $this->PerusahaanInterface = $PerusahaanInterface;
         $this->foto = $foto;
         $this->userInterface = $userInterface;
@@ -31,7 +32,7 @@ class PerusahaanService
         $data = $this->PerusahaanInterface->getAll();
         return Api::response(
             PerusahaanResource::collection($data),
-            'Perusahaan Fetched Successfully', 
+            'Perusahaan Fetched Successfully',
         );
     }
 
@@ -40,31 +41,32 @@ class PerusahaanService
         $data = $this->PerusahaanInterface->find($id);
         return Api::response(
             PerusahaanDetailResource::make($data),
-            'Perusahaan Fetched Successfully', 
+            'Perusahaan Fetched Successfully',
         );
     }
 
-    public function getPerusahaanByAuth(){
+    public function getPerusahaanByAuth()
+    {
         $data = $this->PerusahaanInterface->findByUser(auth('sanctum')->user()->id);
         return Api::response(
             PerusahaanDetailResource::make($data),
-            'Perusahaan Fetched Successfully', 
+            'Perusahaan Fetched Successfully',
         );
     }
 
-    public function createPerusahaan(array $data)
+    public function LengkapiProfilPerusahaan(array $data)
     {
         try {
-            $id_user = auth('sanctum')->user()->id;
+            $user = auth('sanctum')->user();
 
-            if ($this->PerusahaanInterface->findByUser($id_user)) {
+            if ($user->perusahaan) {
                 return Api::response(null, 'Perusahaan already registered', Response::HTTP_BAD_REQUEST);
             }
 
             // Gunakan transaction untuk memastikan integritas data
             DB::beginTransaction();
 
-            $this->userInterface->update($id_user, [
+            $this->userInterface->update($user->id, [
                 'name' => $data['nama'],
                 'telepon' => $data['telepon'],
             ]);
@@ -87,10 +89,9 @@ class PerusahaanService
 
             return Api::response(
                 PerusahaanResource::make($perusahaan),
-                'Perusahaan Created Successfully',
+                'Complete Company Profile Successfully',
                 Response::HTTP_CREATED
             );
-
         } catch (QueryException $e) {
             DB::rollBack();
             Log::error('DB Error creating Perusahaan: ' . $e->getMessage());
@@ -104,15 +105,27 @@ class PerusahaanService
             Log::error('Unexpected error: ' . $e->getMessage());
             return Api::response(
                 null,
-                'Terjadi kesalahan saat membuat perusahaan.',
+                'Terjadi kesalahan saat melengkapi profil perusahaan.',
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
 
-    public function updatePerusahaan(array $data, $id)
+    public function updateProfilePerusahaan(array $data, $id)
     {
-        $Perusahaan = $this->PerusahaanInterface->update($id, $data);
+        $user = auth('sanctum')->user();
+
+        $userData = array_filter([
+            'name' => $data['nama'] ?? null,
+            'telepon' => $data['telepon'] ?? null,
+            'email' => $data['email'] ?? null,
+        ]);
+
+        if (!empty($userData)) {
+            $this->userInterface->update($user->id, $userData);
+        }
+
+        $Perusahaan = $this->PerusahaanInterface->update($id, array_filter($data));
         return Api::response(
             PerusahaanResource::make($Perusahaan),
             'Perusahaan Updated Successfully',
@@ -120,7 +133,8 @@ class PerusahaanService
         );
     }
 
-    public function deletePerusahaan( $id)
+
+    public function deletePerusahaan($id)
     {
         $this->PerusahaanInterface->delete($id);
         return Api::response(
@@ -129,5 +143,4 @@ class PerusahaanService
             Response::HTTP_OK
         );
     }
-
 }

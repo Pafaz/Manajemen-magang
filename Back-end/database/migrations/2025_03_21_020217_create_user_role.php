@@ -31,19 +31,22 @@ return new class extends Migration
 
         Schema::create('perusahaan', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('id_user');
+            $table->uuid('id_user')->index();
+            $table->string('nama_penanggung_jawab');
+            $table->string('nomor_penanggung_jawab');
+            $table->string('jabatan_penanggung_jawab');
+            $table->string('email_penanggung_jawab');
+            $table->date('tanggal_berdiri');
             $table->string('deskripsi');
+            $table->string('alamat');
             $table->string('provinsi');
             $table->string('kota');
-            $table->string('alamat');
             $table->string('kode_pos');
             $table->string('website');
-            $table->string('instagram');
             $table->string('bidang_usaha');
             $table->boolean('is_premium')->default(false);
             $table->boolean('is_active')->default(true);
             $table->integer('cabang_limit')->default(1);
-            $table->integer('admin_limit')->default(1);
             $table->timestamps();
 
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');

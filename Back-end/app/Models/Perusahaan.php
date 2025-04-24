@@ -18,20 +18,28 @@ class Perusahaan extends Model
     
     protected $fillable = [
         'id_user',
-        'nama',
         'deskripsi',
         'provinsi',
         'kota',
         'alamat',
         'kode_pos',
-        'instagram',
         'bidang_usaha',
         'website',
         'is_premium',
         'is_active',
         'cabang_limit',
         'admin_limit',
+        'nama_penanggung_jawab',
+        'nomor_penanggung_jawab',
+        'jabatan_penanggung_jawab',
+        'email_penanggung_jawab',
+        'tanggal_berdiri',
     ];
+
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi', 'id');
+    }
     public function user()
     {
         return $this->hasMany(User::class, 'id_user', 'id');

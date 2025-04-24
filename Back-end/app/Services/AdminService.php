@@ -3,17 +3,17 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Requests\AdminRequest;
 use Illuminate\Support\Str;
 use App\Services\FotoService;
-use Illuminate\Http\Response;
 use App\Interfaces\UserInterface;
 use App\Interfaces\AdminInterface;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\AdminRequest;
 use App\Interfaces\CabangInterface;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\AdminResource;
 use App\Interfaces\PerusahaanInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminService
 {

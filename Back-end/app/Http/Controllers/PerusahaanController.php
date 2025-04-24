@@ -35,7 +35,7 @@ class PerusahaanController extends Controller
      */
     public function store(PerusahaanRequest $request)
     {
-        return $this->perusahaanService->createPerusahaan($request->validated());
+        return $this->perusahaanService->LengkapiProfilPerusahaan($request->validated());
     }
 
     /**
@@ -58,7 +58,7 @@ class PerusahaanController extends Controller
      */
     public function update(PerusahaanRequest $request,  $id)
     {
-        return $this->perusahaanService->updatePerusahaan($request->validated(), $id);
+        return $this->perusahaanService->updateProfilePerusahaan($request->validated(), $id);
     }
     
 

@@ -77,7 +77,7 @@ const Dashboard = () => {
 
         {/* KANAN */}
         <div className="flex-[3] flex flex-col gap-5">
-          <Card>
+          <Card className="mt-0">
             <div className="border-b border-slate-400/[0.5] py-3">
               <Title className="ml-5">Statistik Cabang</Title>
             </div>

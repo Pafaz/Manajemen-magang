@@ -65,8 +65,12 @@ class PerusahaanSeeder extends Seeder
         ]);
 
         Cabang::create([
-            'name' => 'Cabang 1',
-            'alamat' => 'Jl. Cabang 1, Jakarta',
+            'bidang_usaha' => $perusahaan_record->bidang_usaha,
+            'provinsi' => 'Jawa Timur',
+            'kota' => 'Surabaya',
+            'website' => 'https://www.google.com',
+            'instagram' => 'https://www.google.com',
+            'linkedin' => 'https://www.google.com',
             'id_perusahaan' => $perusahaan_record->id
         ]);
     }

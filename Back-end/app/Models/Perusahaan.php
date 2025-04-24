@@ -24,6 +24,7 @@ class Perusahaan extends Model
         'kecamatan',
         'alamat',
         'kode_pos',
+        
         'bidang_usaha',
         'website',
         'is_premium',

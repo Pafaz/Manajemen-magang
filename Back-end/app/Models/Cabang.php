@@ -13,8 +13,12 @@ class Cabang extends Model
 
     protected $table = 'cabang';
     protected $fillable = [
-        'name',
-        'alamat',
+        'bidang_usaha',
+        'provinsi',
+        'kota',
+        'website',
+        'instagram',
+        'linkedin',
         'id_perusahaan'
     ];
 

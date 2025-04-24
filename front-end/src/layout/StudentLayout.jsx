@@ -46,15 +46,13 @@ const StudentLayout = () => {
         />
         <div className="flex flex-col gap-3 mt-8">
           {sidebarMenus.slice(0, -1).map((menu, idx) => {
-            const isActive = location.pathname.includes(
-              `/siswa/${menu.link}`
-            );
+            const isActive = location.pathname.includes(`/student/${menu.link}`);
 
             if (menu.label === "Presentasi") {
               return (
                 <div key={idx}>
                   <Link
-                    to={`/student/presentasi`}
+                    to={`/siswa/presentasi`}
                     onClick={() => setIsPresentasiOpen(!isPresentasiOpen)}
                     className={`w-full px-4 py-2 rounded-lg flex justify-between items-center gap-3 transition-all duration-500 ease-in-out ${
                       isPresentasiOpen && location
@@ -76,20 +74,24 @@ const StudentLayout = () => {
                   {isPresentasiOpen && (
                     <div className="ml-2 mt-2 flex flex-col gap-2">
                       <Link
-                        to="/student/detail-presentasi"
+                        to="/siswa/detail-presentasi"
                         className={`${
-                          isActive  ? "text-sky-500" : ""
-                        } text-slate-500 text-sm hover:text-sky-500 px-3 py-1 rounded transition flex gap-2 font-light`}
+                          location.pathname.includes("detail-presentasi")
+                            ? "text-sky-500"
+                            : "text-slate-500"
+                        } text-sm hover:text-sky-500 px-3 py-1 rounded transition flex gap-2 font-light`}
                       >
-                        <i class="bi bi-info-circle"></i> Detail Prensentasi
+                        <i className="bi bi-info-circle"></i> Detail Presentasi
                       </Link>
                       <Link
-                        to="/student/riwayat-presentasi"
+                        to="/siswa/riwayat-presentasi"
                         className={`${
-                          isActive ? "text-sky-500" : ""
-                        } text-slate-500 text-sm hover:text-sky-500 px-3 py-1 rounded transition flex gap-2 font-light`}
+                          location.pathname.includes("riwayat-presentasi")
+                            ? "text-sky-500"
+                            : "text-slate-500"
+                        } text-sm hover:text-sky-500 px-3 py-1 rounded transition flex gap-2 font-light`}
                       >
-                        <i class="bi bi-hourglass"></i> Riwayat Presentasi
+                        <i className="bi bi-hourglass"></i> Riwayat Presentasi
                       </Link>
                     </div>
                   )}
@@ -99,11 +101,11 @@ const StudentLayout = () => {
 
             return (
               <Link
-                to={`/student/${menu.link}`}
+                to={`/siswa/${menu.link}`}
                 key={idx}
                 onClick={() => setIsPresentasiOpen(false)}
                 className={`px-4 py-2 rounded-lg flex gap-3 items-center transition-all duration-500 ease-in-out ${
-                  isActive && !isPresentasiOpen
+                  isActive
                     ? "bg-sky-800 text-white"
                     : "text-slate-500 hover:text-white hover:bg-sky-800"
                 }`}
@@ -117,9 +119,7 @@ const StudentLayout = () => {
           <div className="bg-slate-400/[0.5] w-full h-0.5 rounded-full"></div>
 
           {sidebarMenus.slice(-1).map((menu, idx) => {
-            const isActive = location.pathname.includes(
-              `/student/${menu.link}`
-            );
+            const isActive = location.pathname.includes(`/student/${menu.link}`);
             return (
               <Link
                 to={`/student/${menu.link}`}
@@ -192,7 +192,7 @@ const StudentLayout = () => {
           <div className="mt-3">
             <div className="bg-white rounded-t-xl px-5 py-4 w-full flex justify-between">
               <div className="text-slate-400 font-normal text-sm">
-                © Copyright Edmate 2024, All Right Reserverd
+                © Copyright Edmate 2024, All Right Reserved
               </div>
               <div className="flex gap-5">
                 {footerMenus.map((item, i) => (

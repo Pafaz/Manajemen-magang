@@ -549,7 +549,6 @@ const Calendar = () => {
         </div>
       )}
       
-      {/* Modal for event details */}
       {showDetailModal && selectedEvent && (
         <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
           <div

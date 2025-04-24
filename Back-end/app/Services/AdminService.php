@@ -3,17 +3,17 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Requests\AdminRequest;
 use Illuminate\Support\Str;
 use App\Services\FotoService;
-use Illuminate\Http\Response;
 use App\Interfaces\UserInterface;
 use App\Interfaces\AdminInterface;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\AdminRequest;
 use App\Interfaces\CabangInterface;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\AdminResource;
 use App\Interfaces\PerusahaanInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminService
 {
@@ -52,8 +52,8 @@ class AdminService
     {
         try {
             $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
+            dd( $perusahaan);
             $id_cabang = $this->cabangInterface->getIdCabangByPerusahaan($perusahaan->id)->id;
-    
             $user = $this->userInterface->create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -71,13 +71,8 @@ class AdminService
                 'id_user' => $id_user,
             ]);
 
-            $files = [
-                'foto' => 'profile',
-            ];
-            foreach ($files as $key => $tipe) {
-                if (!empty($data[$key])) {
-                    $this->foto->createFoto($data[$key], $admin->id, $tipe);
-                }
+            if (!empty($data['foto'])) {
+                $this->foto->createFoto($data['foto'], $admin->id, 'profile');
             }
             return Api::response(
                 AdminResource::make($admin),
@@ -146,16 +141,7 @@ class AdminService
             $id_user = $admin->id_user;
     
             $this->adminInterface->delete($id);
-    
-            $userDeleted = $this->userInterface->delete($id_user);
-    
-            if (!$userDeleted) {
-                return Api::response(
-                    null,
-                    'Failed to delete the associated user',
-                    Response::HTTP_INTERNAL_SERVER_ERROR
-                );
-            }
+            $this->userInterface->delete($id_user);
     
             return Api::response(
                 null,

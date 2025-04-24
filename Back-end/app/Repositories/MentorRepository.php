@@ -23,9 +23,11 @@ class MentorRepository implements MentorInterface
         return Mentor::create($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Mentor
     {
-        return Mentor::where('id', $id)->update($data);
+        $mentor = Mentor::findOrFail($id);
+        $mentor->update($data);
+        return $mentor;
     }
 
     public function delete(int $id): void

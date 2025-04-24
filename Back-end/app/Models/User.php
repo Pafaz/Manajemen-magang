@@ -59,13 +59,23 @@ class User extends Authenticatable
         ];
     }
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
-
-    //     static::creating(function ($model) {
-    //         $model->id = (string) Str::uuid();
-    //     });
-    // }
+    public function perusahaan()
+    {
+        return $this->hasOne(Perusahaan::class, 'id_user', 'id');
+    }
     
+    public function peserta()
+    {
+        return $this->hasOne(Peserta::class, 'id_user', 'id');
+    }
+
+    public function admin_cabang()
+    {
+        return $this->hasOne(Admin_cabang::class, 'id_user', 'id');
+    }
+
+    public function mentor()
+    {
+        return $this->hasOne(Mentor::class, 'id_user', 'id');
+    }
 }

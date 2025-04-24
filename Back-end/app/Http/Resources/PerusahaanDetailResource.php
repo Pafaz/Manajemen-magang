@@ -25,7 +25,7 @@ class PerusahaanDetailResource extends JsonResource
             'website' => $this->website,
             'user' => new UserResource($this->user),
             'cabang' => CabangResource::collection($this->cabang),
-            // 'foto' => FotoResource::collection($this->foto),
+            'foto' => FotoResource::collection($this->foto),
         ];
     }
 }

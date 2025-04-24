@@ -20,7 +20,7 @@ class PerusahaanRepository implements PerusahaanInterface
 
     public function findByUser($id): ? Perusahaan
     {
-        return Perusahaan::where('id_user' , $id)->first();
+        return Perusahaan::where('id_user' , $id)->with('cabang')->first();
     }
 
     public function create(array $data): ? Perusahaan
@@ -34,7 +34,11 @@ class PerusahaanRepository implements PerusahaanInterface
             'bidang_usaha' => $data['bidang_usaha'],
             'kode_pos' => $data['kode_pos'],
             'website' => $data['website'],
-            'instagram' => $data['instagram'],
+            'nama_penanggung_jawab' => $data['nama_penanggung_jawab'],
+            'nomor_penanggung_jawab' => $data['nomor_penanggung_jawab'],
+            'jabatan_penanggung_jawab' => $data['jabatan_penanggung_jawab'],
+            'email_penanggung_jawab' => $data['email_penanggung_jawab'],
+            'tanggal_berdiri' => $data['tanggal_berdiri'],
         ]);
     }
 

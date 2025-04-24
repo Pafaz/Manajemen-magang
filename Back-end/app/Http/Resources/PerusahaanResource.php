@@ -17,13 +17,17 @@ class PerusahaanResource extends JsonResource
         return [
             'id' => $this->id,
             'deskripsi' => $this->deskripsi,
+            'alamat' => $this->alamat,
             'provinsi' => $this->provinsi,
             'kota' => $this->kota,
-            'alamat' => $this->alamat,
             'kode_pos' => $this->kode_pos,
-            'instagram' => $this->instagram,
             'website' => $this->website,
-            'user' => new UserResource($this->user),
+            'bidang_usaha' => $this->bidang_usaha,
+            'tanggal_berdiri' => $this->tanggal_berdiri,
+            'nama_penanggung_jawab' => $this->nama_penanggung_jawab,
+            'nomor_penanggung_jawab' => $this->nomor_penanggung_jawab,
+            'jabatan_penanggung_jawab' => $this->jabatan_penanggung_jawab,
+            'email_penanggung_jawab' => $this->email_penanggung_jawab,
         ];
     }
 }

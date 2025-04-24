@@ -34,8 +34,12 @@ class PerusahaanSeeder extends Seeder
             'alamat' => 'Jl. Teknologi No.1, Jakarta',
             'kode_pos' => '12345',
             'website' => 'https://www.perusahaan-example.com',
-            'instagram' => 'https://www.instagram.com/perusahaan_example',
             'bidang_usaha' => 'Software Development',
+            'nama_penanggung_jawab' => 'John Doe',
+            'nomor_penanggung_jawab' => '1234567890',
+            'jabatan_penanggung_jawab' => 'CEO',
+            'email_penanggung_jawab' => 'GK0YV@example.com',
+            'tanggal_berdiri' => '2022-01-01',
         ]);
 
         Foto::create([

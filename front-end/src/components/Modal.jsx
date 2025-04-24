@@ -37,7 +37,7 @@ const Modal = ({ isOpen, onClose, title, children, size = "medium", customClass 
     <AnimatePresence>
       {isOpen && (
         <motion.div
-          className="fixed inset-0 flex items-center justify-center z-[999] bg-black/[0.6]"
+          className="fixed inset-0 flex items-center justify-center z-[9999999] bg-black/[0.6]"
           onClick={handleBackdropClick}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

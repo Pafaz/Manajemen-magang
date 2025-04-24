@@ -1,47 +1,53 @@
+import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+import { AuthContext } from "./AuthContext";
 
 export default function AuthProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [user, setUser] = useState(null);
+  const [role, setRole] = useState(null);
   const [errors, setErrors] = useState(null);
 
-  const getUser = async () => {
+  const getUser = useCallback(async () => {
     if (!token) return;
 
     try {
       const response = await axios.get("http://127.0.0.1:8000/api/get-user", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const data = response.user;
-      console.log(data);
-      if (data.status === 200) {
-        setUser(data.user);
+
+      const data = response.data;
+
+      if (data.status === "success") {
+        setUser(data.data.user);
+        setRole(data.data.role);
       } else {
         setToken(null);
         setUser(null);
-        localStorage.removeItem("token");
+        setRole(null);
         setErrors(data.errors || { error: data.error });
+        localStorage.removeItem("token");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Gagal ambil data user:", error);
+      setToken(null);
+      setUser(null);
+      setRole(null);
+      setErrors({ error: "Gagal terhubung ke server" });
+      localStorage.removeItem("token");
     }
-  };
-
+  }, [token]);
   useEffect(() => {
     if (token) {
       getUser();
       localStorage.setItem("token", token);
-    } else {
-      localStorage.removeItem("token");
     }
-  }, [token]);
+  }, [token, getUser]);
 
   return (
-    <AuthContext.Provider value={{ token, setToken, user, setUser, errors }}>
+    <AuthContext.Provider
+      value={{ token, setToken, user, setUser, role, setRole, errors }}
+    >
       {children}
     </AuthContext.Provider>
   );

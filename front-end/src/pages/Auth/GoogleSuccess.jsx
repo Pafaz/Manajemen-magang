@@ -5,12 +5,9 @@ const GoogleSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState(null);
 
   useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
-    console.log("token", tokenFromUrl);
-
     try {
       localStorage.setItem("token", tokenFromUrl.toString());
     } catch (error) {
@@ -18,13 +15,9 @@ const GoogleSuccess = () => {
     }
     
     if (tokenFromUrl) {
-      setToken(tokenFromUrl);
-      // localStorage.setItem("token", tokenFromUrl);
-
       setTimeout(() => {
         setLoading(false);
         window.location.href = "http://localhost:5173/perusahaan/dashboard"
-        // navigate("/perusahaan/dashboard");
       }, 3000);
     } else {
       alert("Login gagal. Token tidak ditemukan.");
@@ -44,7 +37,7 @@ const GoogleSuccess = () => {
               .map((_, i) => (
                 <div
                   key={i}
-                  className="w-full h-10 rounded-lg animate-pulse bg-slate-300"
+                  className="w-full h-8 rounded-lg animate-pulse bg-slate-300"
                 ></div>
               ))}
           </div>

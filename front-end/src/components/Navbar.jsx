@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import NavLink from "./NavbarLink";
 import { Link, useLocation } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [active, setActive] = useState(false);
   const location = useLocation();
+  const { user, role, token } = useContext(AuthContext);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,13 +58,22 @@ const Navbar = () => {
           />
         ))}
         <Link
-          to={`/auth/login`}
+          to={!user && !token ? `/auth/login` : `/${role}/dashboard`}
           className="relative overflow-hidden bg-[#0069AB] text-white text-sm py-2 px-6 rounded-lg cursor-pointer transition-all duration-300 ease-in-out 
       hover:bg-gradient-to-r hover:from-[#005588] hover:to-[#619dc2] 
       hover:shadow-lg hover:scale-105 flex items-center gap-2 group"
         >
-          Login
-          <i className="bi bi-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
+          {!user && !token ? (
+            <>
+              Login
+              <i className="bi bi-arrow-right transition-transform duration-300 group-hover:translate-x-1"></i>
+            </>
+          ) : (
+            <>
+              Dashboard
+              <i className="bi bi-house-door transition-transform duration-300 group-hover:translate-x-1"></i>
+            </>
+          )}
         </Link>
       </div>
     </nav>

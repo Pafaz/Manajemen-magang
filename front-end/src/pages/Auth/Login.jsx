@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import FloatingLabelInput from "../../components/FloatingLabelInput";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,6 +12,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const {setToken,setRole} = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,25 +22,37 @@ const Login = () => {
     const data = {
       email,
       password,
-      remember_me: rememberMe, 
+      remember_me: rememberMe ? true : false,
     };
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/login", data, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.data.status === "success") {
-        if (rememberMe) {
-          localStorage.setItem("user", JSON.stringify(response.data.user));
-          localStorage.setItem("token", response.data.token);
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/login",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-        
-        navigate("/dashboard");
-      } else {
-        setErrors({ message: response.data.message || "Login failed. Try again." });
+      );
+
+      const responsAPI = response.data.data;
+      if (responsAPI.status === "success") {
+        setToken(responsAPI.token);
+        setRole(responsAPI.role);
+        const roles = responsAPI.role;
+        if (roles === "perusahaan") {
+          navigate("/perusahaan/dashboard");
+        } else if (roles === "peserta") {
+          navigate("/siswa/dashboard");
+        } else {
+          console.warn("Role tidak dikenali:", roles);
+          window.location.href("/");
+        }
+      }
+
+      if (rememberMe) {
+        localStorage.setItem("token", response.data.token);
       }
     } catch (err) {
       console.error("Error logging in:", err);
@@ -89,7 +103,9 @@ const Login = () => {
         className="w-full max-w-sm absolute z-50 left-35 top-45"
       >
         <div className="space-y-5">
-          <h1 className="text-3xl font-bold text-gray-800">Welcome to Back! 👋</h1>
+          <h1 className="text-3xl font-bold text-gray-800">
+            Welcome to Back! 👋
+          </h1>
           <p className="text-gray-500 text-sm mb-5">
             Please sign in to your account and start the adventure
           </p>
@@ -150,7 +166,10 @@ const Login = () => {
         <div className="text-center py-5">
           <h1 className="font-medium text-slate-800 text-sm">
             Don’t have an account?{" "}
-            <Link to={`/auth/SelectAuth`} className="text-sky-500 font-semibold">
+            <Link
+              to={`/auth/SelectAuth`}
+              className="text-sky-500 font-semibold"
+            >
               Create an account
             </Link>
           </h1>

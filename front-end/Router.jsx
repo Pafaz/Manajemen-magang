@@ -60,7 +60,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
-    path: "/student",
+    path: "/siswa",
     element: <StudentLayout />,
     children: [
       {
@@ -164,7 +164,7 @@ export const router = createBrowserRouter([
         element: <PerusahaanForm />,
       },
       {
-        path: "approval", // Tidak perlu "/perusahaan" di depan
+        path: "approval",
         element: <ApprovalPerusahaan />,
       },
     ],

@@ -1,10 +1,12 @@
-import { Link, Outlet } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import NavAdmin from "../components/ui/NavAdmin";
 
 const PerusahaanLayout = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isRinging, setIsRinging] = useState(false);
-  const [openMenu, setOpenMenu] = useState(null); 
+  const [openMenu, setOpenMenu] = useState(null);
+  const { role, token } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const sidebarMenus = [
     {
@@ -26,33 +28,33 @@ const PerusahaanLayout = () => {
           link: "/perusahaan/perusahaan/dokumen",
         },
         {
-            label: "Absensi",
-            link: "/perusahaan/perusahaan/dokumen",
-          },
-          {
-            label: "Surat Penerimaan",
-            link: "/perusahaan/perusahaan/dokumen",
-          },
-          {
-            label: "Surat Peringatan",
-            link: "/perusahaan/perusahaan/dokumen",
-          },
-          {
-            label: "Lembaga",
-            link: "/perusahaan/perusahaan/dokumen",
-          },
-          {
-            label: "RFID",
-            link: "/perusahaan/perusahaan/dokumen",
-          },
-          {
-            label: "Divisi",
-            link: "/perusahaan/perusahaan/dokumen",
-          },
-          {
-            label: "Project",
-            link: "/perusahaan/perusahaan/dokumen",
-          },
+          label: "Absensi",
+          link: "/perusahaan/perusahaan/dokumen",
+        },
+        {
+          label: "Surat Penerimaan",
+          link: "/perusahaan/perusahaan/dokumen",
+        },
+        {
+          label: "Surat Peringatan",
+          link: "/perusahaan/perusahaan/dokumen",
+        },
+        {
+          label: "Lembaga",
+          link: "/perusahaan/perusahaan/dokumen",
+        },
+        {
+          label: "RFID",
+          link: "/perusahaan/perusahaan/dokumen",
+        },
+        {
+          label: "Divisi",
+          link: "/perusahaan/perusahaan/dokumen",
+        },
+        {
+          label: "Project",
+          link: "/perusahaan/perusahaan/dokumen",
+        },
       ],
     },
     {
@@ -72,32 +74,27 @@ const PerusahaanLayout = () => {
   const footerMenus = ["License", "More Themes", "Documentation", "Support"];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setIsRinging(true);
-      setTimeout(() => setIsRinging(false), 800);
-    }, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest(".profile-dropdown")) {
-        setIsDropdownOpen(false);
+    if ((role && role !== "perusahaan") || !token) {
+      const redirectTo = localStorage.getItem("loaction");
+      if (redirectTo) {
+        navigate(redirectTo);
+        localStorage.removeItem("location");
+      } else {
+        navigate("/");
       }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
+    }
+  }, [role]);
 
   return (
     <div className="w-full flex">
-      {/* Sidebar */}
-      <div className="bg-white border-r border-r-slate-300 w-[238px] h-screen fixed py-4 px-2 z-[60] overflow-y-auto">
-        <img
-          src="/assets/img/Logo.png"
-          alt="Logo"
-          className="w-48 mx-auto object-cover"
-        />
+      <div className="bg-white border-r border-r-slate-300 w-[238px] h-screen fixed py-4 px-2 z-[50] overflow-y-auto">
+        <Link to={`/`}>
+          <img
+            src="/assets/img/Logo.png"
+            alt="Logo"
+            className="w-48 mx-auto object-cover"
+          />
+        </Link>
         <div className="flex flex-col gap-3 mt-8">
           {sidebarMenus.map((menu, idx) => (
             <div key={idx} className="flex flex-col">
@@ -147,58 +144,10 @@ const PerusahaanLayout = () => {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="flex-1 ml-[238px] min-h-screen">
-        {/* Navbar */}
-        <nav className="bg-white w-full h-[60px] flex items-center px-10 sticky top-0 z-50 border-b border-b-slate-300">
-          <div className="flex gap-5 ml-auto items-center">
-            <div className="w-7 h-7 rounded-full bg-indigo-100 relative flex justify-center items-center">
-              <div className="bg-red-500 w-2 h-2 rounded-full absolute top-1 right-2 animate-ping"></div>
-              <i className={`bi bi-bell ${isRinging ? "bell-shake" : ""}`}></i>
-            </div>
-            <div className="w-7 h-7 rounded-full bg-indigo-100 relative flex justify-center items-center">
-              <i className="bi bi-globe text-sm"></i>
-            </div>
-
-            {/* Profile Dropdown */}
-            <div className="relative profile-dropdown">
-              <div
-                className="flex items-center gap-2 bg-white pr-4 pl-1 py-0.5 rounded-full border border-gray-300 cursor-pointer"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              >
-                <img
-                  src="/assets/img/user-img.png"
-                  alt="Profile"
-                  className="w-8 h-8 rounded-full object-cover"
-                />
-                <div className="absolute w-3 h-3 bg-green-500 rounded-full left-6 top-6 border-2 border-white"></div>
-                <i className="bi bi-chevron-down text-gray-500"></i>
-              </div>
-
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden z-50">
-                  <div className="py-2">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                    >
-                      Menu 1
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                    >
-                      Menu 2
-                    </a>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </nav>
-
+      <div className="flex-1 ml-[238px] min-h-screen overflow-y-hidden">
+        <NavAdmin />
         {/* Page Content */}
-        <div className="pt-5 px-3 bg-indigo-50 min-h-screen overflow-y-auto">
+        <div className="pt-5 px-3 bg-indigo-50 min-h-screen overflow-">
           <Outlet />
           <div className="mt-3">
             <div className="bg-white rounded-t-xl px-5 py-4 w-full flex justify-between">

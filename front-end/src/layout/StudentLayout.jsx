@@ -47,7 +47,7 @@ const StudentLayout = () => {
         <div className="flex flex-col gap-3 mt-8">
           {sidebarMenus.slice(0, -1).map((menu, idx) => {
             const isActive = location.pathname.includes(
-              `/student/${menu.link}`
+              `/siswa/${menu.link}`
             );
 
             if (menu.label === "Presentasi") {

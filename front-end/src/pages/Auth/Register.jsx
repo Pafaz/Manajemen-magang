@@ -1,19 +1,21 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FloatingLabelInput from "../../components/FloatingLabelInput";
 import { motion } from "framer-motion";
 import axios from "axios";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const Register = () => {
   const { type } = useParams();
   const navigate = useNavigate();
-  const [role, setRole] = useState("");
+  const [role, setRoles] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [termsChecked, setTermsChecked] = useState(false);
+  const { setToken, setRole } = useContext(AuthContext);
 
   const allowedTypes = {
     a1b2c3d4: "company",
@@ -24,7 +26,7 @@ const Register = () => {
     if (!allowedTypes[type]) {
       navigate("/auth/select");
     } else {
-      setRole(allowedTypes[type]);
+      setRoles(allowedTypes[type]);
     }
   }, [type, navigate]);
 
@@ -40,7 +42,11 @@ const Register = () => {
     setErrors({});
 
     if (password !== confirmPassword) {
-      setErrors({ password_confirmation: ["Kata sandi dan konfirmasi kata sandi tidak cocok."] });
+      setErrors({
+        password_confirmation: [
+          "Kata sandi dan konfirmasi kata sandi tidak cocok.",
+        ],
+      });
       setLoading(false);
       return;
     }
@@ -54,7 +60,6 @@ const Register = () => {
     try {
       const url =
         role === "company" ? "register-perusahaan" : "register-peserta";
-
       const response = await axios.post(
         `http://127.0.0.1:8000/api/${url}`,
         data,
@@ -65,29 +70,36 @@ const Register = () => {
         }
       );
 
-      if (response.data.status === "success") {
-        navigate("/auth/success");
-      } else {
-        if (response.data.meta && response.data.meta.email) {
-          setErrors({ email: response.data.meta.email });
+      const responsAPI = response.data.data;
+      
+      if (responsAPI.status === "success") {
+        setToken(responsAPI.token);
+        setRole(responsAPI.role);
+        const roles = responsAPI.role;
+        if (roles === "perusahaan") {
+          navigate("/perusahaan/dashboard");
+        } else if (roles === "peserta") {
+          navigate("/siswa/dashboard");
         } else {
-          setErrors(response.data.errors || { message: response.data.message });
+          console.warn("Role tidak dikenali:", roles);
+          window.location.href("/");
+        }
+      } else {
+        if (responsAPI.meta?.email) {
+          setErrors({ email: responsAPI.meta.email });
+        } else {
+          setErrors(responsAPI.errors || { message: responsAPI.message });
         }
       }
     } catch (err) {
-      if (err.response) {
-        if (err.response.data.meta && err.response.data.meta.email) {
-          setErrors({ email: err.response.data.meta.email });
-        } else {
-          setErrors(
-            err.response.data.errors || {
-              message: "Terjadi kesalahan. Silakan coba lagi.",
-            }
-          );
-        }
+      if (err.response?.data?.meta?.email) {
+        setErrors({ email: err.response.data.meta.email });
       } else {
-        console.log("Error general:", err);
-        setErrors({ message: "Terjadi kesalahan. Silakan coba lagi." });
+        setErrors(
+          err.response?.data?.errors || {
+            message: "Terjadi kesalahan. Silakan coba lagi.",
+          }
+        );
       }
     } finally {
       setLoading(false);
@@ -97,7 +109,9 @@ const Register = () => {
   const handleGoogleLogin = async () => {
     const redirectUrl = role === "company" ? "perusahaan" : "peserta";
     try {
-      const response = await axios.get(`http://127.0.0.1:8000/api/auth/${redirectUrl}`);
+      const response = await axios.get(
+        `http://127.0.0.1:8000/api/auth/${redirectUrl}`
+      );
       if (response.data && response.data.url) {
         // console.log(response)
         window.location.href = response.data.url;
@@ -237,7 +251,10 @@ const Register = () => {
         </div>
 
         <div className="flex justify-center gap-4">
-          <button onClick={handleGoogleLogin} className="w-full border border-blue-500 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out flex gap-2 justify-center">
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full border border-blue-500 py-2.5 rounded-sm hover:bg-sky-50 hover:border-blue-500 cursor-pointer hover:scale-105 transition-all duration-300 ease-in-out flex gap-2 justify-center"
+          >
             <img
               src="/assets/Auth/Google.png"
               alt="Google"

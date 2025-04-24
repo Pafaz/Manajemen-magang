@@ -18,27 +18,39 @@ class Perusahaan extends Model
     
     protected $fillable = [
         'id_user',
-        'nama',
         'deskripsi',
         'provinsi',
         'kota',
         'alamat',
         'kode_pos',
-        'instagram',
         'bidang_usaha',
         'website',
         'is_premium',
         'is_active',
         'cabang_limit',
         'admin_limit',
+        'nama_penanggung_jawab',
+        'nomor_penanggung_jawab',
+        'jabatan_penanggung_jawab',
+        'email_penanggung_jawab',
+        'tanggal_berdiri',
     ];
+
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi', 'id');
+    }
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id');
+        return $this->hasMany(User::class, 'id_user', 'id');
     }
     public function cabang()
     {
         return $this->hasMany(Cabang::class, 'id_perusahaan', 'id');
     }
 
+    public function admin_perusahaan()
+    {
+        return $this->hasMany(Admin_perusahaan::class, 'id_perusahaan', 'id');
+    }  
 }

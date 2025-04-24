@@ -60,9 +60,19 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->unsignedBigInteger('id_cabang');
             $table->uuid('id_user');
-            $table->timestamps();
+            // $table->timestamps();
 
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+        });
+
+        Schema::create('admin_perusahaan', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('id_perusahaan');
+            $table->uuid('id_user');
+            // $table->timestamps();
+
+            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         });
     }

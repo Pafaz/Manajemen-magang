@@ -6,31 +6,18 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Admin_cabang extends Model
+class Admin_perusahaan extends Model
 {
-    /** @use HasFactory<\Database\Factories\AdminCabangFactory> */
     use HasFactory, HasUuids;
-
     public $timestamps = false;
-    protected $table = 'admin_cabang';
+    protected $table = 'admin_perusahaan';
 
     protected $fillable = [
         'id',
-        'id_cabang',
+        'id_perusahaan',
         'id_user'
     ];
-    public function cabang()
-    {
-        return $this->belongsTo(Cabang::class, 'id_cabang', 'id');
-    }
-    public function divisiCabang()
-    {
-        return $this->belongsTo(Divisi_cabang::class, 'id_divisi_cabang', 'id');
-    }
-    public function divisi()
-    {
-        return $this->belongsTo(Divisi::class, 'id_divisi_cabang', 'id');
-    }
+
     public function perusahaan()
     {
         return $this->belongsTo(Perusahaan::class, 'id_perusahaan', 'id');

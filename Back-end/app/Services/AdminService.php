@@ -3,17 +3,17 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Requests\AdminRequest;
 use Illuminate\Support\Str;
 use App\Services\FotoService;
-use Illuminate\Http\Response;
 use App\Interfaces\UserInterface;
 use App\Interfaces\AdminInterface;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\AdminRequest;
 use App\Interfaces\CabangInterface;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\AdminResource;
 use App\Interfaces\PerusahaanInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminService
 {
@@ -43,16 +43,22 @@ class AdminService
         );
     }
 
-    public function findAdmin(int $id)
+    public function findAdmin(string $id)
     {
-        return $this->adminInterface->find($id);
+        $data = $this->adminInterface->find($id);
+
+        return Api::response(
+            AdminResource::make($data),
+            'Admin Fetched Successfully',
+            Response::HTTP_OK
+        );
     }
 
-    public function createAdmin(array $data)
+    public function createAdminCabang(array $data)
     {
         try {
-            $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
-            $id_cabang = $this->cabangInterface->getIdCabangByPerusahaan($perusahaan->id)->id;
+            // $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
+            // $id_cabang = $this->cabangInterface->getIdCabangByPerusahaan($perusahaan->id)->id;
     
             $user = $this->userInterface->create([
                 'name' => $data['name'],
@@ -67,9 +73,9 @@ class AdminService
 
             $admin = $this->adminInterface->create([
                 'id' => Str::uuid(),
-                'id_cabang' => $id_cabang,
+                'id_cabang' => $data['id_cabang'],
                 'id_user' => $id_user,
-            ]);
+            ], 'cabang');
 
             $files = [
                 'foto' => 'profile',
@@ -92,7 +98,53 @@ class AdminService
             );
         }       
     }
+
+    public function createAdminPerusahaan(array $data)
+    {
+        try {
+            $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
+            $id_perusahaan = $perusahaan->id;
+
+            // dd($id_perusahaan);
+            
+            $user = $this->userInterface->create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'telepon' => $data['telepon'],
+                'password' => bcrypt($data['password']),
+            ]);
+
+            $user->assignRole('perusahaan');
     
+            $id_user = $user->id;
+
+            $admin = $this->adminInterface->create([
+                'id' => Str::uuid(),
+                'id_perusahaan' => $id_perusahaan,
+                'id_user' => $id_user,
+            ], 'perusahaan');
+
+            $files = [
+                'foto' => 'profile',
+            ];
+            foreach ($files as $key => $tipe) {
+                if (!empty($data[$key])) {
+                    $this->foto->createFoto($data[$key], $admin->id, $tipe);
+                }
+            }
+            return Api::response(
+                AdminResource::make($admin),
+                'Admin Created Successfully',
+                Response::HTTP_CREATED
+            );
+        } catch (\Exception $e) {
+            return Api::response(
+                null,
+                'Failed to create admin: ' . $e->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }       
+    }
 
     public function updateAdmin(int $id, array $data)
     {
@@ -130,45 +182,18 @@ class AdminService
     }
     
 
-    public function deleteAdmin(int $id)
+    public function deleteAdmin(string $id)
     {
-        try {
-            $admin = $this->adminInterface->find($id);
-    
-            if (!$admin) {
-                return Api::response(
-                    null,
-                    'Admin not found',
-                    Response::HTTP_NOT_FOUND
-                );
-            }
-    
-            $id_user = $admin->id_user;
-    
-            $this->adminInterface->delete($id);
-    
-            $userDeleted = $this->userInterface->delete($id_user);
-    
-            if (!$userDeleted) {
-                return Api::response(
-                    null,
-                    'Failed to delete the associated user',
-                    Response::HTTP_INTERNAL_SERVER_ERROR
-                );
-            }
-    
-            return Api::response(
-                null,
-                'Admin and associated user deleted successfully',
-                Response::HTTP_OK
-            );
-        } catch (\Exception $e) {
-            return Api::response(
-                null,
-                'Failed to delete admin: ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
-    }
-    
+        $id_user = $this->adminInterface->find($id)->id_user;
+
+        $this->adminInterface->delete($id);
+
+        $this->userInterface->delete($id_user);
+
+        return Api::response(
+            null,
+            'Admin Deleted Successfully',
+            Response::HTTP_OK
+        );
+    } 
 }

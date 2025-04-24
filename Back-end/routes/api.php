@@ -12,6 +12,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\AdminCabangController;
+use App\Http\Controllers\AdminPerusahaanController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -41,11 +42,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Perusahaan
     Route::group(['role:perusahaan'], function () {
-        Route::apiResource('admin', AdminCabangController::class);
+        Route::apiResource('admin/cabang', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('perusahaan', PerusahaanController::class);
         Route::apiResource('cabang', CabangController::class);
+        Route::apiResource('admin/perusahaan', AdminPerusahaanController::class);
         Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
     });
 

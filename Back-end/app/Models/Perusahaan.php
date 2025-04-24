@@ -34,11 +34,15 @@ class Perusahaan extends Model
     ];
     public function user()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id');
+        return $this->hasMany(User::class, 'id_user', 'id');
     }
     public function cabang()
     {
         return $this->hasMany(Cabang::class, 'id_perusahaan', 'id');
     }
 
+    public function admin_perusahaan()
+    {
+        return $this->hasMany(Admin_perusahaan::class, 'id_perusahaan', 'id');
+    }  
 }

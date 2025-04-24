@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin_cabang;
-use Illuminate\Http\Request;
 use App\Services\AdminService;
 use App\Http\Requests\AdminRequest;
 
-class AdminCabangController extends Controller
+class AdminPerusahaanController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -38,7 +37,7 @@ class AdminCabangController extends Controller
      */
     public function store(AdminRequest $request)
     {
-        return $this->adminService->createAdminCabang($request->validated());
+        return $this->adminService->createAdminPerusahaan($request->validated());
     }
 
     /**
@@ -60,16 +59,16 @@ class AdminCabangController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(AdminRequest $request, string $id)
+    public function update(AdminRequest $request, Admin_cabang $admin_cabang)
     {
-        return $this->adminService->updateAdmin($id, $request->validated());
+        return $this->adminService->updateAdmin($admin_cabang->id, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Admin_cabang $admin_cabang)
     {
-        return $this->adminService->deleteAdmin($id);
+        return $this->adminService->deleteAdmin($admin_cabang->id);
     }
 }

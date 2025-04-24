@@ -40,6 +40,7 @@ class PerusahaanSeeder extends Seeder
             'jabatan_penanggung_jawab' => 'CEO',
             'email_penanggung_jawab' => 'GK0YV@example.com',
             'tanggal_berdiri' => '2022-01-01',
+            'kecamatan' => 'ngijo'
         ]);
 
         Foto::create([

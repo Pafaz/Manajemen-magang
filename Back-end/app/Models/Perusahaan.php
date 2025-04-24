@@ -21,6 +21,7 @@ class Perusahaan extends Model
         'deskripsi',
         'provinsi',
         'kota',
+        'kecamatan',
         'alamat',
         'kode_pos',
         'bidang_usaha',

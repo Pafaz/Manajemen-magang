@@ -38,17 +38,14 @@ class CabangService
     public function createCabang(array $data)
     {
         try {
+        $user = auth('sanctum')->user();
 
-        $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
-        $jumlahCabang = $this->cabangInterface->getCabangByPerusahaanId($perusahaan->id);
-        if ($jumlahCabang >= 1) {
+        if ($user->perusahaan->cabang()->count() >= 1) {
             throw new \Exception("Anda sudah mencapai limit cabang. Silakan upgrade ke premium!");
         }
         
-        $data['id_perusahaan'] = $perusahaan->id;
-        // dd($data);
+        $data['id_perusahaan'] = $user->perusahaan->id;
         $cabang = $this->cabangInterface->create($data);
-        // $cabang->perusahaan()->attach($perusahaan->id);
 
         return Api::response(
             CabangResource::make($cabang),

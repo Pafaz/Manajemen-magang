@@ -30,6 +30,7 @@ class PerusahaanRepository implements PerusahaanInterface
             'deskripsi' => $data['deskripsi'],
             'provinsi' => $data['provinsi'],
             'kota' => $data['kota'],
+            'kecamatan' => $data['kecamatan'],
             'alamat' => $data['alamat'],
             'bidang_usaha' => $data['bidang_usaha'],
             'kode_pos' => $data['kode_pos'],

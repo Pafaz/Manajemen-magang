@@ -190,6 +190,29 @@ const PerusahaanLayout = () => {
             </div>
           </div>
         </div>
+
+        <div className="min-h-screen flex flex-col bg-indigo-50 px-3">
+  <div className="flex-grow w-full max-w-screen-xl mx-auto pt-5 overflow-y-auto">
+    <Outlet />
+  </div>
+
+  <footer className="mt-3 bg-white rounded-t-xl px-5 py-4 w-full max-w-screen-xl mx-auto flex justify-between">
+    <div className="text-slate-400 font-normal text-sm">
+      © Copyright Edmate 2024, All Right Reserved
+    </div>
+    <div className="flex gap-5">
+      {footerMenus.map((item, i) => (
+        <Link
+          key={i}
+          to="#"
+          className="text-slate-400 text-sm font-normal"
+        >
+          {item}
+        </Link>
+      ))}
+    </div>
+  </footer>
+</div>
       </div>
     </div>
   );

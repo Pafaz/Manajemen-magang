@@ -18,9 +18,11 @@ class PerusahaanRepository implements PerusahaanInterface
         return Perusahaan::findOrFail($id)->first();
     }
 
+
     public function findByUser($id): ? Perusahaan
     {
-        return Perusahaan::where('id_user' , $id)->with('cabang')->first();
+
+        return Perusahaan::where('id_user' , '0196666a-9c35-73e2-9afc-cc60582e1de6')->with('cabang')->first();
     }
 
     public function create(array $data): ? Perusahaan

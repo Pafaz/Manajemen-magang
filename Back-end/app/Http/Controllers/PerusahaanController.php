@@ -38,7 +38,7 @@ class PerusahaanController extends Controller
      */
     public function store(PerusahaanRequest $request)
     {
-    $perusahaan = $this->perusahaanService->simpanProfil($request->all(), false);
+    $perusahaan = $this->perusahaanService->simpanProfil($request->validated(), false);
 
     return Api::response(new PerusahaanResource($perusahaan), 'Profil perusahaan berhasil dilengkapi', Response::HTTP_CREATED);
     }
@@ -46,9 +46,10 @@ class PerusahaanController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( $id)
+
+    public function show()
     {
-        return $this->perusahaanService->getPerusahaan($id);
+        return $this->perusahaanService->isCompleteProfil();
     }
     /**
      * Show the form for editing the specified resource.
@@ -63,8 +64,7 @@ class PerusahaanController extends Controller
      */
     public function update(PerusahaanRequest $request)
     {
-
-        $perusahaan = $this->perusahaanService->simpanProfil($request->all(), true);
+        $perusahaan = $this->perusahaanService->simpanProfil($request->validated(), true);
     
         return Api::response(new PerusahaanResource($perusahaan), 'Profil perusahaan berhasil diperbarui', Response::HTTP_OK);
     }

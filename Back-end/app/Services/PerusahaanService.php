@@ -36,12 +36,20 @@ class PerusahaanService
         );
     }
 
-    public function getPerusahaan($id)
+    public function isCompleteProfil()
     {
-        $data = $this->PerusahaanInterface->find($id);
+        if (!auth('sanctum')->user()->perusahaan) {
+            return Api::response(
+                'false',
+                'Perusahaan belum melengkapi profil',
+                Response::HTTP_NOT_MODIFIED
+            );
+        }
+
         return Api::response(
-            PerusahaanDetailResource::make($data),
-            'Berhasil mengambil data perusahaan',
+            'true',
+            'Perusahaan telah melengkapi profil',
+            Response::HTTP_OK
         );
     }
 
@@ -63,6 +71,9 @@ class PerusahaanService
             
             if ($isUpdate && !$user->perusahaan) {
                 throw new \Exception('Perusahaan belum terdaftar');
+            }
+            if($isUpdate && $data === null){
+                throw new \Exception('Tidak ada data yang dikirim untuk diperbarui');
             }
             $userData = array_filter([
                 'name' => $data['nama'] ?? null,
@@ -101,99 +112,6 @@ class PerusahaanService
             throw $e;
         }
     }
-
-    // public function LengkapiProfilPerusahaan(array $data)
-    // {
-    //     try {
-    //         $user = auth('sanctum')->user();
-
-    //         if ($user->perusahaan) {
-    //             return Api::response(null, 'Perusahaan sudah terdaftar', Response::HTTP_BAD_REQUEST);
-    //         }
-
-    //         // Gunakan transaction untuk memastikan integritas data
-    //         DB::beginTransaction();
-
-    //         $this->userInterface->update($user->id, [
-    //             'name' => $data['nama'],
-    //             'telepon' => $data['telepon'],
-    //         ]);
-
-    //         $perusahaan = $this->PerusahaanInterface->create($data);
-
-    //         $files = [
-    //             'logo' => 'profile',
-    //             'npwp' => 'npwp',
-    //             'surat_legalitas' => 'surat_legalitas',
-    //         ];
-
-    //         foreach ($files as $key => $tipe) {
-    //             if (!empty($data[$key])) {
-    //                 $this->foto->createFoto($data[$key], $perusahaan->id, $tipe);
-    //             }
-    //         }
-
-    //         DB::commit();
-
-    //         return Api::response(
-    //             PerusahaanResource::make($perusahaan),
-    //             'Berhasil melengkapi profil perusahaan',
-    //             Response::HTTP_CREATED
-    //         );
-    //     } catch (QueryException $e) {
-    //         DB::rollBack();
-    //         Log::error('DB Error melengkapi profil perusahaan: ' . $e->getMessage());
-    //         return Api::response(
-    //             null,
-    //             'Terjadi kesalahan saat melengkapi profil perusahaan: ' . $e->getMessage(),
-    //             Response::HTTP_BAD_REQUEST
-    //         );
-    //     } catch (\Throwable $e) {
-    //         DB::rollBack();
-    //         Log::error('Error melengkapi profil perusahaan: ' . $e->getMessage());
-    //         return Api::response(
-    //             null,
-    //             'Terjadi kesalahan saat melengkapi profil perusahaan.',
-    //             Response::HTTP_INTERNAL_SERVER_ERROR
-    //         );
-    //     }
-    // }
-
-    // public function updateProfilPerusahaan(array $data, $id)
-    // {
-    //     $user = auth('sanctum')->user();
-
-    //     $userData = array_filter([
-    //         'name' => $data['nama'] ?? null,
-    //         'telepon' => $data['telepon'] ?? null,
-    //         'email' => $data['email'] ?? null,
-    //     ]);
-
-    //     if (!empty($userData)) {
-    //         $this->userInterface->update($user->id, $userData);
-    //     }
-
-    //     $Perusahaan = $this->PerusahaanInterface->update($id, array_filter($data));
-
-    //     $files = [
-    //         'logo' => 'profile',
-    //         'npwp' => 'npwp',
-    //         'surat_legalitas' => 'surat_legalitas',
-    //     ];
-        
-    //     foreach ($files as $key => $tipe) {
-    //         if (!empty($data[$key]) && $data[$key]) {
-    //             $this->foto->updateFoto($data[$key], $Perusahaan->id, $tipe);
-    //         }
-    //     }
-        
-    //     return Api::response(
-    //         PerusahaanResource::make($Perusahaan),
-    //         'Berhasil memperbarui profil perusahaan',
-    //         Response::HTTP_OK
-    //     );
-    // }
-
 
     public function deletePerusahaan($id)
     {

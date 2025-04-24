@@ -36,7 +36,7 @@ class CabangController extends Controller
      */
     public function store(CabangRequest $request)
     {
-        return $this->cabangService->createCabang($request->validated());
+        return $this->cabangService->simpanCabang($request->validated());
     }
 
     /**
@@ -61,7 +61,7 @@ class CabangController extends Controller
      */
     public function update(CabangRequest $request, Cabang $cabang)
     {
-        return $this->cabangService->updateCabang($request->validated(), $cabang->id);
+        return $this->cabangService->simpanCabang($request->validated(),true, $cabang->id);
     }
 
     /**

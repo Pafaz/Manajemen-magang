@@ -34,7 +34,11 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->kategoriService->createCategory($request->all());
+        $request->validate([
+            'nama' => 'required|string',
+        ]);
+
+        return $this->kategoriService->createCategory($request->validated());
     }
 
     /**

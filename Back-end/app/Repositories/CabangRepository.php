@@ -32,11 +32,7 @@ class CabangRepository implements CabangInterface
 
     public function create(array $data): ? Cabang
     {
-        return Cabang::create([
-            'name' => $data['name'],
-            'alamat' => $data['alamat'],
-            'id_perusahaan' => $data['id_perusahaan']
-        ]);
+        return Cabang::create($data);
     }
 
     public function update(int $id, array $data): Model

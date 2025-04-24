@@ -17,16 +17,12 @@ class MentorService
     private UserInterface $userInterface;
     private MentorInterface $MentorInterface;
     private FotoService $foto;
-    private PerusahaanInterface $perusahaanInterface;
-    private CabangInterface $cabangInterface;
 
-    public function __construct(MentorInterface $MentorInterface, FotoService $foto, PerusahaanInterface $perusahaanInterface, UserInterface $userInterface, CabangInterface $cabangInterface)
+    public function __construct(MentorInterface $MentorInterface, FotoService $foto, UserInterface $userInterface)
     {
         $this->MentorInterface = $MentorInterface;
         $this->foto = $foto;
-        $this->perusahaanInterface = $perusahaanInterface;
         $this->userInterface = $userInterface;
-        $this->cabangInterface = $cabangInterface;
     }
 
     public function getAllMentor()
@@ -48,11 +44,10 @@ class MentorService
     public function createMentor(array $data)
     {
         try {
-            $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
-            $id_cabang = $this->cabangInterface->getIdCabangByPerusahaan($perusahaan->id)->id;
+            $user = auth('sanctum')->user()->perusahaan;
             
             $user = $this->userInterface->create([
-                'name' => $data['name'],
+                'name' => $data['nama'],
                 'email' => $data['email'],
                 'telepon' => $data['telepon'],
                 'password' => bcrypt($data['password']),
@@ -60,12 +55,10 @@ class MentorService
 
             $user->assignRole('Mentor');
     
-            $id_user = $user->id;
-
             $Mentor = $this->MentorInterface->create([
-                'id' => Str::uuid(),
-                'id_cabang' => $id_cabang,
-                'id_user' => $id_user,
+                'id_divisi' => $data['id_divisi'],
+                'id_cabang' => $data['id_cabang'],
+                'id_user' => $user->id,
             ]);
 
             if (!empty($data['foto'])) {

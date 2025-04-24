@@ -24,8 +24,8 @@ const PerusahaanLayout = () => {
           link: "/perusahaan/approval",
         },
         {
-          label: "Jurnal",
-          link: "/perusahaan/perusahaan/dokumen",
+          label: "Pendataan",
+          link: "/perusahaan/pendataan",
         },
         {
           label: "Absensi",
@@ -55,11 +55,33 @@ const PerusahaanLayout = () => {
           label: "Project",
           link: "/perusahaan/perusahaan/dokumen",
         },
+          {
+            label: "Surat",
+            link: "/perusahaan/surat",
+          },
+          {
+            label: "Lembaga",
+            link: "/perusahaan/lembaga",
+          },
+          {
+            label: "RFID",
+            link: "/perusahaan/perusahaan/dokumen",
+          },
+          {
+            label: "Divisi",
+            link: "/perusahaan/perusahaan/dokumen",
+          },
+          {
+            label: "Project",
+            link: "/perusahaan/perusahaan/dokumen",
+          },
       ],
     },
     {
       icon: "bi-layers",
       label: "Kelola Cabang",
+      link: "/perusahaan/lembaga",
+
     },
     {
       icon: "bi-grid-3x3-gap",

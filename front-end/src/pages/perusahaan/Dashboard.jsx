@@ -1,19 +1,20 @@
 import React from "react";
 import AlertVerification from "../../components/AlertVerification";
 import ActivityChart from "../../components/charts/ActivityChart";
-import PerusahaanChart from "../../components/charts/PerusahaanChart"; // Assuming this is the intended component to render
+import PerusahaanChart from "../../components/charts/PerusahaanChart";
 import Card from "../../components/cards/Card";
 import StaticAbsensiPerusahaan from "../../components/charts/StaticAbsensiPerusahaan";
 import PesertaMagangChart from "../../components/charts/PesertaMagangChart";
 import CabangChart from "../../components/charts/CabangChart";
 import StatistikJurnalChart from "../../components/charts/StatistikJurnalChart";
-import StatistikPendaftarChartMini from "../../components/charts/StatistikPendaftarChartMini"
+import StatistikPendaftarChartMini from "../../components/charts/StatistikPendaftarChartMini";
 import Title from "../../components/Title";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const Dashboard = () => {
   const location = useLocation();
-  localStorage.setItem("location", location.pathname)
+  localStorage.setItem("location", location.pathname);
+
   const statsData = [
     {
       title: "Total Cabang",
@@ -41,41 +42,53 @@ const Dashboard = () => {
       data: [3, 5, 4, 6, 2, 3, 4, 2, 5, 3, 4, 5],
     },
   ];
-  return (
-    <div className="w-full">
-      <AlertVerification />
-      <div className="flex w-full gap-5">
-        <div className="flex-[8] w-full">
-         
-            <div className="grid grid-cols-3 gap-4">
-              {statsData.map((item, index) => (
-                <PerusahaanChart
-                  key={index}
-                  icon={item.icon}
-                  value={item.value}
-                  color={item.color}
-                  title={item.title}
-                  seriesData={item.data}
-                />
-              ))}
-            </div>
 
+  return (
+    <div className="w-full max-w-full overflow-x-hidden">
+      <AlertVerification />
+
+      <div className="flex flex-col lg:flex-row gap-5 w-full">
+        {/* KIRI */}
+        <div className="flex-[8] w-full">
+          {/* Grid Chart Summary */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {statsData.map((item, index) => (
+              <PerusahaanChart
+                key={index}
+                icon={item.icon}
+                value={item.value}
+                color={item.color}
+                title={item.title}
+                seriesData={item.data}
+              />
+            ))}
+          </div>
+
+          {/* Chart Absensi */}
           <Card className="my-7">
             <StaticAbsensiPerusahaan />
           </Card>
-            <PesertaMagangChart />
+
+          {/* Chart Peserta Magang */}
+          <Card>
+          <PesertaMagangChart />
+          </Card>
         </div>
-        <div className="flex-[3] flex-col gap-5">
+
+        {/* KANAN */}
+        <div className="flex-[3] flex flex-col gap-5">
           <Card>
             <div className="border-b border-slate-400/[0.5] py-3">
               <Title className="ml-5">Statistik Cabang</Title>
             </div>
             <CabangChart />
           </Card>
-          <Card className="mt-3">
+
+          <Card>
             <StatistikJurnalChart />
           </Card>
-          <Card className="px-0 py-2 mb-3">
+
+          <Card className="px-0 py-2">
             <StatistikPendaftarChartMini />
           </Card>
         </div>

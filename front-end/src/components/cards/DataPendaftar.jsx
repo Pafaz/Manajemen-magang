@@ -4,10 +4,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { CSVLink } from "react-csv";
 import TablePendaftaran from "./TablePendaftaran";
-import TableIzin from "./TableIzin";
 
 export default function ApprovalTable() {
-  const [activeTab, setActiveTab] = useState("pendaftaran");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
 
@@ -57,54 +55,9 @@ export default function ApprovalTable() {
     // Tambahkan data lainnya di sini
   ];
   
-  const dataIzin = [
-    {
-      id: 1,
-      nama: "Dewi Anggraini",
-      sekolah: "SMK NEGERI 1 MALANG",
-      tanggalIzin: "10 April 2025",
-      tanggalKembali: "12 April 2025",
-      status: "Izin",
-      image: "/assets/img/post1.png", // Gambar profil
-      buktiKegiatan: "/berkas/izin/izin.jpg" // Gambar bukti kegiatan
-    },
-    {
-      id: 2,
-      nama: "Rizki Ananda",
-      sekolah: "SMK NEGERI 2 BLITAR",
-      tanggalIzin: "8 April 2025",
-      tanggalKembali: "10 April 2025",
-      status: "Sakit",
-      image: "/assets/img/post2.png",
-    },
-    {
-      id: 3,
-      nama: "Agus Setiawan",
-      sekolah: "SMK NEGERI 3 YOGYAKARTA",
-      tanggalIzin: "5 April 2025",
-      tanggalKembali: "7 April 2025",
-      status: "Izin",
-      image: "/assets/img/post1.png",
-      buktiKegiatan: "/berkas/izin/izin2.jpg"
-    },
-    {
-      id: 4,
-      nama: "Siti Nurhayati",
-      sekolah: "SMK NEGERI 4 SURABAYA",
-      tanggalIzin: "3 April 2025",
-      tanggalKembali: "6 April 2025",
-      status: "Sakit",
-      image: "/assets/img/post2.png",
-      buktiKegiatan: "/berkas/izin/izin2.jpg"
-
-    },
-    // Tambahkan data lainnya di sini
-  ];
-  
-
   const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
     <button
-      className="flex items-center gap-2 bg-white border-gray-200 text-[#344054] py-2 px-4 rounded-md shadow border border-[#667797] hover:bg-[#0069AB] hover:text-white text-sm"
+      className="flex items-center gap-2 bg-white border-gray-200 text-[#344054] py-2 px-1 rounded-md shadow border border-[#667797] hover:bg-[#0069AB] hover:text-white text-sm"
       onClick={onClick}
       ref={ref}
       type="button"
@@ -127,8 +80,8 @@ export default function ApprovalTable() {
           {/* Header */}
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-xl font-semibold text-[#1D2939]">Data Approval</h2>
-              <p className="text-[#667085] text-sm mt-1">Kelola data penerimaan dengan maksimal!</p>
+              <h2 className="text-xl font-semibold text-[#1D2939]">Data Pendaftaran</h2>
+              <p className="text-[#667085] text-sm mt-1">Kelola data pendaftaran dengan maksimal!</p>
             </div>
 
             <div className="flex items-center gap-3">
@@ -140,25 +93,15 @@ export default function ApprovalTable() {
                 showPopperArrow={false}
               />
               <CSVLink
-                data={activeTab === "pendaftaran" ? dataPendaftaran : dataIzin}
-                filename={`data_${activeTab}.csv`}
-                headers={
-                  activeTab === "pendaftaran"
-                    ? [
-                        { label: "Nama", key: "nama" },
-                        { label: "Jurusan", key: "jurusan" },
-                        { label: "Kelas", key: "kelas" },
-                        { label: "Masa Magang", key: "masaMagang" },
-                        { label: "Sekolah", key: "sekolah" },
-                      ]
-                    : [
-                        { label: "Nama", key: "nama" },
-                        { label: "Sekolah", key: "sekolah" },
-                        { label: "Tanggal Izin", key: "tanggalIzin" },
-                        { label: "Tanggal Kembali", key: "tanggalKembali" },
-                        { label: "Status", key: "status" },
-                      ]
-                }
+                data={dataPendaftaran}
+                filename="data_pendaftaran.csv"
+                headers={[
+                  { label: "Nama", key: "nama" },
+                  { label: "Jurusan", key: "jurusan" },
+                  { label: "Kelas", key: "kelas" },
+                  { label: "Masa Magang", key: "masaMagang" },
+                  { label: "Sekolah", key: "sekolah" },
+                ]}
               >
                 <button className="flex items-center gap-2 border border-gray-300 text-[#344054] px-4 py-2 rounded-lg text-sm shadow-sm hover:bg-[#0069AB] hover:text-white">
                   <Download size={16} />
@@ -170,30 +113,8 @@ export default function ApprovalTable() {
 
           <div className="border-b border-gray-200 my-5" />
 
-          <div className="flex flex-wrap justify-between items-center gap-3">
-            <div className="flex gap-2">
-              <button
-                className={`px-4 py-2 rounded-lg text-sm border ${
-                  activeTab === "pendaftaran"
-                    ? "bg-[#0069AB] text-white"
-                    : "border-gray-300 text-[#344054]"
-                }`}
-                onClick={() => setActiveTab("pendaftaran")}
-              >
-                Pendaftaran
-              </button>
-              <button
-                className={`px-4 py-2 rounded-lg text-sm border ${
-                  activeTab === "izin"
-                    ? "bg-[#0069AB] text-white"
-                    : "border-gray-300 text-[#344054]"
-                }`}
-                onClick={() => setActiveTab("izin")}
-              >
-                Izin/Sakit
-              </button>
-            </div>
-
+          {/* Search bar */}
+          <div className="flex justify-end mb-4">
             <div className="relative">
               <input
                 type="text"
@@ -210,11 +131,7 @@ export default function ApprovalTable() {
         </div>
 
         {/* Table */}
-        {activeTab === "pendaftaran" ? (
-          <TablePendaftaran data={dataPendaftaran} searchTerm={searchTerm} selectedDate={selectedDate} />
-        ) : (
-          <TableIzin data={dataIzin} searchTerm={searchTerm} selectedDate={selectedDate} />
-        )}
+        <TablePendaftaran data={dataPendaftaran} searchTerm={searchTerm} selectedDate={selectedDate} />
       </div>
     </div>
   );

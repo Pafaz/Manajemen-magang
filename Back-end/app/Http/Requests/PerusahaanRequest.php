@@ -28,9 +28,9 @@ class PerusahaanRequest extends BaseFormRequest
                 'nomor_penanggung_jawab' => 'sometimes|numeric|digits_between:10,12',
                 'email_penanggung_jawab' => 'sometimes|email',
                 'jabatan_penanggung_jawab' => 'sometimes|string',
-                'logo' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
-                'npwp' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
-                'surat_legalitas' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
+                'logo' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
+                'npwp' => 'sometimes|mimes:png,jpeg,jpg|max:2048',
+                'surat_legalitas' => 'sometimes|mimes:png,jpeg,jpg|max:2048',
             ];
         }
 
@@ -50,9 +50,9 @@ class PerusahaanRequest extends BaseFormRequest
             'bidang_usaha' => 'required|string',
             'kode_pos' => 'required|string',
             'website' => 'required|url',
-            'logo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'npwp' => 'required|image|mimes:png,jpeg,jpg|max:2048',
-            'surat_legalitas' => 'required|image|mimes:png,jpeg,jpg|max:2048',
+            'logo' => 'nullable|mimes:jpeg,png,jpg|max:2048',
+            'npwp' => 'nullable|mimes:png,jpeg,jpg|max:2048',
+            'surat_legalitas' => 'nullable|mimes:png,jpeg,jpg|max:2048',
         ];
     }
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\PiketController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\MagangController;
+use App\Http\Controllers\MentorController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\SekolahController;
@@ -12,8 +13,8 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\AdminCabangController;
-use App\Http\Controllers\AdminPerusahaanController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AdminPerusahaanController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
@@ -43,10 +44,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Perusahaan
     Route::group(['role:perusahaan'], function () {
-        Route::apiResource('admin/cabang', AdminCabangController::class);
+        Route::apiResource('admin', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('perusahaan', PerusahaanController::class);
+        Route::apiResource('mentor', MentorController::class);
         Route::get('/perusahaan/detail', [PerusahaanController::class, 'show']);
         Route::put('/perusahaan/update', [PerusahaanController::class, 'update']);
         Route::apiResource('cabang', CabangController::class);

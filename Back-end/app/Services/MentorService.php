@@ -6,8 +6,9 @@ use App\Helpers\Api;
 use Illuminate\Support\Str;
 use App\Services\FotoService;
 use App\Interfaces\UserInterface;
-use App\Interfaces\MentorInterface;
+use Illuminate\Support\Facades\DB;
 use App\Interfaces\CabangInterface;
+use App\Interfaces\MentorInterface;
 use App\Http\Resources\MentorResource;
 use App\Interfaces\PerusahaanInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,16 +37,25 @@ class MentorService
         );
     }
 
-    public function findMentor(int $id)
+    public function findMentor(string $id)
     {
-        return $this->MentorInterface->find($id);
+        $data = $this->MentorInterface->find($id);
+
+        return Api::response(
+            MentorResource::make($data),
+            'Mentor Fetched Successfully',
+            Response::HTTP_OK
+        );
     }
 
     public function createMentor(array $data)
     {
+        DB::beginTransaction();
+
         try {
-            $user = auth('sanctum')->user()->perusahaan;
-            
+            $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
+
+            // dd($id_perusahaan);
             $user = $this->userInterface->create([
                 'name' => $data['nama'],
                 'email' => $data['email'],
@@ -54,22 +64,25 @@ class MentorService
             ]);
 
             $user->assignRole('Mentor');
-    
+
             $Mentor = $this->MentorInterface->create([
                 'id_divisi' => $data['id_divisi'],
-                'id_cabang' => $data['id_cabang'],
+                'id_perusahaan' => $id_perusahaan,
                 'id_user' => $user->id,
             ]);
 
             if (!empty($data['foto'])) {
                 $this->foto->createFoto($data['foto'], $Mentor->id, 'profile');
             }
+
+            DB::commit();
             return Api::response(
                 MentorResource::make($Mentor),
                 'Mentor Created Successfully',
                 Response::HTTP_CREATED
             );
         } catch (\Exception $e) {
+            DB::rollBack();
             return Api::response(
                 null,
                 'Failed to create Mentor: ' . $e->getMessage(),
@@ -115,36 +128,19 @@ class MentorService
     }
     
 
-    public function deleteMentor(int $id)
+    public function deleteMentor(string $id)
     {
-        try {
-            $Mentor = $this->MentorInterface->find($id);
-    
-            if (!$Mentor) {
-                return Api::response(
-                    null,
-                    'Mentor not found',
-                    Response::HTTP_NOT_FOUND
-                );
-            }
-    
-            $id_user = $Mentor->id_user;
-    
-            $this->MentorInterface->delete($id);
-            $this->userInterface->delete($id_user);
-    
-            return Api::response(
-                null,
-                'Mentor and associated user deleted successfully',
-                Response::HTTP_OK
-            );
-        } catch (\Exception $e) {
-            return Api::response(
-                null,
-                'Failed to delete Mentor: ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
+        $id_user = $this->MentorInterface->find($id)->id_user;
+
+        $this->MentorInterface->delete($id);
+
+        $this->userInterface->delete($id_user);
+
+        return Api::response(
+            null,
+            'Mentor Deleted Successfully',
+            Response::HTTP_OK
+        );
     }
     
 }

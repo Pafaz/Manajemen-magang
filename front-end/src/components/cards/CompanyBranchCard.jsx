@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
-import { Globe, Instagram, Linkedin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Card from "../../components/cards/Card";
 import ReactPaginate from 'react-paginate';
 import ModalTambahCabang from "../../components/modal/ModalTambahCabang";
 import ModalDeleteAdminCabang from "../../components/modal/ModalDeleteAdminCabang"; // Import the new component
 
-
 export default function CompanyBranchCard() {
   const navigate = useNavigate();
   
   const [branches, setBranches] = useState([
-    { id: 1, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 2, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 3, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 4, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 5, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 6, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 7, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 8, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 9, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 10, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 11, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 12, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 13, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 14, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
-    { id: 15, name: "PT. HUMMA TECHNOLOGY INDONESIA", location: "Malang, Jawa Timur", address: "150 Peserta Magang", backgroundImage: "/assets/img/Cover.png", logoImage: "/assets/img/logoperusahaan.png" },
+    { id: 1, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 2, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 3, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 4, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 5, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 6, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 7, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 8, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 9, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 10, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 11, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 12, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 13, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 14, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 15, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 16, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+    { id: 17, name: "Nao Tomori", email: "contoh@gmail.com", backgroundImage: "/assets/img/Cover2.png", logoImage: "/assets/img/Profil.png" },
+
+    // ... other branches
   ]);
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
   const pageCount = Math.ceil(branches.length / itemsPerPage);
 
-  // State for controlling modal visibility
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [branchToDelete, setBranchToDelete] = useState(null);
@@ -45,24 +46,15 @@ export default function CompanyBranchCard() {
 
   // Function to handle adding a new branch
   const handleAddBranch = (branchData) => {
-    // Create a new branch object with the form data
     const newBranch = {
       id: branches.length + 1,
       name: branchData.name,
       location: `${branchData.city}, ${branchData.province}`,
-      address: "0 Peserta Magang", // Default value
-      backgroundImage: "/assets/img/Cover.png", // Default image
-      logoImage: "/assets/img/logoperusahaan.png", // Default logo
-      // You could also store the social media links if needed
-      website: branchData.website,
-      instagram: branchData.instagram,
-      linkedin: branchData.linkedin
+      address: "0 Peserta Magang",
+      backgroundImage: "/assets/img/Cover.png",
+      logoImage: "/assets/img/logoperusahaan.png",
     };
-
-    // Add the new branch to the branches array
     setBranches([...branches, newBranch]);
-    
-    // Close the modal
     setShowModal(false);
   };
 
@@ -70,6 +62,7 @@ export default function CompanyBranchCard() {
   const handleViewDetail = (branchId) => {
     navigate(`/perusahaan/cabang/${branchId}`);
   };
+
   // Handle delete button click
   const handleDeleteClick = (branch) => {
     setBranchToDelete(branch);
@@ -92,15 +85,16 @@ export default function CompanyBranchCard() {
   return (
     <Card>
       <div className="mt-8 px-1 pb-6">
+        {/* Header section */}
         <div className="flex justify-between items-center mb-4">
-          <h1 className="text-xl font-bold">Cabang Perusahaan Terdaftar</h1>
+          <h1 className="text-xl font-bold">Admin Cabang</h1>
           <div className="flex items-center space-x-2">
             <button 
               onClick={() => setShowModal(true)}
               className="bg-white text-gray-700 border border-gray-300 rounded-md px-2 py-1 text-xs flex items-center"
             >
               <i className="bi bi-plus mr-1"></i>
-              <span className="mr-1">Tambah Cabang</span>
+              <span className="mr-1">Tambah Admin</span>
             </button>
             <div className="flex items-center">
               <span className="mr-1 text-xs">Sort by:</span>
@@ -112,13 +106,14 @@ export default function CompanyBranchCard() {
           </div>
         </div>
 
+        {/* Branch cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {displayedBranches.map((branch) => (
             <div key={branch.id} className="bg-white border border-[#D5DBE7] rounded-lg overflow-hidden">
               <div className="relative">
                 <img src={branch.backgroundImage} alt="Company Building" className="w-full h-32 object-cover" />
                 <div className="absolute -bottom-4 left-0 right-0 flex justify-center">
-                  <div className="rounded-full overflow-hidden border-2 border-white bg-white w-8 h-8">
+                  <div className="rounded-full overflow-hidden border-2 border-white bg-white w-16 h-16">
                     <img src={branch.logoImage} alt="Company Logo" className="w-full h-full object-cover" />
                   </div>
                 </div>
@@ -126,14 +121,7 @@ export default function CompanyBranchCard() {
 
               <div className="pt-8 px-3 pb-4">
                 <h3 className="font-bold text-sm text-gray-800 text-center mb-2">{branch.name}</h3>
-                <p className="text-xs text-gray-600 text-center mb-1">{branch.location}</p>
-                <p className="text-xs text-gray-600 text-center mb-3">{branch.address}</p>
-
-                <div className="flex justify-center space-x-4 my-3">
-                  <Instagram size={16} className="text-gray-600 hover:text-pink-500 cursor-pointer" />
-                  <Globe size={16} className="text-gray-600 hover:text-blue-500 cursor-pointer" />
-                  <Linkedin size={16} className="text-gray-600 hover:text-blue-700 cursor-pointer" />
-                </div>
+                <p className="text-xs text-black-600 text-center mb-1">{branch.email}</p>
 
                 <div className="flex justify-center mt-3">
                   <div className="border border-[#D5DBE7] rounded p-2 w-full flex justify-between items-center space-x-2">
@@ -149,7 +137,8 @@ export default function CompanyBranchCard() {
                       className="text-red-500 border border-red-500 rounded px-3 py-1 text-xs hover:bg-red-50"
                     >
                       Hapus
-                    </button>                  </div>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -179,12 +168,13 @@ export default function CompanyBranchCard() {
         </div>
       </div>
 
-      {/* Add Branch Modal */}
+      {/* Modals */}
       <ModalTambahCabang 
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         onSave={handleAddBranch}
       />
+
       {/* Using the extracted ModalDeleteAdminCabang component */}
       <ModalDeleteAdminCabang 
         isOpen={showDeleteModal}

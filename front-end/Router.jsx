@@ -23,6 +23,7 @@ import ApprovalPerusahaan from "./src/pages/perusahaan/AppovalPerusahaan";
 import PendataanPerusahaan from "./src/pages/perusahaan/PendataanPerusahaan";
 import Surat from "./src/pages/perusahaan/Surat";
 import CabangPerusahaan from "./src/pages/perusahaan/CabangPerusahaan";
+import DetailCabang from "./src/pages/perusahaan/DetailCabang";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
@@ -181,6 +182,10 @@ export const router = createBrowserRouter([
       {
         path :"lembaga",
         element :<CabangPerusahaan/>,
+      },
+      {
+        path :"cabang/:id",
+        element :<DetailCabang/>,
       }
     ],
   },

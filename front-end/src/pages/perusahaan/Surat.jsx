@@ -10,9 +10,9 @@ const Approval = () => {
       <PerusahaanCard />
 
       {/* Komponen DataApproval */}
-      <Card className="mt-8 px-1 pb-6">
+      <div className="mt-8 p-0">
         <DataSurat />
-      </Card>
+      </div>
     </div>
   );
 };

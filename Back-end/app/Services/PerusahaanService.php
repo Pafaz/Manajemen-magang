@@ -105,7 +105,13 @@ class PerusahaanService
             }
 
             DB::commit();
-            return $perusahaan;
+            return Api::response(
+                PerusahaanDetailResource::make($perusahaan),
+                $isUpdate
+                    ? 'Berhasil memperbarui profil perusahaan'
+                    : 'Berhasil melengkapi profil perusahaan',
+                $isUpdate ? Response::HTTP_OK : Response::HTTP_CREATED
+            );
         } catch (\Throwable $e) {
             DB::rollBack();
             Log::error("Gagal menyimpan profil perusahaan: " . $e->getMessage());

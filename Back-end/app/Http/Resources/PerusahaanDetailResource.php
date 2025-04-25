@@ -14,17 +14,9 @@ class PerusahaanDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // dd($this->foto, $this->user, $this->perusahaan);
         return [
-            'id' => $this->id,
-            'deskripsi' => $this->deskripsi,
-            'provinsi' => $this->provinsi,
-            'kota' => $this->kota,
-            'alamat' => $this->alamat,
-            'kode_pos' => $this->kode_pos,
-            'instagram' => $this->instagram,
-            'website' => $this->website,
-            'user' => new UserResource($this->user),
-            'cabang' => CabangResource::collection($this->cabang),
+            'perusahaan' => PerusahaanResource::make($this),
             'foto' => FotoResource::collection($this->foto),
         ];
     }

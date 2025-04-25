@@ -19,5 +19,8 @@ class Kategori extends Model
         'updated_at',
     ];
 
-    public $timestamps = false;
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi', 'id');
+    }
 }

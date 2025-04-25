@@ -10,51 +10,73 @@ use Symfony\Component\HttpFoundation\Response;
 class KategoriService 
 {
     private KategoriInterface $KategoriInterface;
+    private FotoService $foto;
 
-    public function __construct(KategoriInterface $KategoriInterface)
+    public function __construct(KategoriInterface $KategoriInterface, FotoService $foto)
     {
         $this->KategoriInterface = $KategoriInterface;
+        $this->foto = $foto;
+
     }
 
-    public function getCategories()
+    public function getCategories($id = null)
     {
-        
-        $data = $this->KategoriInterface->getAll();
-        return Api::response(
-            CategoryResource::collection($data),
-            'Berhasil mengambil data kategori', 
-        );
-    }
-
-    public function simpanKategori(array $data, $isUpdate = false)
-    {
-        $user = auth('sanctum')->user();
-
-        if ($isUpdate) {
-            $category = $this->KategoriInterface->update(id: $data['id'], data: $data);
-            return Api::response(
-            CategoryResource::make($category),
-            'Berhasil memperbarui kategori',
-            Response::HTTP_OK
-        );
+        $kategori = $this->KategoriInterface->find($id);
+        if (!$kategori) {
+            return Api::response(null, 'Kategori tidak ditemukan', Response::HTTP_NOT_FOUND);
         }
 
-        $category = $this->KategoriInterface->create($data);
-        return Api::response(
-            CategoryResource::make($category),
-            'Berhasil membuat kategori',
-            Response::HTTP_CREATED
-        );
+        $data = $id
+            ? CategoryResource::make($this->KategoriInterface->find($id))
+            : CategoryResource::collection($this->KategoriInterface->getAll());
+
+        $message = $id 
+            ? 'Berhasil mengambil data kategori'
+            : 'Berhasil mengambil semua data kategori';
+
+        return Api::response($data, $message);
     }
 
-    public function updateCategory(int $id, array $data)
+    public function simpanKategori(array $data, bool $isUpdate = false, $id = null)
     {
-        $category = $this->KategoriInterface->update($id, $data);
+        $user = auth('sanctum')->user();
+        $perusahaanId = $user->perusahaan->id;
+
+        // dd($perusahaanId);
+        if (!$perusahaanId) {
+            return Api::response(null, 'Perusahaan tidak ditemukan.', Response::HTTP_FORBIDDEN);
+        }
+
+        $category = $isUpdate
+            ? $this->KategoriInterface->update(id: $id, data: [
+                'id_perusahaan' => $perusahaanId,
+                'nama' => $data['nama'],
+            ])
+            : $this->KategoriInterface->create([
+                'id_perusahaan' => $perusahaanId,
+                'nama' => $data['nama'],
+            ]);
+        
+        // dd($category);
+        if (!empty($data['card'])) {
+            $isUpdate 
+                ? $this->foto->updateFoto($data['card'], $category->id.$perusahaanId, 'card') 
+                : $this->foto->createFoto($data['card'], $category->id.$perusahaanId, 'card');
+        }
+        $message = $isUpdate
+            ? 'Berhasil memperbarui kategori'
+            : 'Berhasil membuat kategori';
+
+        $statusCode = $isUpdate
+            ? Response::HTTP_OK
+            : Response::HTTP_CREATED;
+
         return Api::response(
             CategoryResource::make($category),
-            'Berhasil memperbarui kategori',
-            Response::HTTP_OK
+            $message,
+            $statusCode
         );
+
     }
 
     public function deleteCategory(int $id)
@@ -62,18 +84,9 @@ class KategoriService
         $this->KategoriInterface->delete($id);
         return Api::response(
             null,
-            'Category deleted successfully',
+            'Kategori berhasil dihapus',
             Response::HTTP_OK
         );
     }
 
-    public function getCategoryById(int $id)
-    {
-        $category = $this->KategoriInterface->find($id);
-        return Api::response(
-            CategoryResource::make($category),
-            'Category fetched successfully',
-            Response::HTTP_OK
-        );
-    }
 }

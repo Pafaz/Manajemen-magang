@@ -18,7 +18,7 @@ class Mentor extends Model
     protected $fillable = [
         'id',
         'id_user',
-        'id_divisi_cabang',
+        'id_divisi',
     ];
 
     public function user()

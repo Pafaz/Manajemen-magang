@@ -13,12 +13,15 @@ class Surat extends Model
     protected $table = 'surat';
 
     protected $fillable = [
-        'id_peserta_magang',
+        'id_peserta',
         'id_admin_cabang',
+        'id_perusahaan',
         'jenis',
         'tanggal',
-        'nomor_surat',
-        'perihal',
+        'nomor',
+        'isi',
+        'created_at',
+        'updated_at',
     ];
 
     // relasi ke peserta magang

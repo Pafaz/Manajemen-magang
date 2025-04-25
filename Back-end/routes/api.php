@@ -1,10 +1,6 @@
 <?php
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FotoController;
-use App\Http\Controllers\PiketController;
-use App\Http\Controllers\CabangController;
-use App\Http\Controllers\DivisiController;
-use App\Http\Controllers\MagangController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\SekolahController;
@@ -12,6 +8,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\AdminCabangController;
+use App\Http\Controllers\AdminPerusahaanController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -41,11 +38,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Perusahaan
     Route::group(['role:perusahaan'], function () {
-        Route::apiResource('admin', AdminCabangController::class);
+        Route::apiResource('admin/cabang', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('perusahaan', PerusahaanController::class);
         Route::apiResource('cabang', CabangController::class);
+        Route::apiResource('admin/perusahaan', AdminPerusahaanController::class);
         Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
     });
 
@@ -72,4 +70,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //auth
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
+    Route::get('/get-user',[LoginController::class,'getData']);
 });

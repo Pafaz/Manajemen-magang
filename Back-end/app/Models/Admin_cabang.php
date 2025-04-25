@@ -39,4 +39,9 @@ class Admin_cabang extends Model
     {
         return $this->belongsTo(User::class, 'id_user', 'id');
     }
+
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi', 'id');
+    }
 }

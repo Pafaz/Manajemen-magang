@@ -20,6 +20,7 @@ class PerusahaanResource extends JsonResource
             'alamat' => $this->alamat,
             'provinsi' => $this->provinsi,
             'kota' => $this->kota,
+            'kecamatan' => $this->kecamatan,
             'kode_pos' => $this->kode_pos,
             'website' => $this->website,
             'bidang_usaha' => $this->bidang_usaha,

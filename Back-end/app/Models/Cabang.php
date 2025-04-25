@@ -13,9 +13,13 @@ class Cabang extends Model
 
     protected $table = 'cabang';
     protected $fillable = [
-        'name',
-        'alamat',
-        'id_perusahaan'
+        'id_perusahaan',
+        'bidang_usaha',
+        'provinsi',
+        'kota',
+        'instagram',
+        'linkedin',
+        'website',
     ];
 
     public function adminCabang()

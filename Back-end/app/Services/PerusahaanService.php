@@ -32,16 +32,24 @@ class PerusahaanService
         $data = $this->PerusahaanInterface->getAll();
         return Api::response(
             PerusahaanResource::collection($data),
-            'Perusahaan Fetched Successfully',
+            'Berhasil mengambil data perusahaan',
         );
     }
 
-    public function getPerusahaan($id)
+    public function isCompleteProfil()
     {
-        $data = $this->PerusahaanInterface->find($id);
+        if (!auth('sanctum')->user()->perusahaan) {
+            return Api::response(
+                'false',
+                'Perusahaan belum melengkapi profil',
+                Response::HTTP_NOT_MODIFIED
+            );
+        }
+
         return Api::response(
-            PerusahaanDetailResource::make($data),
-            'Perusahaan Fetched Successfully',
+            'true',
+            'Perusahaan telah melengkapi profil',
+            Response::HTTP_OK
         );
     }
 
@@ -50,28 +58,35 @@ class PerusahaanService
         $data = $this->PerusahaanInterface->findByUser(auth('sanctum')->user()->id);
         return Api::response(
             PerusahaanDetailResource::make($data),
-            'Perusahaan Fetched Successfully',
+            'Berhasil mengambil data perusahaan',
         );
     }
 
-    public function LengkapiProfilPerusahaan(array $data)
+    public function simpanProfil(array $data, bool $isUpdate = false)
     {
+        DB::beginTransaction();
+
         try {
             $user = auth('sanctum')->user();
-
-            if ($user->perusahaan) {
-                return Api::response(null, 'Perusahaan already registered', Response::HTTP_BAD_REQUEST);
+            
+            if ($isUpdate && !$user->perusahaan) {
+                throw new \Exception('Perusahaan belum terdaftar');
+            }
+            if($isUpdate && $data === null){
+                throw new \Exception('Tidak ada data yang dikirim untuk diperbarui');
+            }
+            $userData = array_filter([
+                'name' => $data['nama'] ?? null,
+                'telepon' => $data['telepon'] ?? null,
+                'email' => $data['email'] ?? null,
+            ]);
+            if (!empty($userData)) {
+                $this->userInterface->update($user->id, $userData);
             }
 
-            // Gunakan transaction untuk memastikan integritas data
-            DB::beginTransaction();
-
-            $this->userInterface->update($user->id, [
-                'name' => $data['nama'],
-                'telepon' => $data['telepon'],
-            ]);
-
-            $perusahaan = $this->PerusahaanInterface->create($data);
+            $perusahaan = $isUpdate
+                ? $this->PerusahaanInterface->update($user->perusahaan->id, array_filter($data))
+                : $this->PerusahaanInterface->create($data);
 
             $files = [
                 'logo' => 'profile',
@@ -79,67 +94,36 @@ class PerusahaanService
                 'surat_legalitas' => 'surat_legalitas',
             ];
 
-            foreach ($files as $key => $tipe) {
+            foreach ($files as $key => $type) {
                 if (!empty($data[$key])) {
-                    $this->foto->createFoto($data[$key], $perusahaan->id, $tipe);
+                    if ($isUpdate) {
+                        $this->foto->updateFoto($data[$key], $perusahaan->id, $type);
+                    } else {
+                        $this->foto->createFoto($data[$key], $perusahaan->id, $type);
+                    }
                 }
             }
 
             DB::commit();
-
-            return Api::response(
-                PerusahaanResource::make($perusahaan),
-                'Complete Company Profile Successfully',
-                Response::HTTP_CREATED
-            );
-        } catch (QueryException $e) {
-            DB::rollBack();
-            Log::error('DB Error creating Perusahaan: ' . $e->getMessage());
-            return Api::response(
-                null,
-                'Registrasi Perusahaan gagal: ' . $e->getMessage(),
-                Response::HTTP_BAD_REQUEST
-            );
+            return $perusahaan;
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('Unexpected error: ' . $e->getMessage());
-            return Api::response(
-                null,
-                'Terjadi kesalahan saat melengkapi profil perusahaan.',
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            Log::error("Gagal menyimpan profil perusahaan: " . $e->getMessage());
+            throw $e;
         }
     }
-
-    public function updateProfilePerusahaan(array $data, $id)
-    {
-        $user = auth('sanctum')->user();
-
-        $userData = array_filter([
-            'name' => $data['nama'] ?? null,
-            'telepon' => $data['telepon'] ?? null,
-            'email' => $data['email'] ?? null,
-        ]);
-
-        if (!empty($userData)) {
-            $this->userInterface->update($user->id, $userData);
-        }
-
-        $Perusahaan = $this->PerusahaanInterface->update($id, array_filter($data));
-        return Api::response(
-            PerusahaanResource::make($Perusahaan),
-            'Perusahaan Updated Successfully',
-            Response::HTTP_OK
-        );
-    }
-
 
     public function deletePerusahaan($id)
     {
         $this->PerusahaanInterface->delete($id);
+
+        $id_user = $this->PerusahaanInterface->find($id)->id_user;
+        
+        $this->userInterface->delete($id_user);
+
         return Api::response(
             null,
-            'Perusahaan Deleted Successfully',
+            'Berhasil menghapus data perusahaan',
             Response::HTTP_OK
         );
     }

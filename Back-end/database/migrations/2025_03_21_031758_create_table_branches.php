@@ -14,8 +14,12 @@ return new class extends Migration
         Schema::create('cabang', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_perusahaan');
-            $table->string('name');
-            $table->string('alamat');
+            $table->string('bidang_usaha');
+            $table->string('provinsi');
+            $table->string('kota');
+            $table->string('website');
+            $table->string('instagram');
+            $table->string('linkedin');
             $table->timestamps();
 
             $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
@@ -23,7 +27,7 @@ return new class extends Migration
 
         Schema::create('divisi', function (Blueprint $table) {
             $table->id()->primary();
-            $table->string('name');
+            $table->string('nama');
         });
 
         Schema::create('divisi_cabang', function (Blueprint $table) {

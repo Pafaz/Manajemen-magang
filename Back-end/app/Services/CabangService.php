@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use Illuminate\Support\Facades\DB;
 use App\Interfaces\CabangInterface;
+use Illuminate\Support\Facades\Log;
 use App\Http\Resources\CabangResource;
 use App\Interfaces\PerusahaanInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,45 +37,104 @@ class CabangService
         return $this->cabangInterface->getCabangByPerusahaanId($id);
     }
 
-    public function createCabang(array $data)
+    public function simpanCabang(array $data, bool $isUpdate = false, $id = null)
     {
+        DB::beginTransaction();
+
         try {
+            $user = auth('sanctum')->user();
 
-        $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
-        $jumlahCabang = $this->cabangInterface->getCabangByPerusahaanId($perusahaan->id);
-        if ($jumlahCabang >= 1) {
-            throw new \Exception("Anda sudah mencapai limit cabang. Silakan upgrade ke premium!");
-        }
-        
-        $data['id_perusahaan'] = $perusahaan->id;
-        // dd($data);
-        $cabang = $this->cabangInterface->create($data);
-        // $cabang->perusahaan()->attach($perusahaan->id);
+            if (!$user->perusahaan) {
+                throw new \Exception("Perusahaan belum terdaftar");
+            }
 
-        return Api::response(
-            CabangResource::make($cabang),
-            'Cabang Created Successfully',
-            Response::HTTP_CREATED
-        );
+            if (!$isUpdate && $user->perusahaan->cabang()->count() >= 1) {
+                throw new \Exception("Anda sudah mencapai limit cabang. Silakan upgrade ke premium!");
+            }
 
-        }catch (\Exception $e) {
+            
+            $cabangData = [
+                'bidang_usaha' => $data['bidang_usaha'] ?? null,
+                'provinsi' => $data['provinsi'] ?? null,
+                'kota' => $data['kota'] ?? null,
+                'instagram' => $data['instagram'] ?? null,
+                'linkedin' => $data['linkedin'] ?? null,
+                'website' => $data['website'] ?? null,
+                'id_perusahaan' => $user->perusahaan->id,
+            ];
+
+            if ($isUpdate && empty(array_filter($cabangData))) {
+                throw new \Exception("Tidak ada data yang dikirim untuk diperbarui");
+            }
+            
+            $cabang = $isUpdate
+                ? $this->cabangInterface->update($id, array_filter($cabangData))
+                : $this->cabangInterface->create(array_filter($cabangData));
+
+            DB::commit();
+
+            return Api::response(
+                new CabangResource($cabang),
+                $isUpdate ? 'Cabang berhasil diperbarui' : 'Cabang berhasil dibuat',
+                $isUpdate ? Response::HTTP_OK : Response::HTTP_CREATED
+            );
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            Log::error("Gagal menyimpan cabang: " . $e->getMessage());
+
             return Api::response(
                 null,
-                $e->getMessage(),
+                'Gagal menyimpan cabang'. $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
 
-    public function updateCabang(array $data, $id)
-    {
-        $cabang = $this->cabangInterface->update($id, $data);
-        return Api::response(
-            CabangResource::make($cabang),
-            'Cabang Updated Successfully',
-            Response::HTTP_OK
-        );
-    }
+    // public function createCabang(array $data)
+    // {
+    //     try {
+    //     $user = auth('sanctum')->user();
+    //         // dd($user->perusahaan->id);
+    //     if ($user->perusahaan->cabang()->count() >= 1) {
+    //         throw new \Exception("Anda sudah mencapai limit cabang. Silakan upgrade ke premium!");
+    //     }
+        
+    //     // $data['id_perusahaan'] = $user->perusahaan->id;
+    //     $cabang = $this->cabangInterface->create([
+    //         'bidang_usaha' => $data['bidang_usaha'],
+    //         'provinsi' => $data['provinsi'],
+    //         'kota' => $data['kota'],
+    //         'id_perusahaan' => $user->perusahaan->id,
+    //         'instagram' => $data['instagram'],
+    //         'linkedin' => $data['linkedin'],
+    //         'website' => $data['website'],
+    //     ]);
+
+    //     return Api::response(
+    //         CabangResource::make($cabang),
+    //         'Cabang Created Successfully',
+    //         Response::HTTP_CREATED
+    //     );
+
+    //     }catch (\Exception $e) {
+    //         return Api::response(
+    //             null,
+    //             $e->getMessage(),
+    //             Response::HTTP_INTERNAL_SERVER_ERROR
+    //         );
+    //     }
+    // }
+
+    // public function updateCabang(array $data, $id)
+    // {
+    //     $cabang = $this->cabangInterface->update($id, $data);
+    //     return Api::response(
+    //         CabangResource::make($cabang),
+    //         'Cabang Updated Successfully',
+    //         Response::HTTP_OK
+    //     );
+    // }
 
     public function deleteCabang($id)
     {

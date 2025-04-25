@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id()->primary();
             $table->uuid('id_peserta');
             $table->unsignedBigInteger('id_divisi_cabang');
-            $table->string('name');
+            $table->string('nama');
             $table->string('deskripsi');
             $table->date('batas_waktu');
             $table->boolean('is_done');
@@ -27,8 +27,7 @@ return new class extends Migration
 
         Schema::create('kategori', function (Blueprint $table) {
             $table->id()->primary();
-            $table->string('name');
-            $table->string('deskripsi');
+            $table->string('nama');
         });
 
         Schema::create('proyek_kategori', function (Blueprint $table) {

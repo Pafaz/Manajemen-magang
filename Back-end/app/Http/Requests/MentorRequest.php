@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MentorRequest extends FormRequest
+class MentorRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,6 +21,16 @@ class MentorRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->isUpdate()) {
+            return [
+                'nama' => 'sometimes|string',
+                'email' => 'sometimes|email',
+                'password' => 'sometimes|string',
+                'telepon' => 'sometimes|numeric|digits_between:10,12',
+                'id_divisi' => 'sometimes|exists:divisi,id',
+                'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            ];
+        }
         return [
             'nama' => 'required|string',
             'email' => 'required|email',

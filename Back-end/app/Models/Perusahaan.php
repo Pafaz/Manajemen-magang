@@ -54,4 +54,9 @@ class Perusahaan extends Model
     {
         return $this->hasMany(Admin_perusahaan::class, 'id_perusahaan', 'id');
     }  
+
+    public function divisi()
+    {
+        return $this->hasMany(Divisi::class, 'id_perusahaan', 'id');
+    }
 }

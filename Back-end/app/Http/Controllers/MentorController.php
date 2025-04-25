@@ -59,9 +59,9 @@ class MentorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Mentor $mentor)
+    public function update(string $id, MentorRequest $request)
     {
-        //
+        return $this->mentorService->updateMentor($id, $request->validated());
     }
 
     /**

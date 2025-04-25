@@ -64,7 +64,7 @@ class PerusahaanController extends Controller
     public function update(PerusahaanRequest $request)
     {
         return $this->perusahaanService->simpanProfil($request->validated(), true);
-        // return Api::response(new PerusahaanDetailResource($perusahaan), 'Profil perusahaan berhasil diperbarui', Response::HTTP_OK);
+    
     }
     
 

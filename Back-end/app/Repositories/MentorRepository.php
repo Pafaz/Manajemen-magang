@@ -13,7 +13,7 @@ class MentorRepository implements MentorInterface
         return Mentor::all();
     }
 
-    public function find(int $id): ? Mentor
+    public function find($id): ? Mentor
     {
         return Mentor::findOrFail($id)->first();
     }
@@ -30,7 +30,7 @@ class MentorRepository implements MentorInterface
         return $mentor;
     }
 
-    public function delete(int $id): void
+    public function delete($id): void
     {
         Mentor::findOrFail($id)->delete();
     }

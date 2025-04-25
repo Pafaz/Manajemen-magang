@@ -13,12 +13,16 @@ class Jam_Kantor extends Model
     protected $table = 'jam_kantor';
 
     protected $fillable = [
+        'id_perusahaan',
+        'id_cabang',
         'hari',
         'jenis_sesi',
         'masuk',
         'istirahat',
         'kembali',
         'pulang',
+        'created_at',
+        'updated_at'
     ];
     public function cabang()
     {

@@ -14,36 +14,41 @@ return new class extends Migration
         Schema::create('magang', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
+            $table->uuid('id_perusahaan');
             $table->uuid('id_mentor')->nullable();
-            $table->unsignedBigInteger('id_divisi_cabang');
+            $table->unsignedBigInteger('id_cabang')->nullable();
             $table->enum('tipe', ['offline', 'online']);
             $table->enum('status', ['menunggu', 'diterima', 'ditolak'])->default('menunggu');
-            $table->date('tanggal_mulai');
-            $table->date('tanggal_selesai');
+            $table->date('mulai');
+            $table->date('selesai');
             $table->timestamps();
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
             $table->foreign('id_mentor')->references('id')->on('mentor')->onDelete('cascade');
-            $table->foreign('id_divisi_cabang')->references('id')->on('divisi_cabang')->onDelete('cascade');
+            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
+            $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
         });
 
         Schema::create('surat', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
-            $table->uuid('id_admin');
+            $table->uuid('id_admin_cabang')->nullable();
+            $table->uuid('id_perusahaan');
             $table->enum('jenis', ['penerimaan', 'peringatan']);
+            $table->date('tanggal');
             $table->string('nomor');
             $table->text('isi');
-            $table->string('file_path');
             $table->timestamps();
 
+            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
-            $table->foreign('id_admin')->references('id')->on('admin_cabang')->onDelete('cascade');
+            $table->foreign('id_admin_cabang')->references('id')->on('admin_cabang')->onDelete('cascade');
         });
 
         Schema::create('jam_kantor', function (Blueprint $table) {
             $table->id()->primary();
-            $table->unsignedBigInteger('id_divisi_cabang');
+            $table->uuid('id_perusahaan');
+            $table->unsignedBigInteger('id_cabang')->nullable();
             $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
             $table->enum('jenis_sesi', ['pagi', 'siang', 'penuh']);
             $table->time('masuk');
@@ -52,7 +57,8 @@ return new class extends Migration
             $table->time('pulang');
             $table->timestamps();
 
-            $table->foreign('id_divisi_cabang')->references('id')->on('divisi_cabang')->onDelete('cascade');
+            $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
+            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
         });
     }
 

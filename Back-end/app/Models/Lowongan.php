@@ -13,5 +13,17 @@ class Lowongan extends Model
     protected $table = 'lowongan';
 
     protected $guarded = ['id'];
-    protected $fillable = ['id_divisi_cabang', 'id_perusahaan', 'max_kuota'];
+    protected $fillable = [
+        'id_cabang', 
+        'id_perusahaan',
+        'id_divisi',
+        'tanggal_mulai',
+        'tanggal_selesai',
+        'max_kuota',
+        'deskripsi',
+        'status',
+        'email_hrd',
+        'created_at',
+        'updated_ay'
+    ];
 }

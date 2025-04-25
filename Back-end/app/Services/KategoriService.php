@@ -18,19 +18,31 @@ class KategoriService
 
     public function getCategories()
     {
+        
         $data = $this->KategoriInterface->getAll();
         return Api::response(
             CategoryResource::collection($data),
-            'Categories Fetched Successfully', 
+            'Berhasil mengambil data kategori', 
         );
     }
 
-    public function createCategory(array $data)
+    public function simpanKategori(array $data, $isUpdate = false)
     {
+        $user = auth('sanctum')->user();
+
+        if ($isUpdate) {
+            $category = $this->KategoriInterface->update(id: $data['id'], data: $data);
+            return Api::response(
+            CategoryResource::make($category),
+            'Berhasil memperbarui kategori',
+            Response::HTTP_OK
+        );
+        }
+
         $category = $this->KategoriInterface->create($data);
         return Api::response(
             CategoryResource::make($category),
-            'Category created successfully',
+            'Berhasil membuat kategori',
             Response::HTTP_CREATED
         );
     }
@@ -40,7 +52,7 @@ class KategoriService
         $category = $this->KategoriInterface->update($id, $data);
         return Api::response(
             CategoryResource::make($category),
-            'Category updated successfully',
+            'Berhasil memperbarui kategori',
             Response::HTTP_OK
         );
     }

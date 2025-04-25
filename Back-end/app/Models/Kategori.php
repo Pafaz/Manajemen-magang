@@ -10,10 +10,13 @@ class Kategori extends Model
     /** @use HasFactory<\Database\Factories\KategoriFactory> */
     use HasFactory;
 
-    protected $table = 'kategori';
+    protected $table = 'kategori-proyek';
 
     protected $fillable = [
         'nama',
+        'id_perusahaan',
+        'created_at',
+        'updated_at',
     ];
 
     public $timestamps = false;

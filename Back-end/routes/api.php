@@ -30,6 +30,7 @@ Route::post('/update-password', [ForgotPasswordController::class, 'reset']);
 
 
 
+
 Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Peserta
@@ -46,8 +47,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('divisi', DivisiController::class);
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('perusahaan', PerusahaanController::class);
+        Route::get('/perusahaan/detail', [PerusahaanController::class, 'show']);
+        Route::put('/perusahaan/update', [PerusahaanController::class, 'update']);
         Route::apiResource('cabang', CabangController::class);
-        Route::apiResource('admin/perusahaan', AdminPerusahaanController::class);
+        // Route::apiResource('admin/perusahaan', AdminPerusahaanController::class);
         Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
     });
 
@@ -74,5 +77,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //auth
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
-    Route::get('/get-user',[LoginController::class,'getData']);
 });

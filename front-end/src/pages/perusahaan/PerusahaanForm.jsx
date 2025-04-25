@@ -1,90 +1,130 @@
 import { useEffect, useState } from "react";
-import { Calendar, Upload } from "lucide-react";
+import { Calendar } from "lucide-react";
+import axios from "axios";
 
 export default function CompanyRegistrationForm() {
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
-  const [selectedProvince, setSelectedProvince] = useState("");
   const [districts, setDistricts] = useState([]);
+  const [selectedProvince, setSelectedProvince] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
-
   const [formData, setFormData] = useState({
-    // General Company Data
     ownerName: "",
     ownerPhone: "",
-    ownerPosition: "",
-    ownerEmail: "",
     companyName: "",
-    dateEstablished: "",
-    businessField: "",
-
-    // Contact Information
-    companyAddress: "",
-    province: "",
-    city: "",
-    postalCode: "",
-    district: "",
-    website: "",
     companyEmail: "",
     companyPhone: "",
+    companyAddress: "",
+    companyDescription: "",
+    province: "",
+    city: "",
+    district: "",
+    postalCode: "",
+    website: "",
+    ownerPosition: "",
+    dateEstablished: "",
+    businessField: "",
+    companyDocument: null,
+    npwpDocument: null,
+    logoDocument: null,
   });
 
   useEffect(() => {
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-      .then((response) => response.json())
-      .then((data) => setProvinces(data))
-      .catch((error) => console.error("Error fetching provinces:", error));
+      .then((res) => res.json())
+      .then(setProvinces)
+      .catch(console.error);
   }, []);
-
-  const handleProvinceChange = (event) => {
-    const provinceId = event.target.value;
-    setSelectedProvince(provinceId);
-    setSelectedCity("");
-
-    if (provinceId) {
-      fetch(
-        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`
-      )
-        .then((response) => response.json())
-        .then((data) => setCities(data))
-        .catch((error) => console.error("Error fetching cities:", error));
-    }
-  };
-
-  const handleCityChange = (event) => {
-    const cityId = event.target.value;
-    setSelectedCity(cityId);
-
-    if (cityId) {
-      fetch(
-        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${cityId}.json`
-      )
-        .then((response) => response.json())
-        .then((data) => setDistricts(data))
-        .catch((error) => console.error("Error fetching districts:", error));
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: files[0] }));
+  };
+
+  const handleProvinceChange = (e) => {
+    const selected = provinces.find((p) => p.name === e.target.value);
+    if (!selected) return;
+
+    setSelectedProvince(selected.name);
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
-      ...(name === "province" && { city: "", district: "" }),
-      ...(name === "city" && { district: "" }),
+      province: selected.name, // Hanya set nama provinsi langsung
+      city: "",
+      district: "",
+    }));
+
+    // Fetch kota-kota setelah memilih provinsi
+    fetch(
+      `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selected.id}.json`
+    )
+      .then((res) => res.json())
+      .then(setCities)
+      .catch(console.error);
+
+    setDistricts([]); // Reset distrik
+  };
+
+  const handleCityChange = (e) => {
+    const selected = cities.find((c) => c.name === e.target.value);
+    if (!selected) return;
+
+    setSelectedCity(selected.name); // Memperbarui state terpisah untuk kota
+    setFormData((prev) => ({
+      ...prev,
+      city: selected.name, // Hanya set nama kota langsung
+      district: "",
+    }));
+
+    // Fetch distrik setelah memilih kota
+    fetch(
+      `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selected.id}.json`
+    )
+      .then((res) => res.json())
+      .then(setDistricts)
+      .catch(console.error);
+  };
+
+  const handleDistrictChange = (e) => {
+    const selected = districts.find((d) => d.name === e.target.value);
+    if (!selected) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      district: selected.name, // Update district with the selected name
     }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
-    // Handle form submission
+  
+    const formPayload = new FormData();
+    for (const key in formData) {
+      formPayload.append(key, formData[key]);
+    }
+  
+    axios
+      .post("http://127.0.0.1:8000/api/perusahaan", formPayload)
+      .then((response) => {
+        console.log("Success:", response.data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
+
+  useEffect(() => {
+    console.log(formData);
+    
+  },[formData])
 
   return (
     <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-sm">
       <form onSubmit={handleSubmit}>
-        {/* Header Section */}
         <div className="mb-6">
           <h1 className="text-xl font-bold text-gray-800">
             Data Umum Perusahaan
@@ -96,7 +136,6 @@ export default function CompanyRegistrationForm() {
 
         <div className="border-t border-gray-200 my-6"></div>
 
-        {/* General Company Data Section */}
         <div className="mb-8">
           <h2 className="text-lg font-bold text-gray-800 mb-4">
             Data Umum Perusahaan
@@ -189,7 +228,6 @@ export default function CompanyRegistrationForm() {
                 <input
                   type="date"
                   name="dateEstablished"
-                  placeholder="Tanggal Berdiri"
                   className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   value={formData.dateEstablished}
                   onChange={handleChange}
@@ -218,24 +256,25 @@ export default function CompanyRegistrationForm() {
               </select>
             </div>
           </div>
+
           <div className="grid grid-cols-2 gap-3 mt-5">
             <textarea
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-              name=""
-              id=""
+              name="companyDescription"
               placeholder="Deskripsi Perusahaan"
+              value={formData.companyDescription}
+              onChange={handleChange}
             ></textarea>
           </div>
         </div>
 
-        {/* Contact Information Section */}
         <div className="mb-8">
           <h2 className="text-lg font-bold text-gray-800 mb-4">
             Kontak Perusahaan
           </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="space-y-2">
+            <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 Provinsi<span className="text-red-500">*</span>
               </label>
@@ -248,7 +287,7 @@ export default function CompanyRegistrationForm() {
               >
                 <option value="">Pilih Provinsi</option>
                 {provinces.map((province) => (
-                  <option key={province.id} value={province.id}>
+                  <option key={province.id} value={province.name}>
                     {province.name}
                   </option>
                 ))}
@@ -268,7 +307,7 @@ export default function CompanyRegistrationForm() {
               >
                 <option value="#">Pilih Kabupaten/Kota</option>
                 {cities.map((city) => (
-                  <option key={city.id} value={city.id}>
+                  <option key={city.id} value={city.name}>
                     {city.name}
                   </option>
                 ))}
@@ -283,18 +322,17 @@ export default function CompanyRegistrationForm() {
                 name="district"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 value={formData.district}
-                onChange={handleChange}
+                onChange={handleDistrictChange}
                 required
               >
                 <option value="#">Pilih Kecamatan</option>
                 {districts.map((district) => (
-                  <option key={district.id} value={district.id}>
+                  <option key={district.id} value={district.name}>
                     {district.name}
                   </option>
                 ))}
               </select>
             </div>
-
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 Kode Pos<span className="text-red-500">*</span>
@@ -338,7 +376,7 @@ export default function CompanyRegistrationForm() {
                 onChange={handleChange}
                 required
               />
-            </div>  
+            </div>
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
@@ -355,87 +393,101 @@ export default function CompanyRegistrationForm() {
               />
             </div>
           </div>
+
           <div className="grid grid-cols-2 gap-3 mt-5">
             <textarea
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
-              name=""
-              id=""
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              name="companyAddress"
               placeholder="Alamat Perusahaan"
+              value={formData.companyAddress}
+              onChange={handleChange}
             ></textarea>
           </div>
         </div>
 
-        {/* Document Upload Section */}
         <div className="mb-8">
-          <div className="relative">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">
-              Dokumen Pendukung (opsional)
-            </h2>
-            <div className="absolute top-0 right-0 bg-green-500 text-white rounded-full h-6 w-6 flex items-center justify-center">
-              <span>A</span>
-            </div>
-          </div>
+          <h2 className="text-lg font-bold text-gray-800 mb-4">
+            Dokumen Pendukung
+          </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-5">
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
-                Bukti Legalitas Perusahaan
+                Dokumen Perusahaan
               </label>
-              <div className="flex flex-col gap-2">
-                <div className="border border-gray-300 rounded-md p-2 flex items-center justify-between">
-                  <button className="text-sm px-4 py-1 bg-blue-100 text-blue-700 rounded-md">
-                    Choose File
-                  </button>
-                  <span className="text-sm text-gray-500">No File Chosen</span>
-                </div>
-                <p className="text-xs text-red-500">
-                  *Foto Harus Berformat .jpg, .jpeg, atau .png
-                </p>
+              <div className="flex items-center space-x-2 border border-slate-400/[0.5] rounded-lg overflow-hidden">
+                <input
+                  type="file"
+                  id="companyDocument" // Add id here
+                  name="companyDocument"
+                  accept=".pdf,.docx,.jpeg,.png,.jpg"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <label
+                  htmlFor="companyDocument" // Ensure the label links to input by id
+                  className="cursor-pointer px-3 py-2 bg-slate-100 text-slate-700 border-r border-r-slate-300"
+                >
+                  Choose File
+                </label>
+                <span className="text-sm text-gray-500">No File Chosen</span>
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
-                Bukti NPWP Perusahaan
+                NPWP Perusahaan
               </label>
-              <div className="flex flex-col gap-2">
-                <div className="border border-gray-300 rounded-md p-2 flex items-center justify-between">
-                  <button className="text-sm px-4 py-1 bg-blue-100 text-blue-700 rounded-md">
-                    Choose File
-                  </button>
-                  <span className="text-sm text-gray-500">No File Chosen</span>
-                </div>
-                <p className="text-xs text-red-500">
-                  *Foto Harus Berformat .jpg, .jpeg, atau .png
-                </p>
+              <div className="flex items-center space-x-2 border border-slate-400/[0.5] rounded-lg overflow-hidden">
+                <input
+                  type="file"
+                  id="npwpDocument" // Add id here
+                  name="npwpDocument"
+                  accept=".pdf,.docx,.jpeg,.png,.jpg"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <label
+                  htmlFor="npwpDocument" // Ensure the label links to input by id
+                  className="cursor-pointer px-3 py-2 bg-slate-100 text-slate-700 border-r border-r-slate-300"
+                >
+                  Choose File
+                </label>
+                <span className="text-sm text-gray-500">No File Chosen</span>
               </div>
             </div>
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
-                Bukti Logo Perusahaan
+                Logo Perusahaan
               </label>
-              <div className="flex flex-col gap-2">
-                <div className="border border-gray-300 rounded-md p-2 flex items-center justify-between">
-                  <button className="text-sm px-4 py-1 bg-blue-100 text-blue-700 rounded-md">
-                    Choose File
-                  </button>
-                  <span className="text-sm text-gray-500">No File Chosen</span>
-                </div>
-                <p className="text-xs text-red-500">
-                  *Foto Harus Berformat .jpg, .jpeg, atau .png
-                </p>
+              <div className="flex items-center space-x-2 border border-slate-400/[0.5] rounded-lg overflow-hidden">
+                <input
+                  type="file"
+                  id="logoDocument" // Add id here
+                  name="logoDocument"
+                  accept=".jpeg,.png,.jpg"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                <label
+                  htmlFor="logoDocument" // Ensure the label links to input by id
+                  className="cursor-pointer px-3 py-2 bg-slate-100 text-slate-700 border-r border-r-slate-300"
+                >
+                  Choose File
+                </label>
+                <span className="text-sm text-gray-500">No File Chosen</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="text-end">
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="py-2 px-4 bg-blue-500 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            Submit
+            Kirim
           </button>
         </div>
       </form>

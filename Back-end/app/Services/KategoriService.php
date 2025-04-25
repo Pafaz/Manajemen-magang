@@ -57,11 +57,10 @@ class KategoriService
                 'nama' => $data['nama'],
             ]);
         
-        // dd($category);
         if (!empty($data['card'])) {
             $isUpdate 
-                ? $this->foto->updateFoto($data['card'], $category->id.$perusahaanId, 'card') 
-                : $this->foto->createFoto($data['card'], $category->id.$perusahaanId, 'card');
+                ? $this->foto->updateFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card') 
+                : $this->foto->createFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card');
         }
         $message = $isUpdate
             ? 'Berhasil memperbarui kategori'

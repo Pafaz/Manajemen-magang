@@ -13,7 +13,11 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
-
+use App\Http\Controllers\CabangController;
+use App\Http\Controllers\DivisiController;
+use App\Http\Controllers\FotoController;
+use App\Http\Controllers\MagangController;
+use App\Http\Controllers\PiketController;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register-perusahaan', [RegisterController::class, 'registerPerusahaan']);

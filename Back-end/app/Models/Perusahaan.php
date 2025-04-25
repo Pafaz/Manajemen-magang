@@ -43,7 +43,7 @@ class Perusahaan extends Model
     }
     public function user()
     {
-        return $this->hasMany(User::class, 'id_user', 'id');
+        return $this->belongsTo(User::class, 'id_user', 'id');
     }
     public function cabang()
     {

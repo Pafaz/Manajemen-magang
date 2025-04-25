@@ -18,6 +18,7 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'nama' => $this->nama,
+            'foto' => FotoResource::make($this->foto),
         ];
     }
 }

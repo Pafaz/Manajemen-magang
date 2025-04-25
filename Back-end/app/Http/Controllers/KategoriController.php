@@ -36,9 +36,10 @@ class KategoriController extends Controller
     {
         $data = $request->validate([
             'nama' => 'required|string',
+            'card' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        return $this->kategoriService->createCategory($data);
+        return $this->kategoriService->simpanKategori($data);
     }
 
     /**
@@ -46,7 +47,7 @@ class KategoriController extends Controller
      */
     public function show( $id)
     {
-        return $this->kategoriService->getCategoryById($id);
+        return $this->kategoriService->getCategories($id);
     }
 
     /**
@@ -60,9 +61,14 @@ class KategoriController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Kategori $kategori)
     {
-        return $this->kategoriService->updateCategory($id, $request->all());
+        $data = $request->validate([
+            'nama' => 'sometimes|string',
+            'card' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        return $this->kategoriService->simpanKategori($data, true, $kategori->id);
     }
 
     /**

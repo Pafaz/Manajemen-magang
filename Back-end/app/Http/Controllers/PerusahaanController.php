@@ -6,6 +6,7 @@ use App\Helpers\Api;
 use App\Models\Perusahaan;
 use App\Services\PerusahaanService;
 use App\Http\Requests\PerusahaanRequest;
+use App\Http\Resources\PerusahaanDetailResource;
 use App\Http\Resources\PerusahaanResource;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -38,9 +39,7 @@ class PerusahaanController extends Controller
      */
     public function store(PerusahaanRequest $request)
     {
-    $perusahaan = $this->perusahaanService->simpanProfil($request->validated(), false);
-
-    return Api::response(new PerusahaanResource($perusahaan), 'Profil perusahaan berhasil dilengkapi', Response::HTTP_CREATED);
+        return $this->perusahaanService->simpanProfil($request->validated(), false);
     }
 
     /**
@@ -64,9 +63,8 @@ class PerusahaanController extends Controller
      */
     public function update(PerusahaanRequest $request)
     {
-        $perusahaan = $this->perusahaanService->simpanProfil($request->validated(), true);
-    
-        return Api::response(new PerusahaanResource($perusahaan), 'Profil perusahaan berhasil diperbarui', Response::HTTP_OK);
+        return $this->perusahaanService->simpanProfil($request->validated(), true);
+        // return Api::response(new PerusahaanDetailResource($perusahaan), 'Profil perusahaan berhasil diperbarui', Response::HTTP_OK);
     }
     
 

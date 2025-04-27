@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import NavAdmin from "../components/ui/NavAdmin";
 
@@ -10,87 +10,76 @@ const PerusahaanLayout = () => {
 
   const sidebarMenus = [
     {
-      icon: "bi-columns-gap",
+      icon: "bi-grid",
       label: "Dashboard",
       link: "/perusahaan/dashboard",
     },
     {
-      icon: "bi-bar-chart-steps",
-      label: "Kelola Perusahaan",
+      icon: "bi-building",
+      label: "Kelola Cabang",
       hasSubmenu: true,
       submenu: [
         {
-          label: "Beranda",
+          icon: "bi-person",
+          label: "beranda",
           link: "/perusahaan/beranda",
         },
         {
-          label: "Admin Cabang",
+          icon: "bi-person",
+          label: "Admin",
           link: "/perusahaan/admin",
         },
         {
+          icon: "bi-mortarboard",
           label: "Mentor",
           link: "/perusahaan/mentor",
         },
         {
-          label: "Peserta",
-          link: "/perusahaan/perusahaan/dokumen",
+          icon: "bi-people",
+          label: "Peserta Magang",
+          link: "/perusahaan/peserta",
         },
         {
-          label: "Surat Peringatan",
-          link: "/perusahaan/perusahaan/dokumen",
-        },
-        {
-          label: "Lembaga",
-          link: "/perusahaan/perusahaan/dokumen",
-        },
-        {
-          label: "RFID",
-          link: "/perusahaan/perusahaan/dokumen",
-        },
-        {
+          icon: "bi-pc-display",
           label: "Divisi",
-          link: "/perusahaan/perusahaan/dokumen",
+          link: "/perusahaan/divisi",
         },
         {
-          label: "Project",
-          link: "/perusahaan/perusahaan/dokumen",
+          icon: "bi-check-square",
+          label: "Approval",
+          link: "/perusahaan/approval",
         },
         {
+          icon: "bi-card-list",
+          label: "Pendataan",
+          link: "/perusahaan/pendataan",
+        },
+        {
+          icon: "bi-card-list",
+          label: "Absensi",
+          link: "/perusahaan/absensi",
+        },
+        {
+          icon: "bi-envelope",
           label: "Surat",
           link: "/perusahaan/surat",
         },
         {
-          label: "Lembaga",
-          link: "/perusahaan/lembaga",
-        },
-        {
+          icon: "bi-upc-scan",
           label: "RFID",
-          link: "/perusahaan/perusahaan/dokumen",
+          link: "/perusahaan/RFID",
         },
         {
-          label: "Divisi",
-          link: "/perusahaan/perusahaan/dokumen",
+          icon: "bi-list-task",
+          label: "Kategori Project",
+          link: "/perusahaan/kat-projek",
         },
         {
-          label: "Project",
-          link: "/perusahaan/perusahaan/dokumen",
+          icon: "bi-card-checklist",
+          label: "Piket",
+          link: "/perusahaan/piket",
         },
       ],
-    },
-    {
-      icon: "bi-layers",
-      label: "Kelola Cabang",
-      link: "/perusahaan/lembaga",
-    }, 
-
-    {
-      icon: "bi-grid-3x3-gap",
-      label: "Kelola Lowongan",
-    },
-    {
-      icon: "bi-gear",
-      label: "Account Settings",
-      link: "/perusahaan/settings",
     },
   ];
   const footerMenus = ["License", "More Themes", "Documentation", "Support"];

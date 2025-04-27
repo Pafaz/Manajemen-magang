@@ -4,13 +4,13 @@ export default function DataPeringatan({ data, searchTerm, selectedDate }) {
   const filteredData = data.filter((item) => {
     const isMatchSearch =
       item.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.jurusan.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.kelas.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.masaMagang.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.sekolah.toLowerCase().includes(searchTerm.toLowerCase());
+      item.sekolah.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.keteranganSP.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.statusSP.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.tanggal.toLowerCase().includes(searchTerm.toLowerCase());
 
     const isMatchDate = selectedDate
-      ? new Date(item.masaMagang).toLocaleDateString() ===
+      ? new Date(item.tanggal).toLocaleDateString() ===
         selectedDate.toLocaleDateString()
       : true;
 
@@ -59,8 +59,8 @@ export default function DataPeringatan({ data, searchTerm, selectedDate }) {
               </td>
               <td className="px-3 py-3">{item.sekolah}</td>
               <td className="px-3 py-3">{item.keteranganSP}</td>
-              <td className="px-3 py-3">{item.tanggalDaftar}</td>
-              <td className="px-3 py-3">{item.tanggalDiterima}</td>
+              <td className="px-3 py-3">{item.statusSP}</td>
+              <td className="px-3 py-3">{item.tanggal}</td>
               <td className="px-3 py-3 flex justify-center gap-3">
                 <button onClick={() => handleView(item)} title="Lihat">
                   <i className="bi bi-eye" style={{ color: 'orange', fontSize: '1.5rem' }}></i>

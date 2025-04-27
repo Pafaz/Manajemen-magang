@@ -18,11 +18,18 @@ import Approval from "./src/pages/admin/Appoval";
 import PendataanAdmin from "./src/pages/admin/PendataanAdmin";
 import PerusahaanLayout from "./src/layout/PerusahaanLayout";
 import DashboardPerusahaan from "./src/pages/perusahaan/Dashboard";
+import BerandaPerusahaan from "./src/pages/perusahaan/BerandaPerusahaan";
 import DetailCabang from "./src/pages/perusahaan/DetailCabang";
-import ApprovalPerusahaan from "./src/pages/perusahaan/AppovalPerusahaan";
-import PendataanPerusahaan from "./src/pages/perusahaan/PendataanPerusahaan";
+import Admin from "./src/pages/perusahaan/Admin";
+import Mentor from "./src/pages/perusahaan/Mentor";
+import Peserta from "./src/pages/perusahaan/Peserta";
+import Divisi from "./src/pages/perusahaan/Divisi";
+import ApprovalPerusahaan from "./src/pages/perusahaan/Approval";
+import Pendataan from "./src/pages/perusahaan/Pendataan";
+import DataAbsensi from "./src/pages/perusahaan/Absensi";
+import RFID from "./src/pages/perusahaan/RFID";
 import Surat from "./src/pages/perusahaan/Surat";
-import CabangPerusahaan from "./src/pages/perusahaan/CabangPerusahaan";
+import KategoriProject from "./src/pages/perusahaan/KategoriProject";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
@@ -164,28 +171,48 @@ export const router = createBrowserRouter([
       },
       {
         path: "beranda",
-        element: <DetailCabang />,
+        element: <BerandaPerusahaan />,
       },
       {
-        path: "approval",
-        element: <ApprovalPerusahaan />,
+        path: "admin",
+        element: <Admin />,
       },
       {
-        path: "pendataan",
-        element: <PendataanPerusahaan />,
+        path: "mentor",
+        element: <Mentor />,
+      },
+      {
+        path: "peserta",
+        element: <Peserta />,
+      },
+      {
+        path :"divisi",
+        element :<Divisi/>,
+      },
+      {
+        path :"approval",
+        element :<ApprovalPerusahaan/>,
+      },
+      {
+        path :"pendataan",
+        element :<Pendataan/>,
+      },
+      {
+        path: "absensi",
+        element : <DataAbsensi/>,
       },
       {
         path: "surat",
-        element: <Surat />,
+        element : <Surat/>,
       },
       {
-        path :"lembaga",
-        element :<CabangPerusahaan/>,
+        path: "RFID",
+        element : <RFID/>,
       },
       {
-        path :"cabang/:id",
-        element :<DetailCabang/>,
-      }
+        path: "kat-projek",
+        element : <KategoriProject/>,
+      },
     ],
   },
   {

@@ -7,6 +7,9 @@ import DivisiBranchCard from "../../components/cards/DivisiBranchCard";
 import DataApproval from "../../components/cards/DataApproval";
 import Pendataan from "../../components/cards/Pendataan";
 import DataAbsensi from "../../components/cards/DataAbsensi";
+import DataSurat from "../../components/cards/DataSurat";
+import DaftarMitra from "../../components/cards/DaftarMitra";
+import DataRFID from "../../components/cards/DataRFID";
 import ModalTambahAdminCabang from "../../components/modal/ModalTambahAdminCabang";
 import ModalDeleteAdminCabang from "../../components/modal/ModalDeleteAdminCabang";
 
@@ -168,9 +171,9 @@ const CompanyCard = () => {
           {activeMenu === "Approval" && <div><DataApproval/></div>}
           {activeMenu === "Jurnal" && <div><Pendataan/></div>}
           {activeMenu === "Absensi" && <div><DataAbsensi/></div>}
-          {activeMenu === "Surat" && <div>Surat Content</div>}
-          {activeMenu === "Lembaga" && <div>Lembaga Content</div>}
-          {activeMenu === "rfid" && <div>RFID Content</div>}
+          {activeMenu === "Surat" && <div><DataSurat/></div>}
+          {activeMenu === "Lembaga" && <div><DaftarMitra/></div>}
+          {activeMenu === "rfid" && <div><DataRFID/></div>}
           {activeMenu === "Kategori Project" && <div>Kategori Project Content</div>}
           {activeMenu === "Piket" && <div>Piket Content</div>}
         </div>

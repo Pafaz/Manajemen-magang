@@ -1,7 +1,6 @@
 import { useState } from "react";
 import DataSurat from "../../components/cards/DataSurat";
 import PerusahaanCard from "../../components/cards/PerusahaanCard";
-import Card from "../../components/cards/Card"; // Import the new component
 
 const Approval = () => {
   return (

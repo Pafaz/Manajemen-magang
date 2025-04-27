@@ -4,7 +4,7 @@ import DetailCard from "../../components/cards/DetailCard"; // Import the new co
 
 const Approval = () => {
   return (
-    <div className="p-6">
+    <div className="p-6"> 
       {/* Use the new PerusahaanCard component */}
       <DetailCard />
 

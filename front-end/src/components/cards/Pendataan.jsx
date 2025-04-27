@@ -1,15 +1,16 @@
-import React, { useState } from "react";
-import { CalendarDays, Download, Search } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { CalendarDays, Download, Search, Filter } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { CSVLink } from "react-csv";
 import Jurnal from "./Jurnal";
-import Absensi from "./Absensi";
 
 export default function Pendataan() {
-  const [activeTab, setActiveTab] = useState("Jurnal");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchSchool, setSearchSchool] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
+  const [statusFilter, setStatusFilter] = useState(""); // "" means all statuses
+  const [filteredData, setFilteredData] = useState([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   const dataJurnal = [
     {
@@ -113,120 +114,36 @@ export default function Pendataan() {
       buktiJurnal: "/berkas/izin/izin2.jpg"
     }
   ];
-  const dataAbsensi = [
-    {
-      id: 1,
-      nama: "Dewi Anggraini",
-      jamMasuk: "08:05",
-      istirahat: "12:00",
-      kembali: "13:00",
-      pulang: "15:00",
-      status: "Hadir",
-      metode: "Tab",
-      image: "/assets/img/post2.png",
-    },
-    {
-      id: 2,
-      nama: "Rizki Ananda",
-      jamMasuk: "08:00",
-      istirahat: "12:00",
-      kembali: "13:00",
-      pulang: "15:00",
-      status: "Terlambat",
-      metode: "Online",
-      image: "/assets/img/post2.png",
-    },
-    {
-      id: 3,
-      nama: "Fajar Nugroho",
-      jamMasuk: "08:10",
-      istirahat: "12:15",
-      kembali: "13:15",
-      pulang: "15:10",
-      status: "Hadir",
-      metode: "Tab",
-      image: "/assets/img/post1.png",
-    },
-    {
-      id: 4,
-      nama: "Siti Nurhaliza",
-      jamMasuk: "-",
-      istirahat: "-",
-      kembali: "-",
-      pulang: "-",
-      status: "Alpha",
-      metode: "-",
-      image: "/assets/img/post2.png",
-    },
-    {
-      id: 5,
-      nama: "Rizky Aditya",
-      jamMasuk: "08:00",
-      istirahat: "12:00",
-      kembali: "13:00",
-      pulang: "15:00",
-      status: "Terlambat",
-      metode: "Tab",
-      image: "/assets/img/post1.png",
-    },
-    {
-      id: 6,
-      nama: "Intan Permata",
-      jamMasuk: "08:05",
-      istirahat: "12:00",
-      kembali: "13:00",
-      pulang: "15:05",
-      status: "Hadir",
-      metode: "Online",
-      image: "/assets/img/post1.png",
-    },
-    {
-      id: 7,
-      nama: "Gilang Maulana",
-      jamMasuk: "08:15",
-      istirahat: "12:15",
-      kembali: "13:15",
-      pulang: "15:00",
-      status: "Hadir",
-      metode: "Tab",
-      image: "/assets/img/post2.png",
-    },
-    {
-      id: 8,
-      nama: "Nadya Rahma",
-      jamMasuk: "-",
-      istirahat: "-",
-      kembali: "-",
-      pulang: "-",
-      status: "Alpha",
-      metode: "-",
-      image: "/assets/img/post2.png",
-    },
-    {
-      id: 9,
-      nama: "Budi Santoso",
-      jamMasuk: "08:10",
-      istirahat: "12:15",
-      kembali: "13:15",
-      pulang: "15:10",
-      status: "Terlambat",
-      metode: "Tab",
-      image: "/assets/img/post1.png",
-    },
-    {
-      id: 10,
-      nama: "Arya Pratama",
-      jamMasuk: "08:00",
-      istirahat: "12:00",
-      kembali: "13:00",
-      pulang: "15:00",
-      status: "Hadir",
-      metode: "Online",
-      image: "/assets/img/post1.png",
-    },
-  ];
-  
-  
+
+  // Initialize filteredData with all data on component mount
+  useEffect(() => {
+    setFilteredData(dataJurnal);
+  }, []);
+
+  // Filter data automatically when search term, date or status changes
+  useEffect(() => {
+    const filtered = dataJurnal.filter(item => {
+      // Filter by school name
+      const schoolMatch = item.sekolah.toLowerCase().includes(searchSchool.toLowerCase());
+      
+      // Filter by status
+      const statusMatch = statusFilter === "" || item.status === statusFilter;
+      
+      // Filter by date
+      let dateMatch = true;
+      if (selectedDate) {
+        const itemDate = new Date(item.tanggal);
+        const filterDate = new Date(selectedDate);
+        dateMatch = itemDate.getFullYear() === filterDate.getFullYear() &&
+                   itemDate.getMonth() === filterDate.getMonth() &&
+                   itemDate.getDate() === filterDate.getDate();
+      }
+      
+      return schoolMatch && statusMatch && dateMatch;
+    });
+    
+    setFilteredData(filtered);
+  }, [searchSchool, selectedDate, statusFilter, dataJurnal]);
 
   const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
     <button
@@ -253,8 +170,8 @@ export default function Pendataan() {
           {/* Header */}
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-xl font-semibold text-[#1D2939]">Pendataan Admin</h2>
-              <p className="text-[#667085] text-sm mt-1">Kelola pendataan dengan lebih fleksibel!</p>
+              <h2 className="text-xl font-semibold text-[#1D2939]">Jurnal Peserta</h2>
+              <p className="text-[#667085] text-sm mt-1">Kelola jurnal peserta magang dengan lebih fleksibel!</p>
             </div>
 
             <div className="flex items-center gap-3">
@@ -264,86 +181,86 @@ export default function Pendataan() {
                 customInput={<CustomButton />}
                 dateFormat="dd MMMM yyyy"
                 showPopperArrow={false}
+                isClearable={true}
               />
               <CSVLink
-                data={activeTab === "Jurnal" ? dataJurnal : dataAbsensi}
-                filename={`data_${activeTab}.csv`}
-                headers={
-                  activeTab === "Jurnal"
-                    ? [
-                        { label: "Nama", key: "nama" },
-                        { label: "Sekolah", key: "sekolah" },
-                        { label: "Tanggal", key: "tanggal" },
-                        { label: "Deskripsi", key: "deskripsi" },
-                        { label: "Status Jurnal", key: "status" },
-                      ]
-                    : [
-                        { label: "Nama", key: "nama" },
-                        { label: "Jam Masuk", key: "jamMasuk" },
-                        { label: "Istirahat", key: "istirahat" },
-                        { label: "Kembali", key: "kembali" },
-                        { label: "Pulang", key: "pulang" },
-                        { label: "Metode", key: "metode" },
-                        { label: "Status", key: "status" },
-                      ]
-                }
+                data={filteredData.length > 0 ? filteredData : dataJurnal}
+                filename="data_jurnal.csv"
+                headers={[
+                  { label: "Nama", key: "nama" },
+                  { label: "Sekolah", key: "sekolah" },
+                  { label: "Tanggal", key: "tanggal" },
+                  { label: "Deskripsi", key: "deskripsi" },
+                  { label: "Status Jurnal", key: "status" },
+                ]}
               >
                 <button className="flex items-center gap-2 border border-gray-300 text-[#344054] px-4 py-2 rounded-lg text-sm shadow-sm hover:bg-[#0069AB] hover:text-white">
                   <Download size={16} />
                   Export
                 </button>
               </CSVLink>
+              
+              <button 
+                onClick={() => setShowFilters(!showFilters)} 
+                className={`flex items-center gap-2 border ${showFilters ? 'bg-[#0069AB] text-white' : 'border-gray-300 text-[#344054]'} px-4 py-2 rounded-lg text-sm shadow-sm hover:bg-[#0069AB] hover:text-white`}
+              >
+                <Filter size={16} />
+                Filter
+              </button>
             </div>
           </div>
 
           <div className="border-b border-gray-200 my-5" />
 
-          <div className="flex flex-wrap justify-between items-center gap-3">
-            <div className="flex gap-2">
-              <button
-                className={`px-4 py-2 rounded-lg text-sm border ${
-                  activeTab === "Jurnal"
-                    ? "bg-[#0069AB] text-white"
-                    : "border-gray-300 text-[#344054]"
-                }`}
-                onClick={() => setActiveTab("Jurnal")}
-              >
-                Jurnal
-              </button>
-              <button
-                className={`px-4 py-2 rounded-lg text-sm border ${
-                  activeTab === "Absensi"
-                    ? "bg-[#0069AB] text-white"
-                    : "border-gray-300 text-[#344054]"
-                }`}
-                onClick={() => setActiveTab("Absensi")}
-              >
-                Absensi
-              </button>
+          {/* Filter section - only visible when showFilters is true */}
+          {showFilters && (
+            <div className="flex justify-end items-center gap-3 mt-2 animate-fadeIn">
+              {/* School Search Input */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Cari Sekolah..."
+                  className="pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm"
+                  value={searchSchool}
+                  onChange={(e) => setSearchSchool(e.target.value)}
+                />
+                <span className="absolute left-3 top-2.5 text-gray-400">
+                  <Search size={16} />
+                </span>
+              </div>
+              
+              {/* Status Filter Dropdown */}
+              <div>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="border border-gray-300 rounded-lg shadow-sm text-sm px-4 py-2 text-gray-700"
+                >
+                  <option value="">Semua Status</option>
+                  <option value="Mengisi">Mengisi</option>
+                  <option value="Tidak Mengisi">Tidak Mengisi</option>
+                </select>
+              </div>
             </div>
-
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-              <span className="absolute left-3 top-2.5 text-gray-400">
-                <Search size={16} />
-              </span>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Table */}
-        {activeTab === "Jurnal" ? (
-          <Jurnal data={dataJurnal} searchTerm={searchTerm} selectedDate={selectedDate} />
-        ) : (
-          <Absensi data={dataAbsensi} searchTerm={searchTerm} selectedDate={selectedDate} />
-        )}
+        <Jurnal 
+          data={filteredData} 
+        />
       </div>
+      
+      {/* Add this style for animation */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out forwards;
+        }
+      `}</style>
     </div>
   );
 }

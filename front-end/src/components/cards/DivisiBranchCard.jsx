@@ -51,7 +51,7 @@ export default function DivisiBranchCard() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {displayedBranches.map((branch) => (
-            <div key={branch.id} className="bg-white border border-[#D5DBE7] rounded-lg overflow-hidden pt-2 px-2 pb-2 mb-4">
+            <div key={branch.id} className="bg-white border border-[#CED2D9] rounded-lg overflow-hidden pt-2 px-2 pb-2 mb-4">
               <div className="rounded-md overflow-hidden mb-3">
                 <img src={branch.backgroundImage} alt="Background" className="w-full h-32 object-cover rounded-md" />
               </div>
@@ -64,6 +64,22 @@ export default function DivisiBranchCard() {
                   <i className="bi bi-calendar-event mr-1 text-blue-500"></i> {branch.date}
                 </p>
               </div>
+              <div className="flex justify-center mt-3">
+                  <div className="border border-[#D5DBE7] rounded p-2 w-full flex justify-between items-center space-x-2">
+                    <button 
+                      onClick={() => handleViewDetail(branch.id)}
+                      className="text-orange-500 border border-orange-500 rounded px-3 py-1 text-xs hover:bg-orange-50"
+                    >
+                      Edit
+                    </button>
+                    <button 
+                      onClick={() => handleDeleteClick(branch)}
+                      className="text-red-500 border border-red-500 rounded px-3 py-1 text-xs hover:bg-red-100"
+                    >
+                      Hapus
+                    </button>
+                  </div>
+                </div>
             </div>
           ))}
         </div>

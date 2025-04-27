@@ -8,6 +8,7 @@ const NavAdmin = () => {
   const [isRinging, setIsRinging] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -34,6 +35,10 @@ const NavAdmin = () => {
     } finally {
       setIsLoggingOut(false);
     }
+  };
+
+  const handlePremiumClick = () => {
+    setIsPremiumModalOpen(true);
   };
 
   useEffect(() => {
@@ -64,6 +69,15 @@ const NavAdmin = () => {
         <div className="w-7 h-7 rounded-full bg-indigo-100 relative flex justify-center items-center">
           <i className="bi bi-globe text-sm"></i>
         </div>
+        
+        {/* Premium Button with text */}
+        <button
+          onClick={handlePremiumClick}
+          className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-200"
+        >
+          <i className="bi bi-star-fill text-yellow-300 text-xs"></i>
+          <span>Get Premium</span>
+        </button>
 
         <div className="relative profile-dropdown">
           <div
@@ -101,6 +115,7 @@ const NavAdmin = () => {
         </div>
       </div>
 
+      {/* Logout Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -119,6 +134,53 @@ const NavAdmin = () => {
           >
             Cancel
           </button>
+        </div>
+      </Modal>
+
+      {/* Premium Modal */}
+      <Modal
+        isOpen={isPremiumModalOpen}
+        onClose={() => setIsPremiumModalOpen(false)}
+        title="Upgrade to Premium"
+      >
+        <div className="p-4">
+          <div className="text-center mb-4">
+            <i className="bi bi-stars text-yellow-400 text-3xl"></i>
+            <h3 className="text-lg font-bold">Unlock Premium Features</h3>
+            <p className="text-gray-600 mt-2">
+              Get access to advanced tools, analytics, and priority support
+            </p>
+          </div>
+          
+          <div className="space-y-3 mb-6">
+            <div className="flex items-center">
+              <i className="bi bi-check-circle-fill text-green-500 mr-2"></i>
+              <span>Unlimited projects</span>
+            </div>
+            <div className="flex items-center">
+              <i className="bi bi-check-circle-fill text-green-500 mr-2"></i>
+              <span>Advanced analytics</span>
+            </div>
+            <div className="flex items-center">
+              <i className="bi bi-check-circle-fill text-green-500 mr-2"></i>
+              <span>Priority support</span>
+            </div>
+          </div>
+          
+          <div className="flex justify-center items-center gap-4">
+            <button
+              onClick={() => setIsPremiumModalOpen(false)}
+              className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors duration-200"
+            >
+              Upgrade Now
+            </button>
+            <button
+              onClick={() => setIsPremiumModalOpen(false)}
+              className="px-4 py-2 text-sm bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg"
+            >
+              Not Now
+            </button>
+          </div>
         </div>
       </Modal>
     </nav>

@@ -23,8 +23,8 @@ export default function ApprovalTable() {
       berkas: [
         { nama: "CV.jpg", url: "/assets/berkas/CV.jpg" },
         { nama: "Foto.jpg", url: "/assets/berkas/Foto.jpg" },
-        { nama: "Ijazah.docx", url: "/assets/berkas/Ijazah.docx" }
-      ]
+        { nama: "Ijazah.docx", url: "/assets/berkas/Ijazah.docx" },
+      ],
     },
     {
       id: 2,
@@ -37,8 +37,8 @@ export default function ApprovalTable() {
       berkas: [
         { nama: "CV.pdf", url: "/assets/berkas/CV.pdf" },
         { nama: "Foto.jpg", url: "/assets/berkas/Foto.jpg" },
-        { nama: "Ijazah.pdf", url: "/assets/berkas/Ijazah.pdf" }
-      ]
+        { nama: "Ijazah.pdf", url: "/assets/berkas/Ijazah.pdf" },
+      ],
     },
     {
       id: 3,
@@ -51,12 +51,12 @@ export default function ApprovalTable() {
       berkas: [
         { nama: "CV.docx", url: "/assets/berkas/CV.docx" },
         { nama: "Foto.png", url: "/assets/berkas/Foto.png" },
-        { nama: "Ijazah.docx", url: "/assets/berkas/Ijazah.docx" }
-      ]
+        { nama: "Ijazah.docx", url: "/assets/berkas/Ijazah.docx" },
+      ],
     },
     // Tambahkan data lainnya di sini
   ];
-  
+
   const dataIzin = [
     {
       id: 1,
@@ -66,7 +66,7 @@ export default function ApprovalTable() {
       tanggalKembali: "12 April 2025",
       status: "Izin",
       image: "/assets/img/post1.png", // Gambar profil
-      buktiKegiatan: "/berkas/izin/izin.jpg" // Gambar bukti kegiatan
+      buktiKegiatan: "/berkas/izin/izin.jpg", // Gambar bukti kegiatan
     },
     {
       id: 2,
@@ -85,7 +85,7 @@ export default function ApprovalTable() {
       tanggalKembali: "7 April 2025",
       status: "Izin",
       image: "/assets/img/post1.png",
-      buktiKegiatan: "/berkas/izin/izin2.jpg"
+      buktiKegiatan: "/berkas/izin/izin2.jpg",
     },
     {
       id: 4,
@@ -95,20 +95,13 @@ export default function ApprovalTable() {
       tanggalKembali: "6 April 2025",
       status: "Sakit",
       image: "/assets/img/post2.png",
-      buktiKegiatan: "/berkas/izin/izin2.jpg"
-
+      buktiKegiatan: "/berkas/izin/izin2.jpg",
     },
     // Tambahkan data lainnya di sini
   ];
-  
 
   const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
-    <button
-      className="flex items-center gap-2 bg-white border-gray-200 text-[#344054] py-2 px-4 rounded-md shadow border border-[#667797] hover:bg-[#0069AB] hover:text-white text-sm"
-      onClick={onClick}
-      ref={ref}
-      type="button"
-    >
+    <button className="flex items-center gap-2 bg-white border-gray-200 text-[#344054] py-2 px-4 rounded-md shadow border border-[#667797] hover:bg-[#0069AB] hover:text-white text-sm" onClick={onClick} ref={ref} type="button">
       <CalendarDays size={16} />
       {value
         ? new Date(value).toLocaleDateString("id-ID", {
@@ -132,13 +125,7 @@ export default function ApprovalTable() {
             </div>
 
             <div className="flex items-center gap-3">
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => setSelectedDate(date)}
-                customInput={<CustomButton />}
-                dateFormat="dd MMMM yyyy"
-                showPopperArrow={false}
-              />
+              <DatePicker selected={selectedDate} onChange={(date) => setSelectedDate(date)} customInput={<CustomButton />} dateFormat="dd MMMM yyyy" showPopperArrow={false} />
               <CSVLink
                 data={activeTab === "pendaftaran" ? dataPendaftaran : dataIzin}
                 filename={`data_${activeTab}.csv`}
@@ -172,36 +159,16 @@ export default function ApprovalTable() {
 
           <div className="flex flex-wrap justify-between items-center gap-3">
             <div className="flex gap-2">
-              <button
-                className={`px-4 py-2 rounded-lg text-sm border ${
-                  activeTab === "pendaftaran"
-                    ? "bg-[#0069AB] text-white"
-                    : "border-gray-300 text-[#344054]"
-                }`}
-                onClick={() => setActiveTab("pendaftaran")}
-              >
+              <button className={`px-4 py-2 rounded-lg text-sm border ${activeTab === "pendaftaran" ? "bg-[#0069AB] text-white" : "border-gray-300 text-[#344054]"}`} onClick={() => setActiveTab("pendaftaran")}>
                 Pendaftaran
               </button>
-              <button
-                className={`px-4 py-2 rounded-lg text-sm border ${
-                  activeTab === "izin"
-                    ? "bg-[#0069AB] text-white"
-                    : "border-gray-300 text-[#344054]"
-                }`}
-                onClick={() => setActiveTab("izin")}
-              >
+              <button className={`px-4 py-2 rounded-lg text-sm border ${activeTab === "izin" ? "bg-[#0069AB] text-white" : "border-gray-300 text-[#344054]"}`} onClick={() => setActiveTab("izin")}>
                 Izin/Sakit
               </button>
             </div>
 
             <div className="relative">
-              <input
-                type="text"
-                placeholder="Search..."
-                className="pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+              <input type="text" placeholder="Search..." className="pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
               <span className="absolute left-3 top-2.5 text-gray-400">
                 <Search size={16} />
               </span>
@@ -210,11 +177,7 @@ export default function ApprovalTable() {
         </div>
 
         {/* Table */}
-        {activeTab === "pendaftaran" ? (
-          <TablePendaftaran data={dataPendaftaran} searchTerm={searchTerm} selectedDate={selectedDate} />
-        ) : (
-          <TableIzin data={dataIzin} searchTerm={searchTerm} selectedDate={selectedDate} />
-        )}
+        {activeTab === "pendaftaran" ? <TablePendaftaran data={dataPendaftaran} searchTerm={searchTerm} selectedDate={selectedDate} /> : <TableIzin data={dataIzin} searchTerm={searchTerm} selectedDate={selectedDate} />}
       </div>
     </div>
   );

@@ -1,121 +1,146 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Card from "./Card";
-import ReactPaginate from 'react-paginate';
+import React, { useState, useEffect } from "react";
+import { CalendarDays, Search, Filter } from "lucide-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import TablePendaftaran from "./TablePeserta";
 
-export default function MentorBranchCard() {
-  const navigate = useNavigate();
+export default function ApprovalTable() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedDivisi, setSelectedDivisi] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
-  const [branches, setBranches] = useState([
-    { id: 1, name: "Nao Tomori", email: "contoh@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 2, name: "Nao Tomori", email: "contoh@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 3, name: "Nao Tomori", email: "contoh@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 4, name: "Nao Tomori", email: "contoh@gmail.com", division: "Digital Marketing", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 5, name: "Nao Tomori", email: "contoh@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 6, name: "Nao Tomori", email: "contoh@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 7, name: "Nao Tomori", email: "contoh@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 8, name: "Nao Tomori", email: "contoh@gmail.com", division: "Digital Marketing", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 9, name: "Nao Tomori", email: "contoh@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 10, name: "Nao Tomori", email: "contoh@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 11, name: "Nao Tomori", email: "contoh@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 12, name: "Nao Tomori", email: "contoh@gmail.com", division: "Digital Marketing", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 13, name: "Nao Tomori", email: "contoh@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 14, name: "Nao Tomori", email: "contoh@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 15, name: "Nao Tomori", email: "contoh@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-  ]);
+  // For dynamic dropdown options
+  const [divisiOptions, setDivisiOptions] = useState([]);
+  const [statusOptions, setStatusOptions] = useState([]);
 
-  const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 12;
-  const [selectedDivision, setSelectedDivision] = useState("All");
+  const dataPendaftaran = [
+    {
+      id: 1,
+      namaLengkap: "Jane Cooper",
+      email: "Contoh@gmail.com",
+      statusMagang: "Peserta Aktif",
+      sekolah: "SMKN 12 Tulungagung",
+      divisi: "UI/UX Designer",
+      image: "/assets/img/post1.png",
+    },
+    {
+      id: 2,
+      namaLengkap: "Arya Pratama",
+      email: "arya.pratama@gmail.com",
+      statusMagang: "Alumni",
+      sekolah: "SMK NEGERI 5 SURABAYA",
+      divisi: "Mechanical Engineer",
+      image: "/assets/img/post1.png",
+    },
+    {
+      id: 3,
+      namaLengkap: "Budi Santoso",
+      email: "budi.santoso@gmail.com",
+      statusMagang: "Peserta Aktif",
+      sekolah: "SMK NEGERI 7 MALANG",
+      divisi: "Elektronika Engineer",
+      image: "/assets/img/post1.png",
+    },
+    {
+      id: 4,
+      namaLengkap: "Cynthia Riana",
+      email: "cynthia.riana@gmail.com",
+      statusMagang: "Peserta Aktif",
+      sekolah: "SMK NEGERI 4 JEMBER",
+      divisi: "Software Developer",
+      image: "/assets/img/post1.png",
+    },
+    // Tambahkan data lainnya di sini
+  ];
 
-  const filteredBranches = selectedDivision === "All"
-    ? branches
-    : branches.filter(branch => branch.division === selectedDivision);
+  // Extract unique options from data on component mount
+  useEffect(() => {
+    // Get unique divisi values
+    const uniqueDivisi = [...new Set(dataPendaftaran.map((item) => item.divisi))];
+    setDivisiOptions(uniqueDivisi);
 
-  const pageCount = Math.ceil(filteredBranches.length / itemsPerPage);
-  const displayedBranches = filteredBranches.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+    // Get unique status values
+    const uniqueStatus = [...new Set(dataPendaftaran.map((item) => item.statusMagang))];
+    setStatusOptions(uniqueStatus);
+  }, []);
 
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
-  };
-
-  const handleViewDetail = (branchId) => {
-    navigate(`/perusahaan/cabang/${branchId}`);
-  };
+  const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
+    <button className="flex items-center gap-2 bg-white border-gray-200 text-[#344054] py-2 px-4 rounded-md shadow border border-[#667797] hover:bg-[#0069AB] hover:text-white text-sm" onClick={onClick} ref={ref} type="button">
+      <CalendarDays size={16} />
+      {value
+        ? new Date(value).toLocaleDateString("id-ID", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })
+        : "Pilih Tanggal"}
+    </button>
+  ));
 
   return (
-    <Card>
-      <div className="mt-8 px-1 pb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-xl font-bold">Peserta Magang</h1>
-          <div className="flex items-center space-x-2">
-            <select 
-              className="border border-gray-300 rounded-md px-2 py-1 text-xs"
-              value={selectedDivision}
-              onChange={(e) => {
-                setSelectedDivision(e.target.value);
-                setCurrentPage(0);
-              }}
-            >
-              <option value="All">Semua Divisi</option>
-              <option value="UI/UX">UI/UX</option>
-              <option value="Web Developer">Web Developer</option>
-              <option value="Mobile">Mobile</option>
-              <option value="Digital Marketing">Digital Marketing</option>
-            </select>
-          </div>
-        </div>
+    <div className="w-full">
+      <div className="bg-white rounded-xl border border-gray-200 shadow-md overflow-hidden">
+        <div className="p-6">
+          {/* Header */}
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-xl font-semibold text-[#1D2939]">Peserta Magang</h2>
+            </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {displayedBranches.map((branch) => (
-            <div key={branch.id} className="bg-white border border-[#D5DBE7] rounded-lg overflow-hidden">
-              <div className="relative">
-                <img src={branch.backgroundImage} alt="Background" className="w-full h-32 object-cover" />
-                <div className="absolute -bottom-4 left-0 right-0 flex justify-center">
-                  <div className="rounded-full overflow-hidden border-2 border-white bg-white w-16 h-16">
-                    <img src={branch.logoImage} alt="Logo" className="w-full h-full object-cover" />
-                  </div>
-                </div>
+            <div className="flex items-center gap-3">
+              <DatePicker selected={selectedDate} onChange={(date) => setSelectedDate(date)} customInput={<CustomButton />} dateFormat="dd MMMM yyyy" showPopperArrow={false} />
+              <button onClick={() => setShowFilters(!showFilters)} className="flex items-center gap-2 border border-gray-300 text-[#344054] px-4 py-2 rounded-lg text-sm shadow-sm hover:bg-[#0069AB] hover:text-white">
+                <Filter size={16} />
+                Filter
+              </button>
+            </div>
+          </div>
+
+          <div className="border-b border-gray-200 my-5" />
+
+          {/* Form Filter - tanpa label dan urutan: search, divisi, status magang */}
+          {showFilters && (
+            <div className="flex gap-4 justify-end">
+              {/* Search Input */}
+              <div className="w-52 relative">
+                <input type="text" placeholder="Cari Nama / Email" className="pl-10 pr-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm w-full" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                <span className="absolute left-3 top-[9px] text-gray-400">
+                  <Search size={16} />
+                </span>
               </div>
-              <div className="pt-8 px-3 pb-4">
-                <h3 className="font-bold text-sm text-gray-800 text-center mb-1">{branch.name}</h3>
-                <p className="text-xs text-black-500 text-center mb-3 italic">{branch.division}</p>
-                <p className="text-xs text-black-600 text-center mb-1">{branch.email}</p>
-                <div className="flex justify-center mt-2">
-                  <div className="border border-[#D5DBE7] rounded p-2 w-full flex justify-between items-center space-x-2">
-                    <button 
-                      onClick={() => handleViewDetail(branch.id)}
-                      className="text-blue-500 border border-blue-500 rounded px-3 py-1 text-xs hover:bg-blue-50"
-                    >
-                      Lihat Detail
-                    </button>
-                    <button className="text-orange-500 border border-orange-500 rounded px-3 py-1 text-xs hover:bg-orange-50">Edit</button>
-                    <button className="text-red-500 border border-red-500 rounded px-3 py-1 text-xs hover:bg-red-50">Hapus</button>
-                  </div>
-                </div>
+
+              {/* Divisi Dropdown - Dynamic Options */}
+              <div className="w-44">
+                <select className="w-full border border-gray-300 rounded-lg py-2 px-3 text-sm shadow-sm" value={selectedDivisi} onChange={(e) => setSelectedDivisi(e.target.value)}>
+                  <option value="">Semua Divisi</option>
+                  {divisiOptions.map((divisi, index) => (
+                    <option key={index} value={divisi}>
+                      {divisi}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Status Magang Dropdown - Dynamic Options */}
+              <div className="w-44">
+                <select className="w-full border border-gray-300 rounded-lg py-2 px-3 text-sm shadow-sm" value={selectedStatus} onChange={(e) => setSelectedStatus(e.target.value)}>
+                  <option value="">Semua Status</option>
+                  {statusOptions.map((status, index) => (
+                    <option key={index} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
-          ))}
+          )}
         </div>
 
-        {/* Pagination */}
-        <div className="flex items-center justify-between mt-6">
-          <ReactPaginate
-            previousLabel="← Sebelumnya"
-            nextLabel="Berikutnya →"
-            breakLabel="..."
-            pageCount={pageCount}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={3}
-            onPageChange={handlePageClick}
-            containerClassName="flex justify-center items-center space-x-2"
-            pageLinkClassName="px-3 py-1 text-sm rounded-md text-gray-700 hover:bg-blue-100"
-            activeLinkClassName="bg-blue-500 text-white"
-            previousLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
-            nextLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
-          />
-        </div>
+        {/* Table */}
+        <TablePendaftaran data={dataPendaftaran} searchTerm={searchTerm} selectedDate={selectedDate} selectedDivisi={selectedDivisi} selectedStatus={selectedStatus} />
       </div>
-    </Card>
+    </div>
   );
 }

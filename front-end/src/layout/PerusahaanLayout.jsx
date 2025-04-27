@@ -20,19 +20,19 @@ const PerusahaanLayout = () => {
       hasSubmenu: true,
       submenu: [
         {
-          label: "Approval",
-          link: "/perusahaan/approval",
+          label: "Beranda",
+          link: "/perusahaan/beranda",
         },
         {
-          label: "Pendataan",
-          link: "/perusahaan/pendataan",
+          label: "Admin Cabang",
+          link: "/perusahaan/admin",
         },
         {
-          label: "Absensi",
-          link: "/perusahaan/perusahaan/dokumen",
+          label: "Mentor",
+          link: "/perusahaan/mentor",
         },
         {
-          label: "Surat Penerimaan",
+          label: "Peserta",
           link: "/perusahaan/perusahaan/dokumen",
         },
         {
@@ -81,7 +81,8 @@ const PerusahaanLayout = () => {
       icon: "bi-layers",
       label: "Kelola Cabang",
       link: "/perusahaan/lembaga",
-    },
+    }, 
+
     {
       icon: "bi-grid-3x3-gap",
       label: "Kelola Lowongan",

@@ -1,35 +1,75 @@
-import { useState } from 'react';
+import React, { useEffect } from 'react';
 
-export default function AdminModal() {
-  const [isOpen, setIsOpen] = useState(true);
+const ModalDetailAdminCabang = ({ isOpen, onClose, branch }) => {
+  // Close modal when Escape key is pressed
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    
+    if (isOpen) {
+      document.addEventListener('keydown', handleEsc);
+    }
+    
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  // Prevent page scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
+  if (!isOpen || !branch) return null;
+
+  // Close modal when clicking on backdrop
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md overflow-hidden">
-        <div className="bg-orange-400 p-4 text-gray-700 text-sm font-medium">
-          detail admin
-        </div>
-        
-        <div className="p-6 flex flex-col items-center">
-          <div className="bg-gray-600 rounded-lg overflow-hidden w-32 h-32 mb-4">
+    <div 
+      className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]"
+      onClick={handleBackdropClick}
+    >
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
+        {/* Profile Card */}
+        <div className="flex flex-col items-center p-6">
+          {/* Profile Image - changed to square */}
+          <div className="w-32 h-32 mb-4 overflow-hidden border-4 border-white">
             <img 
-              src="/api/placeholder/256/256" 
-              alt="Admin Profile" 
+              src={branch.logoImage}
+              alt={`${branch.name} Profile`}
               className="w-full h-full object-cover"
             />
           </div>
           
-          <h2 className="text-3xl font-bold mt-2 mb-1">Tomori Nao</h2>
-          <p className="text-blue-500 text-lg mb-4">Admin Cabang A</p>
+          {/* Name and Role */}
+          <h2 className="text-4xl font-bold text-black mt-2">{branch.name}</h2>
+          <p className="text-lg text-blue-500 mt-1">{branch.role}</p>
           
-          <div className="w-full text-center text-gray-600">
-            <p className="mb-2">ini@gmail.com</p>
-            <p>08881920312</p>
+          {/* Contact Information */}
+          <div className="mt-6 w-full text-center">
+            <p className="text-xl text-gray-500">{branch.email}</p>
+            <p className="text-xl text-gray-500 mt-2">{branch.phone}</p>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default ModalDetailAdminCabang;

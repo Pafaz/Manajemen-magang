@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import NavAdmin from "../components/ui/NavAdmin";
 
@@ -84,17 +84,17 @@ const PerusahaanLayout = () => {
   ];
   const footerMenus = ["License", "More Themes", "Documentation", "Support"];
 
-  useEffect(() => {
-    if ((role && role !== "perusahaan") || !token) {
-      const redirectTo = localStorage.getItem("loaction");
-      if (redirectTo) {
-        navigate(redirectTo);
-        localStorage.removeItem("location");
-      } else {
-        navigate("/");
-      }
-    }
-  }, [role]);
+  // useEffect(() => {
+  //   if ((role && role !== "perusahaan") || !token) {
+  //     const redirectTo = localStorage.getItem("loaction");
+  //     if (redirectTo) {
+  //       navigate(redirectTo);
+  //       localStorage.removeItem("location");
+  //     } else {
+  //       navigate("/");
+  //     }
+  //   }
+  // }, [role]);
 
   return (
     <div className="w-full flex">

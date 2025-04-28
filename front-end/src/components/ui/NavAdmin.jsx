@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Modal from "../Modal";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const NavAdmin = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -11,7 +12,9 @@ const NavAdmin = () => {
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState("2 Bulan");
-  const [discount, setDiscount] = useState(10); // 10% discount
+  const [discount, setDiscount] = useState(10);
+  const { token } = useContext(AuthContext);
+  const [verived, setVerived] = useState(null);
 
   const packagePrice = 100000;
   const calculateSubtotal = () => {
@@ -21,7 +24,7 @@ const NavAdmin = () => {
 
   const calculateTotal = () => {
     const subtotal = calculateSubtotal();
-    return subtotal - (subtotal * discount / 100);
+    return subtotal - (subtotal * discount) / 100;
   };
 
   const handleLogout = async () => {
@@ -39,7 +42,7 @@ const NavAdmin = () => {
 
       if (response.status === 200) {
         localStorage.removeItem("token");
-        sessionStorage.removeItem("token")
+        sessionStorage.removeItem("token");
         window.location.href = "/auth/login";
       } else {
         alert("Logout gagal, coba lagi.");
@@ -61,10 +64,27 @@ const NavAdmin = () => {
   };
 
   const handlePaymentConfirmation = () => {
-    // Here you would implement the actual payment processing
     setIsPaymentModalOpen(false);
     alert("Pembayaran berhasil! Akun Anda telah ditingkatkan ke Pro.");
   };
+
+  const checkIsVerived = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/perusahaan/detail`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setVerived(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    checkIsVerived();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -83,6 +103,7 @@ const NavAdmin = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
+  
 
   return (
     <nav className="bg-white w-full h-[60px] flex items-center px-10 sticky top-0 z-50 border-b border-b-slate-300">
@@ -91,7 +112,7 @@ const NavAdmin = () => {
           <div className="bg-red-500 w-2 h-2 rounded-full absolute top-1 right-2 animate-ping"></div>
           <i className={`bi bi-bell ${isRinging ? "bell-shake" : ""}`}></i>
         </div>
-        
+
         <button
           onClick={handlePremiumClick}
           className="flex items-center gap-1.5 animate-pulse bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-200"
@@ -118,7 +139,7 @@ const NavAdmin = () => {
             <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden z-50">
               <div className="py-2">
                 <Link
-                  to={"/perusahaan/settings"}
+                  to={verived !== "true" ? "/perusahaan/settings" : "/perusahaan/update-perusahaan"}
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                 >
                   Settings
@@ -167,13 +188,14 @@ const NavAdmin = () => {
         <div className="flex flex-col items-center p-2">
           {/* Icon Premium */}
           <div className="flex justify-center mb-4">
-            <img 
-              src="/assets/img/firecrikers 1.png" 
-              alt="Premium" 
+            <img
+              src="/assets/img/firecrikers 1.png"
+              alt="Premium"
               className="w-32 h-32"
               onError={(e) => {
                 e.target.onerror = null;
-                e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cpath d='M48,16 L68,48 L88,16 L68,64 L48,80 L28,64 L8,16 L28,48 L48,16 Z' fill='%234299e1' stroke='%23ebf4ff' stroke-width='2'/%3E%3C/svg%3E";
+                e.target.src =
+                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cpath d='M48,16 L68,48 L88,16 L68,64 L48,80 L28,64 L8,16 L28,48 L48,16 Z' fill='%234299e1' stroke='%23ebf4ff' stroke-width='2'/%3E%3C/svg%3E";
               }}
             />
           </div>
@@ -187,11 +209,15 @@ const NavAdmin = () => {
           <div className="flex flex-col gap-4 w-full max-w-md text-gray-700">
             <div className="flex items-start gap-3">
               <i className="bi bi-check-circle-fill text-blue-500 text-lg mt-1"></i>
-              <span className="block text-sm">Tambah hingga 5 perusahaan baru</span>
+              <span className="block text-sm">
+                Tambah hingga 5 perusahaan baru
+              </span>
             </div>
             <div className="flex items-start gap-3">
               <i className="bi bi-check-circle-fill text-blue-500 text-lg mt-1"></i>
-              <span className="block text-sm">Tambah hingga 5 posisi magang baru</span>
+              <span className="block text-sm">
+                Tambah hingga 5 posisi magang baru
+              </span>
             </div>
             <div className="flex items-start gap-3">
               <i className="bi bi-check-circle-fill text-blue-500 text-lg mt-1"></i>
@@ -199,13 +225,16 @@ const NavAdmin = () => {
             </div>
             <div className="flex items-start gap-3">
               <i className="bi bi-check-circle-fill text-blue-500 text-lg mt-1"></i>
-              <span className="block text-sm">Support prioritas untuk pelanggan premium</span>
+              <span className="block text-sm">
+                Support prioritas untuk pelanggan premium
+              </span>
             </div>
           </div>
 
           {/* Harga */}
           <div className="font-bold text-3xl mt-8 mb-4">
-            Rp. 100.000<span className="text-base font-normal text-gray-500"> /bulan</span>
+            Rp. 100.000
+            <span className="text-base font-normal text-gray-500"> /bulan</span>
           </div>
 
           {/* Tombol */}
@@ -232,7 +261,7 @@ const NavAdmin = () => {
             <p className="text-sm text-gray-600 mb-6">
               Maksimalkan potensi penuh dari aplikasi hummatech.app
             </p>
-            
+
             <div className="flex flex-col space-y-4">
               {/* Feature items */}
               {[1, 2, 3, 4, 5, 6].map((index) => (
@@ -241,7 +270,8 @@ const NavAdmin = () => {
                     <div>
                       <h3 className="font-bold mb-1">Proyek Tanpa Batas</h3>
                       <p className="text-sm text-gray-600">
-                        Kelola sebanyak mungkin proyek yang dibutuhkan tim Anda, tanpa batasan.
+                        Kelola sebanyak mungkin proyek yang dibutuhkan tim Anda,
+                        tanpa batasan.
                       </p>
                     </div>
                     <div className="text-blue-500">
@@ -252,21 +282,25 @@ const NavAdmin = () => {
               ))}
             </div>
           </div>
-          
+
           {/* Right Section - Payment Details */}
           <div className="bg-gray-50 rounded-lg p-6">
-            <h3 className="text-lg font-medium text-gray-700 mb-4">Detail Pembayaran</h3>
-            
+            <h3 className="text-lg font-medium text-gray-700 mb-4">
+              Detail Pembayaran
+            </h3>
+
             <div className="mb-8">
               <h2 className="text-4xl font-bold text-purple-900">
                 Rp.100.00<span className="text-lg font-normal">/bln</span>
               </h2>
             </div>
-            
+
             <div className="mb-6">
-              <label className="block text-sm font-medium mb-2">Durasi Berlangganan</label>
+              <label className="block text-sm font-medium mb-2">
+                Durasi Berlangganan
+              </label>
               <div className="relative">
-                <select 
+                <select
                   value={selectedDuration}
                   onChange={(e) => setSelectedDuration(e.target.value)}
                   className="block w-full bg-white border border-gray-300 rounded-md py-2 px-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
@@ -282,23 +316,23 @@ const NavAdmin = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="border-t border-gray-200 pt-4 pb-2">
               <h3 className="font-medium mb-2">Aktif Hari Ini</h3>
               <p className="text-sm text-gray-600 mb-6">
                 Paket Anda akan langsung diperbarui hari ini.
               </p>
             </div>
-            
+
             {/* Price breakdown */}
             <div className="space-y-3 mb-6">
               <div className="flex justify-between">
                 <span>Paket Pro</span>
-                <span>Rp. {packagePrice.toLocaleString('id-ID')}</span>
+                <span>Rp. {packagePrice.toLocaleString("id-ID")}</span>
               </div>
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>Rp. {calculateSubtotal().toLocaleString('id-ID')}</span>
+                <span>Rp. {calculateSubtotal().toLocaleString("id-ID")}</span>
               </div>
               <div className="flex justify-between">
                 <span>Diskon</span>
@@ -306,10 +340,10 @@ const NavAdmin = () => {
               </div>
               <div className="flex justify-between font-bold">
                 <span>Total</span>
-                <span>Rp. {calculateTotal().toLocaleString('id-ID')}</span>
+                <span>Rp. {calculateTotal().toLocaleString("id-ID")}</span>
               </div>
             </div>
-            
+
             {/* Payment button */}
             <button
               onClick={handlePaymentConfirmation}
@@ -317,9 +351,13 @@ const NavAdmin = () => {
             >
               Konfirmasi Pembayaran
             </button>
-            
+
             <p className="text-xs text-gray-500 mt-4 text-center">
-              Dengan melanjutkan, Anda menyetujui <a href="#" className="text-blue-600">Syarat dan Ketentuan</a> kami.
+              Dengan melanjutkan, Anda menyetujui{" "}
+              <a href="#" className="text-blue-600">
+                Syarat dan Ketentuan
+              </a>{" "}
+              kami.
             </p>
           </div>
         </div>

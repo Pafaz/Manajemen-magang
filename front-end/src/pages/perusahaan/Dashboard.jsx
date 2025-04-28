@@ -41,8 +41,6 @@ const Dashboard = () => {
     };
     checkComplateRegistered();
   }, []);
-  console.log(companyData);
-
   const statsData = [
     {
       title: "Total Cabang",

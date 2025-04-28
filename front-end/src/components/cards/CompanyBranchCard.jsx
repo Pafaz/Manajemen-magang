@@ -155,14 +155,13 @@ export default function CompanyBranchCard() {
 
   const displayedBranches = branches.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
-  // Handle adding a new branch
   const handleAddBranch = (branchData) => {
     const newBranch = {
       id: branches.length + 1,
       name: branchData.name,
       email: branchData.email,
-      phone: branchData.phone || "088819203012", // Default phone if not provided
-      role: branchData.role || "Admin Cabang", // Default role if not provided
+      phone: branchData.phone || "088819203012",
+      role: branchData.role || "Admin Cabang",
       location: `${branchData.city}, ${branchData.province}`,
       address: "0 Peserta Magang",
       backgroundImage: "/assets/img/Cover.png",
@@ -172,7 +171,6 @@ export default function CompanyBranchCard() {
     setModalState({ ...modalState, showModal: false });
   };
 
-  // Function to handle view detail modal
   const handleViewDetail = (branch) => {
     setModalState({
       ...modalState,

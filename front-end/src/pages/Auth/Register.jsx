@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
-import FloatingLabelInput from "../../components/FloatingLabelInput";
-import { motion } from "framer-motion";
-import { AuthContext } from "../../contexts/AuthContext";
-
-const Register = () => {
-  const navigate = useNavigate();
-=======
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import FloatingLabelInput from "../../components/FloatingLabelInput";
@@ -18,16 +8,12 @@ const Register = () => {
   const { type } = useParams();
   const navigate = useNavigate();
   const [role, setRole] = useState("");
->>>>>>> b7f091a (push fe)
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [termsChecked, setTermsChecked] = useState(false);
-<<<<<<< HEAD
-  const { setTempRegisterData } = useContext(AuthContext);
-=======
 
   const allowedTypes = {
     a1b2c3d4: "company",
@@ -47,7 +33,6 @@ const Register = () => {
     if (role === "student") return "Selamat Datang, Calon Siswa Magang 👋";
     return "";
   };
->>>>>>> b7f091a (push fe)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -55,15 +40,11 @@ const Register = () => {
     setErrors({});
 
     if (password !== confirmPassword) {
-<<<<<<< HEAD
       setErrors({
         password_confirmation: [
           "Kata sandi dan konfirmasi kata sandi tidak cocok.",
         ],
       });
-=======
-      setErrors({ password_confirmation: ["Kata sandi dan konfirmasi kata sandi tidak cocok."] });
->>>>>>> b7f091a (push fe)
       setLoading(false);
       return;
     }
@@ -74,11 +55,6 @@ const Register = () => {
       password_confirmation: confirmPassword,
     };
 
-<<<<<<< HEAD
-    setTempRegisterData(data);
-    navigate("/auth/SelectAuth");
-    setLoading(false);
-=======
     try {
       const url =
         role === "company" ? "register-perusahaan" : "register-peserta";
@@ -120,7 +96,6 @@ const Register = () => {
     } finally {
       setLoading(false);
     }
->>>>>>> b7f091a (push fe)
   };
 
   return (
@@ -160,16 +135,6 @@ const Register = () => {
         initial={{ x: 100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.7, delay: 0.4 }}
-<<<<<<< HEAD
-        className="w-full max-w-sm absolute z-50 right-55 top-45"
-      >
-        <div className="space-y-5">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Selamat Datang 👋
-          </h1>
-          <p className="text-gray-500 text-sm mb-5">
-            Silakan isi data berikut untuk membuat akun.
-=======
         className="w-full max-w-sm absolute z-50 right-55 top-30"
       >
         <div className="space-y-5">
@@ -177,7 +142,6 @@ const Register = () => {
           <p className="text-gray-500 text-sm mb-5">
             Silakan isi data berikut untuk membuat akun{" "}
             {role === "company" ? "perusahaan" : "siswa"}.
->>>>>>> b7f091a (push fe)
           </p>
         </div>
 
@@ -193,71 +157,6 @@ const Register = () => {
           {errors.email && (
             <p className="text-red-500 text-xs my-1 mb-2">{errors.email[0]}</p>
           )}
-<<<<<<< HEAD
-
-          <FloatingLabelInput
-            label="Kata Sandi"
-            type="password"
-            value={password}
-            setValue={setPassword}
-            placeholder="Masukkan kata sandi"
-            icon="bi-lock"
-          />
-          {errors.password && (
-            <p className="text-red-500 text-xs my-1 mb-2">
-              {errors.password[0]}
-            </p>
-          )}
-
-          <FloatingLabelInput
-            label="Konfirmasi Kata Sandi"
-            type="password"
-            value={confirmPassword}
-            setValue={setConfirmPassword}
-            placeholder="Ulangi kata sandi"
-            icon="bi-lock"
-          />
-          {errors.password_confirmation && (
-            <p className="text-red-500 text-xs my-1 mb-2">
-              {errors.password_confirmation[0]}
-            </p>
-          )}
-
-          {errors.message && (
-            <p className="text-red-500 text-xs my-1 mb-2">{errors.message}</p>
-          )}
-
-          <div className="flex items-center mt-4">
-            <input
-              type="checkbox"
-              id="terms"
-              checked={termsChecked}
-              onChange={() => setTermsChecked(!termsChecked)}
-              className="mr-2"
-            />
-            <label htmlFor="terms" className="text-gray-500 text-xs">
-              Saya setuju dengan {" "}
-              <a href="/terms" className="text-blue-500">
-                Terms of Service
-              </a>{" "}
-              dan {" "}
-              <a href="/privacy" className="text-blue-500">
-                Privacy Policy
-              </a>
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            className={`w-full mt-4 p-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 ${
-              loading || !termsChecked ? "opacity-50 cursor-not-allowed" : ""
-            }`}
-            disabled={loading || !termsChecked}
-          >
-            {loading ? "Mendaftar..." : "Daftar"}
-          </button>
-        </form>
-=======
 
           <FloatingLabelInput
             label="Kata Sandi"
@@ -337,7 +236,6 @@ const Register = () => {
             />
           </button>
         </div>
->>>>>>> b7f091a (push fe)
       </motion.div>
     </div>
   );

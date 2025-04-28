@@ -1,16 +1,8 @@
-<<<<<<< HEAD
-import { useContext, useState } from "react";
-=======
 import { useState } from "react";
->>>>>>> b7f091a (push fe)
 import { Link, useNavigate } from "react-router-dom";
 import FloatingLabelInput from "../../components/FloatingLabelInput";
 import axios from "axios";
 import { motion } from "framer-motion";
-<<<<<<< HEAD
-import { AuthContext } from "../../contexts/AuthContext";
-=======
->>>>>>> b7f091a (push fe)
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -19,10 +11,6 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-<<<<<<< HEAD
-  const {setToken,setRole} = useContext(AuthContext);
-=======
->>>>>>> b7f091a (push fe)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,39 +20,6 @@ const Login = () => {
     const data = {
       email,
       password,
-<<<<<<< HEAD
-      remember_me: rememberMe ? true : false,
-    };
-
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/login",
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const responsAPI = response.data.data;
-      if (responsAPI.status === "success") {
-        setToken(responsAPI.token);
-        setRole(responsAPI.role);
-        const roles = responsAPI.role;
-        if (roles === "perusahaan") {
-          navigate("/perusahaan/dashboard");
-        } else if (roles === "peserta") {
-          navigate("/siswa/dashboard");
-        } else {
-          console.warn("Role tidak dikenali:", roles);
-          window.location.href("/");
-        }
-      }
-
-      if (rememberMe) {
-        localStorage.setItem("token", response.data.token);
-=======
       remember_me: rememberMe, 
     };
 
@@ -84,7 +39,6 @@ const Login = () => {
         navigate("/dashboard");
       } else {
         setErrors({ message: response.data.message || "Login failed. Try again." });
->>>>>>> b7f091a (push fe)
       }
     } catch (err) {
       console.error("Error logging in:", err);
@@ -198,14 +152,7 @@ const Login = () => {
         <div className="text-center py-5">
           <h1 className="font-medium text-slate-800 text-sm">
             Don’t have an account?{" "}
-<<<<<<< HEAD
-            <Link
-              to={`/auth/register`}
-              className="text-sky-500 font-semibold"
-            >
-=======
             <Link to={`/auth/SelectAuth`} className="text-sky-500 font-semibold">
->>>>>>> b7f091a (push fe)
               Create an account
             </Link>
           </h1>

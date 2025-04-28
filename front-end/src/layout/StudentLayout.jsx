@@ -46,23 +46,15 @@ const StudentLayout = () => {
         />
         <div className="flex flex-col gap-3 mt-8">
           {sidebarMenus.slice(0, -1).map((menu, idx) => {
-<<<<<<< HEAD
-            const isActive = location.pathname.includes(`/student/${menu.link}`);
-=======
             const isActive = location.pathname.includes(
               `/student/${menu.link}`
             );
->>>>>>> b7f091a (push fe)
 
             if (menu.label === "Presentasi") {
               return (
                 <div key={idx}>
                   <Link
-<<<<<<< HEAD
-                    to={`/siswa/presentasi`}
-=======
                     to={`/student/presentasi`}
->>>>>>> b7f091a (push fe)
                     onClick={() => setIsPresentasiOpen(!isPresentasiOpen)}
                     className={`w-full px-4 py-2 rounded-lg flex justify-between items-center gap-3 transition-all duration-500 ease-in-out ${
                       isPresentasiOpen && location
@@ -84,26 +76,6 @@ const StudentLayout = () => {
                   {isPresentasiOpen && (
                     <div className="ml-2 mt-2 flex flex-col gap-2">
                       <Link
-<<<<<<< HEAD
-                        to="/siswa/detail-presentasi"
-                        className={`${
-                          location.pathname.includes("detail-presentasi")
-                            ? "text-sky-500"
-                            : "text-slate-500"
-                        } text-sm hover:text-sky-500 px-3 py-1 rounded transition flex gap-2 font-light`}
-                      >
-                        <i className="bi bi-info-circle"></i> Detail Presentasi
-                      </Link>
-                      <Link
-                        to="/siswa/riwayat-presentasi"
-                        className={`${
-                          location.pathname.includes("riwayat-presentasi")
-                            ? "text-sky-500"
-                            : "text-slate-500"
-                        } text-sm hover:text-sky-500 px-3 py-1 rounded transition flex gap-2 font-light`}
-                      >
-                        <i className="bi bi-hourglass"></i> Riwayat Presentasi
-=======
                         to="/student/detail-presentasi"
                         className={`${
                           isActive  ? "text-sky-500" : ""
@@ -118,7 +90,6 @@ const StudentLayout = () => {
                         } text-slate-500 text-sm hover:text-sky-500 px-3 py-1 rounded transition flex gap-2 font-light`}
                       >
                         <i class="bi bi-hourglass"></i> Riwayat Presentasi
->>>>>>> b7f091a (push fe)
                       </Link>
                     </div>
                   )}

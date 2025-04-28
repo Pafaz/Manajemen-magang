@@ -1,20 +1,13 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-<<<<<<< HEAD
 import { useContext, useState } from "react";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
-=======
-import { useState } from "react";
->>>>>>> b7f091a (push fe)
 
 const SelectAuth = () => {
   const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
-<<<<<<< HEAD
   const { tempRegisterData, setToken, setRole } = useContext(AuthContext);
-=======
->>>>>>> b7f091a (push fe)
 
   const cardData = [
     {
@@ -33,7 +26,6 @@ const SelectAuth = () => {
     },
   ];
 
-<<<<<<< HEAD
   const handleNext = async (e) => {
     e.preventDefault();
     if (!selected || !tempRegisterData) return;
@@ -42,7 +34,10 @@ const SelectAuth = () => {
     const url = role === "company" ? "register-perusahaan" : "register-peserta";
 
     try {
-      const response = await axios.post(`http://127.0.0.1:8000/api/${url}`, tempRegisterData);
+      const response = await axios.post(
+        `http://127.0.0.1:8000/api/${url}`,
+        tempRegisterData
+      );
       const responsAPI = response.data.data;
 
       if (responsAPI.status === "success") {
@@ -58,13 +53,6 @@ const SelectAuth = () => {
       }
     } catch (err) {
       console.error("Gagal kirim data registrasi:", err);
-      // Handle error, bisa tambahkan setErrors atau toast
-=======
-  const handleNext = (e) => {
-    e.preventDefault();
-    if (selected) {
-      navigate(`/auth/register/${selected}`);
->>>>>>> b7f091a (push fe)
     }
   };
 
@@ -77,7 +65,8 @@ const SelectAuth = () => {
       <div className="text-center mt-10">
         <h1 className="text-4xl font-bold text-sky-800">Pilih Jenis Akun</h1>
         <p className="text-gray-500 mt-2 max-w-xl mx-auto">
-          Silakan pilih apakah kamu ingin mendaftar sebagai perusahaan atau siswa magang.
+          Silakan pilih apakah kamu ingin mendaftar sebagai perusahaan atau
+          siswa magang.
         </p>
       </div>
 
@@ -122,7 +111,10 @@ const SelectAuth = () => {
       </div>
 
       <div className="flex justify-between items-center mt-12 px-6">
-        <a href="/" className="hover:text-sky-800 text-gray-500 font-medium text-lg">
+        <a
+          href="/"
+          className="hover:text-sky-800 text-gray-500 font-medium text-lg"
+        >
           ← Back
         </a>
         <a

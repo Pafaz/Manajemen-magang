@@ -1,16 +1,16 @@
 import React from "react";
 
-export default function DataPeringatan({ data, searchTerm, selectedDate }) {
+export default function PenempatanDivisi({ data, searchTerm, selectedDate }) {
   const filteredData = data.filter((item) => {
     const isMatchSearch =
       item.nama.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.sekolah.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.keteranganSP.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.statusSP.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.tanggal.toLowerCase().includes(searchTerm.toLowerCase());
+      item.jurusan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.kelas.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.masaMagang.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.sekolah.toLowerCase().includes(searchTerm.toLowerCase());
 
     const isMatchDate = selectedDate
-      ? new Date(item.tanggal).toLocaleDateString() ===
+      ? new Date(item.masaMagang).toLocaleDateString() ===
         selectedDate.toLocaleDateString()
       : true;
 
@@ -34,11 +34,12 @@ export default function DataPeringatan({ data, searchTerm, selectedDate }) {
         <thead className="bg-[#F9FAFB] text-[#667085] border-t border-gray-200">
           <tr>
             <th className="px-3 py-3 text-center font-medium">No</th>
-            <th className="px-3 py-3 text-center font-medium">Nama</th>
+            <th className="px-3 py-3 text-center font-medium">No Foto</th>
+            <th className="px-3 py-3 text-center font-medium">Nama Lengkap</th>
             <th className="px-3 py-3 text-center font-medium">Sekolah</th>
-            <th className="px-3 py-3 text-center font-medium">Keterangan SP</th>
-            <th className="px-3 py-3 text-center font-medium">Status SP</th>
-            <th className="px-3 py-3 text-center font-medium">Tanggal</th>
+            <th className="px-3 py-3 text-center font-medium">Tanggal Mulai</th>
+            <th className="px-3 py-3 text-center font-medium">Tanggal Selesai</th>
+            <th className="px-3 py-3 text-center font-medium">Email</th>
             <th className="px-3 py-3 text-center font-medium">Aksi</th>
           </tr>
         </thead>
@@ -49,19 +50,17 @@ export default function DataPeringatan({ data, searchTerm, selectedDate }) {
               className="border-t border-gray-200 hover:bg-gray-50 text-center"
             >
               <td className="px-3 py-3">{index + 1}</td>
-              <td className="px-3 py-3 flex items-center gap-2 justify-center">
-                <img
-                  src={item.image}
-                  alt={item.nama}
-                  className="w-8 h-8 rounded-full"
-                />
-                {item.nama}
+              <td className="px-3 py-3">
+                {/* No Foto, jika tidak ada foto tampilkan icon atau placeholder */}
+                <span className="text-xs">No Foto</span>
               </td>
+              <td className="px-3 py-3">{item.nama}</td>
               <td className="px-3 py-3">{item.sekolah}</td>
-              <td className="px-3 py-3">{item.keteranganSP}</td>
-              <td className="px-3 py-3">{item.statusSP}</td>
-              <td className="px-3 py-3">{item.tanggal}</td>
+              <td className="px-3 py-3">{item.tanggalMulai}</td>
+              <td className="px-3 py-3">{item.tanggalSelesai}</td>
+              <td className="px-3 py-3">{item.email}</td>
               <td className="px-3 py-3 flex justify-center gap-3">
+                {/* Aksi */}
                 <button onClick={() => handleView(item)} title="Lihat">
                   <i className="bi bi-eye" style={{ color: 'orange', fontSize: '1.5rem' }}></i>
                 </button>

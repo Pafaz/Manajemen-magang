@@ -1,8 +1,17 @@
 import { useState, useEffect } from "react";
-import CompanyBranchCard from "../../components/cards/CompanyBranchCard"; // sesuaikan path
-import MentorBranchCard from "../../components/cards/MentorBranchCard"; // sesuaikan path
-import PesertaBranchCard from "../../components/cards/PesertaBranchCard"; // sesuaikan path
+import BerandaBranchCard from "../../components/cards/BerandaBranchCard";
+import CompanyBranchCard from "../../components/cards/CompanyBranchCard"; 
+import MentorBranchCard from "../../components/cards/MentorBranchCard"; 
+import PesertaBranchCard from "../../components/cards/PesertaBranchCard"; 
 import DivisiBranchCard from "../../components/cards/DivisiBranchCard";
+import DataApproval from "../../components/cards/DataApproval";
+import Pendataan from "../../components/cards/Pendataan";
+import DataAbsensi from "../../components/cards/DataAbsensi";
+import DataSurat from "../../components/cards/DataSurat";
+import DaftarMitra from "../../components/cards/DaftarMitra";
+import DataRFID from "../../components/cards/DataRFID";
+import ModalTambahAdminCabang from "../../components/modal/ModalTambahAdminCabang";
+import ModalDeleteAdminCabang from "../../components/modal/ModalDeleteAdminCabang";
 
 const CompanyCard = () => {
   const [companyName, setCompanyName] = useState("PT. HUMMA TECHNOLOGY INDONESIA");
@@ -17,6 +26,11 @@ const CompanyCard = () => {
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
+
+  // Modal states
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [branchToDelete, setBranchToDelete] = useState(null);
 
   // Inisialisasi activeMenu dengan nilai dari localStorage atau default ke "Admin Cabang"
   const [activeMenu, setActiveMenu] = useState(() => {
@@ -53,8 +67,33 @@ const CompanyCard = () => {
     }
   };
 
+  // Handle Tambah Admin modal
+  const handleAddAdminClick = () => {
+    setShowAddModal(true);
+  };
+  
+
+  const handleAddAdmin = (adminData) => {
+    // Process the admin data (this will be passed back to the CompanyBranchCard component)
+    // You would need to implement a method to communicate this back to the child
+    setShowAddModal(false);
+  };
+
+  // Handle Delete Admin modal
+  const handleDeleteAdminClick = (branch) => {
+    setBranchToDelete(branch);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteAdmin = () => {
+    // Process the delete action
+    // You would need to implement a method to communicate this back to the child
+    setShowDeleteModal(false);
+    setBranchToDelete(null);
+  };
+
   // Menu items array
-  const menuItems = ["Admin Cabang", "Mentor", "Peserta Magang", "Divisi", "Approval", "Jurnal", "Absensi", "Surat", "Lembaga", "rfid", "Kategori Project", "Piket"];
+  const menuItems = ["Beranda","Admin Cabang", "Mentor", "Peserta Magang", "Divisi", "Approval", "Jurnal", "Absensi", "Surat", "Lembaga", "rfid", "Kategori Project", "Piket"];
 
   return (
     <>
@@ -118,20 +157,40 @@ const CompanyCard = () => {
       {/* Konten dengan efek bounce */}
       <div className="bg-[#ECF2FE] pt-4 pb-4 overflow-hidden">
         <div className={`transition-all duration-300 ease-in-out transform ${animating ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0 animate-bounce-in"}`}>
-          {activeMenu === "Admin Cabang" && <CompanyBranchCard />}
+          {activeMenu === "Beranda" && <BerandaBranchCard /> }
+          {activeMenu === "Admin Cabang" && (
+            <CompanyBranchCard 
+              onAddAdminClick={handleAddAdminClick}
+              onDeleteAdminClick={handleDeleteAdminClick}
+              
+            />
+          )}
           {activeMenu === "Mentor" && <MentorBranchCard />}
           {activeMenu === "Peserta Magang" && <PesertaBranchCard />}
           {activeMenu === "Divisi" && <DivisiBranchCard />}
-          {activeMenu === "Approval" && <div>Approval Content</div>}
-          {activeMenu === "Jurnal" && <div>Jurnal Content</div>}
-          {activeMenu === "Absensi" && <div>Absensi Content</div>}
-          {activeMenu === "Surat" && <div>Surat Content</div>}
-          {activeMenu === "Lembaga" && <div>Lembaga Content</div>}
-          {activeMenu === "rfid" && <div>RFID Content</div>}
+          {activeMenu === "Approval" && <div><DataApproval/></div>}
+          {activeMenu === "Jurnal" && <div><Pendataan/></div>}
+          {activeMenu === "Absensi" && <div><DataAbsensi/></div>}
+          {activeMenu === "Surat" && <div><DataSurat/></div>}
+          {activeMenu === "Lembaga" && <div><DaftarMitra/></div>}
+          {activeMenu === "rfid" && <div><DataRFID/></div>}
           {activeMenu === "Kategori Project" && <div>Kategori Project Content</div>}
           {activeMenu === "Piket" && <div>Piket Content</div>}
         </div>
       </div>
+
+      {/* Modals - Now placed at the root level */}
+      <ModalTambahAdminCabang 
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onSave={handleAddAdmin}
+      />
+
+      <ModalDeleteAdminCabang 
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteAdmin}
+      />
 
       {/* CSS untuk animasi bounce */}
       <style jsx>{`

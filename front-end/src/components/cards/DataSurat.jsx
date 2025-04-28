@@ -37,26 +37,22 @@ export default function Surat() {
     {
       id: 1,
       nama: "Dewi Anggraini",
-      jamMasuk: "08:05",
-      istirahat: "12:00",
-      kembali: "13:00",
-      pulang: "15:00",
-      tanggalDiterima: "Hadir",
-      metode: "Tab",
+      sekolah: "SMK PGRI 2 JEMBER",
+      keteranganSP: "Terlambat lebih dari 10 menit",
+      statusSP: "SP 1",
+      tanggal: "2024-01-15",
       image: "/assets/img/post2.png",
     },
     {
       id: 2,
       nama: "Rizki Ananda",
-      jamMasuk: "08:00",
-      istirahat: "12:00",
-      kembali: "13:00",
-      pulang: "15:00",
-      tanggalDiterima: "Terlambat",
-      metode: "Online",
-      image: "/assets/img/post2.png",
+      sekolah: "SMK NEGERI 5 SURABAYA",
+      keteranganSP: "Tidak masuk tanpa izin",
+      statusSP: "SP 2",
+      tanggal: "2024-01-18",
+      image: "/assets/img/post1.png",
     },
-    // ... tambahkan data lainnya sesuai kebutuhan
+    // Tambahkan data lainnya sesuai kebutuhan
   ];
 
   const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
@@ -83,12 +79,8 @@ export default function Surat() {
         <div className="p-6">
           <div className="flex justify-between items-start">
             <div>
-              <h2 className="text-xl font-semibold text-[#1D2939]">
-                Pendataan Admin
-              </h2>
-              <p className="text-[#667085] text-sm mt-1">
-                Kelola pendataan dengan lebih fleksibel!
-              </p>
+              <h2 className="text-xl font-semibold text-[#1D2939]">Pendataan Admin</h2>
+              <p className="text-[#667085] text-sm mt-1">Kelola pendataan dengan lebih fleksibel!</p>
             </div>
 
             <div className="flex items-center gap-3">
@@ -100,11 +92,7 @@ export default function Surat() {
                 showPopperArrow={false}
               />
               <CSVLink
-                data={
-                  activeTab === "DataPenerimaan"
-                    ? dataPenerimaan
-                    : dataPeringatan
-                }
+                data={activeTab === "DataPenerimaan" ? dataPenerimaan : dataPeringatan}
                 filename={`data_${activeTab}.csv`}
                 headers={
                   activeTab === "DataPenerimaan"
@@ -116,13 +104,11 @@ export default function Surat() {
                         { label: "Tanggal Diterima", key: "tanggalDiterima" },
                       ]
                     : [
-                        { label: "Nama", key: "nama" },
-                        { label: "Jam Masuk", key: "jamMasuk" },
-                        { label: "Istirahat", key: "istirahat" },
-                        { label: "Kembali", key: "kembali" },
-                        { label: "Pulang", key: "pulang" },
-                        { label: "Metode", key: "metode" },
-                        { label: "Status Kehadiran", key: "tanggalDiterima" },
+                      { label: "Nama", key: "nama" },
+                      { label: "Sekolah", key: "sekolah" },
+                      { label: "Keterangan SP", key: "keteranganSP" },
+                      { label: "Status SP", key: "statusSP" },
+                      { label: "Tanggal", key: "tanggal" },
                       ]
                 }
               >
@@ -140,9 +126,7 @@ export default function Surat() {
             <div className="flex gap-2">
               <button
                 className={`px-4 py-2 rounded-lg text-sm border ${
-                  activeTab === "DataPenerimaan"
-                    ? "bg-[#0069AB] text-white"
-                    : "border-gray-300 text-[#344054]"
+                  activeTab === "DataPenerimaan" ? "bg-[#0069AB] text-white" : "border-gray-300 text-[#344054]"
                 }`}
                 onClick={() => setActiveTab("DataPenerimaan")}
               >
@@ -150,9 +134,7 @@ export default function Surat() {
               </button>
               <button
                 className={`px-4 py-2 rounded-lg text-sm border ${
-                  activeTab === "DataPeringatan"
-                    ? "bg-[#0069AB] text-white"
-                    : "border-gray-300 text-[#344054]"
+                  activeTab === "DataPeringatan" ? "bg-[#0069AB] text-white" : "border-gray-300 text-[#344054]"
                 }`}
                 onClick={() => setActiveTab("DataPeringatan")}
               >
@@ -181,10 +163,8 @@ export default function Surat() {
             searchTerm={searchTerm}
             selectedDate={selectedDate}
           />
-        ) : activeTab === "DataPeringatan" ? (
-          <div className="p-6">Data Peringatan belum tersedia.</div>
         ) : (
-          <dataPeringatan
+          <DataPeringatan
             data={dataPeringatan}
             searchTerm={searchTerm}
             selectedDate={selectedDate}

@@ -25,6 +25,9 @@ class SekolahRepository implements SekolahInterface
             'nama' => $data['nama'],
             'alamat' => $data['alamat'],
             'telepon' => $data['telepon'],
+            'jenis_institusi' => $data['jenis_institusi'],
+            'website' => $data['website'],
+            'id_perusahaan' => auth('sanctum')->user()->perusahaan->id
         ]);
     }
 

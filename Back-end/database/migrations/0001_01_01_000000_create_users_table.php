@@ -44,6 +44,29 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::create('perusahaan', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('id_user')->index();
+            $table->string('nama_penanggung_jawab');
+            $table->string('nomor_penanggung_jawab');
+            $table->string('jabatan_penanggung_jawab');
+            $table->string('email_penanggung_jawab');
+            $table->date('tanggal_berdiri');
+            $table->text('deskripsi');
+            $table->text('alamat');
+            $table->string('provinsi');
+            $table->string('kota');
+            $table->string('kecamatan');
+            $table->string('kode_pos');
+            $table->string('website');
+            $table->boolean('is_premium')->default(false);
+            $table->boolean('is_active')->default(true);
+            $table->integer('cabang_limit')->default(1);
+            $table->timestamps();
+
+            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
+        });
     }
 
     /**
@@ -54,5 +77,6 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('perusahaan');
     }
 };

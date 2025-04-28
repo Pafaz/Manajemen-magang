@@ -20,7 +20,6 @@ class PerusahaanRequest extends BaseFormRequest
                 'kota' => 'sometimes|string',
                 'kecamatan' => 'sometimes|string',
                 'alamat' => 'sometimes|string',
-                'bidang_usaha' => 'sometimes|string',
                 'kode_pos' => 'sometimes|string',
                 'website' => 'sometimes|url',
                 'tanggal_berdiri' => 'sometimes|date',
@@ -28,9 +27,10 @@ class PerusahaanRequest extends BaseFormRequest
                 'nomor_penanggung_jawab' => 'sometimes|numeric|digits_between:10,12',
                 'email_penanggung_jawab' => 'sometimes|email',
                 'jabatan_penanggung_jawab' => 'sometimes|string',
-                'logo' => 'sometimes|mimes:jpeg,png,jpg|max:2048',
-                'npwp' => 'sometimes|mimes:png,jpeg,jpg|max:2048',
-                'surat_legalitas' => 'sometimes|mimes:png,jpeg,jpg|max:2048',
+                'logo' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+                'npwp' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
+                'surat_legalitas' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
+                'profil_background' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             ];
         }
 
@@ -39,20 +39,20 @@ class PerusahaanRequest extends BaseFormRequest
             'nomor_penanggung_jawab' => 'required|numeric|digits_between:10,12',
             'email_penanggung_jawab' => 'required|email',
             'jabatan_penanggung_jawab' => 'required|string',
-            'tanggal_berdiri' => 'required|date',
             'nama' => 'required|string',
+            'tanggal_berdiri' => 'required|date',
             'deskripsi' => 'required|string',
             'telepon' => 'required|numeric|digits_between:10,12|unique:users,telepon',
             'provinsi' => 'required|string',
             'kota' => 'required|string',
             'kecamatan' => 'required|string',
-            'alamat' => 'required|string',
-            'bidang_usaha' => 'required|string',
             'kode_pos' => 'required|string',
+            'alamat' => 'required|string',
             'website' => 'required|url',
-            'logo' => 'nullable|mimes:jpeg,png,jpg|max:2048',
-            'npwp' => 'nullable|mimes:png,jpeg,jpg|max:2048',
-            'surat_legalitas' => 'nullable|mimes:png,jpeg,jpg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'npwp' => 'nullable|image|mimes:png,jpeg,jpg|max:2048',
+            'surat_legalitas' => 'nullable|image|mimes:png,jpeg,jpg|max:2048',
+            'profil_background' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 

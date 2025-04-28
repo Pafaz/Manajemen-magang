@@ -24,12 +24,10 @@ class Perusahaan extends Model
         'kecamatan',
         'alamat',
         'kode_pos',
-        'bidang_usaha',
         'website',
         'is_premium',
         'is_active',
         'cabang_limit',
-        'admin_limit',
         'nama_penanggung_jawab',
         'nomor_penanggung_jawab',
         'jabatan_penanggung_jawab',
@@ -50,9 +48,8 @@ class Perusahaan extends Model
         return $this->hasMany(Cabang::class, 'id_perusahaan', 'id');
     }
 
-    public function admin_perusahaan()
-    {
-        return $this->hasMany(Admin_perusahaan::class, 'id_perusahaan', 'id');
+    public function mitra(){
+        return $this->hasMany(Sekolah::class, 'id_perusahaan', 'id');
     }  
 
     public function divisi()

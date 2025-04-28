@@ -20,8 +20,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/register-perusahaan', [RegisterController::class, 'registerPerusahaan']);
-Route::post('/register-peserta', [RegisterController::class, 'registerPeserta']);
+Route::post('/register/{role}', [RegisterController::class, 'register']);
 Route::get('/auth/{role}', [GoogleAuthController::class, 'redirectAuth']);
 Route::get('/auth/callback/peserta', [GoogleAuthController::class, 'callbackPeserta']);
 Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackPerusahaan']);
@@ -32,13 +31,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Peserta
     Route::group(['role:peserta'], function () {
         Route::apiResource('peserta', PesertaController::class);
-        Route::apiResource('sekolah', SekolahController::class);
+        Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('jurusan', JurusanController::class);
         Route::apiResource('magang', MagangController::class);
     });
 
     //Perusahaan
     Route::group(['role:perusahaan'], function () {
+        Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('admin', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
         Route::apiResource('cabang', CabangController::class);
@@ -73,4 +73,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //auth
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
+    Route::get('/get-user', [LoginController::class, 'getData']);
 });

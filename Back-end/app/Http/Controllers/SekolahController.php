@@ -8,6 +8,7 @@ use App\Models\Sekolah;
 use Illuminate\Http\Request;
 use App\Services\SekolahService;
 
+
 class SekolahController extends Controller
 {
     /**
@@ -36,7 +37,7 @@ class SekolahController extends Controller
      */
     public function store(SekolahRequest $request)
     {
-        return $this->sekolahService->createSchool($request->validated());
+        return $this->sekolahService->simpanMitra($request->validated());
     }
 
     /**
@@ -44,7 +45,7 @@ class SekolahController extends Controller
      */
     public function show($id)
     {
-        return $this->sekolahService->getSchoolById($id);
+        return $this->sekolahService->getSchools($id);
     }
 
     /**
@@ -58,9 +59,10 @@ class SekolahController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(SekolahRequest $request, $id)
+    public function update(SekolahRequest $request, $sekolah)
     {
-        return $this->sekolahService->updateSchool($id, $request->validated());
+        // dd($sekolah);
+        return $this->sekolahService->simpanMitra( $request->validated(), true, $sekolah);
     }
 
     /**

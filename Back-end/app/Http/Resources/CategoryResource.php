@@ -15,18 +15,13 @@ class CategoryResource extends JsonResource
     
     public function toArray(Request $request): array
     {
-        dd($this);
+        // dd($this);
         return [
             'id' => $this->id,
-<<<<<<< HEAD
             'nama' => $this->nama,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'foto' => FotoResource::make($this->foto),
-=======
-            'nama' => $this->name,
-            'deskripsi' => $this->deskripsi,
->>>>>>> parent of eb70cfe (fix: fixing migration)
+            'foto' => FotoResource::make($this->foto)
         ];
     }
 }

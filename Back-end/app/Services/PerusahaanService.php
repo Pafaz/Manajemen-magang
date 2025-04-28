@@ -42,7 +42,7 @@ class PerusahaanService
             return Api::response(
                 'false',
                 'Perusahaan belum melengkapi profil',
-                Response::HTTP_UNPROCESSABLE_ENTITY
+                Response::HTTP_OK
             );
         }
 
@@ -68,8 +68,8 @@ class PerusahaanService
 
         try {
             $user = auth('sanctum')->user();
-            
-            if ($user->perusahaan) {
+
+            if (!$isUpdate && $user->perusahaan) {
                 throw new \Exception('Perusahaan sudah terdaftar');
             }
             if ($isUpdate && !$user->perusahaan) {
@@ -95,6 +95,7 @@ class PerusahaanService
                 'logo' => 'profile',
                 'npwp' => 'npwp',
                 'surat_legalitas' => 'surat_legalitas',
+                'profil_background' => 'profil_background',
             ];
 
             foreach ($files as $key => $type) {
@@ -127,7 +128,7 @@ class PerusahaanService
         $this->PerusahaanInterface->delete($id);
 
         $id_user = $this->PerusahaanInterface->find($id)->id_user;
-        
+
         $this->userInterface->delete($id_user);
 
         return Api::response(

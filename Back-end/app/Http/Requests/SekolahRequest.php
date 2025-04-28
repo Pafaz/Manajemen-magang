@@ -13,9 +13,14 @@ class SekolahRequest extends BaseFormRequest
     {
         if ($this->isUpdate()) {
             return [
-                'nama' => 'required|string|max:50|unique:sekolah,nama',
-                'alamat' => 'required|string|max:255',
-                'telepon' => 'required|numeric|digits_between:10,12',
+                'nama' => 'sometimes|string|max:50|unique:sekolah,nama',
+                'alamat' => 'sometimes|string|max:255',
+                'telepon' => 'sometimes|numeric|digits_between:10,12',
+                'jenis_institusi' => 'sometimes|string|max:50',
+                'website' => 'nullable|url',
+                'jurusan' => 'sometimes|array|min:1',
+                'jurusan.*' => 'sometimes|string|max:50|distinct',
+                'foto_header' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             ];
         }
 
@@ -23,8 +28,11 @@ class SekolahRequest extends BaseFormRequest
             'nama' => 'required|string|max:50|unique:sekolah,nama',
             'alamat' => 'required|string|max:255',
             'telepon' => 'required|numeric|digits_between:10,12',
-            'jurusan' => 'required|array',
-            'jurusan.*' => 'string|max:50|distinct',
+            'jenis_institusi' => 'required|string|max:50',
+            'website' => 'nullable|url',
+            'jurusan' => 'required|array|min:1',
+            'jurusan.*' => 'required|string|max:50|distinct',
+            'foto_header' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 

@@ -34,16 +34,12 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'nama' => 'required|string',
             'card' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-<<<<<<< HEAD
         return $this->kategoriService->simpanKategori($data);
-=======
-        return $this->kategoriService->createCategory($request->validated());
->>>>>>> parent of eb70cfe (fix: fixing migration)
     }
 
     /**

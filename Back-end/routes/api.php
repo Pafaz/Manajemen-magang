@@ -37,13 +37,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Peserta
     Route::group(['role:peserta'], function () {
         Route::apiResource('peserta', PesertaController::class);
-        Route::apiResource('sekolah', SekolahController::class);
+        Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('jurusan', JurusanController::class);
         Route::apiResource('magang', MagangController::class);
     });
 
     //Perusahaan
     Route::group(['role:perusahaan'], function () {
+        Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('admin', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
         Route::apiResource('cabang', CabangController::class);

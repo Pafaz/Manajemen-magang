@@ -16,6 +16,11 @@ return new class extends Migration
             $table->string('nama');
             $table->string('alamat');
             $table->string('telepon');
+            $table->string('jenis_institusi');
+            $table->string('website')->nullable();
+            $table->uuid('id_perusahaan');
+
+            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
         });
 
         Schema::create('jurusan', function (Blueprint $table) {

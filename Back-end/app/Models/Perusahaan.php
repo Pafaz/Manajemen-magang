@@ -48,9 +48,8 @@ class Perusahaan extends Model
         return $this->hasMany(Cabang::class, 'id_perusahaan', 'id');
     }
 
-    public function admin_perusahaan()
-    {
-        return $this->hasMany(Admin_perusahaan::class, 'id_perusahaan', 'id');
+    public function mitra(){
+        return $this->hasMany(Sekolah::class, 'id_perusahaan', 'id');
     }  
 
     public function divisi()

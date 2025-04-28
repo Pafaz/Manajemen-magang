@@ -13,66 +13,83 @@ class SekolahService
 {
     private SekolahInterface $SekolahInterface;
     private JurusanInterface $JurusanInterface;
+    private FotoService $foto;
 
-    public function __construct(SekolahInterface $SekolahInterface, JurusanInterface $JurusanInterface)
+    public function __construct(SekolahInterface $SekolahInterface, JurusanInterface $JurusanInterface, FotoService $foto)
     {
         $this->JurusanInterface = $JurusanInterface;
         $this->SekolahInterface = $SekolahInterface;
+        $this->foto = $foto;
     }
 
-    public function getSchools()
+    public function getSchools($id = null)
     {
-        $data = $this->SekolahInterface->getAll();
-        return Api::response(
-            SchoolResource::collection($data),
-            'School Fetched Successfully', 
-        );
-    }
+        $school = $id ? $this->SekolahInterface->find($id) : $this->SekolahInterface->getAll();
 
-    public function createSchool(array $data)
-    {
-        DB::beginTransaction();
-    try {
-        $sekolah = $this->SekolahInterface->create([
-            'nama' => $data['nama'],
-            'alamat' => $data['alamat'],
-            'telepon' => $data['telepon'],
-        ]);
-
-        $jurusanIds = [];
-
-        foreach ($data['jurusan'] as $namaJurusan) {
-            $jurusan = $this->JurusanInterface->firstOrCreate(['nama' => $namaJurusan]);
-            $jurusanIds[] = $jurusan->id;
+        if (!$school) {
+            return Api::response(null, 'Sekolah tidak ditemukan', Response::HTTP_NOT_FOUND);
         }
 
-        $sekolah->jurusan()->sync($jurusanIds);
+        $data = $id 
+            ? SchoolResource::make($school) 
+            : SchoolResource::collection($school);
 
-        DB::commit();
+        $message = $id 
+            ? 'Berhasil mengambil data sekolah' 
+            : 'Berhasil mengambil semua data sekolah';
 
-        return Api::response(
-            SchoolResource::make($sekolah->load('jurusan')),
-            'Sekolah & jurusan berhasil disimpan',
-            Response::HTTP_CREATED
-        );
-    } catch (\Throwable $th) {
-        DB::rollBack();
-        return Api::response(
-            null,
-            'Failed to create school: ' . $th->getMessage(),
-            Response::HTTP_INTERNAL_SERVER_ERROR
-        );
-    }
+        return Api::response($data, $message);
     }
 
-    public function updateSchool(int $id, array $data)
+
+    public function simpanMitra(array $data, bool $isUpdate = false, $id = null)
     {
-        $school = $this->SekolahInterface->update($id, $data);
-        return Api::response(
-            SchoolResource::make($school),
-            'School updated successfully',
-            Response::HTTP_OK
-        );
+        DB::beginTransaction();
+        try {
+            $dataSekolah = collect($data)->only(['nama', 'alamat', 'telepon', 'jenis_institusi', 'website'])->toArray();
+
+            $sekolah = $isUpdate
+                ? $this->SekolahInterface->update($id, $dataSekolah)
+                : $this->SekolahInterface->create($dataSekolah);
+
+            $jurusanIds = [];
+            if (!empty($data['jurusan'])) {
+                foreach ($data['jurusan'] as $namaJurusan) {
+                    $jurusan = $this->JurusanInterface->firstOrCreate(['nama' => $namaJurusan]);
+                    $jurusanIds[] = $jurusan->id;
+                }
+                $sekolah->jurusan()->sync($jurusanIds);
+            }
+
+            if (!empty($data['foto_header'])) {
+                $isUpdate 
+                    ? $this->foto->updateFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah') 
+                    : $this->foto->createFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah');
+            }
+
+            DB::commit();
+
+            $message = $isUpdate
+                ? 'Sekolah & jurusan berhasil diperbarui'
+                : 'Sekolah & jurusan berhasil disimpan';
+
+            $statusCode = $isUpdate
+                ? Response::HTTP_OK
+                : Response::HTTP_CREATED;
+
+            return Api::response(
+                SchoolResource::make($sekolah->load('jurusan', 'foto')),
+                $message,
+                $statusCode
+            );
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return Api::response(
+                null,
+                'Gagal menyimpan sekolah: ' . $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 
     public function deleteSchool(int $id)
@@ -83,28 +100,7 @@ class SekolahService
         $school->delete(); 
         return Api::response(
             null,
-            'School deleted successfully',
-            Response::HTTP_OK
-        );
-    }
-
-    public function getSchoolById(int $id)
-    {
-        $school = $this->SekolahInterface->find($id);
-        $jurusan = $school->jurusan()->get();
-
-        $response = [
-            'sekolah' => SchoolResource::make($school),
-            'jurusan' => $jurusan->map(function ($jurusan) {
-                return [
-                    'id' => $jurusan->id,
-                    'nama' => $jurusan->nama,
-                ];
-            }),
-        ];
-        return Api::response(
-            $response,
-            'School fetched successfully',
+            'Berhasil menghapus data sekolah',
             Response::HTTP_OK
         );
     }

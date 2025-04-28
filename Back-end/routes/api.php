@@ -42,12 +42,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('magang', MagangController::class);
     });
 
-    //Admin
-    Route::group(['role:admin', 'role:perusahaan'], function () {
-        Route::apiResource('piket', PiketController::class);
-        
-    
-        //Perusahaan
+    //Perusahaan
     Route::group(['role:perusahaan'], function () {
         Route::apiResource('admin', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
@@ -58,9 +53,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::put('/perusahaan/update', [PerusahaanController::class, 'update']);
         Route::apiResource('cabang', CabangController::class);
         Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
-        Route::apiResource('kategori-proyek', KategoriController::class);
     });
 
+    //Admin
+    Route::group(['role:admin'], function () {
+        Route::apiResource('piket', PiketController::class);
+        Route::apiResource('kategori-proyek', KategoriController::class);
         
     });
     

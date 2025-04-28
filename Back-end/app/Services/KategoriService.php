@@ -21,6 +21,7 @@ class KategoriService
 
     public function getCategories($id = null)
     {
+<<<<<<< HEAD
         $kategori = $this->KategoriInterface->find($id);
         if (!$kategori) {
             return Api::response(null, 'Kategori tidak ditemukan', Response::HTTP_NOT_FOUND);
@@ -35,6 +36,23 @@ class KategoriService
             : 'Berhasil mengambil semua data kategori';
 
         return Api::response($data, $message);
+=======
+        $data = $this->KategoriInterface->getAll();
+        return Api::response(
+            CategoryResource::collection($data),
+            'Categories Fetched Successfully', 
+        );
+    }
+
+    public function createCategory(array $data)
+    {
+        $category = $this->KategoriInterface->create($data);
+        return Api::response(
+            CategoryResource::make($category),
+            'Category created successfully',
+            Response::HTTP_CREATED
+        );
+>>>>>>> parent of eb70cfe (fix: fixing migration)
     }
 
     public function simpanKategori(array $data, bool $isUpdate = false, $id = null)
@@ -72,8 +90,13 @@ class KategoriService
 
         return Api::response(
             CategoryResource::make($category),
+<<<<<<< HEAD
             $message,
             $statusCode
+=======
+            'Category updated successfully',
+            Response::HTTP_OK
+>>>>>>> parent of eb70cfe (fix: fixing migration)
         );
 
     }

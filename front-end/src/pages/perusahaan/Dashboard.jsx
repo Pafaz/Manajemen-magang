@@ -34,7 +34,7 @@ const Dashboard = () => {
         setTimeout(() => {
           setCompanyData(response.data.data);
           setLoading(false);
-        }, 2000);
+        }, 1000);
       } catch (err) {
         console.log(err);
       }

@@ -13,7 +13,8 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
-
+use App\Http\Controllers\FotoController;
+use App\Http\Controllers\MagangController;
 
 Route::post('/login/google', [GoogleAuthController::class, 'loginWithGoogle']);
 

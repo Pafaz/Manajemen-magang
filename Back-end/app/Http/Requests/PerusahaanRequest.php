@@ -20,7 +20,6 @@ class PerusahaanRequest extends BaseFormRequest
                 'kota' => 'sometimes|string',
                 'kecamatan' => 'sometimes|string',
                 'alamat' => 'sometimes|string',
-                'bidang_usaha' => 'sometimes|string',
                 'kode_pos' => 'sometimes|string',
                 'website' => 'sometimes|url',
                 'tanggal_berdiri' => 'sometimes|date',
@@ -31,6 +30,7 @@ class PerusahaanRequest extends BaseFormRequest
                 'logo' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'npwp' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
                 'surat_legalitas' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
+                'profil_background' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             ];
         }
 
@@ -39,20 +39,20 @@ class PerusahaanRequest extends BaseFormRequest
             'nomor_penanggung_jawab' => 'required|numeric|digits_between:10,12',
             'email_penanggung_jawab' => 'required|email',
             'jabatan_penanggung_jawab' => 'required|string',
-            'tanggal_berdiri' => 'required|date',
             'nama' => 'required|string',
+            'tanggal_berdiri' => 'required|date',
             'deskripsi' => 'required|string',
             'telepon' => 'required|numeric|digits_between:10,12|unique:users,telepon',
             'provinsi' => 'required|string',
             'kota' => 'required|string',
             'kecamatan' => 'required|string',
-            'alamat' => 'required|string',
-            'bidang_usaha' => 'required|string',
             'kode_pos' => 'required|string',
+            'alamat' => 'required|string',
             'website' => 'required|url',
             'logo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'npwp' => 'required|image|mimes:png,jpeg,jpg|max:2048',
             'surat_legalitas' => 'required|image|mimes:png,jpeg,jpg|max:2048',
+            'profil_background' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 

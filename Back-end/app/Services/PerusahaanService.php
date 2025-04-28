@@ -95,6 +95,7 @@ class PerusahaanService
                 'logo' => 'profile',
                 'npwp' => 'npwp',
                 'surat_legalitas' => 'surat_legalitas',
+                'profil_background' => 'profil_background',
             ];
 
             foreach ($files as $key => $type) {

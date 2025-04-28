@@ -246,7 +246,6 @@ export default function DivisiBranchCard() {
           </div>
         </div>
       )}
-      <Penempatan/>
     </Card>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Calendar } from "lucide-react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function CompanyRegistrationForm() {
   const [provinces, setProvinces] = useState([]);
@@ -28,6 +29,7 @@ export default function CompanyRegistrationForm() {
     npwp: null,
     surat_legalitas: null,
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
@@ -58,12 +60,11 @@ export default function CompanyRegistrationForm() {
     setSelectedProvince(selected.name);
     setFormData((prev) => ({
       ...prev,
-      provinsi: selected.name, // Hanya set nama provinsi langsung
+      provinsi: selected.name,
       kota: "",
       kecamatan: "",
     }));
 
-    // Fetch kota-kota setelah memilih provinsi
     fetch(
       `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selected.id}.json`
     )
@@ -71,21 +72,20 @@ export default function CompanyRegistrationForm() {
       .then(setCities)
       .catch(console.error);
 
-    setDistricts([]); // Reset distrik
+    setDistricts([]);
   };
 
   const handleCityChange = (e) => {
     const selected = cities.find((c) => c.name === e.target.value);
     if (!selected) return;
 
-    setSelectedCity(selected.name); // Memperbarui state terpisah untuk kota
+    setSelectedCity(selected.name);
     setFormData((prev) => ({
       ...prev,
-      kota: selected.name, // Hanya set nama kota langsung
+      kota: selected.name,
       kecamatan: "",
     }));
 
-    // Fetch distrik setelah memilih kota
     fetch(
       `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selected.id}.json`
     )
@@ -100,7 +100,7 @@ export default function CompanyRegistrationForm() {
 
     setFormData((prev) => ({
       ...prev,
-      kecamatan: selected.name, // Update district with the selected name
+      kecamatan: selected.name,
     }));
   };
 
@@ -114,18 +114,14 @@ export default function CompanyRegistrationForm() {
       }
     }
   
-    formPayload.forEach((value, key) => {
-      console.log(key, value);
-    });
-  
     axios
       .post("http://127.0.0.1:8000/api/perusahaan", formPayload, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       })
-      .then((response) => {
-        console.log("Success:", response.data);
+      .then(() => {
+        navigate("/perusahaan/dashboard")
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -360,27 +356,13 @@ export default function CompanyRegistrationForm() {
               />
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Email Perusahaan<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="email"
-                name="companyEmail"
-                placeholder="Email Perusahaan"
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={formData.companyEmail}
-                onChange={handleChange}
-                required
-              />
-            </div>
 
             <div className="space-y-2">
               <label className="block text-sm font-medium text-gray-700">
                 Nomor Telepon Perusahaan<span className="text-red-500">*</span>
               </label>
               <input
-                type="text"
+                type="number"
                 name="telepon"
                 placeholder="Masukkan Nomor Telepon"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

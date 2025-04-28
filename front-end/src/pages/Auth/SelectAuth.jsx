@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../../contexts/AuthContext";
 
@@ -8,21 +8,28 @@ const SelectAuth = () => {
   const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
   const { tempRegisterData, setToken, setRole } = useContext(AuthContext);
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (!tempRegisterData) {
+      navigate("/auth/register");
+    }
+  }, [tempRegisterData, navigate]);
 
   const cardData = [
     {
-      type: "a1b2c3d4",
       title: "Daftar sebagai Perusahaan",
       description:
         "Akses dashboard untuk kelola siswa magang, pantau progress dan komunikasi langsung.",
       illustration: "/assets/icons/Company-rafiki.svg",
+      type: "perusahaan",
     },
     {
-      type: "x9y8z7w6",
       title: "Daftar sebagai Siswa Magang",
       description:
         "Dapatkan pengalaman magang, kelola tugas dan interaksi dengan pembimbing perusahaan.",
       illustration: "/assets/icons/students-amico.svg",
+      type: "peserta",
     },
   ];
 
@@ -30,29 +37,30 @@ const SelectAuth = () => {
     e.preventDefault();
     if (!selected || !tempRegisterData) return;
 
-    const role = selected === "a1b2c3d4" ? "company" : "student";
-    const url = role === "company" ? "register-perusahaan" : "register-peserta";
-
     try {
-      const response = await axios.post(
-        `http://127.0.0.1:8000/api/${url}`,
-        tempRegisterData
-      );
-      const responsAPI = response.data.data;
+      const data = {
+        ...tempRegisterData,
+        role: selected,
+      };
 
-      if (responsAPI.status === "success") {
-        setToken(responsAPI.token);
-        setRole(responsAPI.role);
-        if (responsAPI.role === "perusahaan") {
-          navigate("/perusahaan/dashboard");
-        } else if (responsAPI.role === "peserta") {
-          navigate("/siswa/dashboard");
-        } else {
-          navigate("/");
-        }
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/register/${selected}`,
+        data
+      );
+
+      if (response.data.data.status === "success") {
+        const { token, role } = response.data.data;
+        localStorage.setItem("token", token);
+        setToken(token);
+        setRole(role);
+        navigate(`/${role}/dashboard`);
+      } else {
+        setErrors({
+          message: response.data.message || "Login failed. Try again.",
+        });
       }
-    } catch (err) {
-      console.error("Gagal kirim data registrasi:", err);
+    } catch (error) {
+      console.error("Pendaftaran gagal:", error);
     }
   };
 

@@ -3,11 +3,13 @@ import axios from "axios";
 import { AuthContext } from "./AuthContext";
 
 export default function AuthProvider({ children }) {
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [token, setToken] = useState(
+    localStorage.getItem("token") && sessionStorage.getItem("token")
+  );
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [errors, setErrors] = useState(null);
-  const [tempRegisterData, setTempRegisterData] = useState(null);  // Tambahkan state tempRegisterData
+  const [tempRegisterData, setTempRegisterData] = useState(null);
 
   const getUser = useCallback(async () => {
     if (!token) return;
@@ -20,14 +22,15 @@ export default function AuthProvider({ children }) {
       const data = response.data;
 
       if (data.status === "success") {
-        setUser(data.data.user);
         setRole(data.data.role);
+        setUser(data.data.user);
       } else {
         setToken(null);
         setUser(null);
         setRole(null);
         setErrors(data.errors || { error: data.error });
         localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
       }
     } catch (error) {
       console.error("Gagal ambil data user:", error);
@@ -36,6 +39,7 @@ export default function AuthProvider({ children }) {
       setRole(null);
       setErrors({ error: "Gagal terhubung ke server" });
       localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
     }
   }, [token]);
 

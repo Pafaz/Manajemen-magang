@@ -41,6 +41,7 @@ import RiwayatPresentasi from "./src/pages/student/RiwayatPresentasi";
 import SelectAuth from "./src/pages/Auth/SelectAuth";
 import GoogleSuccess from "./src/pages/Auth/GoogleSuccess";
 import AuthLayout from "./src/layout/AuthLayout";
+import PerusahaanForm from "./src/pages/perusahaan/PerusahaanForm"
 
 export const router = createBrowserRouter([
   {
@@ -186,32 +187,36 @@ export const router = createBrowserRouter([
         element: <Peserta />,
       },
       {
-        path :"divisi",
-        element :<Divisi/>,
+        path: "divisi",
+        element: <Divisi />,
       },
       {
-        path :"approval",
-        element :<ApprovalPerusahaan/>,
+        path: "approval",
+        element: <ApprovalPerusahaan />,
       },
       {
-        path :"pendataan",
-        element :<Pendataan/>,
+        path: "pendataan",
+        element: <Pendataan />,
       },
       {
         path: "absensi",
-        element : <DataAbsensi/>,
+        element: <DataAbsensi />,
       },
       {
         path: "surat",
-        element : <Surat/>,
+        element: <Surat />,
       },
       {
         path: "RFID",
-        element : <RFID/>,
+        element: <RFID />,
       },
       {
         path: "kat-projek",
-        element : <KategoriProject/>,
+        element: <KategoriProject />,
+      },
+      {
+        path: "settings",
+        element: <PerusahaanForm />,
       },
     ],
   },

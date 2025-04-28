@@ -12,7 +12,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const {setToken,setRole} = useContext(AuthContext);
+  const { setRole, setToken } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,37 +22,27 @@ const Login = () => {
     const data = {
       email,
       password,
-      remember_me: rememberMe ? true : false,
+      remember_me: rememberMe,
     };
 
     try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/login",
-        data,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await axios.post("http://127.0.0.1:8000/api/login", data);
 
-      const responsAPI = response.data.data;
-      if (responsAPI.status === "success") {
-        setToken(responsAPI.token);
-        setRole(responsAPI.role);
-        const roles = responsAPI.role;
-        if (roles === "perusahaan") {
-          navigate("/perusahaan/dashboard");
-        } else if (roles === "peserta") {
-          navigate("/siswa/dashboard");
+      if (response.data.data.status === "success") {
+        const { token, role } = response.data.data;
+        if (rememberMe) {
+          localStorage.setItem("token", token);
         } else {
-          console.warn("Role tidak dikenali:", roles);
-          window.location.href("/");
+          sessionStorage.setItem("token", token);
         }
-      }
 
-      if (rememberMe) {
-        localStorage.setItem("token", response.data.token);
+        setToken(token);
+        setRole(role);
+        navigate(`/${role}/dashboard`);
+      } else {
+        setErrors({
+          message: response.data.message || "Login failed. Try again.",
+        });
       }
     } catch (err) {
       console.error("Error logging in:", err);
@@ -142,11 +132,12 @@ const Login = () => {
             <div>
               <input
                 type="checkbox"
-                id="terms"
+                id="rememberMe"
                 className="mr-2"
+                checked={rememberMe}
                 onChange={handleRememberMe}
               />
-              <label htmlFor="terms" className="text-sm text-gray-700">
+              <label htmlFor="rememberMe" className="text-sm text-gray-700">
                 Remember Me
               </label>
             </div>
@@ -167,7 +158,7 @@ const Login = () => {
           <h1 className="font-medium text-slate-800 text-sm">
             Don’t have an account?{" "}
             <Link
-              to={`/auth/SelectAuth`}
+              to={`/auth/register`}
               className="text-sky-500 font-semibold"
             >
               Create an account

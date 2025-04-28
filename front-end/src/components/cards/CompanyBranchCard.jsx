@@ -138,13 +138,10 @@ export default function CompanyBranchCard() {
       logoImage: "/assets/img/Profil.png",
     },
   ]);
-  
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
   const pageCount = Math.ceil(branches.length / itemsPerPage);
-
-  // Optimized modal management using one state object
   const [modalState, setModalState] = useState({
     showModal: false,
     showDeleteModal: false,
@@ -152,7 +149,6 @@ export default function CompanyBranchCard() {
     showDetailModal: false, // Tampilkan modal detail
     branchToDetail: null, // Menyimpan cabang yang dipilih untuk detail
   });
-
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };

@@ -42,7 +42,7 @@ class PerusahaanService
             return Api::response(
                 'false',
                 'Perusahaan belum melengkapi profil',
-                Response::HTTP_NOT_MODIFIED
+                Response::HTTP_UNPROCESSABLE_ENTITY
             );
         }
 
@@ -69,6 +69,9 @@ class PerusahaanService
         try {
             $user = auth('sanctum')->user();
             
+            if ($user->perusahaan) {
+                throw new \Exception('Perusahaan sudah terdaftar');
+            }
             if ($isUpdate && !$user->perusahaan) {
                 throw new \Exception('Perusahaan belum terdaftar');
             }

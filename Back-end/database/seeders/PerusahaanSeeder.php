@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Cabang;
 use App\Models\Foto;
 use App\Models\User;
+use App\Models\Cabang;
+use App\Models\Divisi;
+use App\Models\Kategori;
 use App\Models\Perusahaan;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
@@ -72,6 +74,21 @@ class PerusahaanSeeder extends Seeder
             'instagram' => 'https://www.google.com',
             'linkedin' => 'https://www.google.com',
             'id_perusahaan' => $perusahaan_record->id
+        ]);
+
+        $kategori =Kategori::create([
+            'id_perusahaan' => $perusahaan_record->id,
+            'nama' => 'Tahap Pemula',
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        Divisi::create([
+            'id_perusahaan' => $perusahaan_record->id,
+            'nama' => 'Front-End',
+            'id_kategori-proyek' => $kategori->id,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
 }

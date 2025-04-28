@@ -39,13 +39,13 @@ const NavAdmin = () => {
 
       if (response.status === 200) {
         localStorage.removeItem("token");
+        sessionStorage.removeItem("token")
         window.location.href = "/auth/login";
       } else {
         alert("Logout gagal, coba lagi.");
       }
     } catch (error) {
       console.error("Logout error:", error);
-      alert("Terjadi kesalahan saat logout. Coba lagi.");
     } finally {
       setIsLoggingOut(false);
     }
@@ -91,14 +91,10 @@ const NavAdmin = () => {
           <div className="bg-red-500 w-2 h-2 rounded-full absolute top-1 right-2 animate-ping"></div>
           <i className={`bi bi-bell ${isRinging ? "bell-shake" : ""}`}></i>
         </div>
-        <div className="w-7 h-7 rounded-full bg-indigo-100 relative flex justify-center items-center">
-          <i className="bi bi-globe text-sm"></i>
-        </div>
         
-        {/* Premium Button with text */}
         <button
           onClick={handlePremiumClick}
-          className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-200"
+          className="flex items-center gap-1.5 animate-pulse bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-200"
         >
           <i className="bi bi-star-fill text-yellow-300 text-xs"></i>
           <span>Get Premium</span>

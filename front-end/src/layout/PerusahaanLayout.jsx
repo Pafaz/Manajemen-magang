@@ -1,4 +1,4 @@
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import NavAdmin from "../components/ui/NavAdmin";
@@ -7,6 +7,7 @@ const PerusahaanLayout = () => {
   const [openMenu, setOpenMenu] = useState(null);
   const { role, token } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const sidebarMenus = [
     {
@@ -95,17 +96,17 @@ const PerusahaanLayout = () => {
 
   const footerMenus = ["License", "More Themes", "Documentation", "Support"];
 
-  // useEffect(() => {
-  //   if ((role && role !== "perusahaan") || !token) {
-  //     const redirectTo = localStorage.getItem("loaction");
-  //     if (redirectTo) {
-  //       navigate(redirectTo);
-  //       localStorage.removeItem("location");
-  //     } else {
-  //       navigate("/");
-  //     }
-  //   }
-  // }, [role]);
+  useEffect(() => {
+    if ((role && role !== "perusahaan") || !token) {
+      const redirectTo = localStorage.getItem("location");
+      if (redirectTo) {
+        navigate(redirectTo);
+        localStorage.removeItem("location");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [role]);
 
   return (
     <div className="w-full flex">
@@ -126,7 +127,9 @@ const PerusahaanLayout = () => {
                     onClick={() =>
                       setOpenMenu(openMenu === menu.label ? null : menu.label)
                     }
-                    className={`px-4 py-2 rounded-lg flex gap-3 text-xs items-center justify-between text-slate-500 hover:text-white hover:bg-sky-800 transition-all duration-300`}
+                    className={`px-4 py-2 rounded-lg flex gap-3 text-xs items-center justify-between text-slate-500 transition-all duration-300 ${
+                      openMenu === menu.label ? "bg-sky-800 text-white" : "hover:text-sky-500 hover:bg-sky-50"
+                    }`}
                   >
                     <div className="flex gap-3 items-center">
                       <i className={`bi ${menu.icon} text-lg`}></i>
@@ -139,14 +142,19 @@ const PerusahaanLayout = () => {
                     ></i>
                   </button>
                   {openMenu === menu.label && (
-                    <div className="ml-8 mt-1 flex flex-col gap-2">
+                    <div className="ml-4 mt-1 flex flex-col gap-2">
                       {menu.submenu.map((sub, subIdx) => (
                         <Link
                           key={subIdx}
                           to={sub.link}
-                          className="text-sm text-slate-600 hover:text-white hover:bg-sky-600 px-3 py-1 rounded transition-all duration-300"
+                          className={`flex items-center gap-3 text-sm px-3 py-1 rounded transition-all duration-300 ${
+                            location.pathname === sub.link
+                              ? "bg-sky-50 text-sky-500"
+                              : "hover:text-sky-500 hover:bg-sky-50"
+                          }`}
                         >
-                          {sub.label}
+                          <i className={`bi ${sub.icon} text-lg`}></i>
+                          <span>{sub.label}</span>
                         </Link>
                       ))}
                     </div>
@@ -155,7 +163,11 @@ const PerusahaanLayout = () => {
               ) : (
                 <Link
                   to={menu.link}
-                  className="px-4 py-2 rounded-lg flex gap-3 items-center text-slate-500 hover:text-white hover:bg-sky-800 transition-all duration-500 ease-in-out"
+                  className={`px-4 py-2 rounded-lg flex gap-3 items-center text-slate-500 transition-all duration-500 ease-in-out ${
+                    location.pathname === menu.link && openMenu !== menu.label
+                      ? "bg-sky-800 text-white"
+                      : "hover:text-sky-500 hover:bg-sky-50"
+                  } ${openMenu === menu.label ? "bg-transparent" : ""}`}
                 >
                   <i className={`bi ${menu.icon} text-lg`}></i>
                   <span className="font-light text-sm">{menu.label}</span>
@@ -168,7 +180,6 @@ const PerusahaanLayout = () => {
 
       <div className="flex-1 ml-[238px] min-h-screen overflow-y-hidden">
         <NavAdmin />
-        {/* Page Content */}
         <div className="pt-5 px-3 bg-indigo-50 min-h-screen overflow-">
           <Outlet />
           <div className="mt-3">

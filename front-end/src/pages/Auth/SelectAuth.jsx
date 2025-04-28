@@ -1,32 +1,66 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState, useEffect } from "react";
+import axios from "axios";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const SelectAuth = () => {
   const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
+  const { tempRegisterData, setToken, setRole } = useContext(AuthContext);
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (!tempRegisterData) {
+      navigate("/auth/register");
+    }
+  }, [tempRegisterData, navigate]);
 
   const cardData = [
     {
-      type: "a1b2c3d4",
       title: "Daftar sebagai Perusahaan",
       description:
         "Akses dashboard untuk kelola siswa magang, pantau progress dan komunikasi langsung.",
       illustration: "/assets/icons/Company-rafiki.svg",
+      type: "perusahaan",
     },
     {
-      type: "x9y8z7w6",
       title: "Daftar sebagai Siswa Magang",
       description:
         "Dapatkan pengalaman magang, kelola tugas dan interaksi dengan pembimbing perusahaan.",
       illustration: "/assets/icons/students-amico.svg",
+      type: "peserta",
     },
   ];
 
-  const handleNext = (e) => {
+  const handleNext = async (e) => {
     e.preventDefault();
-    if (selected) {
-      navigate(`/auth/register/${selected}`);
+    if (!selected || !tempRegisterData) return;
+
+    try {
+      const data = {
+        ...tempRegisterData,
+        role: selected,
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/register/${selected}`,
+        data
+      );
+
+      if (response.data.data.status === "success") {
+        const { token, role } = response.data.data;
+        localStorage.setItem("token", token);
+        setToken(token);
+        setRole(role);
+        navigate(`/${role}/dashboard`);
+      } else {
+        setErrors({
+          message: response.data.message || "Login failed. Try again.",
+        });
+      }
+    } catch (error) {
+      console.error("Pendaftaran gagal:", error);
     }
   };
 
@@ -39,7 +73,8 @@ const SelectAuth = () => {
       <div className="text-center mt-10">
         <h1 className="text-4xl font-bold text-sky-800">Pilih Jenis Akun</h1>
         <p className="text-gray-500 mt-2 max-w-xl mx-auto">
-          Silakan pilih apakah kamu ingin mendaftar sebagai perusahaan atau siswa magang.
+          Silakan pilih apakah kamu ingin mendaftar sebagai perusahaan atau
+          siswa magang.
         </p>
       </div>
 
@@ -84,7 +119,10 @@ const SelectAuth = () => {
       </div>
 
       <div className="flex justify-between items-center mt-12 px-6">
-        <a href="/" className="hover:text-sky-800 text-gray-500 font-medium text-lg">
+        <a
+          href="/"
+          className="hover:text-sky-800 text-gray-500 font-medium text-lg"
+        >
           ← Back
         </a>
         <a

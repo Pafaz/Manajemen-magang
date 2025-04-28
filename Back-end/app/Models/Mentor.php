@@ -15,6 +15,8 @@ class Mentor extends Model
     public $incrementing = false;
     protected $table = 'mentor';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'id',
         'id_user',
@@ -25,12 +27,24 @@ class Mentor extends Model
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+
     public function divisiCabang()
     {
         return $this->belongsTo(Divisi_cabang::class, 'id_divisi_cabang');
     }
+
     public function magang()
     {
         return $this->hasMany(Magang::class, 'id_mentor');
+    }
+
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class, 'id_divisi');
+    }
+
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi', 'id');
     }
 }

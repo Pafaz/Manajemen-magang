@@ -9,63 +9,70 @@ export default function PasswordSettingsCard() {
   return (
     <div className="bg-white rounded-xl shadow-sm p-6 max-w-8xl w-full">
       <h2 className="text-lg font-medium mb-4">Password Settings</h2>
-      
+
       {/* Password Limit */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-1">
-            <label className="text-sm font-medium">Password Limit</label>
-            </div>
-            <div className="text-xs text-gray-500 mb-2">Max Amount Password Limit</div>
-            <div className="relative w-1/2">
-            <input 
-            type={showLimit ? "text" : "password"} 
-            className="w-full p-2 border border-gray-200 rounded-lg pr-10" 
+          <label className="text-sm font-medium">Password Limit</label>
+        </div>
+        <div className="text-xs text-gray-500 mb-2">Max Amount Password Limit</div>
+        <div className="relative w-1/2">
+          <input
+            type={showLimit ? "text" : "password"}
+            className="w-full p-2 border border-gray-200 rounded-lg pr-10"
             defaultValue="30"
-            />
-            <button 
-            onClick={() => setShowLimit(!showLimit)} 
+          />
+          <button
+            onClick={() => setShowLimit(!showLimit)}
             className="absolute right-2 top-1/2 transform -translate-y-1/2"
-            >
-                {showLimit ? <Eye size={20} /> : <EyeOff size={20} />}
-                </button>
-            </div>
-</div>
+          >
+            {showLimit ? <Eye size={20} /> : <EyeOff size={20} />}
+          </button>
+        </div>
+      </div>
 
-
-
-      
       {/* Password Bound */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-1">
           <label className="text-sm font-medium">Password Bound</label>
-          <button onClick={() => setShowBound(!showBound)}>
+        </div>
+        <div className="text-xs text-gray-500 mb-2">Max Amount Password Bound</div>
+        <div className="relative w-1/2">
+          <input
+            type={showBound ? "text" : "password"}
+            className="w-full p-2 border border-gray-200 rounded-lg pr-10"
+            defaultValue="30"
+          />
+          <button
+            onClick={() => setShowBound(!showBound)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2"
+          >
             {showBound ? <Eye size={20} /> : <EyeOff size={20} />}
           </button>
         </div>
-        <div className="text-xs text-gray-500 mb-2">Max Amount Password Bound</div>
-        <input 
-          type={showBound ? "text" : "password"} 
-          className="w-full p-2 border border-gray-200 rounded-lg" 
-          defaultValue="30"
-        />
       </div>
-      
+
       {/* Konfirmasi Password */}
       <div className="mb-6">
         <div className="flex justify-between items-center mb-1">
           <label className="text-sm font-medium">Konfirmasi Password</label>
-          <button onClick={() => setShowFixed(!showFixed)}>
+        </div>
+        <div className="text-xs text-gray-500 mb-2">Max Amount Fixed Password</div>
+        <div className="relative w-1/2">
+          <input
+            type={showFixed ? "text" : "password"}
+            className="w-full p-2 border border-gray-200 rounded-lg pr-10"
+            defaultValue="30"
+          />
+          <button
+            onClick={() => setShowFixed(!showFixed)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2"
+          >
             {showFixed ? <Eye size={20} /> : <EyeOff size={20} />}
           </button>
         </div>
-        <div className="text-xs text-gray-500 mb-2">Max Amount Fixed Password</div>
-        <input 
-          type={showFixed ? "text" : "password"} 
-          className="w-full p-2 border border-gray-200 rounded-lg" 
-          defaultValue="30"
-        />
       </div>
-      
+
       {/* Persyaratan Password */}
       <div className="mb-2">
         <label className="text-sm font-medium">Persyaratan Password:</label>

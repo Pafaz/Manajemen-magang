@@ -194,6 +194,10 @@ export const router = createBrowserRouter([
         element: <Divisi />,
       },
       {
+        path: "mitra",
+        element: <Mitra />,
+      },
+      {
         path: "approval",
         element: <ApprovalPerusahaan />,
       },

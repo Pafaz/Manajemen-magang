@@ -24,12 +24,15 @@ import Admin from "./src/pages/perusahaan/Admin";
 import Mentor from "./src/pages/perusahaan/Mentor";
 import Peserta from "./src/pages/perusahaan/Peserta";
 import Divisi from "./src/pages/perusahaan/Divisi";
+import Mitra from "./src/pages/perusahaan/Mitra";
 import ApprovalPerusahaan from "./src/pages/perusahaan/Approval";
 import Pendataan from "./src/pages/perusahaan/Pendataan";
 import DataAbsensi from "./src/pages/perusahaan/Absensi";
 import RFID from "./src/pages/perusahaan/RFID";
 import Surat from "./src/pages/perusahaan/Surat";
 import KategoriProject from "./src/pages/perusahaan/KategoriProject";
+import Lowongan from "./src/pages/perusahaan/lowongan";
+import SettingsPerusahaan from "./src/pages/perusahaan/SettingsPerusahaan";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
@@ -190,6 +193,10 @@ export const router = createBrowserRouter([
         element :<Divisi/>,
       },
       {
+        path :"mitra",
+        element :<Mitra/>,
+      },
+      {
         path :"approval",
         element :<ApprovalPerusahaan/>,
       },
@@ -213,6 +220,14 @@ export const router = createBrowserRouter([
         path: "kat-projek",
         element : <KategoriProject/>,
       },
+      {
+        path: "lowongan",
+        element : <Lowongan/>
+      },
+      {
+        path: "updateperusahaan",
+        element : <SettingsPerusahaan/>
+      }
     ],
   },
   {

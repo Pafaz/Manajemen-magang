@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CalendarDays, Download, Search, UserPlus, Database } from "lucide-react";
+import { CalendarDays, Download, Search, UserPlus, Database, X } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { CSVLink } from "react-csv";
@@ -8,6 +8,11 @@ export default function RFIDTable() {
   const [activeTab, setActiveTab] = useState("dataSiswa");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [rfidValue, setRfidValue] = useState("");
+  const [studentName, setStudentName] = useState("");
 
   // Complete data of all students
   const dataSiswa = [
@@ -27,7 +32,7 @@ export default function RFIDTable() {
       masaMagang: "1 Maret - 30 Mei 2025",
       sekolah: "SMK NEGERI 7 MALANG",
       rfidTag: "RF2025002",
-      image: "/assets/img/post2.png",
+      image: "/assets/img/post1.png",
     },
     {
       id: 3,
@@ -54,7 +59,7 @@ export default function RFIDTable() {
       masaMagang: "8 April - 8 Juli 2025",
       sekolah: "SMK NEGERI 2 BLITAR",
       rfidTag: "",  // No RFID assigned yet
-      image: "/assets/img/post2.png",
+      image: "/assets/img/post1.png",
     },
     {
       id: 6,
@@ -72,7 +77,7 @@ export default function RFIDTable() {
       masaMagang: "1 Mei - 1 Agustus 2025",
       sekolah: "SMK NEGERI 6 MALANG",
       rfidTag: "RF2025006",
-      image: "/assets/img/post2.png",
+      image: "/assets/img/post1.png",
     },
   ];
 
@@ -125,9 +130,123 @@ export default function RFIDTable() {
   ));
 
   const handleRFIDAction = (id, action) => {
-    // Handle RFID actions (register or change)
-    alert(`${action} RFID untuk siswa dengan ID: ${id}`);
+    const student = dataSiswa.find(s => s.id === id);
+    setSelectedStudent(student);
+    setStudentName(student.nama);
+    
+    if (action === "Ubah") {
+      setRfidValue(student.rfidTag);
+      setShowUpdateModal(true);
+    } else {
+      setRfidValue("");
+      setShowRegisterModal(true);
+    }
   };
+
+  const handleSave = () => {
+    // Here you would typically update your data in a real application
+    console.log(`Saved RFID ${rfidValue} for student: ${studentName}`);
+    
+    // Close modals
+    setShowRegisterModal(false);
+    setShowUpdateModal(false);
+  };
+
+  // Register RFID Modal
+  const RegisterModal = () => (
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]">
+      <div className="bg-pink p-4 rounded-lg w-full max-w-md">
+        <div className="bg-white p-6 rounded-lg">
+          <h2 className="text-xl font-bold mb-6">Tambahkan RFID Siswa</h2>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Nama Siswa</label>
+            <input
+              type="text"
+              value={studentName}
+              disabled
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              placeholder="Gojo satoru"
+            />
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-2">RFID Siswa</label>
+            <input
+              type="text"
+              value={rfidValue}
+              onChange={(e) => setRfidValue(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              placeholder="123456789"
+            />
+          </div>
+          
+          <div className="flex justify-end gap-2">
+            <button 
+              onClick={() => setShowRegisterModal(false)}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700"
+            >
+              Batal
+            </button>
+            <button 
+              onClick={handleSave}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Simpan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // Update RFID Modal
+  const UpdateModal = () => (
+    <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]">
+      <div className="bg-white p-4 rounded-lg w-full max-w-md">
+        <div className="bg-white p-6 rounded-lg">
+          <h2 className="text-xl font-bold mb-6">Ganti RFID Siswa</h2>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2">Nama Siswa</label>
+            <input
+              type="text"
+              value={studentName}
+              disabled
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              placeholder="Gojo satoru"
+            />
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-gray-700 mb-2">RFID Siswa</label>
+            <input
+              type="text"
+              value={rfidValue}
+              onChange={(e) => setRfidValue(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              placeholder="123456789"
+            />
+          </div>
+          
+          <div className="flex justify-end gap-2">
+            <button 
+              onClick={() => setShowUpdateModal(false)}
+              className="px-4 py-2 border border-gray-300 rounded-md text-gray-700"
+            >
+              Batal
+            </button>
+            <button 
+              onClick={handleSave}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Simpan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="w-full">
@@ -257,6 +376,12 @@ export default function RFIDTable() {
           </table>
         </div>
       </div>
+
+      {/* Register RFID Modal */}
+      {showRegisterModal && <RegisterModal />}
+      
+      {/* Update RFID Modal */}
+      {showUpdateModal && <UpdateModal />}
     </div>
   );
 }

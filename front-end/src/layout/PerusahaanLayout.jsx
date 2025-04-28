@@ -21,7 +21,7 @@ const PerusahaanLayout = () => {
       submenu: [
         {
           icon: "bi-person",
-          label: "beranda",
+          label: "Beranda",
           link: "/perusahaan/beranda",
         },
         {
@@ -43,6 +43,11 @@ const PerusahaanLayout = () => {
           icon: "bi-pc-display",
           label: "Divisi",
           link: "/perusahaan/divisi",
+        },
+        {
+          icon: "bi-pc-display",
+          label: "Mitra",
+          link: "/perusahaan/mitra",
         },
         {
           icon: "bi-check-square",
@@ -81,7 +86,13 @@ const PerusahaanLayout = () => {
         },
       ],
     },
+    {
+      icon: "bi-grid",
+      label: "Lowongan",
+      link: "/perusahaan/lowongan",
+    },
   ];
+
   const footerMenus = ["License", "More Themes", "Documentation", "Support"];
 
   // useEffect(() => {

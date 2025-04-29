@@ -349,7 +349,7 @@ export default function App() {
   };
 
   return (
-    <div className="max-w-9xl mx-auto p-4">
+    <div className="max-w-9xl mx-auto p-4 h-screen">
       <div className={`flex transition-all duration-300 ${selectedJob ? 'flex-row' : 'flex-col'}`}>
         {/* Main Content Area */}
         <div className={`${selectedJob ? 'w-7/12 pr-4' : 'w-full'} transition-all duration-300`}>

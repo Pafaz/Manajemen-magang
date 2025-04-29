@@ -44,7 +44,7 @@ export default function DataUmumPerusahaan() {
           }
         );
         setData(response);
-        // console.log(response.data.data);
+        console.log(response.data.data);
       } catch (err) {
         console.error(err);
         setError("Gagal memuat data perusahaan.");

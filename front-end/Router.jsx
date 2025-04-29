@@ -230,7 +230,7 @@ export const router = createBrowserRouter([
         element : <Lowongan/>
       },
       {
-        path: "update-perusahaan/:userId",
+        path: "update-perusahaan/:id_perusahaan",
         element : <SettingsPerusahaan/>
       }
     ],

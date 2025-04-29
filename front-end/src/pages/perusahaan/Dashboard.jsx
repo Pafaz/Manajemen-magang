@@ -81,10 +81,8 @@ const Dashboard = () => {
       ) : companyData !== "true" ? (
         <>
           <AlertVerification />
-          <div className="w-xl mx-auto">
-            <div className="">
+          <div className="w-xl mx-auto h-screen">
             <img src="/assets/svg/Forms.svg" alt="Forms.svg" />
-            </div>
           </div>
         </>
       ) : (

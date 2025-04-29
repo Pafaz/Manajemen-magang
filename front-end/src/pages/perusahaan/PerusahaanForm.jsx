@@ -30,6 +30,31 @@ export default function CompanyRegistrationForm() {
     surat_legalitas: null,
   });
   const navigate = useNavigate();
+  const [verived, setVerived] = useState(null);
+  const checkIsVerived = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/perusahaan/detail`,
+        {
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+        }
+      );
+      setVerived(response.data.data);
+      console.log(response);
+    } catch (error) {
+      console.error("Error fetching data", error);
+    }
+  };
+
+  useEffect(() => {
+    checkIsVerived();
+  }, []);
+
+  useEffect(() => {
+    if (verived === "true") {
+      navigate("/perusahaan/dashboard");
+    }
+  }, [verived, navigate]);
 
   useEffect(() => {
     fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")

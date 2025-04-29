@@ -35,10 +35,10 @@ class AdminService
     public function getAllAdmin()
     {
         $data = $this->adminInterface->getAll();
-        
+
         return Api::response(
             AdminResource::collection($data),
-            'Admin Fetched Successfully', 
+            'Admin Fetched Successfully',
             Response::HTTP_OK
         );
     }
@@ -54,100 +54,58 @@ class AdminService
         );
     }
 
-    public function createAdminCabang(array $data)
+    public function createAdmin(array $data)
     {
+        DB::beginTransaction();
         try {
             $user = $this->userInterface->create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'telepon' => $data['telepon'],
-                'password' => bcrypt($data['password']),
+                'password' => bcrypt($data['telepon']),
             ]);
 
             $user->assignRole('admin');
-    
+
             $id_user = $user->id;
 
             $admin = $this->adminInterface->create([
                 'id' => Str::uuid(),
                 'id_cabang' => $data['id_cabang'],
                 'id_user' => $id_user,
-            ], 'cabang');
-
-            $files = [
-                'foto' => 'profile',
-            ];
-            foreach ($files as $key => $tipe) {
-                if (!empty($data[$key])) {
-                    $this->foto->createFoto($data[$key], $admin->id, $tipe);
-                }
-            }
-            return Api::response(
-                AdminResource::make($admin),
-                'Admin Created Successfully',
-                Response::HTTP_CREATED
-            );
-        } catch (\Exception $e) {
-            return Api::response(
-                null,
-                'Failed to create admin: ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }       
-    }
-
-    public function createAdminPerusahaan(array $data)
-    {
-        try {
-            $perusahaan = $this->perusahaanInterface->findByUser(auth('sanctum')->user()->id);
-            $id_perusahaan = $perusahaan->id;
-
-            // dd($id_perusahaan);
-            
-            $user = $this->userInterface->create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'telepon' => $data['telepon'],
-                'password' => bcrypt($data['password']),
             ]);
 
-            $user->assignRole('perusahaan');
-    
-            $id_user = $user->id;
-
-            $admin = $this->adminInterface->create([
-                'id' => Str::uuid(),
-                'id_perusahaan' => $id_perusahaan,
-                'id_user' => $id_user,
-            ], 'perusahaan');
-
             $files = [
-                'foto' => 'profile',
+                'profile' => 'profile',
+                'header' => 'header'
             ];
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
                     $this->foto->createFoto($data[$key], $admin->id, $tipe);
                 }
             }
+
+            DB::commit();
             return Api::response(
                 AdminResource::make($admin),
                 'Admin Created Successfully',
                 Response::HTTP_CREATED
             );
         } catch (\Exception $e) {
+            DB::rollback();
             return Api::response(
                 null,
                 'Failed to create admin: ' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
-        }       
+        }
     }
 
-    public function updateAdmin(int $id, array $data)
+    public function updateAdmin(string $id, array $data)
     {
+        DB::beginTransaction();
         try {
             $admin = $this->adminInterface->find($id);
-    
             if (!$admin) {
                 return Api::response(
                     null,
@@ -155,21 +113,34 @@ class AdminService
                     Response::HTTP_NOT_FOUND
                 );
             }
-    
+
+            // Update the admin data
             $updatedAdmin = $this->adminInterface->update($id, $data);
-    
-            if (!empty($data['foto'])) {
+
+            if (!empty($data['profile']) && !empty($data['header'])) {
                 $this->foto->deleteFoto($admin->id);
-    
-                $this->foto->createFoto($data['foto'], $updatedAdmin->id, 'profile');
+
+                $files = [
+                    'profile' => 'profile',
+                    'header' => 'header'
+                ];
+
+                foreach ($files as $key => $tipe) {
+                    if (!empty($data[$key])) {
+                        $this->foto->createFoto($data[$key], $admin->id, $tipe);
+                    }
+                }
             }
-    
+
+            DB::commit();
+
             return Api::response(
                 AdminResource::make($updatedAdmin),
                 'Admin Updated Successfully',
                 Response::HTTP_OK
             );
         } catch (\Exception $e) {
+            DB::rollback();
             return Api::response(
                 null,
                 'Failed to update admin: ' . $e->getMessage(),
@@ -177,7 +148,7 @@ class AdminService
             );
         }
     }
-    
+
 
     public function deleteAdmin(string $id)
     {
@@ -192,5 +163,5 @@ class AdminService
             'Admin Deleted Successfully',
             Response::HTTP_OK
         );
-    } 
+    }
 }

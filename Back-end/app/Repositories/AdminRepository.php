@@ -22,22 +22,18 @@ class AdminRepository implements AdminInterface
         return Admin_cabang::where('id_cabang', $id_cabang);
     }
 
-    public function find($id): ? Admin_cabang
+    public function find($id): ?Admin_cabang
     {
         return Admin_cabang::findOrFail($id);
     }
 
-    public function findByUser($id): ? Admin_cabang
+    public function findByUser($id): ?Admin_cabang
     {
         return Admin_cabang::where('id_cabang', $id)->first();
     }
 
-    public function create(array $data, $role): ? Model
+    public function create(array $data): ?Admin_cabang
     {
-        if ($role == 'perusahaan') {
-            return Admin_perusahaan::create($data);
-        }
-        
         return Admin_cabang::create($data);
     }
 

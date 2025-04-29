@@ -45,6 +45,7 @@ import SelectAuth from "./src/pages/Auth/SelectAuth";
 import GoogleSuccess from "./src/pages/Auth/GoogleSuccess";
 import AuthLayout from "./src/layout/AuthLayout";
 import CompanyRegistrationForm from "./src/pages/perusahaan/PerusahaanForm";
+import DetailMentor from "./src/components/cards/DetailMentor";
 
 export const router = createBrowserRouter([
   {
@@ -232,6 +233,10 @@ export const router = createBrowserRouter([
       {
         path: "update-perusahaan/:id_perusahaan",
         element : <SettingsPerusahaan/>
+      },
+      {
+        path: "detailmentor",
+        element : < DetailMentor/>
       }
     ],
   },

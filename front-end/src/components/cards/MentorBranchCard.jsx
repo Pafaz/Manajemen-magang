@@ -149,9 +149,7 @@ export default function MentorBranchCard() {
   };
 
   const handleViewDetail = (branchId) => {
-    const mentor = branches.find((b) => b.id === branchId);
-    setSelectedMentor(mentor);
-    setIsDetailModalOpen(true);
+    navigate('/perusahaan/detailmentor')
   };
 
   const handleSaveMentor = (mentorData) => {

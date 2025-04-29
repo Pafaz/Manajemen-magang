@@ -15,12 +15,11 @@ class CabangResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'nama' => $this->nama,
             'bidang_usaha' => $this->bidang_usaha,
             'provinsi' => $this->provinsi,
             'kota' => $this->kota,
-            'instagram' => $this->instagram,
-            'linkedin' => $this->linkedin,
-            'website' => $this->website,
+            'foto' => FotoResource::collection($this->foto),
         ];
     }
 }

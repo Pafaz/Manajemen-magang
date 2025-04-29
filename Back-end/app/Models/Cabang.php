@@ -14,12 +14,10 @@ class Cabang extends Model
     protected $table = 'cabang';
     protected $fillable = [
         'id_perusahaan',
+        'nama',
         'bidang_usaha',
         'provinsi',
         'kota',
-        'instagram',
-        'linkedin',
-        'website',
     ];
 
     public function adminCabang()
@@ -37,5 +35,9 @@ class Cabang extends Model
     public function divisi()
     {
         return $this->hasMany(Divisi::class, 'id_cabang', 'id');
+    }
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi', 'id');
     }
 }

@@ -14,21 +14,21 @@ class CabangRequest extends BaseFormRequest
     {
         if ($this->isUpdate()) {
             return [
+                'nama' => 'sometimes|string',
                 'bidang_usaha' => 'sometimes|string',
                 'provinsi' => 'sometimes|string',
                 'kota' => 'sometimes|string',
-                'instagram' => 'sometimes|string',
-                'website' => 'sometimes|string',
-                'linkedin' => 'sometimes|string',
+                'logo' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
+                'profil_background' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             ];
         }
         return [
-            'bidang_usaha' => 'required|string',
+            'nama' => 'required|string',
+            'deskripsi' => 'required|string',
             'provinsi' => 'required|string',
             'kota' => 'required|string',
-            'instagram' => 'required|string',
-            'website' => 'required|string',
-            'linkedin' => 'required|string',
+            'logo' => 'required|image|mimes:png,jpeg,jpg|max:2048',
+            'profil_background' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

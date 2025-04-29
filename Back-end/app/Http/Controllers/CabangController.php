@@ -61,7 +61,7 @@ class CabangController extends Controller
      */
     public function update(CabangRequest $request, Cabang $cabang)
     {
-        return $this->cabangService->simpanCabang($request->validated(),true, $cabang->id);
+        return $this->cabangService->simpanCabang($request->validated(), true, $cabang->id);
     }
 
     /**

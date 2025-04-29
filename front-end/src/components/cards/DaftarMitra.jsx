@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { Trash2, Edit, ChevronDown, X, Plus } from "lucide-react";
-import axios from "axios";
+import { useState, useEffect, useRef } from "react";
+import { Trash2, Edit, ChevronDown, X, Plus, AlertTriangle } from "lucide-react";
 
 export default function UniversityCardGrid() {
   const [partners, setPartners] = useState([]);
@@ -9,6 +8,7 @@ export default function UniversityCardGrid() {
 
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const categoryDropdownRef = useRef(null);
 
   const [showModal, setShowModal] = useState(false);
   const [editingPartner, setEditingPartner] = useState(null);
@@ -22,18 +22,16 @@ export default function UniversityCardGrid() {
     jurusan: [],
   });
   
-  // New state for custom major input
   const [newMajor, setNewMajor] = useState("");
-
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [partnerToDelete, setPartnerToDelete] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const categories = ["All", "Sekolah", "Perusahaan", "Lembaga"];
   const majorsList = [
     "Informatika",
     "Agribusiness",
     "Manajemen",
-    // …etc
   ];
 
   // Fetch all mitra
@@ -74,46 +72,11 @@ export default function UniversityCardGrid() {
     
     setPartners(dummyPartners);
     setLoading(false);
-    
-    // Actual API fetch code (commented out for now)
-    // (async () => {
-    //   try {
-    //     const { data } = await axios.get(
-    //       `${import.meta.env.VITE_API_URL}/mitra`,
-    //       {
-    //         headers: {
-    //           Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //         },
-    //       }
-    //     );
-    //     setPartners(data.data);
-    //   } catch (err) {
-    //     console.error(err);
-    //     setError("Gagal memuat data mitra.");
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // })();
   }, []);
 
-  const refresh = async () => {
-    // For demonstration, just reuse dummy data
-    // In production, uncomment the actual API call
-    
-    // setLoading(true);
-    // try {
-    //   const { data } = await axios.get(
-    //     `${import.meta.env.VITE_API_URL}/mitra`,
-    //     {
-    //       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    //     }
-    //   );
-    //   setPartners(data.data);
-    // } catch (_) {
-    //   setError("Gagal memuat ulang.");
-    // } finally {
-    //   setLoading(false);
-    // }
+  const refresh = () => {
+    console.log("Refreshing data...");
+    // In a real implementation, this would fetch updated data
   };
 
   // Handle category selection
@@ -193,97 +156,40 @@ export default function UniversityCardGrid() {
     }));
   };
 
-  const savePartner = async (e) => {
+  const savePartner = (e) => {
     e.preventDefault();
-    const fd = new FormData();
-    fd.append("nama", formData.nama);
-    fd.append("alamat", formData.alamat);
-    fd.append("telepon", formData.telepon);
-    fd.append("jenis_institusi", formData.jenis_institusi);
-    if (formData.website) fd.append("website", formData.website);
-    if (formData.foto_header) fd.append("foto_header", formData.foto_header);
-    formData.jurusan.forEach((j) => fd.append("jurusan[]", j));
-  
+    // For demonstration
     if (editingPartner) {
-      fd.append("_method", "PUT");
+      console.log("Updated partner:", { ...editingPartner, ...formData });
+    } else {
+      console.log("Added new partner:", formData);
     }
-  
-    try {
-      if (editingPartner) {
-        // Commented out for demonstration
-        // const response = await axios.put(
-        //   `${import.meta.env.VITE_API_URL}/mitra/${editingPartner.id}`,
-        //   fd,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //       "Content-Type": "multipart/form-data",
-        //     },
-        //   }
-        // );
-        // if (response.status === 200) {
-        //   setShowModal(false);
-        //   refresh();
-        // }
-        
-        // For demonstration
-        console.log("Updated partner:", { ...editingPartner, ...formData });
-        setShowModal(false);
-      } else {
-        // Commented out for demonstration
-        // const response = await axios.post(
-        //   `${import.meta.env.VITE_API_URL}/mitra`,
-        //   fd,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //       "Content-Type": "multipart/form-data",
-        //     },
-        //   }
-        // );
-        // if (response.status === 200) {
-        //   setShowModal(false);
-        //   refresh();
-        // }
-        
-        // For demonstration
-        console.log("Added new partner:", formData);
-        setShowModal(false);
-      }
-    } catch (err) {
-      console.error("Gagal menyimpan mitra:", err);
-    }
+    setShowModal(false);
   };
-  
 
-  const confirmDelete = async (p) => {
+  const confirmDelete = (p) => {
     setPartnerToDelete(p);
     setShowDeleteModal(true);
   };
   
-  const handleDelete = async () => {
-    try {
-      // Commented out for demonstration
-      // await axios.delete(
-      //   `${import.meta.env.VITE_API_URL}/mitra/${partnerToDelete.id}`,
-      //   {
-      //     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      //   }
-      // );
-      
-      // For demonstration
+  const handleDelete = () => {
+    setDeleteLoading(true);
+    // Simulate API call with setTimeout
+    setTimeout(() => {
       console.log("Deleted partner:", partnerToDelete);
       setShowDeleteModal(false);
+      setDeleteLoading(false);
       refresh();
-    } catch (err) {
-      console.error("Gagal menghapus mitra:", err);
-    }
+    }, 1000);
   };
 
   // Handle clicking outside the dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (showCategoryDropdown) {
+      if (
+        categoryDropdownRef.current && 
+        !categoryDropdownRef.current.contains(event.target)
+      ) {
         setShowCategoryDropdown(false);
       }
     };
@@ -292,7 +198,7 @@ export default function UniversityCardGrid() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showCategoryDropdown]);
+  }, []);
 
   if (loading) return <div className="h-screen">Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -302,65 +208,73 @@ export default function UniversityCardGrid() {
       <div className="max-w-9xl mx-auto space-y-6">
         <div className="bg-white p-4 rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-bold text-black-800">
+            <h2 className="text-lg font-bold text-gray-800">
               Mitra Terdaftar
             </h2>
             <div className="flex items-center space-x-2">
-              <button
-                className="bg-white px-2 py-1 rounded-md text-xs border border-gray-300 text-gray-700 hover:bg-gray-50 flex items-center"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openAdd();
-                }}
-              >
-                <span className="mr-1">+</span> Tambah Mitra
-              </button>
-              <div className="relative">
+            <button
+  className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 px-3 py-1.5 rounded-md text-xs flex items-center transition duration-200"
+  onClick={(e) => {
+    e.stopPropagation();
+    openAdd();
+  }}
+>
+  <Plus size={14} className="mr-1" /> Tambah Mitra
+</button>
+
+              <div className="relative" ref={categoryDropdownRef}>
                 <button
-                  className="bg-white px-2 py-1 rounded-md text-xs border border-gray-300 text-gray-700 flex items-center"
+                  className="bg-white px-3 py-1.5 rounded-md text-xs border border-gray-300 text-gray-700 hover:bg-gray-50 flex items-center transition duration-200"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowCategoryDropdown((v) => !v);
                   }}
                 >
-                  <span>Category: {selectedCategory}</span>
-                  <ChevronDown size={14} className="ml-1" />
+                  <span className="mr-1">Kategori:</span>
+                  <span className="font-medium">{selectedCategory}</span>
+                  <ChevronDown 
+                    size={14} 
+                    className={`ml-1 transition-transform duration-200 ${showCategoryDropdown ? 'rotate-180' : ''}`} 
+                  />
                 </button>
                 {showCategoryDropdown && (
-                  <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-                    <ul className="py-1">
-                      {categories.map((cat) => (
-                        <li
-                          key={cat}
-                          className="px-3 py-1 text-xs text-gray-700 hover:bg-gray-100 cursor-pointer"
-                          onClick={() => handleSelectCategory(cat)}
-                        >
-                          {cat}
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="absolute right-0 mt-1 w-40 bg-white rounded-md shadow-lg z-10 border border-gray-200 py-1 overflow-hidden">
+                    {categories.map((cat) => (
+                      <div
+                        key={cat}
+                        className={`px-3 py-2 text-xs hover:bg-gray-100 cursor-pointer flex items-center justify-between ${
+                          selectedCategory === cat ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+                        }`}
+                        onClick={() => handleSelectCategory(cat)}
+                      >
+                        {cat}
+                        {selectedCategory === cat && (
+                          <div className="w-2 h-2 rounded-full bg-blue-500" />
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {filtered.length > 0 ? (
               filtered.map((university) => (
                 <div
                   key={university.id}
-                  className="bg-white rounded-lg border border-gray-200 overflow-hidden flex flex-col h-full"
+                  className="bg-white rounded-lg border border-gray-200 overflow-hidden flex flex-col h-full shadow-sm hover:shadow-md transition-shadow duration-200"
                 >
                   <div className="relative">
                     <img
-                       src={`/api/placeholder/400/200`}
+                      src={`/api/placeholder/400/200`}
                       alt="Cover"
                       className="w-full h-32 object-cover"
                     />
                     <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-purple-500 border-2 border-white flex items-center justify-center">
                       <img
-                         src={`/api/placeholder/48/48`}
+                        src={`/api/placeholder/48/48`}
                         alt="Logo"
                         className="w-10 h-10 object-cover rounded-full"
                       />
@@ -379,14 +293,14 @@ export default function UniversityCardGrid() {
                   </div>
                   <div className="mt-auto flex border-t border-gray-200">
                     <button
-                      className="flex-1 py-2 flex items-center justify-center text-gray-500 text-xs hover:bg-gray-50"
+                      className="flex-1 py-2 flex items-center justify-center text-gray-500 text-xs hover:bg-gray-50 transition duration-200"
                       onClick={() => confirmDelete(university)}
                     >
                       <Trash2 size={14} className="mr-1" /> Hapus
                     </button>
                     <div className="w-px bg-gray-200" />
                     <button
-                      className="flex-1 py-2 flex items-center justify-center text-yellow-500 text-xs hover:bg-gray-50"
+                      className="flex-1 py-2 flex items-center justify-center text-yellow-500 text-xs hover:bg-gray-50 transition duration-200"
                       onClick={() => openEdit(university)}
                     >
                       <Edit size={14} className="mr-1" /> Edit
@@ -404,11 +318,7 @@ export default function UniversityCardGrid() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]" onClick={(e) => {
-          if (e.target === e.currentTarget) {
-            setShowModal(false);
-          }
-        }}>
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]" onClick={() => setShowModal(false)}>
           <div className="bg-white rounded-lg w-full max-w-md" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center p-4 border-b border-gray-200">
               <h2 className="text-lg font-bold text-gray-800">
@@ -421,7 +331,7 @@ export default function UniversityCardGrid() {
                 <X size={20} />
               </button>
             </div>
-            <form onSubmit={savePartner} className="p-4 space-y-4">
+            <div className="p-4 space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -434,7 +344,6 @@ export default function UniversityCardGrid() {
                     onChange={handleFormChange}
                     placeholder="Masukkan nama mitra"
                     className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                    required
                   />
                 </div>
                 <div>
@@ -448,7 +357,6 @@ export default function UniversityCardGrid() {
                     onChange={handleFormChange}
                     placeholder="Masukkan nomor telepon"
                     className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                    required
                   />
                 </div>
               </div>
@@ -476,7 +384,6 @@ export default function UniversityCardGrid() {
                     value={formData.jenis_institusi}
                     onChange={handleFormChange}
                     className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                    required
                   >
                     <option value="">Pilih jenis</option>
                     {categories
@@ -500,7 +407,7 @@ export default function UniversityCardGrid() {
                   onChange={handleFormChange}
                   placeholder="Masukkan alamat"
                   className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                  required
+                  rows={3}
                 />
               </div>
 
@@ -513,7 +420,6 @@ export default function UniversityCardGrid() {
                   name="foto_header"
                   onChange={handleFormChange}
                   className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                  {...(editingPartner ? {} : { required: true })}
                 />
               </div>
 
@@ -574,39 +480,68 @@ export default function UniversityCardGrid() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700"
+                  className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition duration-200"
                 >
                   Batal
                 </button>
                 <button
-                  type="submit"
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md text-sm"
+                  type="button"
+                  onClick={savePartner}
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md text-sm transition duration-200"
                 >
                   Simpan
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}
 
       {showDeleteModal && partnerToDelete && (
         <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]">
-          <div className="bg-white rounded-lg w-full max-w-md p-4">
-            <h3 className="text-lg font-bold mb-3">Konfirmasi Hapus</h3>
-            <p>Apakah Anda yakin ingin menghapus mitra "{partnerToDelete.nama}"?</p>
-            <div className="flex justify-end space-x-2 mt-4">
+          <div className="bg-white rounded-lg w-full max-w-md p-6 shadow-xl animate-fadeIn">
+            <div className="flex items-center mb-4 text-red-500">
+              <AlertTriangle size={24} className="mr-2" />
+              <h3 className="text-lg font-bold">Konfirmasi Hapus</h3>
+            </div>
+            
+            <div className="p-4 mb-4 bg-red-50 border border-red-100 rounded-md">
+              <p className="text-gray-700">
+                Apakah Anda yakin ingin menghapus mitra <span className="font-medium">"{partnerToDelete.nama}"</span>?
+              </p>
+              <p className="mt-2 text-sm text-gray-500">
+                Tindakan ini tidak dapat dibatalkan dan semua data terkait akan dihapus permanen.
+              </p>
+            </div>
+            
+            <div className="flex justify-end space-x-3 mt-6">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700"
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition duration-200"
+                disabled={deleteLoading}
               >
                 Batal
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 bg-red-500 text-white rounded-md text-sm"
+                className={`px-4 py-2 bg-red-500 text-white rounded-md text-sm transition duration-200 flex items-center ${
+                  deleteLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-red-600'
+                }`}
+                disabled={deleteLoading}
               >
-                Hapus
+                {deleteLoading ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Menghapus...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={14} className="mr-1" /> Hapus
+                  </>
+                )}
               </button>
             </div>
           </div>

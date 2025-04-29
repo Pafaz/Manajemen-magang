@@ -237,18 +237,17 @@ export const router = createBrowserRouter([
         element : <SettingsPerusahaan/>
       },
       {
-<<<<<<< HEAD
         path : "mentor/:mentorId",
         element : <Detailsmentor />
       },
       {
         path : "detail-siswa",
         element : <DetailSiswa/>
-=======
+      },
+      {
         path: "detailmentor",
         element : < DetailMentor/>
->>>>>>> 37ab344f8caaf7203f49dbcccb7932a8447db9f8
-      }
+      },
     ],
   },
   {

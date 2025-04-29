@@ -149,12 +149,6 @@ export default function MentorBranchCard() {
   };
 
   const handleViewDetail = (branchId) => {
-    navigate(`/perusahaan/mentor/${branchId}`);
-
-    const mentor = branches.find((b) => b.id === branchId);
-    setSelectedMentor(mentor);
-    setIsDetailModalOpen(true);
-
     navigate('/perusahaan/detailmentor')
   };
 

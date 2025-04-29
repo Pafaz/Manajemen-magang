@@ -24,26 +24,23 @@ return new class extends Migration
             $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
         });
 
-        Schema::create('kategori-proyek', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->uuid('id_perusahaan');
-            $table->string('nama');
-            $table->timestamps();
-
-            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
-        });
-
         Schema::create('divisi', function (Blueprint $table) {
             $table->id()->primary();
             $table->string('nama');
             $table->unsignedBigInteger('id_cabang')->nullable();
-            $table->unsignedBigInteger('id_kategori-proyek');
             $table->uuid('id_perusahaan');
             $table->timestamps();
 
             $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
-            $table->foreign('id_kategori-proyek')->references('id')->on('kategori-proyek')->onDelete('cascade');
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
+        });
+
+        Schema::create('kategori_proyek', function (Blueprint $table) {
+            $table->id()->primary();
+            $table->unsignedBigInteger('id_divisi');
+            $table->string('nama');
+
+            $table->foreign('id_divisi')->references('id')->on('divisi')->onDelete('cascade');
         });
 
         Schema::create('lowongan', function (Blueprint $table) {
@@ -81,6 +78,14 @@ return new class extends Migration
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
         });
+
+        Schema::create('divisi_kategori', function (Blueprint $table) {
+            $table->unsignedBigInteger('id_divisi');
+            $table->unsignedBigInteger('id_kategori');
+
+            $table->foreign('id_divisi')->references('id')->on('divisi')->onDelete('cascade');
+            $table->foreign('id_kategori')->references('id')->on('kategori_proyek')->onDelete('cascade');
+        });
     }
 
     /**
@@ -93,6 +98,7 @@ return new class extends Migration
         Schema::dropIfExists('admin_cabang');
         Schema::dropIfExists('divisi');
         Schema::dropIfExists('lowongan');
-        Schema::dropIfExists('kategori-proyek');
+        Schema::dropIfExists('kategori_proyek');
+        Schema::dropIfExists('divisi_kategori');
     }
 };

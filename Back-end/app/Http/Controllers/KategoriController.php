@@ -61,14 +61,14 @@ class KategoriController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Kategori $kategori)
+    public function update(Request $request,  $kategori)
     {
         $data = $request->validate([
             'nama' => 'sometimes|string',
             'card' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        return $this->kategoriService->simpanKategori($data, true, $kategori->id);
+        return $this->kategoriService->simpanKategori($data, true, $kategori);
     }
 
     /**

@@ -48,12 +48,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('admin', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
         Route::apiResource('cabang', CabangController::class);
-        Route::apiResource('perusahaan', PerusahaanController::class);
         Route::apiResource('mentor', MentorController::class);
+        Route::apiResource('cabang', CabangController::class);
+
+        //perusahaan
+        Route::post('/perusahaan', [PerusahaanController::class, 'store']);
         Route::get('/perusahaan/detail', [PerusahaanController::class, 'show']);
         Route::put('/perusahaan/update', [PerusahaanController::class, 'update']);
-        Route::apiResource('cabang', CabangController::class);
-        Route::get('/peserta/{id_perusahaan}', [PesertaController::class, 'showByPerusahaan']);
+        Route::get('/perusahaan/edit', [PerusahaanController::class, 'edit']);
     });
 
     //Admin

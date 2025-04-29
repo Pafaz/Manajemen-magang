@@ -60,7 +60,7 @@ class SekolahController extends Controller
      */
     public function update(SekolahRequest $request, $sekolah)
     {
-        // dd($sekolah);
+        // dd($request->all());
         return $this->sekolahService->simpanMitra( $request->validated(), true, $sekolah);
     }
 

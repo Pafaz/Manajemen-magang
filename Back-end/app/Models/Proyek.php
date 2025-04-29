@@ -24,9 +24,5 @@ class Proyek extends Model
     {
         return $this->belongsTo(Peserta::class, 'id_peserta');
     }
-    public function divisi_cabang()
-    {
-        return $this->belongsTo(Divisi_cabang::class, 'id_divisi_cabang');
-    }
 }
 

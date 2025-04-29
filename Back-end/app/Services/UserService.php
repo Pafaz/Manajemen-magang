@@ -140,6 +140,11 @@ class UserService
                 ->stateless()
                 ->redirectUrl($redirectUri)
                 ->user();
+
+            $socialiteUser = Socialite::with('google')
+                ->stateless()
+                ->redirectUrl($redirectUri)
+                ->user();
         } catch (ClientException $e) {
             Log::error("Google Auth Failed: " . $e->getMessage());
             return Api::response(null, 'Autentikasi Google gagal', 401);
@@ -175,7 +180,7 @@ class UserService
         //     'role' => $role
         // ],200);
 
-        return redirect("http://localhost:5173/auth/google/success?token=$token&role=$role");
+        return redirect("http://localhost:5173/google/success?token=$token&role=$role");
     }
 
     // public function handleGoogleCallback(array $data, string $role)

@@ -81,7 +81,7 @@ const NavAdmin = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/perusahaan/detail`,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
       setVerived(response.data.data);

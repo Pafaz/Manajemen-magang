@@ -46,7 +46,7 @@ import RiwayatPresentasi from "./src/pages/student/RiwayatPresentasi";
 import SelectAuth from "./src/pages/Auth/SelectAuth";
 import GoogleSuccess from "./src/pages/Auth/GoogleSuccess";
 import AuthLayout from "./src/layout/AuthLayout";
-import PerusahaanForm from "./src/pages/perusahaan/PerusahaanForm"
+import CompanyRegistrationForm from "./src/pages/perusahaan/PerusahaanForm";
 
 export const router = createBrowserRouter([
   {
@@ -225,14 +225,14 @@ export const router = createBrowserRouter([
       },
       {
         path: "settings",
-        element: <PerusahaanForm />,
+        element: <CompanyRegistrationForm />,
       },
       {
         path: "lowongan",
         element : <Lowongan/>
       },
       {
-        path: "update-perusahaan/:userId",
+        path: "update-perusahaan/:id_perusahaan",
         element : <SettingsPerusahaan/>
       },
       {
@@ -244,6 +244,10 @@ export const router = createBrowserRouter([
         element : <DetailSiswa/>
       }
     ],
+  },
+  {
+    path:"/google/success",
+    element:<GoogleSuccess/>
   },
   {
     path: "*",

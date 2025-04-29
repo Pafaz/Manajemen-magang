@@ -4,7 +4,7 @@ import { AuthContext } from "./AuthContext";
 
 export default function AuthProvider({ children }) {
   const [token, setToken] = useState(
-    localStorage.getItem("token") && sessionStorage.getItem("token")
+    localStorage.getItem("token") || sessionStorage.getItem("token")
   );
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
@@ -29,8 +29,8 @@ export default function AuthProvider({ children }) {
         setUser(null);
         setRole(null);
         setErrors(data.errors || { error: data.error });
-        localStorage.removeItem("token");
-        sessionStorage.removeItem("token");
+        // localStorage.removeItem("token");
+        // sessionStorage.removeItem("token");
       }
     } catch (error) {
       console.error("Gagal ambil data user:", error);
@@ -38,8 +38,8 @@ export default function AuthProvider({ children }) {
       setUser(null);
       setRole(null);
       setErrors({ error: "Gagal terhubung ke server" });
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
+      // localStorage.removeItem("token");
+      // sessionStorage.removeItem("token");
     }
   }, [token]);
 

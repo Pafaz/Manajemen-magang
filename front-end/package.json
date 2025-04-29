@@ -38,6 +38,7 @@
     "react-intersection-observer": "^9.16.0",
     "react-paginate": "^8.3.0",
     "react-router-dom": "^7.4.0",
+    "react-select": "^5.10.1",
     "recharts": "^2.15.2",
     "sweetalert2": "^11.19.1",
     "sweetalert2-react-content": "^5.1.0",

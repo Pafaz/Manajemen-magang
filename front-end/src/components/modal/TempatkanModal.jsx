@@ -1,13 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import Select from "react-select";
 
-// TempatkanModal Component
 const TempatkanModal = ({ isOpen, onClose, onSimpan, data }) => {
-  const [nama, setNama] = useState(data?.nama || "");
+  const siswaList = [
+    { id: 1, nama: "Nando" },
+    { id: 2, nama: "Andi" },
+    { id: 3, nama: "Sano" },
+    { id: 4, nama: "Mita" },
+    { id: 5, nama: "Gita" },
+  ];
+
+  const [selectedNama, setSelectedNama] = useState([]);
   const [divisi, setDivisi] = useState("");
 
+  useEffect(() => {
+    if (data) {
+      setSelectedNama([{ label: data.nama, value: data.nama }]);
+    }
+  }, [data]);
 
   if (!isOpen) return null;
+
+  const options = siswaList.map((siswa) => ({
+    value: siswa.nama,
+    label: siswa.nama,
+  }));
+
+  const handleRemove = (value) => {
+    setSelectedNama((prev) => prev.filter((item) => item.value !== value));
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -21,31 +43,44 @@ const TempatkanModal = ({ isOpen, onClose, onSimpan, data }) => {
         </div>
         <div className="p-6">
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Masukkan Nama</label>
-            <input
-              type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
-              placeholder="Gojo satoru"
-              value={nama}
-              onChange={(e) => setNama(e.target.value)}
+            <label className="block text-sm font-medium mb-2">Pilih Siswa</label>
+            <Select
+              options={options}
+              value={null}
+              onChange={(selectedOption) => {
+                if (
+                  selectedOption &&
+                  !selectedNama.find((item) => item.value === selectedOption.value)
+                ) {
+                  setSelectedNama((prev) => [...prev, selectedOption]);
+                }
+              }}
+              placeholder="Pilih nama siswa..."
+              className="text-sm"
             />
           </div>
-          <div className="mb-6">
-            <label className="block text-sm font-medium mb-2">Masukkan Divisi</label>
-            <div className="relative">
-              <select
-                className="w-full px-3 py-2 border border-gray-300 rounded-md appearance-none bg-white"
-                value={divisi}
-                onChange={(e) => setDivisi(e.target.value)}
+
+          {/* Tampilkan chip nama siswa */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {selectedNama.map((item) => (
+              <div
+                key={item.value}
+                className="flex items-center border border-blue-200 rounded-md px-3 py-1 text-sm text-blue-700 bg-blue-50"
               >
-                <option value="" disabled>Pilih Divisi</option>
-                <option value="web">Web Development</option>
-                <option value="mobile">Mobile Development</option>
-                <option value="ui">UI/UX Designer</option>
-                <option value="data">Data Analyst</option>
-              </select>
-            </div>
+                {item.label}
+                <button
+                  onClick={() => handleRemove(item.value)}
+                  className="ml-2 text-blue-500 hover:text-blue-700"
+                >
+                  <X size={14} />
+                </button>
+              </div>
+            ))}
           </div>
+
+          {/* (Opsional) Input divisi */}
+         
+
           <div className="flex justify-end gap-3">
             <button
               onClick={onClose}
@@ -55,7 +90,8 @@ const TempatkanModal = ({ isOpen, onClose, onSimpan, data }) => {
             </button>
             <button
               onClick={() => {
-                onSimpan({ nama, divisi });
+                const namaList = selectedNama.map((item) => item.value);
+                onSimpan({ namaList, divisi });
                 onClose();
               }}
               className="px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"

@@ -43,8 +43,6 @@ import DetailPresentasi from "./src/pages/student/DetailPresentasi";
 import RiwayatPresentasi from "./src/pages/student/RiwayatPresentasi";
 import SelectAuth from "./src/pages/Auth/SelectAuth";
 import GoogleSuccess from "./src/pages/Auth/GoogleSuccess";
-import AuthLayout from "./src/layout/AuthLayout";
-import PerusahaanForm from "./src/pages/perusahaan/PerusahaanForm"
 
 export const router = createBrowserRouter([
   {
@@ -234,6 +232,10 @@ export const router = createBrowserRouter([
         element : <SettingsPerusahaan/>
       }
     ],
+  },
+  {
+    path:"/google/success",
+    element:<GoogleSuccess/>
   },
   {
     path: "*",

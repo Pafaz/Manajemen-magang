@@ -13,7 +13,7 @@ class SekolahRequest extends BaseFormRequest
     {
         if ($this->isUpdate()) {
             return [
-                'nama' => 'sometimes|string|max:50|unique:sekolah,nama',
+                'nama' => 'sometimes|string|max:50|unique:sekolah,nama,' . $this->route('mitra'),
                 'alamat' => 'sometimes|string|max:255',
                 'telepon' => 'sometimes|numeric|digits_between:10,12',
                 'jenis_institusi' => 'sometimes|string|max:50',

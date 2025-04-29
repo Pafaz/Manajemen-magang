@@ -101,7 +101,7 @@ export default function ApprovalTable() {
   ];
 
   const CustomButton = React.forwardRef(({ value, onClick }, ref) => (
-    <button className="flex items-center gap-2 bg-white border-gray-200 text-[#344054] py-2 px-4 rounded-md shadow border border-[#667797] hover:bg-[#0069AB] hover:text-white text-sm" onClick={onClick} ref={ref} type="button">
+    <button className="flex items-center gap-2 bg-white text-[#344054] py-2 px-4 rounded-md shadow border border-[#667797] hover:bg-[#0069AB] hover:text-white text-sm" onClick={onClick} ref={ref} type="button">
       <CalendarDays size={16} />
       {value
         ? new Date(value).toLocaleDateString("id-ID", {

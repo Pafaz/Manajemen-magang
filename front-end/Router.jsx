@@ -33,6 +33,8 @@ import Surat from "./src/pages/perusahaan/Surat";
 import KategoriProject from "./src/pages/perusahaan/KategoriProject";
 import Lowongan from "./src/pages/perusahaan/lowongan";
 import SettingsPerusahaan from "./src/pages/perusahaan/SettingsPerusahaan";
+import Detailsmentor from "./src/components/cards/DetailMentor";
+import DetailSiswa from "./src/components/cards/DetailSiswa";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
@@ -232,6 +234,14 @@ export const router = createBrowserRouter([
       {
         path: "update-perusahaan",
         element : <SettingsPerusahaan/>
+      },
+      {
+        path : "mentor/:mentorId",
+        element : <Detailsmentor />
+      },
+      {
+        path : "detail-siswa",
+        element : <DetailSiswa/>
       }
     ],
   },

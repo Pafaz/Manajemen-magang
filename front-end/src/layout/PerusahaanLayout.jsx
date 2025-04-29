@@ -110,6 +110,7 @@ const PerusahaanLayout = () => {
 
   return (
     <div className="w-full flex">
+      {/* Sidebar */}
       <div className="bg-white border-r border-r-slate-300 w-[238px] h-screen fixed py-4 px-2 z-[50] overflow-y-auto">
         <Link to={`/`}>
           <img
@@ -178,26 +179,30 @@ const PerusahaanLayout = () => {
         </div>
       </div>
 
-      <div className="flex-1 ml-[238px] min-h-screen overflow-y-hidden">
+      {/* Main Content Area */}
+      <div className="flex-1 ml-[238px] flex flex-col min-h-screen">
         <NavAdmin />
-        <div className="pt-5 px-3 bg-indigo-50 min-h-screen overflow-">
+        {/* Content wrapper with flex-grow to push footer down */}
+        <div className="flex-grow bg-indigo-50 px-3 pt-5 pb-0">
           <Outlet />
-          <div className="mt-3">
-            <div className="bg-white rounded-t-xl px-5 py-4 w-full flex justify-between">
-              <div className="text-slate-400 font-normal text-sm">
-                © Copyright Edmate 2024, All Right Reserved
-              </div>
-              <div className="flex gap-5">
-                {footerMenus.map((item, i) => (
-                  <Link
-                    key={i}
-                    to="#"
-                    className="text-slate-400 text-sm font-normal"
-                  >
-                    {item}
-                  </Link>
-                ))}
-              </div>
+        </div>
+        
+        {/* Footer - positioned at the bottom */}
+        <div className="mt-auto">
+          <div className="bg-white rounded-t-xl px-5 py-4 w-full flex justify-between">
+            <div className="text-slate-400 font-normal text-sm">
+              © Copyright Edmate 2024, All Right Reserved
+            </div>
+            <div className="flex gap-5">
+              {footerMenus.map((item, i) => (
+                <Link
+                  key={i}
+                  to="#"
+                  className="text-slate-400 text-sm font-normal"
+                >
+                  {item}
+                </Link>
+              ))}
             </div>
           </div>
         </div>

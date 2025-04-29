@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 import DataPerusahaan from "../../components/cards/DataPerusahaan";
 import Password from "../../components/cards/Password";
-import ModalTambahAdminCabang from "../../components/modal/ModalTambahAdminCabang";
-import ModalDeleteAdminCabang from "../../components/modal/ModalDeleteAdminCabang";
+
+// Initialize SweetAlert with React content
+const MySwal = withReactContent(Swal);
 
 const CompanyCard = () => {
   const [companyName] = useState("PT. HUMMA TECHNOLOGY INDONESIA");
-  const [description] = useState("Perusahaan ini bergerak di bidang Informasi dan Teknologi untuk perkembangan Industri");
   const [location] = useState("Malang, Indonesia");
-  const [contactPerson] = useState("Afrizal Hilmawan");
+  const [join] = useState("Join August 2024");
 
   const [branchName, setBranchName] = useState("");
   const [businessField, setBusinessField] = useState("");
@@ -18,10 +20,15 @@ const CompanyCard = () => {
   const [instagramUrl, setInstagramUrl] = useState("");
   const [linkedinUrl, setLinkedinUrl] = useState("");
 
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [branchToDelete, setBranchToDelete] = useState(null);
+  // File upload states
+  const [coverImage, setCoverImage] = useState("/assets/img/Cover.png");
+  const [logoImage, setLogoImage] = useState("/assets/img/logoperusahaan.png");
 
+  // File input refs
+  const coverInputRef = useRef(null);
+  const logoInputRef = useRef(null);
+
+  const [branchToDelete, setBranchToDelete] = useState(null);
   const [animating, setAnimating] = useState(false);
   const [activeMenu, setActiveMenu] = useState("Data Perusahaan");
 
@@ -43,61 +50,102 @@ const CompanyCard = () => {
     }
   };
 
-  const handleAddAdminClick = () => {
-    setShowAddModal(true);
+  // Handle cover image upload
+  const handleCoverUpload = () => {
+    coverInputRef.current.click();
   };
 
-  const handleAddAdmin = (adminData) => {
-    setShowAddModal(false);
+  // Handle logo image upload
+  const handleLogoUpload = () => {
+    logoInputRef.current.click();
   };
 
-  const handleDeleteAdminClick = (branch) => {
-    setBranchToDelete(branch);
-    setShowDeleteModal(true);
+  // Process the selected cover file
+  const handleCoverFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setCoverImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const handleDeleteAdmin = () => {
-    setShowDeleteModal(false);
-    setBranchToDelete(null);
+  // Process the selected logo file
+  const handleLogoFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setLogoImage(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
-  const menuItems = [
-    { label: "Data Perusahaan" },
-    { label: "Password" }
-  ];
+  // Handler for edit data button
+  const handleEditData = () => {
+    MySwal.fire({
+      icon: "success",
+      title: "Data Berhasil Disimpan",
+      text: "Perubahan data perusahaan Anda telah berhasil disimpan dalam sistem.",
+      confirmButtonColor: "#0069AB",
+      timer: 3000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
+  };
+
+  const menuItems = [{ label: "Data Perusahaan" }, { label: "Password" }];
 
   return (
     <>
       <div className="bg-white rounded-lg overflow-hidden">
-        <div>
-          <img src="/assets/img/Cover.png" alt="Cover" className="w-full h-60 object-cover" />
+        <div className="relative">
+          <img src={coverImage} alt="Cover" className="w-full h-60 object-cover" />
+
+          {/* Hidden file input for cover */}
+          <input type="file" ref={coverInputRef} onChange={handleCoverFileChange} accept="image/*" className="hidden" />
+
+          <button
+            className="absolute top-4 right-4 flex items-center gap-2 border border-gray-300 bg-white bg-opacity-80 text-[#344054] px-4 py-2 rounded-lg text-sm shadow-sm hover:bg-[#0069AB] hover:text-white"
+            onClick={handleCoverUpload}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Edit Cover
+          </button>
         </div>
 
         <div className="w-full px-6 pt-4 pb-4 flex justify-between items-start">
           <div className="flex items-start gap-4">
-            <img src="/assets/img/logoperusahaan.png" alt="Logo" className="w-14 h-14 rounded-full border border-gray-200" />
+            <div className="relative group">
+              <img src={logoImage} alt="Logo" className="w-14 h-14 rounded-full border border-gray-200 object-cover" />
+
+              {/* Hidden file input for logo */}
+              <input type="file" ref={logoInputRef} onChange={handleLogoFileChange} accept="image/*" className="hidden" />
+
+              <button className="absolute -bottom-1 -right-1 bg-white p-1.5 rounded-full border border-gray-200 shadow-sm hover:bg-gray-50" onClick={handleLogoUpload}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+            </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-800">{companyName}</h2>
-              <p className="text-[13px] text-gray-600">{description}</p>
               <div className="text-[13px] text-gray-500 flex items-center gap-2 mt-1">
                 <span className="flex items-center gap-1">
                   <i className="bi bi-geo-alt-fill"></i> {location}
                 </span>
-                |
-                <span className="flex items-center gap-1">
-                  <i className="bi bi-person-fill"></i> {contactPerson}
-                </span>
               </div>
-              <div className="flex items-center gap-4 mt-2 text-gray-600 text-[13px]">
-                <a href="https://www.humma.co.id" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
-                  <i className="bi bi-globe"></i>
-                </a>
-                <a href="https://www.instagram.com/humma.id" target="_blank" rel="noopener noreferrer" className="hover:text-pink-600">
-                  <i className="bi bi-instagram"></i>
-                </a>
-                <a href="https://www.linkedin.com/company/humma-id" target="_blank" rel="noopener noreferrer" className="hover:text-blue-700">
-                  <i className="bi bi-linkedin"></i>
-                </a>
+              <div className="text-[13px] text-gray-500 flex items-center gap-2 mt-1">
+                <span className="flex items-center gap-1">
+                  <i className="bi bi-calendar-fill"></i> {join}
+                </span>
               </div>
             </div>
           </div>
@@ -121,24 +169,23 @@ const CompanyCard = () => {
         </div>
       </div>
 
-      <div className="bg-[#ECF2FE] pt-4 pb-4 overflow-hidden">
+      <div className="bg-[#ECF2FE] pt-4 pb-4 overflow-hidden relative">
         <div className={`transition-all duration-300 ease-in-out transform ${animating ? "opacity-0 translate-y-8" : "opacity-100 translate-y-0 animate-bounce-in"}`}>
-          {activeMenu === "Data Perusahaan" && <DataPerusahaan />}
+          {activeMenu === "Data Perusahaan" && <DataPerusahaan onEditClick={handleEditData} />}
           {activeMenu === "Password" && <Password />}
         </div>
+
+        {/* Edit Data Button - This would be a floating button that appears on the Data Perusahaan tab */}
+        {activeMenu === "Data Perusahaan" && (
+          <button className="absolute bottom-8 right-6 flex items-center gap-2 bg-[#0069AB] text-white px-4 py-2 rounded-lg text-sm shadow-md hover:bg-[#005590] transition-colors" onClick={handleEditData}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Edit Data
+          </button>
+        )}
       </div>
-
-      <ModalTambahAdminCabang 
-        isOpen={showAddModal}
-        onClose={() => setShowAddModal(false)}
-        onSave={handleAddAdmin}
-      />
-
-      <ModalDeleteAdminCabang 
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={handleDeleteAdmin}
-      />
 
       <style jsx>{`
         @keyframes bounceIn {
@@ -156,6 +203,11 @@ const CompanyCard = () => {
         }
         .animate-bounce-in {
           animation: bounceIn 0.5s ease-out;
+        }
+
+        /* Additional styles for SweetAlert customization */
+        :global(.my-swal) {
+          z-index: 9999;
         }
       `}</style>
     </>

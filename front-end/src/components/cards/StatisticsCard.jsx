@@ -104,19 +104,21 @@ const StatisticsCard = () => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-lg font-medium">Peserta Per Divisi</h2>
         <div className="relative">
-          <select 
-            className="shadow-md rounded px-2 py-1 appearance-none pr-8"
-            value={selectedYear}
-            onChange={handleYearChange}
-          >
-            {years.map((year) => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
-          <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-            <i className="bi bi-chevron-down"></i>
-          </div>
-        </div>
+  <select 
+    className="border border-gray-300 text-gray-500 rounded-lg px-2 py-1 appearance-none pr-8"
+    value={selectedYear}
+    onChange={handleYearChange}
+  >
+    {years.map((year) => (
+      <option key={year} value={year}>{year}</option>
+    ))}
+  </select>
+  <div className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+    <i className="bi bi-chevron-down text-gray-400"></i>
+  </div>
+</div>
+
+
       </div>
       
       <div className="relative h-64">

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import Card from "./Card";
+import TempatkanModal from "../modal/TempatkanModal";
 import Penempatan from './Penempatan';
+import Detaildivisi from '../modal/WebDevModal';
+import WebDevModal from '../modal/WebDevModal'; // Import the WebDevModal component
 
 export default function DivisiBranchCard() {
   const [branches, setBranches] = useState([
@@ -19,19 +22,21 @@ export default function DivisiBranchCard() {
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const itemsPerPage = 12;
+  const [isTempatkanModalOpen, setIsTempatkanModalOpen] = useState(false);
+  const [isDetaildivisiOpen, setIsDetaildivisiOpen] = useState(false);
+  const [isWebDevModalOpen, setIsWebDevModalOpen] = useState(false); // State for WebDevModal
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const pageCount = Math.ceil(branches.length / itemsPerPage);
   const displayedBranches = branches.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
 
-  const handlePageClick = (event) => {
-    setCurrentPage(event.selected);
+  const handlePageClick = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   const handleAddDivision = () => {
-    // Generate a new ID (usually this would come from the backend)
     const newId = branches.length > 0 ? Math.max(...branches.map(branch => branch.id)) + 1 : 1;
     
-    // Create new division object
     const newBranch = {
       id: newId,
       name: newDivision.name,
@@ -39,27 +44,34 @@ export default function DivisiBranchCard() {
       date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' })
     };
     
-    // Add to branches array
     setBranches([...branches, newBranch]);
     
-    // Reset form and close modal
     setNewDivision({ name: "", kategori: "", tags: [] });
     setSelectedFile(null);
     setShowModal(false);
   };
 
   const handleViewDetail = (id) => {
-    // Handle view detail logic
+    // Cari item berdasarkan ID
+    const item = branches.find(branch => branch.id === id);
+    if (item) {
+      setSelectedItem(item);
+      setIsDetaildivisiOpen(true);
+    }
     console.log(`Viewing detail for division with id: ${id}`);
   };
 
   const handleDeleteClick = (branch) => {
-    // Handle delete logic
-    console.log(`Deleting division: ${branch.name}`);
+    // Konfirmasi penghapusan
+    if (window.confirm(`Apakah Anda yakin ingin menghapus divisi "${branch.name}"?`)) {
+      // Filter branches untuk menghapus yang dipilih
+      const updatedBranches = branches.filter(item => item.id !== branch.id);
+      setBranches(updatedBranches);
+      console.log(`Deleting division: ${branch.name}`);
+    }
   };
 
   const handleTagClick = (tag) => {
-    // Add or remove tag from the tags array
     if (newDivision.tags.includes(tag)) {
       setNewDivision({
         ...newDivision,
@@ -77,6 +89,40 @@ export default function DivisiBranchCard() {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     }
+  };
+
+  // Fungsi untuk membuka modal Tempatkan
+  const handlePlace = (item) => {
+    setSelectedItem(item);
+    setIsTempatkanModalOpen(true);
+  };
+
+  // Fungsi untuk menangani simpan data Tempatkan
+  const handleSimpanTempatkan = (formData) => {
+    console.log("Tempatkan data:", formData);
+    // Tambahkan logika untuk menyimpan data
+    setIsTempatkanModalOpen(false);
+  };
+
+  // Fungsi untuk menangani simpan data Detail Divisi
+  const handleSimpanDivisi = (formData) => {
+    console.log("Detail divisi data:", formData);
+    // Tambahkan logika untuk memperbarui data divisi
+    if (formData && formData.id) {
+      // Update data divisi yang sudah ada
+      const updatedBranches = branches.map(branch => 
+        branch.id === formData.id ? { ...branch, ...formData } : branch
+      );
+      setBranches(updatedBranches);
+    }
+    setIsDetaildivisiOpen(false);
+  };
+
+  // Updated function to handle image click - now opens WebDevModal
+  const handleImageClick = (branch) => {
+    console.log(`Image clicked for: ${branch.name}`);
+    setSelectedItem(branch);
+    setIsWebDevModalOpen(true); // Open the WebDevModal instead
   };
 
   return (
@@ -106,14 +152,17 @@ export default function DivisiBranchCard() {
           {displayedBranches.map((branch) => (
             <div key={branch.id} className="bg-white border border-[#CED2D9] rounded-lg overflow-hidden pt-2 px-2 pb-2 mb-4">
               <div className="rounded-md overflow-hidden mb-3">
-                <img src={branch.backgroundImage} alt="Background" className="w-full h-32 object-cover rounded-md" />
+                <img 
+                  src={branch.backgroundImage} 
+                  alt="Background" 
+                  className="w-full h-32 object-cover rounded-md cursor-pointer hover:opacity-90 transition-opacity" 
+                  onClick={() => handleImageClick(branch)}
+                />
               </div>
               <h3 className="font-bold text-sm text-gray-800">{branch.name}</h3>
 
-              {/* Add border between name and date */}
               <div className="border-t border-[#D5DBE7] mt-2 pt-2">
                 <p className="text-xs text-black-500 flex justify-between">
-                  {/* Date di kanan */}
                   <span className="flex items-center">
                     <i className="bi bi-calendar-event mr-1 text-blue-500"></i> {branch.date}
                   </span>
@@ -122,10 +171,10 @@ export default function DivisiBranchCard() {
               <div className="flex justify-center mt-3">
                 <div className="border border-[#D5DBE7] rounded p-2 w-full flex justify-between items-center space-x-2">
                   <button 
-                    onClick={() => handleViewDetail(branch.id)}
+                    onClick={() => handlePlace(branch)}
                     className="text-[#0069AB] border border-[#0069AB] rounded px-3 py-1 text-xs hover:bg-orange-50"
                   >
-                    Lihat Detail
+                    Tempatkan
                   </button>
                   <button 
                     onClick={() => handleViewDetail(branch.id)}
@@ -144,8 +193,30 @@ export default function DivisiBranchCard() {
             </div>
           ))}
         </div>
+
+        {/* Pagination UI */}
+        {pageCount > 1 && (
+          <div className="flex justify-center mt-6">
+            <div className="flex space-x-2">
+              {Array.from({ length: pageCount }).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => handlePageClick(index)}
+                  className={`px-3 py-1 rounded ${
+                    currentPage === index
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  }`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
-      <Penempatan/>
+
+      <Penempatan />
 
       {/* Modal for adding a new division */}
       {showModal && (
@@ -154,7 +225,6 @@ export default function DivisiBranchCard() {
           <div className="bg-white rounded-lg w-full max-w-md mx-4 z-50">
             <div className="p-6">
               <h2 className="text-xl font-bold mb-6">Tambahkan Divisi Baru</h2>
-              
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-2">Nama Divisi</label>
                 <input 
@@ -164,7 +234,7 @@ export default function DivisiBranchCard() {
                   onChange={(e) => setNewDivision({...newDivision, name: e.target.value})}
                 />
               </div>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-medium mb-2">Kategori Project</label>
                 <input 
@@ -174,7 +244,8 @@ export default function DivisiBranchCard() {
                   onChange={(e) => setNewDivision({...newDivision, kategori: e.target.value})}
                 />
               </div>
-              
+
+              {/* Tags Section */}
               <div className="flex flex-wrap gap-2 mb-4">
                 <button 
                   className={`px-3 py-1 text-xs rounded-md ${newDivision.tags.includes('Tahap Pengenalan') ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}
@@ -182,32 +253,9 @@ export default function DivisiBranchCard() {
                 >
                   Tahap Pengenalan {newDivision.tags.includes('Tahap Pengenalan') && <span className="ml-1">×</span>}
                 </button>
-                <button 
-                  className={`px-3 py-1 text-xs rounded-md ${newDivision.tags.includes('Tahap Dasar') ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}
-                  onClick={() => handleTagClick('Tahap Dasar')}
-                >
-                  Tahap Dasar {newDivision.tags.includes('Tahap Dasar') && <span className="ml-1">×</span>}
-                </button>
-                <button 
-                  className={`px-3 py-1 text-xs rounded-md ${newDivision.tags.includes('Tahap Pre Mini') ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}
-                  onClick={() => handleTagClick('Tahap Pre Mini')}
-                >
-                  Tahap Pre Mini {newDivision.tags.includes('Tahap Pre Mini') && <span className="ml-1">×</span>}
-                </button>
-                <button 
-                  className={`px-3 py-1 text-xs rounded-md ${newDivision.tags.includes('Tahap Mini Project') ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}
-                  onClick={() => handleTagClick('Tahap Mini Project')}
-                >
-                  Tahap Mini Project {newDivision.tags.includes('Tahap Mini Project') && <span className="ml-1">×</span>}
-                </button>
-                <button 
-                  className={`px-3 py-1 text-xs rounded-md ${newDivision.tags.includes('Tahap Big Project') ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'}`}
-                  onClick={() => handleTagClick('Tahap Big Project')}
-                >
-                  Tahap Big Project {newDivision.tags.includes('Tahap Big Project') && <span className="ml-1">×</span>}
-                </button>
+                {/* More tag buttons go here */}
               </div>
-              
+
               <div className="mb-6">
                 <label className="block text-sm font-medium mb-2">Foto Header</label>
                 <div className="border border-gray-300 rounded-md overflow-hidden">
@@ -227,7 +275,7 @@ export default function DivisiBranchCard() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex justify-end gap-3">
                 <button 
                   onClick={() => setShowModal(false)}
@@ -246,6 +294,29 @@ export default function DivisiBranchCard() {
           </div>
         </div>
       )}
+
+      {/* Modal Tempatkan */}
+      <TempatkanModal
+        isOpen={isTempatkanModalOpen}
+        onClose={() => setIsTempatkanModalOpen(false)}
+        onSimpan={handleSimpanTempatkan}
+        data={selectedItem}
+      />
+      
+      {/* Modal Detail Divisi */}
+      <Detaildivisi
+        isOpen={isDetaildivisiOpen}
+        onClose={() => setIsDetaildivisiOpen(false)}
+        onSimpan={handleSimpanDivisi}
+        data={selectedItem}
+      />
+
+      {/* WebDevModal - Detail Divisi when clicking on background image */}
+      <WebDevModal
+        isOpen={isWebDevModalOpen}
+        onClose={() => setIsWebDevModalOpen(false)}
+        data={selectedItem}
+      />
     </Card>
   );
 }

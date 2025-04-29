@@ -44,7 +44,7 @@ export default function MentorBranchCard() {
   };
 
   const handleViewDetail = (branchId) => {
-    navigate(`/perusahaan/cabang/${branchId}`);
+    navigate(`/perusahaan/mentor/${branchId}`);
   };
 
   const handleAddMentor = (mentorData) => {

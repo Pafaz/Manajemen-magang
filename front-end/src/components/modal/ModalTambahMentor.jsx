@@ -4,6 +4,8 @@ const ModalTambahMentor = ({ isOpen, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     email: '',
     name: '',
+    password: '',
+    phone: '',
     mentorPhoto: null,
     headerPhoto: null,
     branch: '',
@@ -16,6 +18,8 @@ const ModalTambahMentor = ({ isOpen, onClose, onSave }) => {
       setFormData({
         email: '',
         name: '',
+        password: '',
+        phone: '',
         mentorPhoto: null,
         headerPhoto: null,
         branch: '',
@@ -95,23 +99,23 @@ const ModalTambahMentor = ({ isOpen, onClose, onSave }) => {
     >
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
         {/* Modal Header */}
-        <div className="border-b px-6 py-4 flex justify-between items-center">
+        <div className="border-b px-5 py-3 flex justify-between items-center">
           <h3 className="font-bold text-lg text-blue-800">Tambah Mentor</h3>
           <button 
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
         
         {/* Modal Body - Form */}
-        <div className="px-6 py-4">
+        <div className="px-5 py-3">
           <form onSubmit={handleSubmit}>
             {/* Email Input */}
-            <div className="mb-4">
+            <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Masukkan Email
               </label>
@@ -127,7 +131,7 @@ const ModalTambahMentor = ({ isOpen, onClose, onSave }) => {
             </div>
             
             {/* Name Input */}
-            <div className="mb-4">
+            <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Masukkan Nama
               </label>
@@ -141,9 +145,81 @@ const ModalTambahMentor = ({ isOpen, onClose, onSave }) => {
                 required
               />
             </div>
+
+            {/* Password Input */}
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Masukkan Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                placeholder="Masukkan Password"
+                required
+              />
+            </div>
+
+            {/* Phone Input */}
+            <div className="mb-3">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Masukkan Nomor HP
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                placeholder="08xxxxxxxxxx"
+                required
+              />
+            </div>
+             {/* Branch Select */}
+             <div className="mb-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Cabang Perusahaan
+                </label>
+                <select
+                  name="branch"
+                  value={formData.branch}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  required
+                >
+                  <option value="" disabled>Pilih Cabang</option>
+                  <option value="cabang-a">Cabang A</option>
+                  <option value="cabang-b">Cabang B</option>
+                  <option value="cabang-c">Cabang C</option>
+                </select>
+              </div>
+              
+              {/* Division Select */}
+              <div className="mb-3">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Divisi
+                </label>
+                <select
+                  name="division"
+                  value={formData.division}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  required
+                >
+                  <option value="" disabled>Pilih Divisi</option>
+                  <option value="UI/UX">UI/UX</option>
+                  <option value="Web Developer">Web Developer</option>
+                  <option value="Mobile">Mobile</option>
+                  <option value="Digital Marketing">Digital Marketing</option>
+                </select>
+              </div>
+            {/* </div> */}
             
             {/* Mentor Photo Upload */}
-            <div className="mb-4">
+            <div className="mb-4 grid grid-cols-2 gap-4">
+            <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Foto Mentor
               </label>
@@ -158,14 +234,15 @@ const ModalTambahMentor = ({ isOpen, onClose, onSave }) => {
                     accept="image/*"
                   />
                 </label>
-                <span className="flex-grow px-3 py-2 border border-gray-300 border-l-0 rounded-r-md bg-white">
+                <span className="flex-grow px-3 py-2 border border-gray-300 border-l-0 rounded-r-md bg-white truncate">
                   {formData.mentorPhoto ? formData.mentorPhoto.name : 'No File Chosen'}
                 </span>
               </div>
             </div>
             
+            
             {/* Header Photo Upload */}
-            <div className="mb-4">
+            <div className="mb-3">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Foto Header
               </label>
@@ -180,50 +257,15 @@ const ModalTambahMentor = ({ isOpen, onClose, onSave }) => {
                     accept="image/*"
                   />
                 </label>
-                <span className="flex-grow px-3 py-2 border border-gray-300 border-l-0 rounded-r-md bg-white">
+                <span className="flex-grow px-3 py-2 border border-gray-300 border-l-0 rounded-r-md bg-white truncate">
                   {formData.headerPhoto ? formData.headerPhoto.name : 'No File Chosen'}
                 </span>
               </div>
             </div>
-            
-            {/* Branch Select */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Masukkan Cabang Perusahaan
-              </label>
-              <select
-                name="branch"
-                value={formData.branch}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="" disabled>Pilih Cabang Perusahaan</option>
-                <option value="cabang-a">Cabang A</option>
-                <option value="cabang-b">Cabang B</option>
-                <option value="cabang-c">Cabang C</option>
-              </select>
             </div>
-            
-            {/* Division Select */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Masukkan Divisi
-              </label>
-              <select
-                name="division"
-                value={formData.division}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="" disabled>Pilih Divisi</option>
-                <option value="UI/UX">UI/UX</option>
-                <option value="Web Developer">Web Developer</option>
-                <option value="Mobile">Mobile</option>
-                <option value="Digital Marketing">Digital Marketing</option>
-              </select>
-            </div>
+            {/* Branch and Division Select in one row */}
+            {/* <div className="mb-4 grid grid-cols-2 gap-4"> */}
+             
             
             {/* Action Buttons */}
             <div className="flex justify-end space-x-2">

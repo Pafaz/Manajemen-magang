@@ -27,9 +27,10 @@ class PerusahaanService
         $this->userInterface = $userInterface;
     }
 
-    public function getAllPerusahaan()
-    {
+    public function getPerusahaan()
+    {   
         $data = $this->PerusahaanInterface->getAll();
+        
         return Api::response(
             PerusahaanResource::collection($data),
             'Berhasil mengambil data perusahaan',

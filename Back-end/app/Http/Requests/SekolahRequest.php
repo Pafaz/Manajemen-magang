@@ -11,7 +11,9 @@ class SekolahRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        if ($this->isUpdate()) {
+        // dd($this->all());
+        if ($this->method() == 'PUT') {
+            // dd($this);
             return [
                 'nama' => 'sometimes|string|max:50|unique:sekolah,nama',
                 'alamat' => 'sometimes|string|max:255',
@@ -30,7 +32,7 @@ class SekolahRequest extends BaseFormRequest
             'telepon' => 'required|numeric|digits_between:10,12',
             'jenis_institusi' => 'required|string|max:50',
             'website' => 'nullable|url',
-            'jurusan' => 'required|array|min:1',
+            'jurusan' => 'required|array',
             'jurusan.*' => 'required|string|max:50|distinct',
             'foto_header' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];

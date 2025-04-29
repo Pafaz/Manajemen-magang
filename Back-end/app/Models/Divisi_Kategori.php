@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Proyek_Kategori extends Model
+class Divisi_Kategori extends Model
 {
     /** @use HasFactory<\Database\Factories\ProyekKategoriFactory> */
     use HasFactory;
 
-    protected $table = 'proyek_kategori';
+    protected $table = 'divisi_kategori';
 
     protected $fillable = [
-        'proyek_id',
-        'kategori_id'
+        'id_divisi',
+        'id_kategori'
     ];
     public $timestamps = false;
 }

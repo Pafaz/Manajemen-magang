@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Trash2, Edit, ChevronDown, X } from "lucide-react";
-import ModalDeleteAdminCabang from "../modal/ModalDeleteAdminCabang";
+import { Trash2, Edit, ChevronDown, X, Plus } from "lucide-react";
 import axios from "axios";
 
 export default function UniversityCardGrid() {
   const [partners, setPartners] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
@@ -22,6 +21,9 @@ export default function UniversityCardGrid() {
     foto_header: null,
     jurusan: [],
   });
+  
+  // New state for custom major input
+  const [newMajor, setNewMajor] = useState("");
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [partnerToDelete, setPartnerToDelete] = useState(null);
@@ -36,43 +38,91 @@ export default function UniversityCardGrid() {
 
   // Fetch all mitra
   useEffect(() => {
-    (async () => {
-      try {
-        const { data } = await axios.get(
-          `${import.meta.env.VITE_API_URL}/mitra`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setPartners(data.data);
-      } catch (err) {
-        console.error(err);
-        setError("Gagal memuat data mitra.");
-      } finally {
-        setLoading(false);
+    // Dummy data for demonstration purposes
+    const dummyPartners = [
+      {
+        id: 1,
+        nama: "Universitas ABC",
+        alamat: "Jl. ABC No. 123",
+        telepon: "081234567890",
+        jenis_institusi: "Sekolah",
+        website: "https://abc.edu",
+        foto: [{ path: "placeholder.jpg" }],
+        jurusan: [{ nama: "Informatika" }, { nama: "Manajemen" }]
+      },
+      {
+        id: 2,
+        nama: "PT XYZ",
+        alamat: "Jl. XYZ No. 456",
+        telepon: "089876543210",
+        jenis_institusi: "Perusahaan",
+        website: "https://xyz.com",
+        foto: [{ path: "placeholder.jpg" }],
+        jurusan: [{ nama: "Informatika" }]
+      },
+      {
+        id: 3,
+        nama: "Lembaga DEF",
+        alamat: "Jl. DEF No. 789",
+        telepon: "087654321098",
+        jenis_institusi: "Lembaga",
+        website: "https://def.org",
+        foto: [{ path: "placeholder.jpg" }],
+        jurusan: [{ nama: "Agribusiness" }]
       }
-    })();
+    ];
+    
+    setPartners(dummyPartners);
+    setLoading(false);
+    
+    // Actual API fetch code (commented out for now)
+    // (async () => {
+    //   try {
+    //     const { data } = await axios.get(
+    //       `${import.meta.env.VITE_API_URL}/mitra`,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //         },
+    //       }
+    //     );
+    //     setPartners(data.data);
+    //   } catch (err) {
+    //     console.error(err);
+    //     setError("Gagal memuat data mitra.");
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // })();
   }, []);
 
   const refresh = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.get(
-        `${import.meta.env.VITE_API_URL}/mitra`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-      setPartners(data.data);
-    } catch (_) {
-      setError("Gagal memuat ulang.");
-    } finally {
-      setLoading(false);
-    }
+    // For demonstration, just reuse dummy data
+    // In production, uncomment the actual API call
+    
+    // setLoading(true);
+    // try {
+    //   const { data } = await axios.get(
+    //     `${import.meta.env.VITE_API_URL}/mitra`,
+    //     {
+    //       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    //     }
+    //   );
+    //   setPartners(data.data);
+    // } catch (_) {
+    //   setError("Gagal memuat ulang.");
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
+  // Handle category selection
+  const handleSelectCategory = (category) => {
+    setSelectedCategory(category);
+    setShowCategoryDropdown(false);
+  };
+
+  // Filter partners based on selected category
   const filtered =
     selectedCategory === "All"
       ? partners
@@ -107,17 +157,40 @@ export default function UniversityCardGrid() {
   };
 
   const handleFormChange = (e) => {
-    const { name, value, files, multiple, selectedOptions } = e.target;
+    const { name, value, files, type } = e.target;
     if (name === "foto_header") {
       setFormData((f) => ({ ...f, foto_header: files[0] }));
-    } else if (multiple) {
-      setFormData((f) => ({
-        ...f,
-        jurusan: Array.from(selectedOptions, (o) => o.value),
-      }));
+    } else if (name === "jurusan" && type === "select-one") {
+      // For single select, don't add duplicates
+      const selectedMajor = value;
+      if (selectedMajor && !formData.jurusan.includes(selectedMajor)) {
+        setFormData((f) => ({
+          ...f,
+          jurusan: [...f.jurusan, selectedMajor],
+        }));
+      }
     } else {
       setFormData((f) => ({ ...f, [name]: value }));
     }
+  };
+
+  // Add custom major
+  const handleAddCustomMajor = () => {
+    if (newMajor.trim() && !formData.jurusan.includes(newMajor.trim())) {
+      setFormData((f) => ({
+        ...f,
+        jurusan: [...f.jurusan, newMajor.trim()],
+      }));
+      setNewMajor("");
+    }
+  };
+
+  // Remove major from selected list
+  const handleRemoveMajor = (majorToRemove) => {
+    setFormData((f) => ({
+      ...f,
+      jurusan: f.jurusan.filter((major) => major !== majorToRemove),
+    }));
   };
 
   const savePartner = async (e) => {
@@ -131,39 +204,51 @@ export default function UniversityCardGrid() {
     if (formData.foto_header) fd.append("foto_header", formData.foto_header);
     formData.jurusan.forEach((j) => fd.append("jurusan[]", j));
   
-    fd.append("_method", "PUT");
+    if (editingPartner) {
+      fd.append("_method", "PUT");
+    }
   
     try {
       if (editingPartner) {
-        const response = await axios.put(
-          `${import.meta.env.VITE_API_URL}/mitra/${editingPartner.id}`,
-          fd,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        if (response.status === 200) {
-          setShowModal(false);
-          refresh();
-        }
+        // Commented out for demonstration
+        // const response = await axios.put(
+        //   `${import.meta.env.VITE_API_URL}/mitra/${editingPartner.id}`,
+        //   fd,
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //       "Content-Type": "multipart/form-data",
+        //     },
+        //   }
+        // );
+        // if (response.status === 200) {
+        //   setShowModal(false);
+        //   refresh();
+        // }
+        
+        // For demonstration
+        console.log("Updated partner:", { ...editingPartner, ...formData });
+        setShowModal(false);
       } else {
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}/mitra`,
-          fd,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
-        if (response.status === 200) {
-          setShowModal(false);
-          refresh();
-        }
+        // Commented out for demonstration
+        // const response = await axios.post(
+        //   `${import.meta.env.VITE_API_URL}/mitra`,
+        //   fd,
+        //   {
+        //     headers: {
+        //       Authorization: `Bearer ${localStorage.getItem("token")}`,
+        //       "Content-Type": "multipart/form-data",
+        //     },
+        //   }
+        // );
+        // if (response.status === 200) {
+        //   setShowModal(false);
+        //   refresh();
+        // }
+        
+        // For demonstration
+        console.log("Added new partner:", formData);
+        setShowModal(false);
       }
     } catch (err) {
       console.error("Gagal menyimpan mitra:", err);
@@ -172,37 +257,42 @@ export default function UniversityCardGrid() {
   
 
   const confirmDelete = async (p) => {
-    const confirmed = window.confirm(`Yakin ingin menghapus mitra "${p.nama}"?`);
-    if (confirmed) {
-      try {
-        await axios.delete(
-          `${import.meta.env.VITE_API_URL}/mitra/${p.id}`,
-          {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          }
-        );
-        refresh();
-      } catch (err) {
-        console.error("Gagal menghapus mitra:", err);
-      }
-    }
+    setPartnerToDelete(p);
+    setShowDeleteModal(true);
   };
   
+  const handleDelete = async () => {
+    try {
+      // Commented out for demonstration
+      // await axios.delete(
+      //   `${import.meta.env.VITE_API_URL}/mitra/${partnerToDelete.id}`,
+      //   {
+      //     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+      //   }
+      // );
+      
+      // For demonstration
+      console.log("Deleted partner:", partnerToDelete);
+      setShowDeleteModal(false);
+      refresh();
+    } catch (err) {
+      console.error("Gagal menghapus mitra:", err);
+    }
+  };
 
-  // const handleDelete = async () => {
-  //   try {
-  //     await axios.delete(
-  //       `${import.meta.env.VITE_API_URL}/mitra/${partnerToDelete.id}`,
-  //       {
-  //         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-  //       }
-  //     );
-  //     setShowDeleteModal(false);
-  //     refresh();
-  //   } catch (err) {
-  //     console.error("Gagal menghapus mitra:", err);
-  //   }
-  // };
+  // Handle clicking outside the dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showCategoryDropdown) {
+        setShowCategoryDropdown(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showCategoryDropdown]);
 
   if (loading) return <div className="h-screen">Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
@@ -256,60 +346,70 @@ export default function UniversityCardGrid() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {filtered.map((university) => (
-              <div
-                key={university.id}
-                className="bg-white rounded-lg border border-gray-200 overflow-hidden flex flex-col h-full"
-              >
-                <div className="relative">
-                  <img
-                     src={`http://127.0.0.1:8000/storage/${university.foto[0].path}`} 
-                    alt="Cover"
-                    className="w-full h-32 object-cover"
-                  />
-                  <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-purple-500 border-2 border-white flex items-center justify-center">
+            {filtered.length > 0 ? (
+              filtered.map((university) => (
+                <div
+                  key={university.id}
+                  className="bg-white rounded-lg border border-gray-200 overflow-hidden flex flex-col h-full"
+                >
+                  <div className="relative">
                     <img
-                       src={`http://127.0.0.1:8000/storage/${university.foto[0].path}`} 
-                      alt="Logo"
-                      className="w-10 h-10 object-cover rounded-full"
+                       src={`/api/placeholder/400/200`}
+                      alt="Cover"
+                      className="w-full h-32 object-cover"
                     />
+                    <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-purple-500 border-2 border-white flex items-center justify-center">
+                      <img
+                         src={`/api/placeholder/48/48`}
+                        alt="Logo"
+                        className="w-10 h-10 object-cover rounded-full"
+                      />
+                    </div>
+                  </div>
+                  <div className="pt-8 px-3 text-center flex-grow">
+                    <h3 className="font-bold text-base mb-2">
+                      {university.nama}
+                    </h3>
+                    <p className="text-gray-500 text-xs mb-2">
+                      {university.alamat}
+                    </p>
+                    <p className="text-xs text-gray-700 mb-4 line-clamp-3">
+                      {university.jurusan.map((j) => j.nama).join(", ")}
+                    </p>
+                  </div>
+                  <div className="mt-auto flex border-t border-gray-200">
+                    <button
+                      className="flex-1 py-2 flex items-center justify-center text-gray-500 text-xs hover:bg-gray-50"
+                      onClick={() => confirmDelete(university)}
+                    >
+                      <Trash2 size={14} className="mr-1" /> Hapus
+                    </button>
+                    <div className="w-px bg-gray-200" />
+                    <button
+                      className="flex-1 py-2 flex items-center justify-center text-yellow-500 text-xs hover:bg-gray-50"
+                      onClick={() => openEdit(university)}
+                    >
+                      <Edit size={14} className="mr-1" /> Edit
+                    </button>
                   </div>
                 </div>
-                <div className="pt-8 px-3 text-center flex-grow">
-                  <h3 className="font-bold text-base mb-2">
-                    {university.nama}
-                  </h3>
-                  <p className="text-gray-500 text-xs mb-2">
-                    {university.alamat}
-                  </p>
-                  <p className="text-xs text-gray-700 mb-4 line-clamp-3">
-                    {university.jurusan.map((j) => j.nama).join(", ")}
-                  </p>
-                </div>
-                <div className="mt-auto flex border-t border-gray-200">
-                  <button
-                    className="flex-1 py-2 flex items-center justify-center text-gray-500 text-xs hover:bg-gray-50"
-                    onClick={() => confirmDelete(university)}
-                  >
-                    <Trash2 size={14} className="mr-1" /> Hapus
-                  </button>
-                  <div className="w-px bg-gray-200" />
-                  <button
-                    className="flex-1 py-2 flex items-center justify-center text-yellow-500 text-xs hover:bg-gray-50"
-                    onClick={() => openEdit(university)}
-                  >
-                    <Edit size={14} className="mr-1" /> Edit
-                  </button>
-                </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-8 text-gray-500">
+                Tidak ada mitra yang ditemukan untuk kategori ini
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]">
-          <div className="bg-white rounded-lg w-full max-w-md">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]" onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setShowModal(false);
+          }
+        }}>
+          <div className="bg-white rounded-lg w-full max-w-md" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center p-4 border-b border-gray-200">
               <h2 className="text-lg font-bold text-gray-800">
                 {editingPartner ? "Edit Mitra" : "Tambahkan Mitra Baru"}
@@ -421,20 +521,71 @@ export default function UniversityCardGrid() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Jurusan
                 </label>
-                <select
-                  name="jurusan"
-                  multiple
-                  value={formData.jurusan}
-                  onChange={handleFormChange}
-                  className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                  required
-                >
-                  {majorsList.map((m) => (
-                    <option key={m} value={m}>
-                      {m}
-                    </option>
-                  ))}
-                </select>
+                
+                {/* Jurusan selector with add button */}
+                <div className="flex space-x-2 mb-2">
+                  <select
+                    name="jurusan"
+                    onChange={handleFormChange}
+                    className="flex-1 p-2 border border-gray-300 rounded-md text-sm"
+                    value=""
+                  >
+                    <option value="">Pilih jurusan</option>
+                    {majorsList
+                      .filter(m => !formData.jurusan.includes(m))
+                      .map((m) => (
+                      <option key={m} value={m}>
+                        {m}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                {/* Custom jurusan input */}
+                <div className="flex space-x-2 mb-2">
+                  <input
+                    type="text"
+                    value={newMajor}
+                    onChange={(e) => setNewMajor(e.target.value)}
+                    placeholder="Tambah jurusan baru"
+                    className="flex-1 p-2 border border-gray-300 rounded-md text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddCustomMajor}
+                    className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
+                  >
+                    <Plus size={16} />
+                  </button>
+                </div>
+                
+                {/* Selected jurusan list */}
+                <div className="mt-2">
+                  <p className="text-sm font-medium text-gray-700 mb-1">
+                    Jurusan Terpilih:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {formData.jurusan.length > 0 ? (
+                      formData.jurusan.map((major) => (
+                        <div
+                          key={major}
+                          className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full flex items-center"
+                        >
+                          {major}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveMajor(major)}
+                            className="ml-1 text-blue-600 hover:text-blue-800"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-gray-500">Belum ada jurusan yang dipilih</p>
+                    )}
+                  </div>
+                </div>
               </div>
 
               <div className="flex justify-end space-x-2">
@@ -457,14 +608,28 @@ export default function UniversityCardGrid() {
         </div>
       )}
 
-      {/* {showDeleteModal && partnerToDelete && (
-        <ModalDeleteAdminCabang
-          isOpen={showDeleteModal}
-          onClose={() => setShowDeleteModal(false)}
-          onDelete={handleDelete}
-          partner={partnerToDelete}
-        />
-      )} */}
+      {showDeleteModal && partnerToDelete && (
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]">
+          <div className="bg-white rounded-lg w-full max-w-md p-4">
+            <h3 className="text-lg font-bold mb-3">Konfirmasi Hapus</h3>
+            <p>Apakah Anda yakin ingin menghapus mitra "{partnerToDelete.nama}"?</p>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700"
+              >
+                Batal
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-md text-sm"
+              >
+                Hapus
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

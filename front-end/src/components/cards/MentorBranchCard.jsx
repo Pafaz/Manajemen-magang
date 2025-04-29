@@ -4,61 +4,184 @@ import Card from "./Card";
 import ReactPaginate from "react-paginate";
 import ModalTambahMentor from "../../components/modal/ModalTambahMentor";
 import ModalDelete from "../../components/modal/ModalDeleteAdminCabang";
+import ModalDetailMentor from "../../components/modal/ModalDetailMentor";
 
 export default function MentorBranchCard() {
   const navigate = useNavigate();
+  const [selectedMentor, setSelectedMentor] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMentor, setEditingMentor] = useState(null);
   const [modalState, setModalState] = useState({
     showDeleteModal: false,
     selectedBranchId: null,
   });
 
   const [branches, setBranches] = useState([
-    { id: 1, name: "Nao Tomori", email: "nao1@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 2, name: "Shiba Inuko", email: "shiba2@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 3, name: "Sakura Yamauchi", email: "sakura3@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 4, name: "Hinata Shoyo", email: "hinata4@gmail.com", division: "Digital Marketing", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 5, name: "Kageyama Tobio", email: "kageyama5@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 6, name: "Kanao Tsuyuri", email: "kanao6@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 7, name: "Ayanami Rei", email: "rei7@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 8, name: "Shinji Ikari", email: "shinji8@gmail.com", division: "Digital Marketing", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 9, name: "Misato Katsuragi", email: "misato9@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 10, name: "Levi Ackerman", email: "levi10@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 11, name: "Eren Yeager", email: "eren11@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 12, name: "Mikasa Ackerman", email: "mikasa12@gmail.com", division: "Digital Marketing", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 13, name: "Armin Arlert", email: "armin13@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
+    {
+      id: 1,
+      name: "Nao Tomori",
+      email: "nao1@gmail.com",
+      division: "UI/UX",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 2,
+      name: "Shiba Inuko",
+      email: "shiba2@gmail.com",
+      division: "Web Developer",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 3,
+      name: "Sakura Yamauchi",
+      email: "sakura3@gmail.com",
+      division: "Mobile",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 4,
+      name: "Hinata Shoyo",
+      email: "hinata4@gmail.com",
+      division: "Digital Marketing",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 5,
+      name: "Kageyama Tobio",
+      email: "kageyama5@gmail.com",
+      division: "Web Developer",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 6,
+      name: "Kanao Tsuyuri",
+      email: "kanao6@gmail.com",
+      division: "UI/UX",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 7,
+      name: "Ayanami Rei",
+      email: "rei7@gmail.com",
+      division: "Mobile",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 8,
+      name: "Shinji Ikari",
+      email: "shinji8@gmail.com",
+      division: "Digital Marketing",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 9,
+      name: "Misato Katsuragi",
+      email: "misato9@gmail.com",
+      division: "UI/UX",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 10,
+      name: "Levi Ackerman",
+      email: "levi10@gmail.com",
+      division: "Web Developer",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 11,
+      name: "Eren Yeager",
+      email: "eren11@gmail.com",
+      division: "Mobile",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 12,
+      name: "Mikasa Ackerman",
+      email: "mikasa12@gmail.com",
+      division: "Digital Marketing",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
+    {
+      id: 13,
+      name: "Armin Arlert",
+      email: "armin13@gmail.com",
+      division: "UI/UX",
+      backgroundImage: "/assets/img/Cover2.jpeg",
+      logoImage: "/assets/img/Profil.png",
+    },
   ]);
-  
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
   const [selectedDivision, setSelectedDivision] = useState("All");
 
-  const filteredBranches = selectedDivision === "All" ? branches : branches.filter((branch) => branch.division === selectedDivision);
+  const filteredBranches =
+    selectedDivision === "All"
+      ? branches
+      : branches.filter((branch) => branch.division === selectedDivision);
 
   const pageCount = Math.ceil(filteredBranches.length / itemsPerPage);
-  const displayedBranches = filteredBranches.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+  const displayedBranches = filteredBranches.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const handleEditMentor = (mentor) => {
+    setEditingMentor(mentor);
+    setIsModalOpen(true);
+  };
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
 
   const handleViewDetail = (branchId) => {
+<<<<<<< HEAD
     navigate(`/perusahaan/mentor/${branchId}`);
+=======
+    const mentor = branches.find((b) => b.id === branchId);
+    setSelectedMentor(mentor);
+    setIsDetailModalOpen(true);
+>>>>>>> bc9825108818e07069de094dd287122ae57365ee
   };
 
-  const handleAddMentor = (mentorData) => {
-    const newMentor = {
-      id: branches.length + 1,
-      name: mentorData.name,
-      email: mentorData.email,
-      division: mentorData.division,
-      backgroundImage: "/assets/img/Cover2.jpeg",
-      logoImage: "/assets/img/Profil.png",
-    };
-    setBranches([...branches, newMentor]);
+  const handleSaveMentor = (mentorData) => {
+    if (editingMentor) {
+      // Edit existing mentor
+      const updatedBranches = branches.map((branch) =>
+        branch.id === editingMentor.id
+          ? { ...branch, ...mentorData }
+          : branch
+      );
+      setBranches(updatedBranches);
+    } else {
+      // Add new mentor
+      const newMentor = {
+        id: branches.length + 1,
+        ...mentorData,
+        backgroundImage: "/assets/img/Cover2.jpeg",
+        logoImage: "/assets/img/Profil.png",
+      };
+      setBranches([...branches, newMentor]);
+    }
+  
     setIsModalOpen(false);
+    setEditingMentor(null);
   };
+  
 
   const handleOpenDeleteModal = (branchId) => {
     setModalState({
@@ -75,7 +198,9 @@ export default function MentorBranchCard() {
   };
 
   const handleDeleteBranch = () => {
-    const updatedBranches = branches.filter((branch) => branch.id !== modalState.selectedBranchId);
+    const updatedBranches = branches.filter(
+      (branch) => branch.id !== modalState.selectedBranchId
+    );
     setBranches(updatedBranches);
     handleCloseDeleteModal();
   };
@@ -86,7 +211,10 @@ export default function MentorBranchCard() {
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">Mentor Terdaftar</h1>
           <div className="flex items-center space-x-2">
-            <button onClick={() => setIsModalOpen(true)} className="bg-white text-gray-700 border border-gray-300 rounded-md px-2 py-1 text-xs flex items-center">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-white text-gray-700 border border-gray-300 rounded-md px-2 py-1 text-xs flex items-center"
+            >
               <i className="bi bi-plus mr-1"></i>
               <span className="mr-1">Tambah Mentor</span>
             </button>
@@ -109,26 +237,54 @@ export default function MentorBranchCard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {displayedBranches.map((branch) => (
-            <div key={branch.id} className="bg-white border border-[#D5DBE7] rounded-lg overflow-hidden">
+            <div
+              key={branch.id}
+              className="bg-white border border-[#D5DBE7] rounded-lg overflow-hidden"
+            >
               <div className="relative">
-                <img src={branch.backgroundImage} alt="Background" className="w-full h-32 object-cover" />
+                <img
+                  src={branch.backgroundImage}
+                  alt="Background"
+                  className="w-full h-32 object-cover"
+                />
                 <div className="absolute -bottom-4 left-0 right-0 flex justify-center">
                   <div className="rounded-full overflow-hidden border-2 border-white bg-white w-16 h-16">
-                    <img src={branch.logoImage} alt="Logo" className="w-full h-full object-cover" />
+                    <img
+                      src={branch.logoImage}
+                      alt="Logo"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                 </div>
               </div>
               <div className="pt-8 px-3 pb-4">
-                <h3 className="font-bold text-sm text-gray-800 text-center mb-1">{branch.name}</h3>
-                <p className="text-xs text-black-500 text-center mb-3 italic">{branch.division}</p>
-                <p className="text-xs text-black-600 text-center mb-1">{branch.email}</p>
+                <h3 className="font-bold text-sm text-gray-800 text-center mb-1">
+                  {branch.name}
+                </h3>
+                <p className="text-xs text-black-500 text-center mb-3 italic">
+                  {branch.division}
+                </p>
+                <p className="text-xs text-black-600 text-center mb-1">
+                  {branch.email}
+                </p>
                 <div className="flex justify-center mt-2">
                   <div className="border border-[#D5DBE7] rounded p-2 w-full flex justify-between items-center space-x-2">
-                    <button onClick={() => handleViewDetail(branch.id)} className="text-blue-500 border border-blue-500 rounded px-3 py-1 text-xs hover:bg-blue-50">
+                    <button
+                      onClick={() => handleViewDetail(branch.id)}
+                      className="text-blue-500 border border-blue-500 rounded px-3 py-1 text-xs hover:bg-blue-50"
+                    >
                       Lihat Detail
                     </button>
-                    <button className="text-orange-500 border border-orange-500 rounded px-3 py-1 text-xs hover:bg-orange-50">Edit</button>
-                    <button onClick={() => handleOpenDeleteModal(branch.id)} className="text-red-500 border border-red-500 rounded px-3 py-1 text-xs hover:bg-red-50">
+                    <button
+                      onClick={() => handleEditMentor(branch)}
+                      className="text-orange-500 border border-orange-500 rounded px-3 py-1 text-xs hover:bg-orange-50"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleOpenDeleteModal(branch.id)}
+                      className="text-red-500 border border-red-500 rounded px-3 py-1 text-xs hover:bg-red-50"
+                    >
                       Hapus
                     </button>
                   </div>
@@ -161,10 +317,28 @@ export default function MentorBranchCard() {
         </div>
 
         {/* Modal tambah mentor */}
-        <ModalTambahMentor isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleAddMentor} />
+        <ModalTambahMentor
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingMentor(null);
+          }}
+          onSave={handleSaveMentor}
+          mode={editingMentor ? "edit" : "add"}
+          mentorData={editingMentor}
+        />
 
         {/* Modal delete mentor */}
-        <ModalDelete isOpen={modalState.showDeleteModal} onClose={handleCloseDeleteModal} onConfirm={handleDeleteBranch} />
+        <ModalDelete
+          isOpen={modalState.showDeleteModal}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleDeleteBranch}
+        />
+        <ModalDetailMentor
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          mentor={selectedMentor}
+        />
       </div>
     </Card>
   );

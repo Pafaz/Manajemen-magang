@@ -5,7 +5,6 @@ export default function UniversityCardGrid() {
   const [partners, setPartners] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const categoryDropdownRef = useRef(null);
@@ -34,7 +33,6 @@ export default function UniversityCardGrid() {
     "Manajemen",
   ];
 
-  // Fetch all mitra
   useEffect(() => {
     // Dummy data for demonstration purposes
     const dummyPartners = [
@@ -89,8 +87,7 @@ export default function UniversityCardGrid() {
   const filtered =
     selectedCategory === "All"
       ? partners
-      : partners.filter((p) => p.jenis_institusi === selectedCategory);
-
+      : partners.filter((p) => p.jenis_institusi === selectedCategory);      
   const openAdd = () => {
     setEditingPartner(null);
     setFormData({
@@ -202,7 +199,7 @@ export default function UniversityCardGrid() {
 
   if (loading) return <div className="h-screen">Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
-  
+
   return (
     <div className="p-2 min-h-screen">
       <div className="max-w-9xl mx-auto space-y-6">
@@ -362,19 +359,18 @@ export default function UniversityCardGrid() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Website (opsional)
-                  </label>
-                  <input
-                    type="url"
-                    name="website"
-                    value={formData.website}
-                    onChange={handleFormChange}
-                    placeholder="Masukkan link"
-                    className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                  />
-                </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Foto Header
+                </label>
+                <input
+                  type="file"
+                  name="foto_header"
+                  onChange={handleFormChange}
+                  className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                  {...(editingPartner ? {} : { required: true })}
+                />
+              </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Jenis Institusi
@@ -411,6 +407,7 @@ export default function UniversityCardGrid() {
                 />
               </div>
 
+             
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Foto Header

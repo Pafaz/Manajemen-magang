@@ -47,6 +47,7 @@ import SelectAuth from "./src/pages/Auth/SelectAuth";
 import GoogleSuccess from "./src/pages/Auth/GoogleSuccess";
 import AuthLayout from "./src/layout/AuthLayout";
 import CompanyRegistrationForm from "./src/pages/perusahaan/PerusahaanForm";
+import DetailMentor from "./src/components/cards/DetailMentor";
 
 export const router = createBrowserRouter([
   {
@@ -236,12 +237,17 @@ export const router = createBrowserRouter([
         element : <SettingsPerusahaan/>
       },
       {
+<<<<<<< HEAD
         path : "mentor/:mentorId",
         element : <Detailsmentor />
       },
       {
         path : "detail-siswa",
         element : <DetailSiswa/>
+=======
+        path: "detailmentor",
+        element : < DetailMentor/>
+>>>>>>> 37ab344f8caaf7203f49dbcccb7932a8447db9f8
       }
     ],
   },

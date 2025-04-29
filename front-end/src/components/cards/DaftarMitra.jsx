@@ -541,24 +541,6 @@ export default function UniversityCardGrid() {
                   </select>
                 </div>
                 
-                {/* Custom jurusan input */}
-                <div className="flex space-x-2 mb-2">
-                  <input
-                    type="text"
-                    value={newMajor}
-                    onChange={(e) => setNewMajor(e.target.value)}
-                    placeholder="Tambah jurusan baru"
-                    className="flex-1 p-2 border border-gray-300 rounded-md text-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddCustomMajor}
-                    className="px-3 py-2 bg-blue-500 text-white rounded-md text-sm"
-                  >
-                    <Plus size={16} />
-                  </button>
-                </div>
-                
                 {/* Selected jurusan list */}
                 <div className="mt-2">
                   <p className="text-sm font-medium text-gray-700 mb-1">

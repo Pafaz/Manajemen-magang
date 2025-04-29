@@ -149,13 +149,13 @@ export default function MentorBranchCard() {
   };
 
   const handleViewDetail = (branchId) => {
-<<<<<<< HEAD
     navigate(`/perusahaan/mentor/${branchId}`);
-=======
+
     const mentor = branches.find((b) => b.id === branchId);
     setSelectedMentor(mentor);
     setIsDetailModalOpen(true);
->>>>>>> bc9825108818e07069de094dd287122ae57365ee
+
+    navigate('/perusahaan/detailmentor')
   };
 
   const handleSaveMentor = (mentorData) => {

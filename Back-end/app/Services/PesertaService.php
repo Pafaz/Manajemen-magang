@@ -8,7 +8,7 @@ use App\Http\Resources\PesertaResource;
 use App\Interfaces\PesertaInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class PesertaService 
+class PesertaService
 {
     private PesertaInterface $pesertaInterface;
     private FotoService $foto;
@@ -24,7 +24,7 @@ class PesertaService
         $data = $this->pesertaInterface->getAll();
         return Api::response(
             PesertaResource::collection($data),
-            'Peserta Fetched Successfully', 
+            'Peserta Fetched Successfully',
         );
     }
 
@@ -73,7 +73,7 @@ class PesertaService
                 $this->foto->createFoto($data[$key], $peserta->id, $tipe);
             }
         }
-        
+
         return Api::response(
             PesertaResource::make($peserta),
             'Peserta Created Successfully',

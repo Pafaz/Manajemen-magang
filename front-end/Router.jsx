@@ -232,7 +232,7 @@ export const router = createBrowserRouter([
         element : <Lowongan/>
       },
       {
-        path: "update-perusahaan",
+        path: "update-perusahaan/:userId",
         element : <SettingsPerusahaan/>
       },
       {

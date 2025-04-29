@@ -13,8 +13,16 @@ const NavAdmin = () => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState("2 Bulan");
   const [discount, setDiscount] = useState(10);
-  const { token } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
   const [verived, setVerived] = useState(null);
+  const [idUser, setId] = useState(null);
+  useEffect(() => {
+    if (user && user.id) {
+      setId(user.id);
+    } else {
+      setId(null);
+    }
+  }, [user]);
 
   const packagePrice = 100000;
   const calculateSubtotal = () => {
@@ -103,7 +111,6 @@ const NavAdmin = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, []);
-  
 
   return (
     <nav className="bg-white w-full h-[60px] flex items-center px-10 sticky top-0 z-50 border-b border-b-slate-300">
@@ -139,7 +146,11 @@ const NavAdmin = () => {
             <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden z-50">
               <div className="py-2">
                 <Link
-                  to={verived !== "true" ? "/perusahaan/settings" : "/perusahaan/update-perusahaan"}
+                  to={
+                    verived !== "true"
+                      ? "/perusahaan/settings"
+                      : `/perusahaan/update-perusahaan/${idUser}`
+                  }
                   className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                 >
                   Settings

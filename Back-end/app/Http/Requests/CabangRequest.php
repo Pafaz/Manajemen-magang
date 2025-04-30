@@ -19,16 +19,16 @@ class CabangRequest extends BaseFormRequest
                 'provinsi' => 'sometimes|string',
                 'kota' => 'sometimes|string',
                 'logo' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
-                'profil_background' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+                'profil_cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             ];
         }
         return [
             'nama' => 'required|string',
-            'deskripsi' => 'required|string',
+            'bidang_usaha' => 'required|string',
             'provinsi' => 'required|string',
             'kota' => 'required|string',
             'logo' => 'required|image|mimes:png,jpeg,jpg|max:2048',
-            'profil_background' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'profil_cover' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

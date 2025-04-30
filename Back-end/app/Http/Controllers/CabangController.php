@@ -20,7 +20,7 @@ class CabangController extends Controller
      */
     public function index()
     {
-        return $this->cabangService->getAllCabang();
+        return $this->cabangService->getCabang();
     }
 
     /**
@@ -42,9 +42,9 @@ class CabangController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cabang $cabang)
+    public function show($cabang)
     {
-        //
+        return $this->cabangService->getCabang($cabang);
     }
 
     /**
@@ -59,9 +59,9 @@ class CabangController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CabangRequest $request, Cabang $cabang)
+    public function update(CabangRequest $request,  $cabang)
     {
-        return $this->cabangService->simpanCabang($request->validated(), true, $cabang->id);
+        return $this->cabangService->simpanCabang($request->validated(), true, $cabang);
     }
 
     /**
@@ -70,5 +70,10 @@ class CabangController extends Controller
     public function destroy(Cabang $cabang)
     {
         return $this->cabangService->deleteCabang($cabang->id);
+    }
+
+    public function setCabangAktif(Request $request)
+    {
+        return $this->cabangService->setCabangAktif($request->id_cabang);
     }
 }

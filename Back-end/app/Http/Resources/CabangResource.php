@@ -15,6 +15,7 @@ class CabangResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'nama' => $this->nama,
             'bidang_usaha' => $this->bidang_usaha,
             'provinsi' => $this->provinsi,

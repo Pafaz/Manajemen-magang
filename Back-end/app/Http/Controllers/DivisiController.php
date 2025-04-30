@@ -34,7 +34,7 @@ class DivisiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store( DivisiRequest $DivisiRequest)
+    public function store(DivisiRequest $DivisiRequest)
     {
         return $this->divisiService->simpanDivisi($DivisiRequest->validated());
     }
@@ -66,8 +66,8 @@ class DivisiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Divisi $divisi)
+    public function destroy($divisi)
     {
-        return $this->divisiService->deleteDivisi($divisi->id);
+        return $this->divisiService->deleteDivisi($divisi);
     }
 }

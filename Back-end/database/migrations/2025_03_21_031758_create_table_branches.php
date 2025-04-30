@@ -27,11 +27,9 @@ return new class extends Migration
         Schema::create('divisi', function (Blueprint $table) {
             $table->id()->primary();
             $table->string('nama');
-            $table->unsignedBigInteger('id_cabang')->nullable();
-            $table->uuid('id_perusahaan');
+            $table->unsignedBigInteger('id_cabang');
             $table->timestamps();
 
-            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
         });
 

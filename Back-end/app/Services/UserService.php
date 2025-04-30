@@ -175,4 +175,5 @@ class UserService
             'role' => $user->getRoleNames()->first() // Return role yang sebenarnya
         ], 'Login berhasil');
     }
+
 }

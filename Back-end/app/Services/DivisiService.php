@@ -33,51 +33,58 @@ class DivisiService
 
     public function simpanDivisi(array $data, bool $isUpdate = false, $id = null)
     {
-        $perusahaanId = auth('sanctum')->user()->perusahaan->id;
-        if (!$perusahaanId) {
-            return Api::response(null, 'Perusahaan tidak ditemukan.', Response::HTTP_FORBIDDEN);
+        DB::beginTransaction();
+    
+        try {
+            $cabang = auth('sanctum')->user()->perusahaan->cabang;
+            dd($cabang->id);
+            $divisiData = collect($data)->only(['nama', 'id_cabang'])->toArray();
+    
+            $divisi = $isUpdate
+                ? $this->DivisiInterface->update($id, $divisiData)
+                : $this->DivisiInterface->create($divisiData);
+    
+            $kategoriIds = [];
+            if (!empty($data['kategori'])) {
+                foreach ($data['kategori'] as $namaKategori) {
+                    $kategori = $this->kategoriInterface->create(['nama' => $namaKategori]);
+                    $kategoriIds[] = $kategori->id;
+                }
+    
+                $divisi->kategori()->sync($kategoriIds);
+            }
+    
+            if (!empty($data['header_divisi'])) {
+                $isUpdate
+                    ? $this->foto->updateFoto($data['header_divisi'], $divisi->id, 'header_divisi')
+                    : $this->foto->createFoto($data['header_divisi'], $divisi->id, 'header_divisi');
+            }
+    
+            DB::commit();
+    
+            $message = $isUpdate
+                ? 'Divisi & kategori berhasil diperbarui'
+                : 'Divisi & kategori berhasil disimpan';
+    
+            $statusCode = $isUpdate
+                ? Response::HTTP_OK
+                : Response::HTTP_CREATED;
+    
+            return Api::response(
+                DivisiResource::make($divisi->load('kategori', 'foto')),
+                $message,
+                $statusCode
+            );
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return Api::response(
+                null,
+                'Gagal menyimpan divisi: ' . $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        $divisi = $isUpdate
-            ? $this->DivisiInterface->update(id: $id, data: [
-                'id_perusahaan' => $perusahaanId,
-                'nama' => $data['nama'],
-            ])
-            : $this->DivisiInterface->create([
-                'id_perusahaan' => $perusahaanId,
-                'nama' => $data['nama'],
-            ]);
-
-            $category = $isUpdate
-            ? $this->kategoriInterface->update(id: $id, data: [
-                'id_perusahaan' => $perusahaanId,
-                'nama' => $data['nama'],
-            ])
-            : $this->kategoriInterface->create([
-                'id_perusahaan' => $perusahaanId,
-                'nama' => $data['nama'],
-            ]);
-
-        if (!empty($data['header_divisi'])) {
-            $isUpdate 
-                ? $this->foto->updateFoto($data['header_divisi'], $divisi->id.$divisi->nama.$perusahaanId, 'header_divisi') 
-                : $this->foto->createFoto($data['header_divisi'], $divisi->id.$divisi->nama.$perusahaanId, 'header_divisi');
-        }
-
-        $message = $isUpdate
-            ? 'Berhasil memperbarui divisi'
-            : 'Berhasil membuat divisi';
-
-        $statusCode = $isUpdate
-            ? Response::HTTP_OK
-            : Response::HTTP_CREATED;
-
-        return Api::response(
-            DivisiResource::make($divisi),
-            $message,
-            $statusCode,
-        );
     }
+    
 
     public function deleteDivisi(int $id)
     {

@@ -8,39 +8,38 @@ use App\Interfaces\CabangInterface;
 use Illuminate\Support\Facades\Log;
 use App\Http\Resources\CabangResource;
 use App\Interfaces\PerusahaanInterface;
+use App\Interfaces\UserInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 
 class CabangService
 {
-    private PerusahaanInterface $perusahaanInterface;
-    protected CabangInterface $cabangInterface;
+    private CabangInterface $cabangInterface;
+    private FotoService $foto;
+    private UserInterface $userInterface;
 
-    public function __construct(CabangInterface $cabangInterface, PerusahaanInterface $perusahaanInterface)
+    public function __construct(CabangInterface $cabangInterface, FotoService $foto, UserInterface $userInterface)
     {
         $this->cabangInterface = $cabangInterface;
-        $this->perusahaanInterface = $perusahaanInterface;
+        $this->foto = $foto;
+        $this->userInterface = $userInterface;
     }
 
-    public function getAllCabang()
-    {
-        $data = $this->cabangInterface->getAll();
-        return Api::response(
-            CabangResource::collection($data),
-            'Cabang Fetched Successfully',
-            Response::HTTP_OK
-        );
-    }
-
-    public function getCabangByPerusahaan()
+    public function getCabang($id = null)
     {
         $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
+        
+        $data = $id
+                ? collect([$this->cabangInterface->find($id, $id_perusahaan)]) 
+                : $this->cabangInterface->getCabangByPerusahaanId($id_perusahaan);
 
-        $data = $this->cabangInterface->getCabangByPerusahaanId($id_perusahaan);
+        $message = $id
+            ? 'Berhasil mengambil data cabang'
+            : 'Berhasil mengambil semua data cabang';
 
         return Api::response(
             CabangResource::collection($data),
-            'Cabang ',
+            $message,
             Response::HTTP_OK
         );
     }
@@ -77,8 +76,8 @@ class CabangService
                 : $this->cabangInterface->create(array_filter($cabangData));
 
             $files = [
-                'logo' => 'profile',
-                'profil_background' => 'profil_background',
+                'logo' => 'logo',
+                'profil_cover' => 'profil_cover',
             ];
 
             foreach ($files as $key => $type) {
@@ -100,59 +99,14 @@ class CabangService
             );
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error("Gagal menyimpan cabang: " . $e->getMessage());
+            Log::error("Gagal membuat cabang: " . $e->getMessage());
 
             return Api::response(
                 null,
-                'Gagal menyimpan cabang' . $e->getMessage(),
+                'Gagal membuat cabang' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-    }
-
-    // public function createCabang(array $data)
-    // {
-    //     try {
-    //     $user = auth('sanctum')->user();
-    //         // dd($user->perusahaan->id);
-    //     if ($user->perusahaan->cabang()->count() >= 1) {
-    //         throw new \Exception("Anda sudah mencapai limit cabang. Silakan upgrade ke premium!");
-    //     }
-
-    //     // $data['id_perusahaan'] = $user->perusahaan->id;
-    //     $cabang = $this->cabangInterface->create([
-    //         'bidang_usaha' => $data['bidang_usaha'],
-    //         'provinsi' => $data['provinsi'],
-    //         'kota' => $data['kota'],
-    //         'id_perusahaan' => $user->perusahaan->id,
-    //         'instagram' => $data['instagram'],
-    //         'linkedin' => $data['linkedin'],
-    //         'website' => $data['website'],
-    //     ]);
-
-    //     return Api::response(
-    //         CabangResource::make($cabang),
-    //         'Cabang Created Successfully',
-    //         Response::HTTP_CREATED
-    //     );
-
-    //     }catch (\Exception $e) {
-    //         return Api::response(
-    //             null,
-    //             $e->getMessage(),
-    //             Response::HTTP_INTERNAL_SERVER_ERROR
-    //         );
-    //     }
-    // }
-
-    public function updateCabang(array $data, $id)
-    {
-        $cabang = $this->cabangInterface->update($id, $data);
-        return Api::response(
-            CabangResource::make($cabang),
-            'Cabang Updated Successfully',
-            Response::HTTP_OK
-        );
     }
 
     public function deleteCabang($id)
@@ -160,8 +114,24 @@ class CabangService
         $this->cabangInterface->delete($id);
         return Api::response(
             null,
-            'Cabang Deleted Successfully',
+            'Berhasil menghapus cabang',
             Response::HTTP_OK
+        );
+    }
+
+    public function setCabangAktif(int $idCabang)
+    {
+        $user = auth('sanctum')->user();
+        if (!$user->perusahaan->cabang()->where('id', $idCabang)->exists()) {
+            return Api::response(null, 'Cabang tidak valid untuk perusahaan ini', Response::HTTP_FORBIDDEN);
+        }
+        
+        $this->userInterface->update($user->id, ['id_cabang_aktif' => $idCabang]);
+
+        $cabang = $this->cabangInterface->find($idCabang, $user->perusahaan->id);
+        return Api::response(
+            $cabang,
+            'Berhasil akses cabang',
         );
     }
 }

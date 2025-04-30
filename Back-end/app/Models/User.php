@@ -27,11 +27,12 @@ class User extends Authenticatable
     public $incrementing = false;
     protected $table = 'users';
     protected $fillable = [
-        'name',
+        'nama',
         'email',
         'telepon',
         'password',
         'google_id',
+        'id_cabang_aktif',
         'avatar',
         'email_verified_at',
     ];

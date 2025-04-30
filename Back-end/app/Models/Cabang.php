@@ -24,10 +24,6 @@ class Cabang extends Model
     {
         return $this->hasMany(Admin_cabang::class, 'id_cabang', 'id');
     }
-    public function divisiCabang()
-    {
-        return $this->hasMany(Divisi_cabang::class, 'id_cabang', 'id');
-    }
     public function perusahaan()
     {
         return $this->belongsTo(Perusahaan::class, 'id_perusahaan', 'id');

@@ -24,6 +24,7 @@ export default function ApprovalTable() {
         { nama: "CV.jpg", url: "/assets/berkas/CV.jpg" },
         { nama: "Foto.jpg", url: "/assets/berkas/Foto.jpg" },
         { nama: "Ijazah.docx", url: "/assets/berkas/Ijazah.docx" },
+        { nama: "ppp.docx", url: "/assets/berkas/ppp.docx" },
       ],
     },
     {

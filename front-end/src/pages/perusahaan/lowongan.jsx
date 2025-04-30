@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
 import Chart from 'react-apexcharts'; // langsung import tanpa dynamic
 
+
 // Job Card Component with ApexCharts
 const JobCard = ({ job, onClick, isActive }) => {
   // ApexCharts options
@@ -84,9 +85,9 @@ const JobCard = ({ job, onClick, isActive }) => {
             job.color === 'indigo' ? 'text-indigo-500' : 
             'text-emerald-500'
           }`}>
-            {job.iconType === "people" && <span>👥</span>}
-            {job.iconType === "display" && <span>📊</span>}
-            {job.iconType === "graduate" && <span>🎓</span>}
+            {job.iconType === "people" && <i className="bi bi-people-fill"></i>}
+            {job.iconType === "display" && <i className="bi bi-bar-chart-line-fill"></i>}
+            {job.iconType === "graduate" && <i className="bi bi-mortarboard-fill"></i>}
           </div>
         </div>
         <span className="text-sm font-medium">{job.title}</span>
@@ -140,14 +141,14 @@ const JobDetail = ({ job, onClose }) => {
       
       <div className="mb-4">
         <img 
-          src="/api/placeholder/800/200" 
+          src="/assets/img/Cover.png" 
           alt="Company" 
           className="w-full h-32 object-cover rounded-lg mb-3"
         />
         <div className="relative -mt-8 flex justify-center">
           <div className="w-16 h-16 bg-white rounded-full p-1 shadow-md">
             <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-              <span className="text-2xl">🏢</span>
+            <i className="bi bi-building text-xl"></i>
             </div>
           </div>
         </div>
@@ -161,7 +162,7 @@ const JobDetail = ({ job, onClose }) => {
         
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 text-blue-500">📊</div>
+          <div className="w-5 h-5 text-blue-500"><i className="bi bi-bar-chart-line-fill"></i></div>
             <span className="text-sm text-gray-500">Status Lowongan:</span>
           </div>
           <p className="pl-7 text-sm font-medium">
@@ -376,7 +377,7 @@ export default function App() {
                   className="bg-white text-gray-700 border border-gray-300 rounded-md px-3 py-1 text-xs flex items-center"
                 >
                   <span className="mr-1">+</span>
-                  <span>Tambah Divisi</span>
+                  <span>Tambah Lowongan</span>
                 </button>
                 <div className="flex items-center">
                   <span className="mr-2 text-xs">Sort by:</span>

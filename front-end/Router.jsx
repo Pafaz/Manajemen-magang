@@ -19,6 +19,7 @@ import PendataanAdmin from "./src/pages/admin/PendataanAdmin";
 import PerusahaanLayout from "./src/layout/PerusahaanLayout";
 import DashboardPerusahaan from "./src/pages/perusahaan/Dashboard";
 import BerandaPerusahaan from "./src/pages/perusahaan/BerandaPerusahaan";
+import CabangPerusahaan from "./src/pages/perusahaan/CabangPerusahaan";
 import DetailCabang from "./src/pages/perusahaan/DetailCabang";
 import Admin from "./src/pages/perusahaan/Admin";
 import Mentor from "./src/pages/perusahaan/Mentor";
@@ -215,6 +216,10 @@ export const router = createBrowserRouter([
       {
         path: "surat",
         element: <Surat />,
+      },
+      {
+        path :"cabang",
+        element : <CabangPerusahaan />
       },
       {
         path: "RFID",

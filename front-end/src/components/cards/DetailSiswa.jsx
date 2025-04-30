@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Chart from "react-apexcharts";
-import { BsCalendarCheck, BsCheckCircle, BsAward, BsPeople, BsExclamationOctagonFill } from "react-icons/bs";
+import { BsCalendarCheck, BsCheckCircle, BsAward, BsPeople, BsExclamationOctagonFill, BsArrowLeft, BsPatchCheckFill } from "react-icons/bs";
 
 export default function DetailPeserta() {
   const profile = {
@@ -53,9 +53,17 @@ export default function DetailPeserta() {
   ];
 
   const statusSP = {
-    level: "SP 1",
-    description: "Peserta ini terdeteksi mendapatkan SP 1",
+    level: "SP 1", // Add the SP level if there is one, or leave empty for no SP
+    description: "Peserta ini terdeteksi mendapatkan SP 1", // Will be dynamically generated
+    hasSP: true, // Set to false if student has no SP
   };
+
+  // Example of how you might want to set it for a student without SP:
+  // const statusSP = {
+  //   level: "",
+  //   description: "",
+  //   hasSP: false,
+  // };
 
   const jurnalData = {
     2024: {
@@ -95,10 +103,22 @@ export default function DetailPeserta() {
     { tahap: "Coming Soon", status: "-", startDate: "-", endDate: "-", image: "/assets/img/Cover3.png" },
   ];
   
+  const handleBack = () => {
+    // Add your navigation logic here
+    console.log("Back button clicked");
+    // Example: router.push('/dashboard') or window.history.back()
+  };
 
   return (
     <div className="min-h-screen bg-[#F1F4FF] flex items-center justify-center p-6">
-      <div className="bg-white w-full max-w-7xl p-8 rounded-2xl shadow-lg space-y-8">
+      <div className="bg-white w-full max-w-7xl p-8 rounded-2xl shadow-lg space-y-8 relative">
+        {/* Back Button positioned at top-left corner */}
+        <button 
+          onClick={handleBack} 
+          className="absolute top-4 left-4 bg-blue-100 hover:bg-blue-200 text-blue-600 rounded-full p-3 transition duration-200"
+        >
+          <BsArrowLeft size={24} />
+        </button>
         
         {/* Profile Section */}
         <div className="flex flex-col lg:flex-row items-center gap-8">
@@ -116,17 +136,34 @@ export default function DetailPeserta() {
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                <h3 className="text-lg font-black">{profile.sekolah}</h3> |
+                <h4 className="text-lg">{profile.sekolah}</h4> |
                 {profile.nisn}
-
               </div>
-              <div className="text-gray-600 text-sm space-y-1">
-                <p>Email: {profile.email}</p>
-                <p>Perusahaan: {profile.company}</p>
-                <p>Cabang: {profile.branch}</p>
-                <p>RFID: {profile.rfid}</p>
-                <p>Mentor: {profile.mentor}</p>
-                <p>Durasi Magang: {profile.internshipPeriod}</p>
+              <div className="text-gray-600 text-sm space-y-2">
+                <div className="flex">
+                  <div className="w-40">Email</div>
+                  <div>: {profile.email}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-40">Perusahaan</div>
+                  <div>: {profile.company}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-40">Cabang</div>
+                  <div>: {profile.branch}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-40">RFID</div>
+                  <div>: {profile.rfid}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-40">Mentor</div>
+                  <div>: {profile.mentor}</div>
+                </div>
+                <div className="flex">
+                  <div className="w-40">Durasi Magang</div>
+                  <div>: {profile.internshipPeriod}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -169,13 +206,31 @@ export default function DetailPeserta() {
           <div className="bg-white p-2 rounded-2xl shadow-sm flex flex-col gap-4">
             <h3 className="text-l font-semibold">Status SP</h3>
             <div className="flex items-center gap-3 p-2 border rounded-xl">
-              <div className="bg-yellow-100 p-3 rounded-xl flex items-center justify-center">
-                <BsExclamationOctagonFill className="text-yellow-500 text-xl" />
-              </div>
-              <div>
-                <h4 className="text-base font-bold">{statusSP.level}</h4>
-                <p className="text-[10px] text-gray-500">{statusSP.description}</p>
-              </div>
+              {statusSP.hasSP ? (
+                <>
+                  <div className="bg-yellow-100 p-3 rounded-xl flex items-center justify-center">
+                    <BsExclamationOctagonFill className="text-yellow-500 text-xl" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold">{statusSP.level}</h4>
+                    <p className="text-[10px] text-gray-500">
+                      {statusSP.description || `Peserta ini terdeteksi mendapatkan ${statusSP.level}`}
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="bg-green-100 p-3 rounded-xl flex items-center justify-center">
+                    <BsPatchCheckFill className="text-green-500 text-xl" />
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold">Tidak Ada SP</h4>
+                    <p className="text-[10px] text-gray-500">
+                      Peserta ini tidak terdeteksi SP!
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -207,51 +262,48 @@ export default function DetailPeserta() {
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow-sm">
-  <h3 className="text-lg font-bold mb-1">Route Project</h3>
-  <p className="text-sm text-gray-500 mb-4">Project yang diselesaikan</p>
+            <h3 className="text-lg font-bold mb-1">Route Project</h3>
+            <p className="text-sm text-gray-500 mb-4">Project yang diselesaikan</p>
 
-  <div className="space-y-4">
-    {routeProjects.map((item, index) => (
-      <div key={index} className="flex items-start gap-4">
-        <img
-          src={item.image}
-          alt="Project Icon"
-          className="w-12 h-12 rounded-md object-cover"
-        />
-        <div className="flex-1 space-y-1">
-          {/* Ini baris tahap + status + endDate */}
-          <div className="flex items-center justify-between">
-            <div className="text-[10px] font-semibold text-black">{item.tahap}</div>
+            <div className="space-y-4">
+              {routeProjects.map((item, index) => (
+                <div key={index} className="flex items-start gap-4">
+                  <img
+                    src={item.image}
+                    alt="Project Icon"
+                    className="w-12 h-12 rounded-md object-cover"
+                  />
+                  <div className="flex-1 space-y-1">
+                    {/* Ini baris tahap + status + endDate */}
+                    <div className="flex items-center justify-between">
+                      <div className="text-[10px] font-semibold text-black">{item.tahap}</div>
 
-            <div className="flex items-center gap-2">
-              {item.status !== "-" && (
-                <span
-                  className={`text-[8px] font-bold px-2 py-0.5 rounded-full ${
-                    item.status === "Selesai"
-                      ? "bg-green-100 text-green-600"
-                      : "bg-orange-100 text-orange-500"
-                  }`}
-                >
-                  {item.status}
-                </span>
-              )}
-              {item.endDate !== "-" && (
-                <div className="text-[9px] text-gray-400">{item.endDate}</div>
-              )}
+                      <div className="flex items-center gap-2">
+                        {item.status !== "-" && (
+                          <span
+                            className={`text-[8px] font-bold px-2 py-0.5 rounded-full ${
+                              item.status === "Selesai"
+                                ? "bg-green-100 text-green-600"
+                                : "bg-orange-100 text-orange-500"
+                            }`}
+                          >
+                            {item.status}
+                          </span>
+                        )}
+                        {item.endDate !== "-" && (
+                          <div className="text-[9px] text-gray-400">{item.endDate}</div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Ini baris startDate */}
+                    <div className="text-xs text-gray-500">{item.startDate}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Ini baris startDate */}
-          <div className="text-xs text-gray-500">{item.startDate}</div>
         </div>
-      </div>
-    ))}
-  </div>
-</div>
-
-
-        </div>
-
       </div>
     </div>
   );

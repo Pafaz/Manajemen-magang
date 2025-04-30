@@ -79,29 +79,6 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, onSave }) => {
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 text-sm mb-1">Masukkan Cabang Perusahaan</label>
-            <div className="relative">
-              <select
-                name="branch"
-                value={formData.branch}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 appearance-none"
-                required
-              >
-                <option value="" disabled>Pilih Cabang Perusahaan</option>
-                <option value="Cabang 1">Cabang 1</option>
-                <option value="Cabang 2">Cabang 2</option>
-                <option value="Cabang 3">Cabang 3</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-4">
             <label className="block text-gray-700 text-sm mb-1">Foto Admin</label>
             <div className="flex">
               <label className="flex items-center justify-center px-4 py-2 bg-white border border-gray-300 rounded-l-md text-xs text-gray-700 hover:bg-gray-50 cursor-pointer">

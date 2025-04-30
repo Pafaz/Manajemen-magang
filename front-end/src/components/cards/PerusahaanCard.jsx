@@ -60,7 +60,7 @@ const CompanyCardWithModal = () => {
               <h2 className="text-lg font-semibold text-black-800 flex items-center gap-2 mb-2">
                 {companyName}
                 {/* Icon centang verified dengan warna biru */}
-                <i className="bi bi-patch-check" style={{ color: "#0069AB" }}></i>
+                <i className="bi bi-patch-check-fill" style={{ color: "#0069AB" }}></i>
 
                 {/* Nama cabang */}
                 <span className="text-sm text-black-600">(Cabang {branchName})</span>

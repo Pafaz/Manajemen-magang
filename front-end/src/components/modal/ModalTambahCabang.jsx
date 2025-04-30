@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 
-export default function CompanyBranchModal({ isOpen, onClose, onSave }) {
+export default function ModalTambahCabang({ isOpen, onClose, onSave }) {
   const [formData, setFormData] = useState({
     name: '',
+    logo: null,
     businessField: '',
     province: '',
     city: '',
+    fotoCover: null,
     website: '',
     instagram: '',
     linkedin: ''
   });
   
   const [isCustomBusinessField, setIsCustomBusinessField] = useState(false);
+  const [logoFileName, setLogoFileName] = useState('No File Chosen');
+  const [fotoCoverFileName, setFotoCoverFileName] = useState('No File Chosen');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -36,6 +40,22 @@ export default function CompanyBranchModal({ isOpen, onClose, onSave }) {
     }
   };
 
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (files && files[0]) {
+      setFormData(prevState => ({
+        ...prevState,
+        [name]: files[0]
+      }));
+      
+      if (name === 'logo') {
+        setLogoFileName(files[0].name);
+      } else if (name === 'fotoCover') {
+        setFotoCoverFileName(files[0].name);
+      }
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     onSave(formData);
@@ -45,14 +65,18 @@ export default function CompanyBranchModal({ isOpen, onClose, onSave }) {
   const resetForm = () => {
     setFormData({
       name: '',
+      logo: null,
       businessField: '',
       province: '',
       city: '',
+      fotoCover: null,
       website: '',
       instagram: '',
       linkedin: ''
     });
     setIsCustomBusinessField(false);
+    setLogoFileName('No File Chosen');
+    setFotoCoverFileName('No File Chosen');
   };
 
   if (!isOpen) return null;
@@ -77,22 +101,47 @@ export default function CompanyBranchModal({ isOpen, onClose, onSave }) {
           </div>
 
           <form onSubmit={handleSubmit}>
-            {/* <div className="mb-4">
+            <div className="mb-4">
               <label className="block text-sm font-medium mb-2">Nama Cabang</label>
               <input 
                 type="text" 
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                placeholder="Masukkan Nama Cabang"
+                placeholder="Masukkan Nama Cabang Disini"
                 className="w-full p-2 border border-gray-300 rounded-md"
                 required
               />
-            </div> */}
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Logo Perusahaan<span className="text-red-500">*</span></label>
+              <div className="flex">
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('logo-input').click()}
+                  className="px-4 py-2 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50"
+                >
+                  Choose File
+                </button>
+                <div className="flex-1 border border-l-0 border-gray-300 rounded-r-md flex items-center px-3 text-gray-500">
+                  {logoFileName}
+                </div>
+                <input
+                  id="logo-input"
+                  type="file"
+                  name="logo"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*"
+                  required
+                />
+              </div>
+            </div>
 
             <div className="mb-4">
               <label className="block text-sm font-medium mb-2">Bidang Usaha<span className="text-red-500">*</span></label>
-              <div className="relative w-3/4">
+              <div className="relative w-full">
                 {isCustomBusinessField ? (
                   <input 
                     type="text" 
@@ -144,28 +193,54 @@ export default function CompanyBranchModal({ isOpen, onClose, onSave }) {
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Provinsi<span className="text-red-500">*</span></label>
-              <div className="relative w-3/4">
-                <select 
-                  name="province"
-                  value={formData.province}
-                  onChange={handleChange}
-                  className="w-full p-2 pr-10 border border-gray-300 rounded-md appearance-none bg-white"
-                  required
+              <label className="block text-sm font-medium mb-2">Foto Cover</label>
+              <div className="flex">
+                <button
+                  type="button"
+                  onClick={() => document.getElementById('fotoCover-input').click()}
+                  className="px-4 py-2 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50"
                 >
-                  <option value="" disabled>Pilih Provinsi</option>
-                  <option value="jawa_timur">Jawa Timur</option>
-                  <option value="jawa_barat">Jawa Barat</option>
-                  <option value="jawa_tengah">Jawa Tengah</option>
-                  <option value="dki_jakarta">DKI Jakarta</option>
-                </select>
-                <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
-                  </svg>
+                  Choose File
+                </button>
+                <div className="flex-1 border border-l-0 border-gray-300 rounded-r-md flex items-center px-3 text-gray-500">
+                  {fotoCoverFileName}
                 </div>
+                <input
+                  id="fotoCover-input"
+                  type="file"
+                  name="fotoCover"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*"
+                />
               </div>
             </div>
+
+            <div className="mb-4">
+  <label className="block text-sm font-medium mb-2">
+    Provinsi<span className="text-red-500">*</span>
+  </label>
+  <div className="relative w-3/4">
+    <select
+      name="province"
+      value={formData.province}
+      onChange={handleChange}
+      className="w-full p-2 pr-10 border border-gray-300 rounded-md appearance-none bg-white"
+      required
+    >
+      <option value="" disabled>Pilih Provinsi</option>
+      <option value="jawa_timur">Jawa Timur</option>
+      <option value="jawa_barat">Jawa Barat</option>
+      <option value="jawa_tengah">Jawa Tengah</option>
+      <option value="dki_jakarta">DKI Jakarta</option>
+    </select>
+    <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none">
+      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+    </div>
+  </div>
+</div>
 
             <div className="mb-5">
               <label className="block text-sm font-medium mb-2">Kota<span className="text-red-500">*</span></label>
@@ -187,53 +262,6 @@ export default function CompanyBranchModal({ isOpen, onClose, onSave }) {
                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path>
                   </svg>
-                </div>
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <label className="block text-sm font-medium mb-2">Sosial Media Instalasi</label>
-              <div className="grid grid-cols-3 gap-3">
-                <div className="flex items-center border border-gray-300 rounded-md p-2">
-                  <div className="text-blue-500 mr-2">
-                    <i className="bi bi-globe w-5 h-5"></i>
-                  </div>
-                  <input 
-                    type="url" 
-                    name="website"
-                    value={formData.website}
-                    onChange={handleChange}
-                    placeholder="Website"
-                    className="w-full outline-none text-sm bg-transparent"
-                  />
-                </div>
-                
-                <div className="flex items-center border border-gray-300 rounded-md p-2">
-                  <div className="text-pink-500 mr-2">
-                    <i className="bi bi-instagram w-5 h-5"></i>
-                  </div>
-                  <input 
-                    type="text" 
-                    name="instagram"
-                    value={formData.instagram}
-                    onChange={handleChange}
-                    placeholder="Instagram"
-                    className="w-full outline-none text-sm bg-transparent"
-                  />
-                </div>
-                
-                <div className="flex items-center border border-gray-300 rounded-md p-2">
-                  <div className="text-blue-700 mr-2">
-                    <i className="bi bi-linkedin w-5 h-5"></i>
-                  </div>
-                  <input 
-                    type="text" 
-                    name="linkedin"
-                    value={formData.linkedin}
-                    onChange={handleChange}
-                    placeholder="LinkedIn"
-                    className="w-full outline-none text-sm bg-transparent"
-                  />
                 </div>
               </div>
             </div>

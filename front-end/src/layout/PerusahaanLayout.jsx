@@ -13,7 +13,7 @@ const PerusahaanLayout = () => {
     {
       icon: "bi-grid",
       label: "Dashboard",
-      link: "/perusahaan/dashboard",
+      link: "/perusahaan/beranda",
     },
     {
       icon: "bi-building",
@@ -46,7 +46,7 @@ const PerusahaanLayout = () => {
           link: "/perusahaan/divisi",
         },
         {
-          icon: "bi-buildings",
+          icon: "bi-pc-display",
           label: "Mitra",
           link: "/perusahaan/mitra",
         },

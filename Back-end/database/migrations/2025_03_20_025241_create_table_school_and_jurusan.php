@@ -11,6 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('cabang', function (Blueprint $table) {
+            $table->id()->primary();
+            $table->uuid('id_perusahaan');
+
+            $table->string('nama');
+            $table->string('bidang_usaha');
+            $table->string('provinsi');
+            $table->string('kota');
+            $table->timestamps();
+
+            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
+        });
+
         Schema::create('sekolah', function (Blueprint $table) {
             $table->id()->primary();
             $table->string('nama');
@@ -18,9 +31,9 @@ return new class extends Migration
             $table->string('telepon');
             $table->string('jenis_institusi');
             $table->string('website')->nullable();
-            $table->uuid('id_perusahaan');
+            $table->unsignedBigInteger('id_cabang');
 
-            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
+            $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
         });
 
         Schema::create('jurusan', function (Blueprint $table) {
@@ -48,5 +61,6 @@ return new class extends Migration
         Schema::dropIfExists('jurusan_sekolah');
         Schema::dropIfExists('jurusan');
         Schema::dropIfExists('sekolah');
+        Schema::dropIfExists('cabang');
     }
 };

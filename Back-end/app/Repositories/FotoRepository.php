@@ -8,10 +8,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class FotoRepository implements FotoInterface
 {
-    public function getAll(): Collection
-    {
-        return Foto::all();
-    }
 
     public function find( $id_referensi)
     {

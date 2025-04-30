@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class DivisiRepository implements DivisiInterface
 {
-    public function getAll(): Collection
+    public function getAll($id): Collection
     {
-        return Divisi::all();
+        return Divisi::where('id_cabang', $id)->get();
     }
 
     public function find(int $id): ? Divisi

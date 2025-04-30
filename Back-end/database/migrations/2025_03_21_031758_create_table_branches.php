@@ -11,18 +11,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cabang', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->uuid('id_perusahaan');
-
-            $table->string('nama');
-            $table->string('bidang_usaha');
-            $table->string('provinsi');
-            $table->string('kota');
-            $table->timestamps();
-
-            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
-        });
 
         Schema::create('divisi', function (Blueprint $table) {
             $table->id()->primary();
@@ -35,10 +23,7 @@ return new class extends Migration
 
         Schema::create('kategori_proyek', function (Blueprint $table) {
             $table->id()->primary();
-            $table->unsignedBigInteger('id_divisi');
             $table->string('nama');
-
-            $table->foreign('id_divisi')->references('id')->on('divisi')->onDelete('cascade');
         });
 
         Schema::create('lowongan', function (Blueprint $table) {
@@ -91,7 +76,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cabang');
         Schema::dropIfExists('mentor');
         Schema::dropIfExists('admin_cabang');
         Schema::dropIfExists('divisi');

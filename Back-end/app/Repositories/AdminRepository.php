@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdminRepository implements AdminInterface
 {
-    public function getAll(): Collection
+    public function getAll($id): Collection
     {
         return Admin_cabang::all();
     }

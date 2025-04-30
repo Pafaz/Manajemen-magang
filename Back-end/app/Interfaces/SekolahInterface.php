@@ -10,5 +10,4 @@ use App\Interfaces\Base\UpdateInterface;
 
 interface SekolahInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
-    //
 }

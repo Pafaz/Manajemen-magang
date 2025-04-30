@@ -20,7 +20,7 @@ class DivisiController extends Controller
 
     public function index()
     {
-        return $this->divisiService->getAllDivisi();
+        return $this->divisiService->getDivisi();
     }
 
     /**
@@ -44,7 +44,7 @@ class DivisiController extends Controller
      */
     public function show($divisi)
     {
-        return $this->divisiService->getDivisiById($divisi);
+        return $this->divisiService->getDivisi($divisi);
     }
 
     /**

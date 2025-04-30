@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class CabangRepository implements CabangInterface
 {
-    public function getAll(): Collection
+    public function getAll($id): Collection
     {
         return Cabang::all();
     }

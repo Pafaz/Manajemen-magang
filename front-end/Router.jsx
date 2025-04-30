@@ -246,7 +246,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "detailmentor",
-        element : < DetailMentor/>
+        element : <DetailMentor/>
       },
     ],
   },

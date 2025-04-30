@@ -1,5 +1,13 @@
 import { useState, useEffect, useRef } from "react";
-import { Trash2, Edit, ChevronDown, X, Plus, AlertTriangle } from "lucide-react";
+import {
+  Trash2,
+  Edit,
+  ChevronDown,
+  X,
+  Plus,
+  AlertTriangle,
+} from "lucide-react";
+import axios from "axios";
 
 export default function UniversityCardGrid() {
   const [partners, setPartners] = useState([]);
@@ -20,64 +28,36 @@ export default function UniversityCardGrid() {
     foto_header: null,
     jurusan: [],
   });
-  
+
   const [newMajor, setNewMajor] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [partnerToDelete, setPartnerToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const categories = ["All", "Sekolah", "Perusahaan", "Lembaga"];
-  const majorsList = [
-    "Informatika",
-    "Agribusiness",
-    "Manajemen",
-  ];
+  const majorsList = ["Informatika", "Agribusiness", "Manajemen"];
 
   useEffect(() => {
     // Dummy data for demonstration purposes
-    const dummyPartners = [
-      {
-        id: 1,
-        nama: "Universitas ABC",
-        alamat: "Jl. ABC No. 123",
-        telepon: "081234567890",
-        jenis_institusi: "Sekolah",
-        website: "https://abc.edu",
-        foto: [{ path: "placeholder.jpg" }],
-        jurusan: [{ nama: "Informatika" }, { nama: "Manajemen" }]
-      },
-      {
-        id: 2,
-        nama: "PT XYZ",
-        alamat: "Jl. XYZ No. 456",
-        telepon: "089876543210",
-        jenis_institusi: "Perusahaan",
-        website: "https://xyz.com",
-        foto: [{ path: "placeholder.jpg" }],
-        jurusan: [{ nama: "Informatika" }]
-      },
-      {
-        id: 3,
-        nama: "Lembaga DEF",
-        alamat: "Jl. DEF No. 789",
-        telepon: "087654321098",
-        jenis_institusi: "Lembaga",
-        website: "https://def.org",
-        foto: [{ path: "placeholder.jpg" }],
-        jurusan: [{ nama: "Agribusiness" }]
-      }
-    ];
-    
-    setPartners(dummyPartners);
+    const fethAllData = async () => {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/mitra`, {
+        headers : {
+          Authorization : `Bearer ${localStorage.getItem("token")}`
+        }
+      })
+      const data = response.data;
+      setPartners(data);
+      console.log(data);
+      
+    } 
+    fethAllData();
     setLoading(false);
   }, []);
 
   const refresh = () => {
     console.log("Refreshing data...");
-    // In a real implementation, this would fetch updated data
   };
 
-  // Handle category selection
   const handleSelectCategory = (category) => {
     setSelectedCategory(category);
     setShowCategoryDropdown(false);
@@ -87,7 +67,7 @@ export default function UniversityCardGrid() {
   const filtered =
     selectedCategory === "All"
       ? partners
-      : partners.filter((p) => p.jenis_institusi === selectedCategory);      
+      : partners.filter((p) => p.jenis_institusi === selectedCategory);
   const openAdd = () => {
     setEditingPartner(null);
     setFormData({
@@ -155,7 +135,7 @@ export default function UniversityCardGrid() {
 
   const savePartner = (e) => {
     e.preventDefault();
-    // For demonstration
+    
     if (editingPartner) {
       console.log("Updated partner:", { ...editingPartner, ...formData });
     } else {
@@ -168,7 +148,7 @@ export default function UniversityCardGrid() {
     setPartnerToDelete(p);
     setShowDeleteModal(true);
   };
-  
+
   const handleDelete = () => {
     setDeleteLoading(true);
     // Simulate API call with setTimeout
@@ -184,7 +164,7 @@ export default function UniversityCardGrid() {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
-        categoryDropdownRef.current && 
+        categoryDropdownRef.current &&
         !categoryDropdownRef.current.contains(event.target)
       ) {
         setShowCategoryDropdown(false);
@@ -205,19 +185,17 @@ export default function UniversityCardGrid() {
       <div className="max-w-9xl mx-auto space-y-6">
         <div className="bg-white p-4 rounded-lg shadow-md">
           <div className="flex justify-between items-center mb-3">
-            <h2 className="text-lg font-bold text-gray-800">
-              Mitra Terdaftar
-            </h2>
+            <h2 className="text-lg font-bold text-gray-800">Mitra Terdaftar</h2>
             <div className="flex items-center space-x-2">
-            <button
-  className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 px-3 py-1.5 rounded-md text-xs flex items-center transition duration-200"
-  onClick={(e) => {
-    e.stopPropagation();
-    openAdd();
-  }}
->
-  <Plus size={14} className="mr-1" /> Tambah Mitra
-</button>
+              <button
+                className="bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 px-3 py-1.5 rounded-md text-xs flex items-center transition duration-200"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openAdd();
+                }}
+              >
+                <Plus size={14} className="mr-1" /> Tambah Mitra
+              </button>
 
               <div className="relative" ref={categoryDropdownRef}>
                 <button
@@ -229,9 +207,11 @@ export default function UniversityCardGrid() {
                 >
                   <span className="mr-1">Kategori:</span>
                   <span className="font-medium">{selectedCategory}</span>
-                  <ChevronDown 
-                    size={14} 
-                    className={`ml-1 transition-transform duration-200 ${showCategoryDropdown ? 'rotate-180' : ''}`} 
+                  <ChevronDown
+                    size={14}
+                    className={`ml-1 transition-transform duration-200 ${
+                      showCategoryDropdown ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
                 {showCategoryDropdown && (
@@ -240,7 +220,9 @@ export default function UniversityCardGrid() {
                       <div
                         key={cat}
                         className={`px-3 py-2 text-xs hover:bg-gray-100 cursor-pointer flex items-center justify-between ${
-                          selectedCategory === cat ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+                          selectedCategory === cat
+                            ? "bg-blue-50 text-blue-600"
+                            : "text-gray-700"
                         }`}
                         onClick={() => handleSelectCategory(cat)}
                       >
@@ -315,8 +297,14 @@ export default function UniversityCardGrid() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]" onClick={() => setShowModal(false)}>
-          <div className="bg-white rounded-lg w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-white rounded-lg w-full max-w-md"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex justify-between items-center p-4 border-b border-gray-200">
               <h2 className="text-lg font-bold text-gray-800">
                 {editingPartner ? "Edit Mitra" : "Tambahkan Mitra Baru"}
@@ -359,18 +347,18 @@ export default function UniversityCardGrid() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Foto Header
-                </label>
-                <input
-                  type="file"
-                  name="foto_header"
-                  onChange={handleFormChange}
-                  className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                  {...(editingPartner ? {} : { required: true })}
-                />
-              </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Foto Header
+                  </label>
+                  <input
+                    type="file"
+                    name="foto_header"
+                    onChange={handleFormChange}
+                    className="w-full p-2 border border-gray-300 rounded-md text-sm"
+                    {...(editingPartner ? {} : { required: true })}
+                  />
+                </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Jenis Institusi
@@ -407,7 +395,6 @@ export default function UniversityCardGrid() {
                 />
               </div>
 
-             
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Foto Header
@@ -424,7 +411,7 @@ export default function UniversityCardGrid() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Jurusan
                 </label>
-                
+
                 {/* Jurusan selector with add button */}
                 <div className="flex space-x-2 mb-2">
                   <select
@@ -435,15 +422,15 @@ export default function UniversityCardGrid() {
                   >
                     <option value="">Pilih jurusan</option>
                     {majorsList
-                      .filter(m => !formData.jurusan.includes(m))
+                      .filter((m) => !formData.jurusan.includes(m))
                       .map((m) => (
-                      <option key={m} value={m}>
-                        {m}
-                      </option>
-                    ))}
+                        <option key={m} value={m}>
+                          {m}
+                        </option>
+                      ))}
                   </select>
                 </div>
-                
+
                 {/* Selected jurusan list */}
                 <div className="mt-2">
                   <p className="text-sm font-medium text-gray-700 mb-1">
@@ -467,7 +454,9 @@ export default function UniversityCardGrid() {
                         </div>
                       ))
                     ) : (
-                      <p className="text-xs text-gray-500">Belum ada jurusan yang dipilih</p>
+                      <p className="text-xs text-gray-500">
+                        Belum ada jurusan yang dipilih
+                      </p>
                     )}
                   </div>
                 </div>
@@ -501,16 +490,18 @@ export default function UniversityCardGrid() {
               <AlertTriangle size={24} className="mr-2" />
               <h3 className="text-lg font-bold">Konfirmasi Hapus</h3>
             </div>
-            
+
             <div className="p-4 mb-4 bg-red-50 border border-red-100 rounded-md">
               <p className="text-gray-700">
-                Apakah Anda yakin ingin menghapus mitra <span className="font-medium">"{partnerToDelete.nama}"</span>?
+                Apakah Anda yakin ingin menghapus mitra{" "}
+                <span className="font-medium">"{partnerToDelete.nama}"</span>?
               </p>
               <p className="mt-2 text-sm text-gray-500">
-                Tindakan ini tidak dapat dibatalkan dan semua data terkait akan dihapus permanen.
+                Tindakan ini tidak dapat dibatalkan dan semua data terkait akan
+                dihapus permanen.
               </p>
             </div>
-            
+
             <div className="flex justify-end space-x-3 mt-6">
               <button
                 onClick={() => setShowDeleteModal(false)}
@@ -522,15 +513,33 @@ export default function UniversityCardGrid() {
               <button
                 onClick={handleDelete}
                 className={`px-4 py-2 bg-red-500 text-white rounded-md text-sm transition duration-200 flex items-center ${
-                  deleteLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-red-600'
+                  deleteLoading
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:bg-red-600"
                 }`}
                 disabled={deleteLoading}
               >
                 {deleteLoading ? (
                   <>
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg
+                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
                     </svg>
                     Menghapus...
                   </>

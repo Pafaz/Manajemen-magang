@@ -28,11 +28,6 @@ class Mentor extends Model
         return $this->belongsTo(User::class, 'id_user');
     }
 
-    public function divisiCabang()
-    {
-        return $this->belongsTo(Divisi_cabang::class, 'id_divisi_cabang');
-    }
-
     public function magang()
     {
         return $this->hasMany(Magang::class, 'id_mentor');

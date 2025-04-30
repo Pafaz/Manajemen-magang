@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
@@ -25,34 +25,15 @@ export default function DataUmumPerusahaan() {
 
   const { userId } = useParams();
   const { token } = useContext(AuthContext);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
   const [districts, setDistricts] = useState([]);
-  const [data, setData] = useState(null);
-  console.log(data);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/peserta/${userId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        setData(response);
-        console.log(response.data.data);
-      } catch (err) {
-        console.error(err);
-        setError("Gagal memuat data perusahaan.");
-      } finally {
-        setLoading(false);
-      }
-    }
-
     async function fetchProvinces() {
       try {
         const res = await fetch(
@@ -64,15 +45,80 @@ export default function DataUmumPerusahaan() {
         console.error("Gagal memuat data provinsi", err);
       }
     }
-
-    fetchData();
+  
     fetchProvinces();
-  }, [userId, token]);
+  }, []);
+  
+  useEffect(() => {
+    if (provinces.length === 0 || isDataLoaded) return;
+  
+    async function fetchData() {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/perusahaan/edit`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const companyData = response.data.data.perusahaan;
+  
+        setFormData((prev) => ({
+          ...prev,
+          nama_penanggung_jawab: companyData.nama_penanggung_jawab,
+          nohp_penanggung_jawab: companyData.nomor_penanggung_jawab,
+          jabatan_penanggung_jawab: companyData.jabatan_penanggung_jawab,
+          email_penanggung_jawab: companyData.email_penanggung_jawab,
+          nama_perusahaan: companyData.nama,
+          tanggal_berdiri: companyData.tanggal_berdiri,
+          deskripsi_perusahaan: companyData.deskripsi,
+          alamat_perusahaan: companyData.alamat,
+          provinsi: companyData.provinsi,
+          kode_pos: companyData.kode_pos,
+          email_perusahaan: companyData.email,
+          telepon_perusahaan: companyData.telepon,
+          website_perusahaan: companyData.website,
+          kota: "",
+          kecamatan: "",
+        }));
+  
+        if (companyData.provinsi) {
+          const selectedProvince = provinces.find(p => p.name === companyData.provinsi);
+  
+          if (selectedProvince) {
+            const cityRes = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${selectedProvince.id}.json`);
+            const cityData = await cityRes.json();
+            setCities(cityData);
+  
+            const selectedCity = cityData.find(c => c.name === companyData.kota);
+            if (selectedCity) {
+              const districtRes = await fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${selectedCity.id}.json`);
+              const districtData = await districtRes.json();
+              setDistricts(districtData);
+  
+              setFormData((prev) => ({
+                ...prev,
+                kota: companyData.kota,
+                kecamatan: companyData.kecamatan,
+              }));
+            }
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Gagal memuat data perusahaan.");
+      } finally {
+        setLoading(false);
+      }
+    }
+  
+    fetchData();
+  }, [provinces, userId, token]);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  }, []);
+  
 
   const handleProvinceChange = async (e) => {
     const selected = provinces.find((p) => p.name === e.target.value);
@@ -130,20 +176,30 @@ export default function DataUmumPerusahaan() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+  
     try {
-      await axios.put(
-        `${import.meta.env.VITE_API_URL}/perusahaan/${userId}`,
+      const url = `${import.meta.env.VITE_API_URL}/perusahaan/update`;
+      console.log("Request URL:", url);
+  
+      const response = await axios.put(
+        url,
         formData,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      alert("Data perusahaan berhasil diperbarui!");
+  
+      if (response.data?.status === "success") {
+        console.log("Data perusahaan berhasil diperbarui!");
+      } else {
+        console.log("Gagal memperbarui data perusahaan.");
+      }
     } catch (err) {
-      console.error(err);
+      console.error("Error saat memperbarui data perusahaan:", err);
       alert("Gagal memperbarui data perusahaan.");
     }
   };
+  
 
   if (loading) return Skeleton();
   if (error) return <p className="text-red-500">{error}</p>;
@@ -301,7 +357,6 @@ export default function DataUmumPerusahaan() {
           {[
             { label: "Nama Perusahaan", name: "nama_perusahaan" },
             { label: "Tanggal Berdiri", name: "tanggal_berdiri" },
-            { label: "Bidang Usaha", name: "bidang_usaha" },
           ].map((field) => (
             <Input
               key={field.name}
@@ -327,17 +382,6 @@ export default function DataUmumPerusahaan() {
         <h2 className="text-lg font-bold mb-4">Kontak Perusahaan</h2>
 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="md:col-span-2">
-            <Textarea
-              label="Alamat Perusahaan"
-              name="alamat_perusahaan"
-              value={formData.alamat_perusahaan}
-              onChange={handleChange}
-              placeholder="Tuliskan alamat perusahaan"
-              rows={2}
-            />
-          </div>
-
           <div>
             <Select
               label="Provinsi"
@@ -394,6 +438,16 @@ export default function DataUmumPerusahaan() {
               onChange={handleChange}
             />
           ))}
+        </div>
+        <div className="md:col-span-2">
+          <Textarea
+            label="Alamat Perusahaan"
+            name="alamat_perusahaan"
+            value={formData.alamat_perusahaan}
+            onChange={handleChange}
+            placeholder="Tuliskan alamat perusahaan"
+            rows={2}
+          />
         </div>
 
         <div className="mb-6">

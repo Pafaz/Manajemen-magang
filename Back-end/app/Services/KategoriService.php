@@ -22,7 +22,7 @@ class KategoriService
     public function getCategories($id = null)
     {
 
-        $kategori = $this->KategoriInterface->find($id);
+        $kategori = $id ? $this->KategoriInterface->find($id) : $this->KategoriInterface->getAll();
         if (!$kategori) {
             return Api::response(null, 'Kategori tidak ditemukan', Response::HTTP_NOT_FOUND);
         }

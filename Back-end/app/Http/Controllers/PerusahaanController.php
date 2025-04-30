@@ -23,7 +23,7 @@ class PerusahaanController extends Controller
     }
     public function index()
     {
-        return$this->perusahaanService->getAllPerusahaan();
+        return$this->perusahaanService->getPerusahaan();
     }
 
     /**
@@ -53,9 +53,9 @@ class PerusahaanController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Perusahaan $perusahaan)
+    public function edit()
     {
-        //
+        return $this->perusahaanService->getPerusahaanByAuth();
     }
 
     /**
@@ -64,7 +64,6 @@ class PerusahaanController extends Controller
     public function update(PerusahaanRequest $request)
     {
         return $this->perusahaanService->simpanProfil($request->validated(), true);
-    
     }
     
 

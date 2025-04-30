@@ -7,14 +7,19 @@ use App\Http\Resources\DivisiResource;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\JurusanResource;
 use App\Interfaces\DivisiInterface;
+use App\Interfaces\KategoriInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class DivisiService
 {
     private DivisiInterface $DivisiInterface;
-    public function __construct(DivisiInterface $DivisiInterface)
+    private FotoService $foto;
+    private KategoriInterface $kategoriInterface;
+    public function __construct(DivisiInterface $DivisiInterface, FotoService $foto, KategoriInterface $kategoriInterface)
     {
-        $this->DivisiInterface = $DivisiInterface; 
+        $this->DivisiInterface = $DivisiInterface;
+        $this->foto = $foto;
+        $this->kategoriInterface = $kategoriInterface;
     }
 
     public function getAllDivisi()
@@ -26,49 +31,51 @@ class DivisiService
         );
     }
 
-    public function createDivisi(array $data)
+    public function simpanDivisi(array $data, bool $isUpdate = false, $id = null)
     {
-        DB::beginTransaction();
-        try {
-            $divisi = $this->DivisiInterface->create($data);
-            // dd(get_class($divisi), $divisi);
-
-
-            if ($divisi->wasRecentlyCreated === false) {
-                DB::rollBack();
-
-                return Api::response(
-                    null,
-                    'Divisi sudah ada dengan nama yang sama.',
-                    Response::HTTP_CONFLICT
-                );
-            }
-
-            DB::commit();
-
-            return Api::response(
-                DivisiResource::make($divisi),
-                'Divisi created successfully',
-                Response::HTTP_CREATED
-            );
-        } catch (\Throwable $th) {
-            DB::rollBack();
-            return Api::response(
-                null,
-                'Failed to create Divisi: ' . $th->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+        $perusahaanId = auth('sanctum')->user()->perusahaan->id;
+        if (!$perusahaanId) {
+            return Api::response(null, 'Perusahaan tidak ditemukan.', Response::HTTP_FORBIDDEN);
         }
-    }
 
+        $divisi = $isUpdate
+            ? $this->DivisiInterface->update(id: $id, data: [
+                'id_perusahaan' => $perusahaanId,
+                'nama' => $data['nama'],
+            ])
+            : $this->DivisiInterface->create([
+                'id_perusahaan' => $perusahaanId,
+                'nama' => $data['nama'],
+            ]);
 
-    public function updateDivisi(int $id, array $data)
-    {
-        $jurusan = $this->DivisiInterface->update($id, $data);
+            $category = $isUpdate
+            ? $this->kategoriInterface->update(id: $id, data: [
+                'id_perusahaan' => $perusahaanId,
+                'nama' => $data['nama'],
+            ])
+            : $this->kategoriInterface->create([
+                'id_perusahaan' => $perusahaanId,
+                'nama' => $data['nama'],
+            ]);
+
+        if (!empty($data['header_divisi'])) {
+            $isUpdate 
+                ? $this->foto->updateFoto($data['header_divisi'], $divisi->id.$divisi->nama.$perusahaanId, 'header_divisi') 
+                : $this->foto->createFoto($data['header_divisi'], $divisi->id.$divisi->nama.$perusahaanId, 'header_divisi');
+        }
+
+        $message = $isUpdate
+            ? 'Berhasil memperbarui divisi'
+            : 'Berhasil membuat divisi';
+
+        $statusCode = $isUpdate
+            ? Response::HTTP_OK
+            : Response::HTTP_CREATED;
+
         return Api::response(
-            DivisiResource::make($jurusan),
-            'Divisi updated successfully',
-            Response::HTTP_OK
+            DivisiResource::make($divisi),
+            $message,
+            $statusCode,
         );
     }
 

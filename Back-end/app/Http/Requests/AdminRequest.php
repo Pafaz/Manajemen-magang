@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AdminRequest extends FormRequest
+class AdminRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,13 +21,23 @@ class AdminRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->isUpdate()) {
+            return [
+                'name' => 'sometimes|string|max:255',
+                'email' => 'sometimes|string|email|max:255',
+                'password' => 'sometimes|string',
+                'telepon' => 'sometimes|string',
+                'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+                'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            ];
+        }
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
-            'password' => 'required|string|min:8',
+            'password' => 'sometimes|string',
             'telepon' => 'required|string',
-            'id_cabang' => 'required|integer|exists:cabang,id',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'cover' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

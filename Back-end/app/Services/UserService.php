@@ -41,12 +41,9 @@ class UserService
     }
 
     public function Login(array $data)
-    {      
+    {
         $user = $this->UserInterface->find($data['email']);
 
-        if ($user) {
-            # code...
-        }
         if (!$user || !password_verify($data['password'], $user->password)) {
             return Api::response(
                 null,
@@ -69,7 +66,8 @@ class UserService
         );
     }
 
-    public function logout($user){
+    public function logout($user)
+    {
         $user->currentAccessToken()->delete();
         return Api::response(
             null,
@@ -91,7 +89,6 @@ class UserService
     public function resetPassword(array $data)
     {
         $user = $this->UserInterface->find($data['email']);
-
     }
 
     public function updatePassword(array $data)
@@ -121,30 +118,29 @@ class UserService
     public function handleGoogleCallback(array $data, string $role)
     {
         try {
-            $redirectUri = ($role == 'peserta') 
+            $redirectUri = ($role == 'peserta')
                 ? env('GOOGLE_REDIRECT_URI_PESERTA')
                 : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
-    
+
             $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
-    
         } catch (ClientException $e) {
             Log::error("Google Auth Failed: " . $e->getMessage());
             return Api::response(null, 'Autentikasi Google gagal', 401);
         }
-    
+
         // Cek existing user
         $user = User::where('email', $socialiteUser->getEmail())->first();
-    
+
         if ($user) {
             // Jika user sudah ada, update data Google TAPI JANGAN ubah role
             $user->update([
                 'google_id' => $socialiteUser->getId(),
                 'avatar' => $socialiteUser->getAvatar()
             ]);
-            
+
             // Dapatkan role yang sudah ada
             $existingRole = $user->getRoleNames()->first();
-            
+
             // Jika mencoba login dengan role berbeda, tolak
             if ($existingRole && $existingRole != $role) {
                 return Api::response(
@@ -164,11 +160,11 @@ class UserService
             ]);
             $user->assignRole($role);
         }
-    
+
         // Hapus token lama dan buat baru
         $user->tokens()->delete();
         $token = $user->createToken('google-token')->plainTextToken;
-    
+
         return Api::response([
             'user' => new UserResource($user),
             'token' => $token,

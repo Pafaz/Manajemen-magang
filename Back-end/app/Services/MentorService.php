@@ -27,10 +27,10 @@ class MentorService
     public function getAllMentor()
     {
         $data = $this->MentorInterface->getAll();
-        
+
         return Api::response(
             MentorResource::collection($data),
-            'Mentor Berhasil Ditemukan', 
+            'Mentor Berhasil Ditemukan',
             Response::HTTP_OK
         );
     }
@@ -49,22 +49,22 @@ class MentorService
     public function createMentor(array $data)
     {
         DB::beginTransaction();
-    
+
         try {
             $user = $this->userInterface->create([
                 'name' => $data['nama'],
                 'email' => $data['email'],
                 'telepon' => $data['telepon'],
-                'password' => bcrypt($data['password']),
+                'password' => bcrypt($data['telepon']),
             ]);
-    
+
             $user->assignRole('Mentor');
-    
+
             $Mentor = $this->MentorInterface->create([
                 'id_divisi' => $data['id_divisi'],
                 'id_user' => $user->id,
             ]);
-    
+
             // Ensure Mentor is created
             if (!$Mentor) {
                 DB::rollBack();
@@ -78,7 +78,7 @@ class MentorService
             if (!empty($data['foto'])) {
                 $this->foto->createFoto($data['foto'], $Mentor->id, 'profile');
             }
-    
+
             DB::commit();
             return Api::response(
                 MentorResource::make($Mentor),
@@ -92,16 +92,16 @@ class MentorService
                 'Failed to create Mentor: ' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
-        }       
+        }
     }
-    
-    
+
+
 
     public function updateMentor(string $id, array $data)
     {
         try {
             $Mentor = $this->MentorInterface->find($id);
-    
+
             if (!$Mentor) {
                 return Api::response(
                     null,
@@ -109,15 +109,15 @@ class MentorService
                     Response::HTTP_NOT_FOUND
                 );
             }
-    
+
             $updatedMentor = $this->MentorInterface->update($id, $data);
-    
+
             if (!empty($data['foto'])) {
                 $this->foto->deleteFoto($Mentor->id);
-    
+
                 $this->foto->createFoto($data['foto'], $updatedMentor->id, 'profile');
             }
-    
+
             return Api::response(
                 MentorResource::make($updatedMentor),
                 'Berhasil Mengubah Mentor',
@@ -131,14 +131,13 @@ class MentorService
             );
         }
     }
-    
 
     public function deleteMentor(string $id)
     {
         $id_user = $this->MentorInterface->find($id)->id_user;
 
         $this->MentorInterface->delete($id);
-        
+
         $this->userInterface->delete($id_user);
 
         return Api::response(
@@ -147,5 +146,4 @@ class MentorService
             Response::HTTP_OK
         );
     }
-    
 }

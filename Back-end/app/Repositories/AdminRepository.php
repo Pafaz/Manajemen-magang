@@ -37,7 +37,7 @@ class AdminRepository implements AdminInterface
         return Admin_cabang::create($data);
     }
 
-    public function update(int $id, array $data): Admin_cabang
+    public function update($id, array $data): Admin_cabang
     {
         $admin_cabang = Admin_cabang::findOrFail($id);
         $admin_cabang->update($data);

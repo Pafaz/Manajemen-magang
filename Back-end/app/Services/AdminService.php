@@ -8,11 +8,7 @@ use App\Services\FotoService;
 use App\Interfaces\UserInterface;
 use App\Interfaces\AdminInterface;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\AdminRequest;
-use App\Interfaces\CabangInterface;
-use App\Http\Resources\UserResource;
 use App\Http\Resources\AdminResource;
-use App\Interfaces\PerusahaanInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminService
@@ -20,16 +16,12 @@ class AdminService
     private UserInterface $userInterface;
     private AdminInterface $adminInterface;
     private FotoService $foto;
-    private PerusahaanInterface $perusahaanInterface;
-    private CabangInterface $cabangInterface;
 
-    public function __construct(AdminInterface $adminInterface, FotoService $foto, PerusahaanInterface $perusahaanInterface, UserInterface $userInterface, CabangInterface $cabangInterface)
+    public function __construct(AdminInterface $adminInterface, FotoService $foto, UserInterface $userInterface)
     {
         $this->adminInterface = $adminInterface;
         $this->foto = $foto;
-        $this->perusahaanInterface = $perusahaanInterface;
         $this->userInterface = $userInterface;
-        $this->cabangInterface = $cabangInterface;
     }
 
     public function getAllAdmin()
@@ -62,7 +54,7 @@ class AdminService
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'telepon' => $data['telepon'],
-                'password' => bcrypt($data['telepon']),
+                'password' => bcrypt($data['password']),
             ]);
 
             $user->assignRole('admin');
@@ -77,7 +69,7 @@ class AdminService
 
             $files = [
                 'profile' => 'profile',
-                'header' => 'header'
+                'cover' => 'cover'
             ];
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
@@ -106,6 +98,9 @@ class AdminService
         DB::beginTransaction();
         try {
             $admin = $this->adminInterface->find($id);
+
+            $id_user = $admin->user->id;
+
             if (!$admin) {
                 return Api::response(
                     null,
@@ -117,12 +112,14 @@ class AdminService
             // Update the admin data
             $updatedAdmin = $this->adminInterface->update($id, $data);
 
+            $this->userInterface->update($id_user, $data);
+
             if (!empty($data['profile']) && !empty($data['header'])) {
                 $this->foto->deleteFoto($admin->id);
 
                 $files = [
                     'profile' => 'profile',
-                    'header' => 'header'
+                    'cover' => 'cover'
                 ];
 
                 foreach ($files as $key => $tipe) {
@@ -148,7 +145,6 @@ class AdminService
             );
         }
     }
-
 
     public function deleteAdmin(string $id)
     {

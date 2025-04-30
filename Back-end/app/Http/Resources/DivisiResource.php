@@ -19,7 +19,7 @@ class DivisiResource extends JsonResource
             'id' => $this->id,
             'nama' => $this->nama,
             'kategori' => CategoryResource::collection($this->kategori),
-            // 'foto' => FotoResource::collection($this->foto),
+            'foto' => FotoResource::collection($this->foto),
         ];
     }
 }

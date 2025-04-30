@@ -43,7 +43,6 @@ class DivisiService
     public function simpanDivisi(array $data, bool $isUpdate = false, $id = null)
     {
         DB::beginTransaction();
-    
         try {
             $divisiData = collect($data)->only('nama')->toArray();
             $divisiData['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
@@ -61,10 +60,10 @@ class DivisiService
                 $divisi->kategori()->sync($kategoriIds);
             }
     
-            if (!empty($data['foto_cover_divisi'])) {
+            if (!empty($data['foto_cover'])) {
                 $isUpdate
-                    ? $this->foto->updateFoto($data['foto_cover_divisi'], $divisi->id, 'foto_cover_divisi')
-                    : $this->foto->createFoto($data['foto_cover_divisi'], $divisi->id, 'foto_cover_divisi');
+                    ? $this->foto->updateFoto($data['foto_cover'], $divisi->id, 'foto_cover')
+                    : $this->foto->createFoto($data['foto_cover'], $divisi->id, 'foto_cover');
             }
     
             DB::commit();

@@ -17,7 +17,7 @@ class Kategori extends Model
         'created_at',
         'updated_at',
     ];
-
+    public $timestamps = false;
     public function divisi()
     {
         return $this->belongsToMany(Divisi::class, 'divisi_kategori', 'id_kategori', 'id_divisi');

@@ -13,9 +13,7 @@ class Divisi extends Model
     protected $table = 'divisi';
     protected $fillable = [
         'nama',
-        'id_perusahaan',
         'id_cabang',
-        'id_kategori-proyek',
         'created_at',
         'updated_at',
     ];

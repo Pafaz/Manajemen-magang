@@ -22,79 +22,84 @@ class DivisiService
         $this->kategoriInterface = $kategoriInterface;
     }
 
-    public function getAllDivisi()
+    public function getDivisi($id = null)
     {
-        $data = $this->DivisiInterface->getAll();
-        return Api::response(
-            DivisiResource::collection($data), 
-            'Divisi Fetched Successfully',
-        );
+        $divisi = $id ? $this->DivisiInterface->find($id) : $this->DivisiInterface->getAll(auth('sanctum')->user()->id_cabang_aktif);
+        if (!$divisi) {
+            return Api::response(null, 'Divisi tidak ditemukan', Response::HTTP_NOT_FOUND);
+        }
+
+        $data = $id
+            ? DivisiResource::make($divisi)
+            : DivisiResource::collection($divisi);
+
+        $message = $id 
+            ? 'Berhasil mengambil data divisi'
+            : 'Berhasil mengambil semua data divisi';
+
+        return Api::response($data, $message);
     }
 
     public function simpanDivisi(array $data, bool $isUpdate = false, $id = null)
     {
-        $perusahaanId = auth('sanctum')->user()->perusahaan->id;
-        if (!$perusahaanId) {
-            return Api::response(null, 'Perusahaan tidak ditemukan.', Response::HTTP_FORBIDDEN);
+        DB::beginTransaction();
+        try {
+            $divisiData = collect($data)->only('nama')->toArray();
+            $divisiData['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
+            $divisi = $isUpdate
+                ? $this->DivisiInterface->update($id, $divisiData)
+                : $this->DivisiInterface->create($divisiData);
+    
+            $kategoriIds = [];
+            if (!empty($data['kategori_proyek'])) {
+                foreach ($data['kategori_proyek'] as $namaKategori) {
+                    $kategori = $this->kategoriInterface->create(['nama' => $namaKategori]);
+                    $kategoriIds[] = $kategori->id;
+                }
+    
+                $divisi->kategori()->sync($kategoriIds);
+            }
+    
+            if (!empty($data['foto_cover'])) {
+                $isUpdate
+                    ? $this->foto->updateFoto($data['foto_cover'], $divisi->id, 'foto_cover')
+                    : $this->foto->createFoto($data['foto_cover'], $divisi->id, 'foto_cover');
+            }
+    
+            DB::commit();
+    
+            $message = $isUpdate
+                ? 'Divisi & kategori berhasil diperbarui'
+                : 'Divisi & kategori berhasil disimpan';
+    
+            $statusCode = $isUpdate
+                ? Response::HTTP_OK
+                : Response::HTTP_CREATED;
+    
+            return Api::response(
+                DivisiResource::make($divisi->load('kategori', 'foto')),
+                $message,
+                $statusCode
+            );
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return Api::response(
+                null,
+                'Gagal menyimpan divisi: ' . $th->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        $divisi = $isUpdate
-            ? $this->DivisiInterface->update(id: $id, data: [
-                'id_perusahaan' => $perusahaanId,
-                'nama' => $data['nama'],
-            ])
-            : $this->DivisiInterface->create([
-                'id_perusahaan' => $perusahaanId,
-                'nama' => $data['nama'],
-            ]);
-
-            $category = $isUpdate
-            ? $this->kategoriInterface->update(id: $id, data: [
-                'id_perusahaan' => $perusahaanId,
-                'nama' => $data['nama'],
-            ])
-            : $this->kategoriInterface->create([
-                'id_perusahaan' => $perusahaanId,
-                'nama' => $data['nama'],
-            ]);
-
-        if (!empty($data['header_divisi'])) {
-            $isUpdate 
-                ? $this->foto->updateFoto($data['header_divisi'], $divisi->id.$divisi->nama.$perusahaanId, 'header_divisi') 
-                : $this->foto->createFoto($data['header_divisi'], $divisi->id.$divisi->nama.$perusahaanId, 'header_divisi');
-        }
-
-        $message = $isUpdate
-            ? 'Berhasil memperbarui divisi'
-            : 'Berhasil membuat divisi';
-
-        $statusCode = $isUpdate
-            ? Response::HTTP_OK
-            : Response::HTTP_CREATED;
-
-        return Api::response(
-            DivisiResource::make($divisi),
-            $message,
-            $statusCode,
-        );
     }
+    
 
     public function deleteDivisi(int $id)
     {
-        $this->DivisiInterface->delete($id);
+        $divisi = $this->DivisiInterface->find($id);
+        $divisi->kategori()->detach();
+        $divisi->delete();
         return Api::response(
             null,
-            'Divisi deleted successfully',
-            Response::HTTP_OK
-        );
-    }
-
-    public function getDivisiById(int $id)
-    {
-        $divisi = $this->DivisiInterface->find($id);
-        return Api::response(
-            DivisiResource::make($divisi),
-            'Divisi fetched successfully',
+            'Divisi berhasil dihapus',
             Response::HTTP_OK
         );
     }

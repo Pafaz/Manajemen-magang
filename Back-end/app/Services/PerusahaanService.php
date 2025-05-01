@@ -80,7 +80,7 @@ class PerusahaanService
                 throw new \Exception('Tidak ada data yang dikirim untuk diperbarui');
             }
             $userData = array_filter([
-                'name' => $data['nama'] ?? null,
+                'nama' => $data['nama'] ?? null,
                 'telepon' => $data['telepon'] ?? null,
                 'email' => $data['email'] ?? null,
             ]);

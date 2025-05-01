@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Foto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,7 +18,8 @@ class DivisiResource extends JsonResource
         return [
             'id' => $this->id,
             'nama' => $this->nama,
-            'id_perusahaan' => $this->id_perusahaan
+            'kategori' => CategoryResource::collection($this->kategori),
+            'foto' => FotoResource::collection($this->foto),
         ];
     }
 }

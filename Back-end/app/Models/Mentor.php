@@ -21,6 +21,7 @@ class Mentor extends Model
         'id',
         'id_user',
         'id_divisi',
+        'id_cabang'
     ];
 
     public function user()

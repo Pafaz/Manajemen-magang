@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdminRepository implements AdminInterface
 {
-    public function getAll(): Collection
+    public function getAll($id): Collection
     {
         return Admin_cabang::all();
     }
@@ -22,26 +22,22 @@ class AdminRepository implements AdminInterface
         return Admin_cabang::where('id_cabang', $id_cabang);
     }
 
-    public function find($id): ? Admin_cabang
+    public function find($id): ?Admin_cabang
     {
         return Admin_cabang::findOrFail($id);
     }
 
-    public function findByUser($id): ? Admin_cabang
+    public function findByUser($id): ?Admin_cabang
     {
         return Admin_cabang::where('id_cabang', $id)->first();
     }
 
-    public function create(array $data, $role): ? Model
+    public function create(array $data): ?Admin_cabang
     {
-        if ($role == 'perusahaan') {
-            return Admin_perusahaan::create($data);
-        }
-        
         return Admin_cabang::create($data);
     }
 
-    public function update(int $id, array $data): Admin_cabang
+    public function update($id, array $data): Admin_cabang
     {
         $admin_cabang = Admin_cabang::findOrFail($id);
         $admin_cabang->update($data);

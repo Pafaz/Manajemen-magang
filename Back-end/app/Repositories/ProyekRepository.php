@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ProyekRepository implements ProyekInterface
 {
-    public function getAll(): Collection
+    public function getAll($id): Collection
     {
         return Proyek::all();
     }

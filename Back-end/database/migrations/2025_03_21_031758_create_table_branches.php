@@ -11,37 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cabang', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->uuid('id_perusahaan');
-            $table->string('bidang_usaha');
-            $table->string('provinsi');
-            $table->string('kota');
-            $table->string('website');
-            $table->string('instagram');
-            $table->string('linkedin');
-            $table->timestamps();
-
-            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
-        });
 
         Schema::create('divisi', function (Blueprint $table) {
             $table->id()->primary();
             $table->string('nama');
-            $table->unsignedBigInteger('id_cabang')->nullable();
-            $table->uuid('id_perusahaan');
+            $table->unsignedBigInteger('id_cabang');
             $table->timestamps();
 
+<<<<<<< HEAD
             $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
+=======
+>>>>>>> 3ee2298b44c7ce9bfe1ae7dee2b855f304ccb905
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
         });
 
         Schema::create('kategori_proyek', function (Blueprint $table) {
             $table->id()->primary();
-            $table->unsignedBigInteger('id_divisi');
             $table->string('nama');
-
-            $table->foreign('id_divisi')->references('id')->on('divisi')->onDelete('cascade');
         });
 
         Schema::create('lowongan', function (Blueprint $table) {
@@ -94,7 +80,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cabang');
         Schema::dropIfExists('mentor');
         Schema::dropIfExists('admin_cabang');
         Schema::dropIfExists('divisi');

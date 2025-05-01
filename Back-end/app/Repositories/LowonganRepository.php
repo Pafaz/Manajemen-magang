@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class LowonganRepository implements LowonganInterface
 {
-    public function getAll(): Collection
+    public function getAll($id): Collection
     {
         return Lowongan::all();
     }

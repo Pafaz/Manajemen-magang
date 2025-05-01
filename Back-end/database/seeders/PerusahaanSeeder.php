@@ -37,7 +37,6 @@ class PerusahaanSeeder extends Seeder
             'alamat' => 'Jl. Teknologi No.1, Jakarta',
             'kode_pos' => '12345',
             'website' => 'https://www.perusahaan-example.com',
-            'bidang_usaha' => 'Software Development',
             'nama_penanggung_jawab' => 'John Doe',
             'nomor_penanggung_jawab' => '1234567890',
             'jabatan_penanggung_jawab' => 'CEO',
@@ -67,28 +66,25 @@ class PerusahaanSeeder extends Seeder
         ]);
 
         Cabang::create([
-            'bidang_usaha' => $perusahaan_record->bidang_usaha,
+            'nama' => 'Hummatech Malang',
+            'bidang_usaha' => 'Software Development',
             'provinsi' => 'Jawa Timur',
             'kota' => 'Surabaya',
-            'website' => 'https://www.google.com',
-            'instagram' => 'https://www.google.com',
-            'linkedin' => 'https://www.google.com',
             'id_perusahaan' => $perusahaan_record->id
         ]);
+        // $kategori = Kategori::create([
+        //     'id_perusahaan' => $perusahaan_record->id,
+        //     'nama' => 'Tahap Pemula',
+        //     'created_at' => now(),
+        //     'updated_at' => now()
+        // ]);
 
-        $kategori =Kategori::create([
-            'id_perusahaan' => $perusahaan_record->id,
-            'nama' => 'Tahap Pemula',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        Divisi::create([
-            'id_perusahaan' => $perusahaan_record->id,
-            'nama' => 'Front-End',
-            'id_kategori-proyek' => $kategori->id,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Divisi::create([
+        //     'id_perusahaan' => $perusahaan_record->id,
+        //     'nama' => 'Front-End',
+        //     'id_kategori-proyek' => $kategori->id,
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
     }
 }

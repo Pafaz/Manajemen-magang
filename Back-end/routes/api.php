@@ -44,7 +44,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('mentor', MentorController::class);
         Route::apiResource('cabang', CabangController::class);
-
+        Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
         //perusahaan
         Route::post('/perusahaan', [PerusahaanController::class, 'store']);
         Route::get('/perusahaan/detail', [PerusahaanController::class, 'show']);

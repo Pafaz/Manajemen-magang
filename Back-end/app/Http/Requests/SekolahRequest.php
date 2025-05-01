@@ -11,9 +11,7 @@ class SekolahRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        // dd($this->all());
         if ($this->method() == 'PUT') {
-            // dd($this);
             return [
                 'nama' => 'sometimes|string|max:50|unique:sekolah,nama,' . $this->route('mitra'),
                 'alamat' => 'sometimes|string|max:255',

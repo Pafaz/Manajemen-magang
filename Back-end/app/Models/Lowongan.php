@@ -11,19 +11,18 @@ class Lowongan extends Model
     use HasFactory;
 
     protected $table = 'lowongan';
-
+    public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [
-        'id_cabang', 
+        'id_cabang',
         'id_perusahaan',
         'id_divisi',
         'tanggal_mulai',
         'tanggal_selesai',
         'max_kuota',
-        'deskripsi',
+        'requirement',
+        'durasi',
+        'jobdesc',
         'status',
-        'email_hrd',
-        'created_at',
-        'updated_ay'
     ];
 }

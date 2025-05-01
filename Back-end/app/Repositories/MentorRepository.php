@@ -10,20 +10,20 @@ class MentorRepository implements MentorInterface
 {
     public function getAll($id): Collection
     {
-        return Mentor::all();
+        return Mentor::where('id_cabang', $id)->get();
     }
 
-    public function find($id): ? Mentor
+    public function find($id): ?Mentor
     {
         return Mentor::findOrFail($id)->first();
     }
 
-    public function create(array $data): ? Mentor
+    public function create(array $data): ?Mentor
     {
         return Mentor::create($data);
     }
 
-    public function update( $id, array $data): Mentor
+    public function update($id, array $data): Mentor
     {
         $mentor = Mentor::findOrFail($id);
         $mentor->update($data);

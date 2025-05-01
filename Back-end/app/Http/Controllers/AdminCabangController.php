@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin_cabang;
-use Illuminate\Http\Request;
 use App\Services\AdminService;
 use App\Http\Requests\AdminRequest;
 

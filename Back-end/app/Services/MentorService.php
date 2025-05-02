@@ -55,7 +55,6 @@ class MentorService
         try {
             $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
 
-            // dd($id_cabang);
             $user = $this->userInterface->create([
                 'nama' => $data['nama'],
                 'email' => $data['email'],
@@ -72,8 +71,7 @@ class MentorService
                 'id_cabang' => $id_cabang
             ]);
 
-            if (!$Mentor) {
-
+            if (!$mentor) {
                 DB::rollBack();
                 return Api::response(
                     null,
@@ -88,9 +86,7 @@ class MentorService
             ];
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
-
-                    $this->foto->createFoto($data[$key], $Mentor->id, $tipe);
-
+                    $this->foto->createFoto($data[$key], $mentor->id, $tipe);
                 }
             }
 
@@ -115,26 +111,23 @@ class MentorService
         try {
             $mentor = $this->mentorInterface->find($id);
 
-            $id_user = $mentor->user->id;
-
             if (!$mentor) {
-
                 return Api::response(
                     null,
                     'Mentor not found',
                     Response::HTTP_NOT_FOUND
                 );
             }
-            $id_user = $Mentor->user->id;
+
+            $id_user = $mentor->user->id;
+
             $this->userInterface->update($id_user, $data);
 
             $updatedMentor = $this->mentorInterface->update($id, $data);
 
-            $this->userInterface->update($id_user, $data);
-
-            if (!empty($data['profile']) && !empty($data['header'])) {
+            if (!empty($data['profile']) && !empty($data['cover'])) {
                 $this->foto->deleteFoto($mentor->id);
-
+            }
 
             $files = [
                 'profile' => 'profile',
@@ -142,8 +135,7 @@ class MentorService
             ];
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
-                    $this->foto->deleteFoto($Mentor->id);
-                    $this->foto->createFoto($data[$key], $Mentor->id, $tipe);
+                    $this->foto->createFoto($data[$key], $mentor->id, $tipe);
                 }
             }
 

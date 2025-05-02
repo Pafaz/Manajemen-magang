@@ -51,9 +51,10 @@ class AdminService
         DB::beginTransaction();
         try {
             $user = $this->userInterface->create([
-                'name' => $data['name'],
+                'nama' => $data['nama'],
                 'email' => $data['email'],
                 'telepon' => $data['telepon'],
+                'id_cabang' => $data['id_cabang'],
                 'password' => bcrypt($data['password']),
             ]);
 

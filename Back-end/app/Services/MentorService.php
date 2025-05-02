@@ -30,7 +30,7 @@ class MentorService
 
         return Api::response(
             MentorResource::collection($data),
-            'Mentor Berhasil Ditemukan',
+            'Berhasil Mengambil semua data mentor',
             Response::HTTP_OK
         );
     }
@@ -52,7 +52,7 @@ class MentorService
 
         try {
             $user = $this->userInterface->create([
-                'name' => $data['nama'],
+                'nama' => $data['nama'],
                 'email' => $data['email'],
                 'telepon' => $data['telepon'],
                 'password' => bcrypt($data['telepon']),
@@ -65,7 +65,6 @@ class MentorService
                 'id_user' => $user->id,
             ]);
 
-            // Ensure Mentor is created
             if (!$Mentor) {
                 DB::rollBack();
                 return Api::response(
@@ -75,8 +74,14 @@ class MentorService
                 );
             }
 
-            if (!empty($data['foto'])) {
-                $this->foto->createFoto($data['foto'], $Mentor->id, 'profile');
+            $files = [
+                'profile' => 'profile',
+                'cover' => 'cover'
+            ];
+            foreach ($files as $key => $tipe) {
+                if (!empty($data[$key])) {
+                    $this->foto->createFoto($data[$key], $Mentor->id, $tipe);
+                }
             }
 
             DB::commit();
@@ -95,13 +100,10 @@ class MentorService
         }
     }
 
-
-
     public function updateMentor(string $id, array $data)
     {
         try {
             $Mentor = $this->MentorInterface->find($id);
-
             if (!$Mentor) {
                 return Api::response(
                     null,
@@ -109,13 +111,26 @@ class MentorService
                     Response::HTTP_NOT_FOUND
                 );
             }
+            $id_user = $Mentor->user->id;
+            $this->userInterface->update($id_user, $data);
 
             $updatedMentor = $this->MentorInterface->update($id, $data);
 
-            if (!empty($data['foto'])) {
-                $this->foto->deleteFoto($Mentor->id);
+            // if (!empty($data['foto'])) {
+            //     $this->foto->deleteFoto($Mentor->id);
 
-                $this->foto->createFoto($data['foto'], $updatedMentor->id, 'profile');
+            //     $this->foto->createFoto($data['foto'], $updatedMentor->id, 'profile');
+            // }
+
+            $files = [
+                'profile' => 'profile',
+                'cover' => 'cover'
+            ];
+            foreach ($files as $key => $tipe) {
+                if (!empty($data[$key])) {
+                    $this->foto->deleteFoto($Mentor->id);
+                    $this->foto->createFoto($data[$key], $Mentor->id, $tipe);
+                }
             }
 
             return Api::response(

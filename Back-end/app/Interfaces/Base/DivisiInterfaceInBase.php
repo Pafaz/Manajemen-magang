@@ -4,7 +4,7 @@ namespace App\Interfaces\Base;
 
 use Illuminate\Database\Eloquent\Collection;
 
-interface GetAllInterface
+interface DivisiInterfaceInBase
 {
-    public function getAll(): Collection;
+    public function getAll($id): Collection;
 }

@@ -24,7 +24,7 @@ abstract class BaseFormRequest extends FormRequest
      */
     public function isUpdate(): bool
     {
-        return $this->isMethod('put') || $this->isMethod('patch');
+        return $this->isMethod('PUT') || $this->isMethod('PATCH');
     }
 
     public function messages(): array

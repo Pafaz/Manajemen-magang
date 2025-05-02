@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SuratRepository implements SuratInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Surat::all();
     }

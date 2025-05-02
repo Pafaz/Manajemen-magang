@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MagangRepository implements MagangInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Magang::all();
     }

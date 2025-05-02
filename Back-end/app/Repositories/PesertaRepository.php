@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PesertaRepository implements PesertaInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Peserta::all();
     }

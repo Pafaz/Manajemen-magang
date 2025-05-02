@@ -10,7 +10,7 @@ class MentorRepository implements MentorInterface
 {
     public function getAll(): Collection
     {
-        return Mentor::where('id_cabang', $id)->get();
+        return Mentor::all();
     }
 
     public function find($id): ?Mentor

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class JadwalPresentasiRepository implements JadwalPresentasiInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Jadwal_Presentasi::all();
     }

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PiketRepository implements PiketInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Piket::all();
     }

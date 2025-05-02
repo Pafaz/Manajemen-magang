@@ -10,7 +10,7 @@ class AdminRepository implements AdminInterface
 {
     public function getAll(): Collection
     {
-        return Admin_cabang::where('id_cabang', $id)->get();
+        return Admin_cabang::all();
     }
 
     public function getByCabang($id_cabang)

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class RfidRepository implements RfidInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Rfid::all();
     }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class RevisiRepository implements RevisiInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Revisi::all();
     }

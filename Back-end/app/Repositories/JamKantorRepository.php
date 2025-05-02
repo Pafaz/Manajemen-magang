@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class JamKantorRepository implements JamKantorInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Jam_Kantor::all();
     }

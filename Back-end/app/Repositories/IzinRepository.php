@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class IzinRepository implements IzinInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Izin::all();
     }

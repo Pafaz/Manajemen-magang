@@ -11,10 +11,12 @@ use Symfony\Component\HttpFoundation\Response;
 class MagangService
 {
     private MagangInterface $MagangInterface;
+    private FotoService $foto;
 
-    public function __construct(MagangInterface $MagangInterface)
+    public function __construct(MagangInterface $MagangInterface, FotoService $foto)
     {
         $this->MagangInterface = $MagangInterface;
+        $this->foto = $foto;
     }
 
     public function getAllMagang()
@@ -26,12 +28,25 @@ class MagangService
         );
     }
 
-    public function createMagang(array $data)
+    public function applyMagang(array $data)
     {
-        $magang = $this->MagangInterface->create($data);
+        $magang = $this->MagangInterface->create([
+            
+        ]);
+
+        $files = [
+            'surat_pernyataan_diri' => 'surat_pernyataan_diri',
+            'surat_pernyataan_ortu' => 'surat_pernyataan_ortu',
+        ];
+
+        foreach ($files as $key => $type) {
+            if (!empty($data[$key])) {
+                $this->foto->createFoto($data[$key], $perusahaan->id, $type);
+            }
+        }
         return Api::response(
             MagangResource::make($magang),
-            'Magang created successfully',
+            'Berhasil mengajukan magang',
             Response::HTTP_CREATED
         );
     }

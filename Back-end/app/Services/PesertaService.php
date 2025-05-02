@@ -22,7 +22,7 @@ class PesertaService
         $this->magangInterface = $magangInterface;
     }
 
-    public function getPeserta($id, $isUpdate = false)
+    public function getPeserta($id = null, $isUpdate = false)
     {
         $idcabang = auth('sanctum')->user()->id_cabang_aktif;
         $data = $isUpdate

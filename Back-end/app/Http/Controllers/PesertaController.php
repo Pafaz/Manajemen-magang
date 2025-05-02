@@ -20,7 +20,7 @@ class PesertaController extends Controller
 
     public function index()
     {
-        return $this->pesertaService->getAllPeserta();
+        return $this->pesertaService->getPeserta();
     }
 
     /**
@@ -43,7 +43,7 @@ class PesertaController extends Controller
      */
     public function show($id)
     {
-        return $this->pesertaService->getPesertaById($id);
+        return $this->pesertaService->getPeserta($id);
     }
 
     public function showByPerusahaan($id_perusahaan)

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PresentasiRepository implements PresentasiInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Presentasi::all();
     }

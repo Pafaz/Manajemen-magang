@@ -16,7 +16,8 @@ class MagangRequest extends BaseFormRequest
             'mulai' => 'required|date',
             'selesai' => 'required|date',
             'tipe' => 'required|string',
-            'id_divisi_cabang' => 'required|id',
+            'surat_pernyataan_diri' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'surat_pernyataan_ortu' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

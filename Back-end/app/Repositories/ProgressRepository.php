@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ProgressRepository implements ProgressInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Progress::all();
     }

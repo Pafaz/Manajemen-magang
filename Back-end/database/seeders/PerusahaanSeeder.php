@@ -21,9 +21,10 @@ class PerusahaanSeeder extends Seeder
     {
         $perusahaan = User::create([
             'id' => Str::uuid(),
-            'name' => 'Perusahaan',
+            'nama' => 'Perusahaan',
             'email' => 'perusahaan@example',
             'password' => bcrypt('password'),
+            'id_cabang_aktif' => 1,
         ]);
 
         $perusahaan->assignRole('perusahaan');
@@ -72,6 +73,7 @@ class PerusahaanSeeder extends Seeder
             'kota' => 'Surabaya',
             'id_perusahaan' => $perusahaan_record->id
         ]);
+
         // $kategori = Kategori::create([
         //     'id_perusahaan' => $perusahaan_record->id,
         //     'nama' => 'Tahap Pemula',

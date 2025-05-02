@@ -9,7 +9,7 @@ use App\Interfaces\SekolahInterface;
 use App\Http\Resources\SchoolResource;
 use Symfony\Component\HttpFoundation\Response;
 
-class SekolahService 
+class SekolahService
 {
     private SekolahInterface $SekolahInterface;
     private JurusanInterface $JurusanInterface;
@@ -31,12 +31,12 @@ class SekolahService
             return Api::response(null, 'Sekolah tidak ditemukan', Response::HTTP_NOT_FOUND);
         }
 
-        $data = $id 
-            ? SchoolResource::make($school) 
+        $data = $id
+            ? SchoolResource::make($school)
             : SchoolResource::collection($school);
 
-        $message = $id 
-            ? 'Berhasil mengambil data sekolah' 
+        $message = $id
+            ? 'Berhasil mengambil data sekolah'
             : 'Berhasil mengambil semua data sekolah';
 
         return Api::response($data, $message);
@@ -63,8 +63,8 @@ class SekolahService
             }
 
             if (!empty($data['foto_header'])) {
-                $isUpdate 
-                    ? $this->foto->updateFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah') 
+                $isUpdate
+                    ? $this->foto->updateFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah')
                     : $this->foto->createFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah');
             }
 
@@ -96,9 +96,9 @@ class SekolahService
     public function deleteSchool(int $id)
     {
         $school = $this->SekolahInterface->find($id);
-        
+
         $school->jurusan()->detach();
-        $school->delete(); 
+        $school->delete();
         return Api::response(
             null,
             'Berhasil menghapus data sekolah',

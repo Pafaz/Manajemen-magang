@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class KategoriRepository implements KategoriInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Kategori::all();
     }
@@ -27,7 +27,7 @@ class KategoriRepository implements KategoriInterface
     {
         $category = Kategori::findOrFail($id);
         $category->update($data);
-        
+
         return $category;
     }
 

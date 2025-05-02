@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class AdminRepository implements AdminInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Admin_cabang::where('id_cabang', $id)->get();
     }

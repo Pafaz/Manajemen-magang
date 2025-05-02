@@ -49,10 +49,10 @@ class PerusahaanRequest extends BaseFormRequest
             'kode_pos' => 'required|string',
             'alamat' => 'required|string',
             'website' => 'required|url',
-            'logo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'npwp' => 'required|image|mimes:png,jpeg,jpg|max:2048',
-            'surat_legalitas' => 'required|image|mimes:png,jpeg,jpg|max:2048',
-            'profil_background' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'npwp' => 'nullable|image|mimes:png,jpeg,jpg|max:2048',
+            'surat_legalitas' => 'nullable|image|mimes:png,jpeg,jpg|max:2048',
+            'profil_background' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 

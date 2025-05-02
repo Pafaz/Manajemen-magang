@@ -23,21 +23,23 @@ class AdminRequest extends BaseFormRequest
     {
         if ($this->isUpdate()) {
             return [
-                'name' => 'sometimes|string|max:255',
+                'nama' => 'sometimes|string|max:255',
                 'email' => 'sometimes|string|email|max:255',
                 'password' => 'sometimes|string',
                 'telepon' => 'sometimes|string',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+                'id_cabang' => 'sometimes|exists:cabang,id'
             ];
         }
         return [
-            'name' => 'required|string|max:255',
+            'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
             'password' => 'sometimes|string',
             'telepon' => 'required|string',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'cover' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'id_cabang' => 'required|exists:cabang,id'
         ];
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\AdminCabangController;
@@ -19,22 +20,17 @@ use App\Http\Controllers\AdminPerusahaanController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
-use App\Http\Controllers\LowonganController;
+
 
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/register-perusahaan', [RegisterController::class, 'registerPerusahaan']);
-Route::post('/register-peserta', [RegisterController::class, 'registerPeserta']);
+Route::post('/register/{role}', [RegisterController::class, 'register']);
 Route::get('/auth/{role}', [GoogleAuthController::class, 'redirectAuth']);
 Route::get('/auth/callback/peserta', [GoogleAuthController::class, 'callbackPeserta']);
 Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackPerusahaan']);
 Route::post('/send-reset-password', [ForgotPasswordController::class, 'submitForgetPasswordForm']);
 Route::post('/update-password', [ForgotPasswordController::class, 'reset']);
 
-
-
-
 Route::group(['middleware' => 'auth:sanctum'], function () {
-
     //Peserta
     Route::group(['role:peserta'], function () {
         Route::apiResource('peserta', PesertaController::class);
@@ -80,4 +76,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //auth
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
+    Route::get('/get-user', [LoginController::class, 'getData']);
 });

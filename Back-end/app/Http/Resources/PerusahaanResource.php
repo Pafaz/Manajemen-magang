@@ -16,6 +16,7 @@ class PerusahaanResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'id_user' => $this->id_user,
             'nama' => $this->user->name,
             'telepon' => $this->user->telepon,
             'email' => $this->user->email,

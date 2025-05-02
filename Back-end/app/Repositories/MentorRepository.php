@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MentorRepository implements MentorInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Mentor::where('id_cabang', $id)->get();
     }

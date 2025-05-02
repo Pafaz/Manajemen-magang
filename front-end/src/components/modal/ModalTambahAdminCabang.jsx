@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
+<<<<<<< HEAD
 const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit,onSuccess }) => {
+=======
+const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit,onSucces }) => {
+>>>>>>> d1b37f8 (Update Front-end components and UI)
   const isEditMode = Boolean(branchToEdit);
 
   const [formData, setFormData] = useState({
@@ -12,7 +16,7 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit,onSuccess }) => 
     headerPhoto: null,
     email: "",
     phoneNumber: "",
-    id_cabang: 1,
+    id_cabang: 2,
   });
 
   const [adminPhotoName, setAdminPhotoName] = useState("No File Chosen");
@@ -27,7 +31,7 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit,onSuccess }) => 
         password: "",
         adminPhoto: null,
         headerPhoto: null,
-        id_cabang: branchToEdit.id_cabang || 1,
+        id_cabang: branchToEdit.id_cabang || 2,
       });
     } else {
       setFormData({
@@ -38,7 +42,7 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit,onSuccess }) => 
         headerPhoto: null,
         email: "",
         phoneNumber: "",
-        id_cabang: 1,
+        id_cabang: 2,
       });
       setAdminPhotoName("No File Chosen");
       setHeaderPhotoName("No File Chosen");
@@ -98,6 +102,11 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit,onSuccess }) => 
       if (response.status === 200 || response.status === 201) {
         onSuccess()
         onClose();
+<<<<<<< HEAD
+=======
+        onSucces()
+        // window.location.href="http://localhost:5173/perusahaan/admin"
+>>>>>>> d1b37f8 (Update Front-end components and UI)
       } else {
         console.log("Gagal menyimpan data admin.");
       }

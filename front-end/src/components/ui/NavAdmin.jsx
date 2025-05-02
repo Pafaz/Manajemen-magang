@@ -660,7 +660,8 @@ const NavAdmin = () => {
         isOpen={isTambahCabangModalOpen}
         onClose={() => setIsTambahCabangModalOpen(false)}
         onSave={handleSave}
-      />
+        getFetchData={() => getAllCabang()}
+        />
     </nav>
   );
 };

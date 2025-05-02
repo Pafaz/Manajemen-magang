@@ -125,7 +125,7 @@ export default function UniversityCardGrid() {
     formPayload.append("telepon", formData.telepon);
     formPayload.append("jenis_institusi", formData.jenis_institusi);
     formPayload.append("website", formData.website || "");
-    formPayload.append("id_cabang", "1"); 
+    formPayload.append("id_cabang", "2"); 
 
     if (formData.foto_header) {
       formPayload.append("foto_header", formData.foto_header);
@@ -216,7 +216,7 @@ export default function UniversityCardGrid() {
     };
   }, []);
 
-  if (loading) return <Loading/>;
+  if(loading) return <Loading/>
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (

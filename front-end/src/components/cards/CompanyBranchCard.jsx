@@ -4,14 +4,13 @@ import ReactPaginate from "react-paginate";
 import ModalTambahAdminCabang from "../../components/modal/ModalTambahAdminCabang";
 import ModalDeleteAdminCabang from "../modal/ModalDeleteAdminCabang";
 import ModalDetailAdminCabang from "../../components/modal/ModalDetailAdminCabang";
-import Loading from "../../components/Loading";
+import Loading from "../../components/Loading"; // Keep this one
 import axios from "axios";
 
 export default function CompanyBranchCard() {
   const [branches, setBranches] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
-  const [loading,setLoading] = useState(true)
   const [modalState, setModalState] = useState({
     showModal: false,
     showDeleteModal: false,
@@ -20,6 +19,8 @@ export default function CompanyBranchCard() {
     branchToDetail: null,
     branchToEdit: null,
   });
+  const [loading, setLoading] = useState(true);
+
   const fetchAdmins = async () => {
     try {
       const response = await axios.get(
@@ -31,9 +32,10 @@ export default function CompanyBranchCard() {
         }
       );
       setBranches(response.data.data);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching admins:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -99,7 +101,7 @@ export default function CompanyBranchCard() {
     });
   };
 
-  if(loading) return  <Loading/>
+  if (loading) return <Loading />; // Show loading until data is fetched
 
   return (
     <Card>
@@ -201,35 +203,33 @@ export default function CompanyBranchCard() {
           })}
         </div>
 
-        {displayedBranches.length > 0 && (
-          <div className="flex items-center justify-between mt-6">
-            <div className="flex-1">
-              <ReactPaginate
-                previousLabel="← Sebelumnya"
-                nextLabel="Berikutnya →"
-                breakLabel="..."
-                pageCount={Math.ceil(branches.length / itemsPerPage)}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
-                onPageChange={handlePageClick}
-                containerClassName="flex justify-center items-center space-x-2"
-                pageLinkClassName="px-3 py-1 text-sm rounded-md text-gray-700 hover:bg-blue-100"
-                activeLinkClassName="bg-blue-500 text-white"
-                previousClassName="mr-auto"
-                nextClassName="ml-auto"
-                previousLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
-                nextLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
-              />
-            </div>
+        <div className="flex items-center justify-between mt-6">
+          <div className="flex-1">
+            <ReactPaginate
+              previousLabel="← Sebelumnya"
+              nextLabel="Berikutnya →"
+              breakLabel="..."
+              pageCount={Math.ceil(branches.length / itemsPerPage)}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
+              onPageChange={handlePageClick}
+              containerClassName="flex justify-center items-center space-x-2"
+              pageLinkClassName="px-3 py-1 text-sm rounded-md text-gray-700 hover:bg-blue-100"
+              activeLinkClassName="bg-blue-500 text-white"
+              previousClassName="mr-auto"
+              nextClassName="ml-auto"
+              previousLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
+              nextLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
+            />
           </div>
-        )}
+        </div>
       </div>
 
       <ModalTambahAdminCabang
         isOpen={modalState.showModal}
+        onSucces={() => fetchAdmins()}
         onClose={() => setModalState({ showModal: false, branchToEdit: null })}
         branchToEdit={modalState.branchToEdit}
-        onSuccess={() => fetchAdmins()}
       />
 
       <ModalDeleteAdminCabang

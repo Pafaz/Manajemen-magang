@@ -13,20 +13,23 @@ class LowonganRepository implements LowonganInterface
         return Lowongan::all();
     }
 
-    public function find(int $id): ? Lowongan
+    public function find(int $id): ?Lowongan
     {
         return Lowongan::findOrFail($id)->first();
     }
 
-    public function create(array $data): ? Lowongan
+    public function create(array $data): ?Lowongan
     {
-        return Lowongan::create([ $data]);
+        return Lowongan::create($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Lowongan
     {
-        return Lowongan::where('id', $id)->update([$data]);
+        $lowongan = Lowongan::findOrFail($id);
+        $lowongan->update($data);
+        return $lowongan;
     }
+
 
     public function delete(int $id): void
     {

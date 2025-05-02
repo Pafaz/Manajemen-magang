@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
 use App\Http\Controllers\PiketController;
@@ -18,7 +19,7 @@ use App\Http\Controllers\AdminPerusahaanController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
-
+use App\Http\Controllers\LowonganController;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register-perusahaan', [RegisterController::class, 'registerPerusahaan']);
@@ -50,6 +51,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('mentor', MentorController::class);
         Route::apiResource('cabang', CabangController::class);
+        Route::apiResource('lowongan', LowonganController::class);
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
         //perusahaan
         Route::post('/perusahaan', [PerusahaanController::class, 'store']);
@@ -62,17 +64,14 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['role:admin'], function () {
         Route::apiResource('piket', PiketController::class);
         Route::apiResource('kategori-proyek', KategoriController::class);
-        
-    });
-    
-    //Mentor
-    Route::group(['role:mentor'], function () {
     });
 
+    //Mentor
+    Route::group(['role:mentor'], function () {});
+
     //Superadmin
-    Route::group(['role:superadmin'], function () {
-    });
-    
+    Route::group(['role:superadmin'], function () {});
+
     //foto
     Route::post('/foto/{foto}/update', [FotoController::class, 'update']);
     Route::post('/foto', [FotoController::class, 'store']);

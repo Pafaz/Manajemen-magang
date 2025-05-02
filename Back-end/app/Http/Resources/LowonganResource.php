@@ -15,6 +15,7 @@ class LowonganResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id' => $this->id,
             'tanggal_mulai' => $this->tanggal_mulai,
             'tanggal_selesai' => $this->tanggal_selesai,
             'max_kuota' => $this->max_kuota,

@@ -3,16 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lowongan;
-use Illuminate\Http\Request;
+use App\Services\LowonganService;
+use App\Http\Requests\LowonganRequest;
 
 class LowonganController extends Controller
 {
+    private LowonganService $lowonganService;
+
+    public function __construct(LowonganService $lowonganService)
+    {
+        $this->lowonganService = $lowonganService;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return $this->lowonganService->getAllLowongan();
     }
 
     /**
@@ -26,17 +34,17 @@ class LowonganController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(LowonganRequest $request)
     {
-        //
+        return $this->lowonganService->createLowongan($request->validated());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Lowongan $lowongan)
+    public function show(int $id)
     {
-        //
+        return $this->lowonganService->getLowonganById($id);
     }
 
     /**
@@ -50,16 +58,16 @@ class LowonganController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Lowongan $lowongan)
+    public function update(LowonganRequest $request, int $id)
     {
-        //
+        return $this->lowonganService->updateLowongan($id, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Lowongan $lowongan)
+    public function destroy(int $id)
     {
-        //
+        return $this->lowonganService->deleteLowongan($id);
     }
 }

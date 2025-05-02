@@ -25,4 +25,19 @@ class Lowongan extends Model
         'jobdesc',
         'status',
     ];
+
+    public function perusahaan()
+    {
+        return $this->belongsTo(Perusahaan::class, 'id_perusahaan');
+    }
+
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'id_cabang');
+    }
+
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class, 'id_divisi');
+    }
 }

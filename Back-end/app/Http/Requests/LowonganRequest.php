@@ -23,25 +23,25 @@ class LowonganRequest extends BaseFormRequest
     {
         if ($this->isUpdate()) {
             return [
-                'tanggal_mulai' => 'required|date',
-                'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-                'id_cabang' => 'required|integer|exists:cabang,id',
-                'id_divisi' => 'required|integer|exists:divisi,id',
-                'max_kuota' => 'required|integer|min:1',
-                'durasi' => 'required|integer|min:1',
-                'requirement' => 'string|required',
-                'jobdesc' => 'string|required'
+                'tanggal_mulai' => 'sometimes|date',
+                'tanggal_selesai' => 'sometimes|date|after_or_equal:tanggal_mulai',
+                'id_cabang' => 'sometimes|integer|exists:cabang,id',
+                'id_divisi' => 'sometimes|integer|exists:divisi,id',
+                'max_kuota' => 'sometimes|integer|min:1',
+                'durasi' => 'sometimes|integer|min:1',
+                'requirement' => 'sometimes|string',
+                'jobdesc' => 'sometimes|string'
             ];
         }
         return [
-            'tanggal_mulai' => 'sometimes|date',
-            'tanggal_selesai' => 'sometimes|date|after_or_equal:tanggal_mulai',
-            'id_cabang' => 'sometimes|integer|exists:cabang,id',
-            'id_divisi' => 'sometimes|integer|exists:divisi,id',
-            'max_kuota' => 'sometimes|integer|min:1',
-            'durasi' => 'sometimes|integer|min:1',
-            'requirement' => 'sometimes|string',
-            'jobdesc' => 'sometimes|string'
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'id_cabang' => 'required|integer|exists:cabang,id',
+            'id_divisi' => 'required|integer|exists:divisi,id',
+            'max_kuota' => 'required|integer|min:1',
+            'durasi' => 'required|integer|min:1',
+            'requirement' => 'string|required',
+            'jobdesc' => 'string|required'
         ];
     }
 }

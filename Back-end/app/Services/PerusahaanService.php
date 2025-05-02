@@ -43,7 +43,7 @@ class PerusahaanService
             return Api::response(
                 'false',
                 'Perusahaan belum melengkapi profil',
-                Response::HTTP_UNPROCESSABLE_ENTITY
+                Response::HTTP_OK
             );
         }
 
@@ -69,7 +69,7 @@ class PerusahaanService
 
         try {
             $user = auth('sanctum')->user();
-            
+
             if (!$isUpdate && $user->perusahaan) {
                 throw new \Exception('Perusahaan sudah terdaftar');
             }
@@ -129,7 +129,7 @@ class PerusahaanService
         $this->PerusahaanInterface->delete($id);
 
         $id_user = $this->PerusahaanInterface->find($id)->id_user;
-        
+
         $this->userInterface->delete($id_user);
 
         return Api::response(

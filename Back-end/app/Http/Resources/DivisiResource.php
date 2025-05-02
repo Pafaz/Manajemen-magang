@@ -20,6 +20,8 @@ class DivisiResource extends JsonResource
             'nama' => $this->nama,
             'kategori' => CategoryResource::collection($this->kategori),
             'foto' => FotoResource::collection($this->foto),
+            'created_at' => $this->created_at->format('Y-m-d'),
+            'updated_at' => $this->updated_at->format('Y-m-d'),
         ];
     }
 }

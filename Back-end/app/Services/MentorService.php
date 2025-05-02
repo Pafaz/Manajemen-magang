@@ -32,7 +32,7 @@ class MentorService
 
         return Api::response(
             MentorResource::collection($data),
-            'Mentor Berhasil Ditemukan',
+            'Berhasil Mengambil semua data mentor',
             Response::HTTP_OK
         );
     }
@@ -72,8 +72,8 @@ class MentorService
                 'id_cabang' => $id_cabang
             ]);
 
-            // Ensure Mentor is created
-            if (!$mentor) {
+            if (!$Mentor) {
+
                 DB::rollBack();
                 return Api::response(
                     null,
@@ -88,7 +88,9 @@ class MentorService
             ];
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
-                    $this->foto->createFoto($data[$key], $mentor->id, $tipe);
+
+                    $this->foto->createFoto($data[$key], $Mentor->id, $tipe);
+
                 }
             }
 
@@ -116,12 +118,15 @@ class MentorService
             $id_user = $mentor->user->id;
 
             if (!$mentor) {
+
                 return Api::response(
                     null,
                     'Mentor not found',
                     Response::HTTP_NOT_FOUND
                 );
             }
+            $id_user = $Mentor->user->id;
+            $this->userInterface->update($id_user, $data);
 
             $updatedMentor = $this->mentorInterface->update($id, $data);
 
@@ -130,15 +135,15 @@ class MentorService
             if (!empty($data['profile']) && !empty($data['header'])) {
                 $this->foto->deleteFoto($mentor->id);
 
-                $files = [
-                    'profile' => 'profile',
-                    'cover' => 'cover'
-                ];
 
-                foreach ($files as $key => $tipe) {
-                    if (!empty($data[$key])) {
-                        $this->foto->createFoto($data[$key], $mentor->id, $tipe);
-                    }
+            $files = [
+                'profile' => 'profile',
+                'cover' => 'cover'
+            ];
+            foreach ($files as $key => $tipe) {
+                if (!empty($data[$key])) {
+                    $this->foto->deleteFoto($Mentor->id);
+                    $this->foto->createFoto($data[$key], $Mentor->id, $tipe);
                 }
             }
 

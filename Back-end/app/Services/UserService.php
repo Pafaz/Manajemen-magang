@@ -22,9 +22,18 @@ class UserService
         $this->UserInterface = $UserInterface;
     }
 
+    public function getData($user)
+    {
+        $data = [
+            'user' => new UserResource($user),
+            'role' => $user->getRoleNames()->first(),
+        ];
+        return Api::response($data, 'success get data user', Response::HTTP_OK);
+    }
 
     public function register(array $data, $role)
     {
+
         $user = $this->UserInterface->create($data);
 
         $user->assignRole($role);
@@ -34,7 +43,8 @@ class UserService
         $responseData = [
             'user' => new UserResource($user),
             'token' => $token,
-            'role' => $user->getRoleNames()
+            'role' => $user->getRoleNames()->first(),
+            'status' => "success"
         ];
 
         return Api::response($responseData, 'User  registered successfully', Response::HTTP_CREATED);
@@ -52,11 +62,16 @@ class UserService
             );
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $remember = $data['remember_me'];
+        $token = $remember
+            ? $user->createToken('auth_token', ['remember'])->plainTextToken
+            : $user->createToken('auth_token')->plainTextToken;
+
         $responseData = [
             'user' => new UserResource($user),
-            'role' => $user->getRoleNames(),
+            'role' => $user->getRoleNames()[0],
             'token' => $token,
+            'status' => 'success'
         ];
 
         return Api::response(
@@ -66,8 +81,7 @@ class UserService
         );
     }
 
-    public function logout($user)
-    {
+    public function logout($user){
         $user->currentAccessToken()->delete();
         return Api::response(
             null,
@@ -123,6 +137,7 @@ class UserService
                 : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
 
             $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
+
         } catch (ClientException $e) {
             Log::error("Google Auth Failed: " . $e->getMessage());
             return Api::response(null, 'Autentikasi Google gagal', 401);
@@ -132,7 +147,6 @@ class UserService
         $user = User::where('email', $socialiteUser->getEmail())->first();
 
         if ($user) {
-            // Jika user sudah ada, update data Google TAPI JANGAN ubah role
             $user->update([
                 'google_id' => $socialiteUser->getId(),
                 'avatar' => $socialiteUser->getAvatar()
@@ -150,7 +164,7 @@ class UserService
                 );
             }
         } else {
-            // Jika baru, buat user dengan role yang diminta
+            // Buat user baru
             $user = User::create([
                 'name' => $socialiteUser->getName(),
                 'email' => $socialiteUser->getEmail(),
@@ -163,6 +177,7 @@ class UserService
 
         // Hapus token lama dan buat baru
         $user->tokens()->delete();
+
         $token = $user->createToken('google-token')->plainTextToken;
 
         return Api::response([

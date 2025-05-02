@@ -13,11 +13,12 @@ class DivisiRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        if($this->isUpdate()){
+        if($this->method() == "PUT"){
             return [
-                'nama' => 'sometimes|string|max:50|unique:divisi,nama',
+                'nama' => 'sometimes|string|max:50|unique:divisi,nama,' . $this->route('divisi'),
+                'id_cabang' => 'sometimes|string|max:50|exists:cabang,id',
                 'kategori_proyek' => 'sometimes|array|min:1',
-                'kategori_proyek.*' => 'sometimes|string|max:50|distinct',    
+                'kategori_proyek.*' => 'sometimes|string|max:50|distinct',
                 'foto_cover' => 'sometimes|image|mimes:png,jpg|max:2048',
             ];
         }
@@ -26,6 +27,7 @@ class DivisiRequest extends BaseFormRequest
             'kategori_proyek' => 'required|array|min:1',
             'kategori_proyek.*' => 'required|string|max:50|distinct',
             'foto_cover' => 'required|image|mimes:png,jpg|max:2048',
+            'id_cabang' => 'required|string|max:50|exists:cabang,id',
         ];
     }
 

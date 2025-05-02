@@ -53,9 +53,10 @@ class AdminService
         try {
             $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
             $user = $this->userInterface->create([
-                'name' => $data['name'],
+                'nama' => $data['nama'],
                 'email' => $data['email'],
                 'telepon' => $data['telepon'],
+                'id_cabang' => $data['id_cabang'],
                 'password' => bcrypt($data['password']),
             ]);
 

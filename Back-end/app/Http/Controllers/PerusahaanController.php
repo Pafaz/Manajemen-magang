@@ -23,7 +23,7 @@ class PerusahaanController extends Controller
     }
     public function index()
     {
-        return$this->perusahaanService->getPerusahaan();
+        return $this->perusahaanService->getPerusahaan();
     }
 
     /**
@@ -65,14 +65,13 @@ class PerusahaanController extends Controller
     {
         return $this->perusahaanService->simpanProfil($request->validated(), true);
     }
-    
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         return $this->perusahaanService->deletePerusahaan($id);
     }
-
 }

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\Interfaces\MentorInterface;
 use App\Http\Resources\MentorResource;
 use Symfony\Component\HttpFoundation\Response;
+use Exception;
 
 class MentorService
 {
@@ -27,7 +28,6 @@ class MentorService
     public function getAllMentor()
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
-
         $data = $this->mentorInterface->getAll($id_cabang);
 
         return Api::response(
@@ -55,7 +55,6 @@ class MentorService
         try {
             $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
 
-            // dd($id_cabang);
             $user = $this->userInterface->create([
                 'nama' => $data['nama'],
                 'email' => $data['email'],
@@ -72,8 +71,7 @@ class MentorService
                 'id_cabang' => $id_cabang
             ]);
 
-            if (!$Mentor) {
-
+            if (!$mentor) {
                 DB::rollBack();
                 return Api::response(
                     null,
@@ -88,9 +86,7 @@ class MentorService
             ];
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
-
-                    $this->foto->createFoto($data[$key], $Mentor->id, $tipe);
-
+                    $this->foto->createFoto($data[$key], $mentor->id, $tipe);
                 }
             }
 
@@ -100,7 +96,7 @@ class MentorService
                 'Berhasil Membuat Mentor',
                 Response::HTTP_CREATED
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return Api::response(
                 null,
@@ -115,35 +111,31 @@ class MentorService
         try {
             $mentor = $this->mentorInterface->find($id);
 
-            $id_user = $mentor->user->id;
-
             if (!$mentor) {
-
                 return Api::response(
                     null,
                     'Mentor not found',
                     Response::HTTP_NOT_FOUND
                 );
             }
-            $id_user = $Mentor->user->id;
+
+            $id_user = $mentor->user->id;
+
             $this->userInterface->update($id_user, $data);
 
             $updatedMentor = $this->mentorInterface->update($id, $data);
 
-            $this->userInterface->update($id_user, $data);
-
-            if (!empty($data['profile']) && !empty($data['header'])) {
+            if (!empty($data['profile']) || !empty($data['cover'])) {
                 $this->foto->deleteFoto($mentor->id);
 
-
-            $files = [
-                'profile' => 'profile',
-                'cover' => 'cover'
-            ];
-            foreach ($files as $key => $tipe) {
-                if (!empty($data[$key])) {
-                    $this->foto->deleteFoto($Mentor->id);
-                    $this->foto->createFoto($data[$key], $Mentor->id, $tipe);
+                $files = [
+                    'profile' => 'profile',
+                    'cover' => 'cover'
+                ];
+                foreach ($files as $key => $tipe) {
+                    if (!empty($data[$key])) {
+                        $this->foto->createFoto($data[$key], $mentor->id, $tipe);
+                    }
                 }
             }
 
@@ -152,7 +144,7 @@ class MentorService
                 'Berhasil Mengubah Mentor',
                 Response::HTTP_OK
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return Api::response(
                 null,
                 'Gagal Mengubah Mentor: ' . $e->getMessage(),
@@ -166,7 +158,6 @@ class MentorService
         $id_user = $this->mentorInterface->find($id)->id_user;
 
         $this->mentorInterface->delete($id);
-
         $this->userInterface->delete($id_user);
 
         return Api::response(

@@ -19,21 +19,15 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 
-
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/register-perusahaan', [RegisterController::class, 'registerPerusahaan']);
-Route::post('/register-peserta', [RegisterController::class, 'registerPeserta']);
+Route::post('/register/{role}', [RegisterController::class, 'register']);
 Route::get('/auth/{role}', [GoogleAuthController::class, 'redirectAuth']);
 Route::get('/auth/callback/peserta', [GoogleAuthController::class, 'callbackPeserta']);
 Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackPerusahaan']);
 Route::post('/send-reset-password', [ForgotPasswordController::class, 'submitForgetPasswordForm']);
 Route::post('/update-password', [ForgotPasswordController::class, 'reset']);
 
-
-
-
 Route::group(['middleware' => 'auth:sanctum'], function () {
-
     //Peserta
     Route::group(['role:peserta'], function () {
         Route::apiResource('peserta', PesertaController::class);
@@ -62,17 +56,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['role:admin'], function () {
         Route::apiResource('piket', PiketController::class);
         Route::apiResource('kategori-proyek', KategoriController::class);
-        
     });
-    
+
     //Mentor
     Route::group(['role:mentor'], function () {
+        //
     });
 
     //Superadmin
     Route::group(['role:superadmin'], function () {
+        //
     });
-    
+
     //foto
     Route::post('/foto/{foto}/update', [FotoController::class, 'update']);
     Route::post('/foto', [FotoController::class, 'store']);
@@ -81,4 +76,5 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //auth
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);
     Route::post('/logout', [LoginController::class, 'logout']);
+    Route::get('/get-user', [LoginController::class, 'getData']);
 });

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class JurusanRepository implements JurusanInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
         return Jurusan::all();
     }

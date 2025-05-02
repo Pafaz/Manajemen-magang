@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
 
         $adminUser = User::create([
             'id' => Str::uuid(),
-            'name' => 'Admin',
+            'nama' => 'Admin',
             'email' => 'admin@example',
             'password' => bcrypt('password'),
         ]);
@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
 
         $mentorUser = User::create([
             'id' => Str::uuid(),
-            'name' => 'Mentor',
+            'nama' => 'Mentor',
             'email' => 'mentor@example',
             'password' => bcrypt('password'),
         ]);
@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
 
         $superadminUser = User::create([
             'id' => Str::uuid(),
-            'name' => 'Super Admin',
+            'nama' => 'Super Admin',
             'email' => 'superadmin@example',
             'password' => bcrypt('password'),
         ]);

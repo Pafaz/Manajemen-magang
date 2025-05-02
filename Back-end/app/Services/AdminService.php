@@ -26,7 +26,8 @@ class AdminService
 
     public function getAllAdmin()
     {
-        $data = $this->adminInterface->getAll();
+        $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
+        $data = $this->adminInterface->getAll($id_cabang);
 
         return Api::response(
             AdminResource::collection($data),
@@ -50,10 +51,12 @@ class AdminService
     {
         DB::beginTransaction();
         try {
+            $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
             $user = $this->userInterface->create([
-                'name' => $data['name'],
+                'nama' => $data['nama'],
                 'email' => $data['email'],
                 'telepon' => $data['telepon'],
+                'id_cabang' => $data['id_cabang'],
                 'password' => bcrypt($data['password']),
             ]);
 
@@ -63,7 +66,7 @@ class AdminService
 
             $admin = $this->adminInterface->create([
                 'id' => Str::uuid(),
-                'id_cabang' => $data['id_cabang'],
+                'id_cabang' => $id_cabang,
                 'id_user' => $id_user,
             ]);
 

@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface GetAllInterface
 {
-    public function getAll($id ): Collection;
+    public function getAll(): Collection;
 }

@@ -33,7 +33,7 @@ class DivisiService
             ? DivisiResource::make($divisi)
             : DivisiResource::collection($divisi);
 
-        $message = $id 
+        $message = $id
             ? 'Berhasil mengambil data divisi'
             : 'Berhasil mengambil semua data divisi';
 
@@ -49,33 +49,33 @@ class DivisiService
             $divisi = $isUpdate
                 ? $this->DivisiInterface->update($id, $divisiData)
                 : $this->DivisiInterface->create($divisiData);
-    
+
             $kategoriIds = [];
             if (!empty($data['kategori_proyek'])) {
                 foreach ($data['kategori_proyek'] as $namaKategori) {
                     $kategori = $this->kategoriInterface->create(['nama' => $namaKategori]);
                     $kategoriIds[] = $kategori->id;
                 }
-    
+
                 $divisi->kategori()->sync($kategoriIds);
             }
-    
+
             if (!empty($data['foto_cover'])) {
                 $isUpdate
                     ? $this->foto->updateFoto($data['foto_cover'], $divisi->id, 'foto_cover')
                     : $this->foto->createFoto($data['foto_cover'], $divisi->id, 'foto_cover');
             }
-    
+
             DB::commit();
-    
+
             $message = $isUpdate
                 ? 'Divisi & kategori berhasil diperbarui'
                 : 'Divisi & kategori berhasil disimpan';
-    
+
             $statusCode = $isUpdate
                 ? Response::HTTP_OK
                 : Response::HTTP_CREATED;
-    
+
             return Api::response(
                 DivisiResource::make($divisi->load('kategori', 'foto')),
                 $message,
@@ -90,7 +90,7 @@ class DivisiService
             );
         }
     }
-    
+
 
     public function deleteDivisi(int $id)
     {

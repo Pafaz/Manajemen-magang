@@ -9,7 +9,7 @@ use App\Interfaces\MagangInterface;
 use App\Interfaces\PesertaInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class PesertaService 
+class PesertaService
 {
     private PesertaInterface $pesertaInterface;
     private MagangInterface $magangInterface;
@@ -91,6 +91,7 @@ class PesertaService
                 }
             }
         }
+
 
         return Api::response(
             PesertaResource::make($peserta),

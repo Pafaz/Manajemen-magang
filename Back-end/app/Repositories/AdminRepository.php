@@ -2,24 +2,20 @@
 
 namespace App\Repositories;
 
-use App\Models\Cabang;
-use Illuminate\Support\Str;
 use App\Models\Admin_cabang;
 use App\Interfaces\AdminInterface;
-use App\Models\Admin_perusahaan;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 class AdminRepository implements AdminInterface
 {
-    public function getAll($id): Collection
+    public function getAll(): Collection
     {
-        return Admin_cabang::all();
+        return Admin_cabang::where('id_cabang', $id)->get();
     }
 
     public function getByCabang($id_cabang)
     {
-        return Admin_cabang::where('id_cabang', $id_cabang);
+        return Admin_cabang::where('id_cabang', $id_cabang)->get();
     }
 
     public function find($id): ?Admin_cabang

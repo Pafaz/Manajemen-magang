@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DivisiRequest;
 use App\Models\Divisi;
 use App\Services\DivisiService;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class DivisiController extends Controller
 
     public function index()
     {
-        return $this->divisiService->getAllDivisi();
+        return $this->divisiService->getDivisi();
     }
 
     /**
@@ -33,17 +34,17 @@ class DivisiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DivisiRequest $DivisiRequest)
     {
-        return $this->divisiService->createDivisi($request->all());
+        return $this->divisiService->simpanDivisi($DivisiRequest->validated());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Divisi $divisi)
+    public function show($divisi)
     {
-        return $this->divisiService->getDivisiById($divisi->id);
+        return $this->divisiService->getDivisi($divisi);
     }
 
     /**
@@ -57,16 +58,16 @@ class DivisiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Divisi $divisi)
+    public function update(DivisiRequest $request, $divisi)
     {
-        return $this->divisiService->updateDivisi($divisi->id, $request->all());
+        return $this->divisiService->simpanDivisi( $request->all(), true, $divisi);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Divisi $divisi)
+    public function destroy($divisi)
     {
-        return $this->divisiService->deleteDivisi($divisi->id);
+        return $this->divisiService->deleteDivisi($divisi);
     }
 }

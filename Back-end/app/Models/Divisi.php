@@ -13,15 +13,23 @@ class Divisi extends Model
     protected $table = 'divisi';
     protected $fillable = [
         'nama',
-        'id_perusahaan',
         'id_cabang',
-        'id_kategori-proyek',
         'created_at',
         'updated_at',
     ];
 
-    public function divisiCabang()
+    public function kategori()
     {
-        return $this->hasMany(Divisi_cabang::class, 'divisi_id');
+        return $this->belongsToMany(Kategori::class, 'divisi_kategori', 'id_divisi', 'id_kategori');
+    }
+
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'id_cabang', 'id');
+    }
+
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi');
     }
 }

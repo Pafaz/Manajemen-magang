@@ -9,7 +9,7 @@ use App\Interfaces\SekolahInterface;
 use App\Http\Resources\SchoolResource;
 use Symfony\Component\HttpFoundation\Response;
 
-class SekolahService 
+class SekolahService
 {
     private SekolahInterface $SekolahInterface;
     private JurusanInterface $JurusanInterface;
@@ -24,18 +24,19 @@ class SekolahService
 
     public function getSchools($id = null)
     {
-        $school = $id ? $this->SekolahInterface->find($id) : $this->SekolahInterface->getAll();
+        $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
+        $school = $id ? $this->SekolahInterface->find($id) : $this->SekolahInterface->getAll($id_cabang);
 
         if (!$school) {
             return Api::response(null, 'Sekolah tidak ditemukan', Response::HTTP_NOT_FOUND);
         }
 
-        $data = $id 
-            ? SchoolResource::make($school) 
+        $data = $id
+            ? SchoolResource::make($school)
             : SchoolResource::collection($school);
 
-        $message = $id 
-            ? 'Berhasil mengambil data sekolah' 
+        $message = $id
+            ? 'Berhasil mengambil data sekolah'
             : 'Berhasil mengambil semua data sekolah';
 
         return Api::response($data, $message);
@@ -47,7 +48,7 @@ class SekolahService
         DB::beginTransaction();
         try {
             $dataSekolah = collect($data)->only(['nama', 'alamat', 'telepon', 'jenis_institusi', 'website'])->toArray();
-
+            $dataSekolah['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
             $sekolah = $isUpdate
                 ? $this->SekolahInterface->update($id, $dataSekolah)
                 : $this->SekolahInterface->create($dataSekolah);
@@ -62,8 +63,8 @@ class SekolahService
             }
 
             if (!empty($data['foto_header'])) {
-                $isUpdate 
-                    ? $this->foto->updateFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah') 
+                $isUpdate
+                    ? $this->foto->updateFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah')
                     : $this->foto->createFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah');
             }
 
@@ -95,9 +96,9 @@ class SekolahService
     public function deleteSchool(int $id)
     {
         $school = $this->SekolahInterface->find($id);
-        
+
         $school->jurusan()->detach();
-        $school->delete(); 
+        $school->delete();
         return Api::response(
             null,
             'Berhasil menghapus data sekolah',

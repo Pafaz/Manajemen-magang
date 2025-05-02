@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class MentorRequest extends BaseFormRequest
 {
@@ -21,23 +22,36 @@ class MentorRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        if ($this->isUpdate()) {
+        if ($this->method() == "PUT") {
             return [
                 'nama' => 'sometimes|string',
-                'email' => 'sometimes|email',
+                'email' => [
+                    'sometimes',
+                    'email',
+                    Rule::unique('users', 'email')->ignore($this->route('mentor'))
+                ],
                 'password' => 'sometimes|string',
-                'telepon' => 'sometimes|numeric|digits_between:10,12',
+                'telepon' => [
+                    'sometimes',
+                    'numeric',
+                    'digits_between:10,12',
+                    Rule::unique('users', 'telepon')->ignore($this->route('mentor'))
+                ],
                 'id_divisi' => 'sometimes|exists:divisi,id',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+                'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048'
             ];
         }
+
         return [
             'nama' => 'required|string',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|string',
-            'telepon' => 'required|numeric|digits_between:10,12',
+            'telepon' => 'required|numeric|digits_between:10,12|unique:users,telepon',
             'id_divisi' => 'required|exists:divisi,id',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'cover' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
+
 }

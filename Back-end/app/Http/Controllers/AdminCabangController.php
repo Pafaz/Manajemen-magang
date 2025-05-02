@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Admin_cabang;
-use Illuminate\Http\Request;
 use App\Services\AdminService;
 use App\Http\Requests\AdminRequest;
 
@@ -28,17 +27,14 @@ class AdminCabangController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(AdminRequest $request)
     {
-        return $this->adminService->createAdminCabang($request->validated());
+        return $this->adminService->createAdmin($request->validated());
     }
 
     /**

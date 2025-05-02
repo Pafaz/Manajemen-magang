@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AbsensiRepository implements AbsensiInterface
 {
-    public function getAll(): Collection
+    public function getAll($id): Collection
     {
         return Absensi::all();
     }

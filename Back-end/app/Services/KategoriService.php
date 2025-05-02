@@ -21,21 +21,21 @@ class KategoriService
 
     public function getCategories($id = null)
     {
-        $data = $this->KategoriInterface->getAll();
-        return Api::response(
-            CategoryResource::collection($data),
-            'Categories Fetched Successfully',
-        );
-    }
 
-    public function createCategory(array $data)
-    {
-        $category = $this->KategoriInterface->create($data);
-        return Api::response(
-            CategoryResource::make($category),
-            'Category created successfully',
-            Response::HTTP_CREATED
-        );
+        $kategori = $id ? $this->KategoriInterface->find($id) : $this->KategoriInterface->getAll();
+        if (!$kategori) {
+            return Api::response(null, 'Kategori tidak ditemukan', Response::HTTP_NOT_FOUND);
+        }
+
+        $data = $id
+            ? CategoryResource::make($this->KategoriInterface->find($id))
+            : CategoryResource::collection($this->KategoriInterface->getAll());
+
+        $message = $id
+            ? 'Berhasil mengambil data kategori'
+            : 'Berhasil mengambil semua data kategori';
+
+        return Api::response($data, $message);
     }
 
     public function simpanKategori(array $data, bool $isUpdate = false, $id = null)

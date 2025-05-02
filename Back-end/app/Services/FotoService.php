@@ -64,7 +64,7 @@ class FotoService
 
             $foto = $this->FotoInterface->getByTypeandReferenceId($type, $idReferensi);
             if (!$foto) {
-                return Api::response(null, 'Foto not found', Response::HTTP_NOT_FOUND);
+                return throw new \InvalidArgumentException('Foto not found.');
             }
                 
             if (!$foto) {

@@ -10,17 +10,17 @@ class Kategori extends Model
     /** @use HasFactory<\Database\Factories\KategoriFactory> */
     use HasFactory;
 
-    protected $table = 'kategori-proyek';
+    protected $table = 'kategori_proyek';
 
     protected $fillable = [
         'nama',
-        'id_perusahaan',
         'created_at',
         'updated_at',
     ];
-
-    public function foto()
+    public $timestamps = false;
+    public function divisi()
     {
-        return $this->hasOne(Foto::class, 'id_referensi')->where('type', 'card');
+        return $this->belongsToMany(Divisi::class, 'divisi_kategori', 'id_kategori', 'id_divisi');
     }
+
 }

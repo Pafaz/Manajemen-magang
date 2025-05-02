@@ -81,9 +81,7 @@ class UserService
         );
     }
 
-
-    public function logout($user)
-    {
+    public function logout($user){
         $user->currentAccessToken()->delete();
         return Api::response(
             null,
@@ -134,22 +132,18 @@ class UserService
     public function handleGoogleCallback(array $data, string $role)
     {
         try {
-            $redirectUri = ($role === 'peserta') ? env('GOOGLE_REDIRECT_URI_PESERTA') : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
+            $redirectUri = ($role == 'peserta')
+                ? env('GOOGLE_REDIRECT_URI_PESERTA')
+                : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
 
-            $socialiteUser = Socialite::with('google')
-                ->stateless()
-                ->redirectUrl($redirectUri)
-                ->user();
+            $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
 
-            $socialiteUser = Socialite::with('google')
-                ->stateless()
-                ->redirectUrl($redirectUri)
-                ->user();
         } catch (ClientException $e) {
             Log::error("Google Auth Failed: " . $e->getMessage());
             return Api::response(null, 'Autentikasi Google gagal', 401);
         }
 
+        // Cek existing user
         $user = User::where('email', $socialiteUser->getEmail())->first();
 
         if ($user) {
@@ -157,7 +151,18 @@ class UserService
                 'google_id' => $socialiteUser->getId(),
                 'avatar' => $socialiteUser->getAvatar()
             ]);
-            $user->syncRoles([$role]);
+
+            // Dapatkan role yang sudah ada
+            $existingRole = $user->getRoleNames()->first();
+
+            // Jika mencoba login dengan role berbeda, tolak
+            if ($existingRole && $existingRole != $role) {
+                return Api::response(
+                    null,
+                    'Anda sudah terdaftar sebagai ' . $existingRole . '. Tidak bisa login sebagai ' . $role,
+                    403
+                );
+            }
         } else {
             // Buat user baru
             $user = User::create([
@@ -170,59 +175,15 @@ class UserService
             $user->assignRole($role);
         }
 
+        // Hapus token lama dan buat baru
         $user->tokens()->delete();
 
         $token = $user->createToken('google-token')->plainTextToken;
 
-        // return  response()->json([
-        //     'user' => new UserResource($user),
-        //     'token' => $token,
-        //     'role' => $role
-        // ],200);
-
-        return redirect("http://localhost:5173/google/success?token=$token&role=$role");
+        return Api::response([
+            'user' => new UserResource($user),
+            'token' => $token,
+            'role' => $user->getRoleNames()->first() // Return role yang sebenarnya
+        ], 'Login berhasil');
     }
-
-    // public function handleGoogleCallback(array $data, string $role)
-    // {
-    //     try {
-    //         $redirectUri = ($role == 'peserta')
-    //         ? env('GOOGLE_REDIRECT_URI_PESERTA')
-    //         : env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
-
-    //         $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
-
-    //     } catch (ClientException $e) {
-    //         Log::error("Google Auth Failed: " . $e->getMessage());
-    //         return Api::response(
-    //             null,
-    //             'Google authentication failed: ' . $e->getMessage(),
-    //             Response::HTTP_UNAUTHORIZED
-    //         );
-    //     }
-
-    //     $user = User::firstOrCreate(['email' => $socialiteUser->getEmail(),
-    //             'name'              => $socialiteUser->getName(),
-    //             'email_verified_at' => now(),
-    //             'google_id'         => $socialiteUser->getId(),
-    //             'avatar'            => $socialiteUser->getAvatar()]);
-
-    //     $user->assignRole($role);
-
-    //     $token = $user->createToken('google-token')->plainTextToken;
-
-    //     $responseData = [
-    //         'user'  => new UserResource($user),
-    //         'token' => $token,
-    //         'role'  => $user->getRoleNames(),
-    //     ];
-
-    //     return Api::response(
-    //         $responseData,
-    //         'User authenticated via Google',
-    //         Response::HTTP_OK
-    //     );
-    // }
-
-
 }

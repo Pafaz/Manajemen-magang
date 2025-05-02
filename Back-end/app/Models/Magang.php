@@ -31,8 +31,4 @@ class Magang extends Model
     {
         return $this->belongsTo(Mentor::class, 'id_mentor');
     }
-    public function divisiCabang()
-    {
-        return $this->belongsTo(Divisi_cabang::class, 'id_divisi_cabang');
-    }
 }

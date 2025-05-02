@@ -1,63 +1,92 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Card from "./Card";
 import ReactPaginate from "react-paginate";
 import ModalTambahMentor from "../../components/modal/ModalTambahMentor";
 import ModalDelete from "../../components/modal/ModalDeleteAdminCabang";
+import ModalDetailMentor from "../../components/modal/ModalDetailMentor";
 
 export default function MentorBranchCard() {
-  const navigate = useNavigate();
+  const [selectedMentor, setSelectedMentor] = useState(null);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMentor, setEditingMentor] = useState(null);
+  const [divisions, setDivisions] = useState([]);
   const [modalState, setModalState] = useState({
     showDeleteModal: false,
     selectedBranchId: null,
   });
 
-  const [branches, setBranches] = useState([
-    { id: 1, name: "Nao Tomori", email: "nao1@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 2, name: "Shiba Inuko", email: "shiba2@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 3, name: "Sakura Yamauchi", email: "sakura3@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 4, name: "Hinata Shoyo", email: "hinata4@gmail.com", division: "Digital Marketing", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 5, name: "Kageyama Tobio", email: "kageyama5@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 6, name: "Kanao Tsuyuri", email: "kanao6@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 7, name: "Ayanami Rei", email: "rei7@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 8, name: "Shinji Ikari", email: "shinji8@gmail.com", division: "Digital Marketing", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 9, name: "Misato Katsuragi", email: "misato9@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 10, name: "Levi Ackerman", email: "levi10@gmail.com", division: "Web Developer", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 11, name: "Eren Yeager", email: "eren11@gmail.com", division: "Mobile", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 12, name: "Mikasa Ackerman", email: "mikasa12@gmail.com", division: "Digital Marketing", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-    { id: 13, name: "Armin Arlert", email: "armin13@gmail.com", division: "UI/UX", backgroundImage: "/assets/img/Cover2.jpeg", logoImage: "/assets/img/Profil.png" },
-  ]);
-  
-
+  const [branches, setBranches] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
   const [selectedDivision, setSelectedDivision] = useState("All");
 
-  const filteredBranches = selectedDivision === "All" ? branches : branches.filter((branch) => branch.division === selectedDivision);
+  const filteredBranches = Array.isArray(branches)
+    ? selectedDivision === "All"
+      ? branches
+      : branches.filter(
+          (branch) => String(branch.divisi.id) === String(selectedDivision)
+        )
+    : [];
 
   const pageCount = Math.ceil(filteredBranches.length / itemsPerPage);
-  const displayedBranches = filteredBranches.slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage);
+  const displayedBranches = filteredBranches.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
+  const fetchMentors = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/mentor`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setBranches(Array.isArray(response.data?.data) ? response.data.data : []);
+    } catch (error) {
+      console.error("Error fetching mentors:", error);
+    }
+  };
+
+  const fetchDivisions = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/divisi`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setDivisions(
+        Array.isArray(response.data?.data) ? response.data.data : []
+      );
+    } catch (error) {
+      console.error("Error fetching divisions:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchDivisions();
+    fetchMentors();
+  }, []);
+
+  const handleEditMentor = (mentor) => {
+    setEditingMentor(mentor);
+    setIsModalOpen(true);
+  };
 
   const handlePageClick = (event) => {
     setCurrentPage(event.selected);
   };
 
-  const handleViewDetail = (branchId) => {
-    navigate(`/perusahaan/cabang/${branchId}`);
-  };
-
-  const handleAddMentor = (mentorData) => {
-    const newMentor = {
-      id: branches.length + 1,
-      name: mentorData.name,
-      email: mentorData.email,
-      division: mentorData.division,
-      backgroundImage: "/assets/img/Cover2.jpeg",
-      logoImage: "/assets/img/Profil.png",
-    };
-    setBranches([...branches, newMentor]);
-    setIsModalOpen(false);
+  const handleViewDetail = (mentor) => {
+    setSelectedMentor(mentor);
+    setIsDetailModalOpen(true);
   };
 
   const handleOpenDeleteModal = (branchId) => {
@@ -74,10 +103,23 @@ export default function MentorBranchCard() {
     });
   };
 
-  const handleDeleteBranch = () => {
-    const updatedBranches = branches.filter((branch) => branch.id !== modalState.selectedBranchId);
-    setBranches(updatedBranches);
-    handleCloseDeleteModal();
+  const handleDeleteBranch = async () => {
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/mentor/${modalState.selectedBranchId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setBranches(
+        branches.filter((branch) => branch.id !== modalState.selectedBranchId)
+      );
+      handleCloseDeleteModal();
+    } catch (error) {
+      console.error("Error deleting mentor:", error);
+    }
   };
 
   return (
@@ -86,7 +128,10 @@ export default function MentorBranchCard() {
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">Mentor Terdaftar</h1>
           <div className="flex items-center space-x-2">
-            <button onClick={() => setIsModalOpen(true)} className="bg-white text-gray-700 border border-gray-300 rounded-md px-2 py-1 text-xs flex items-center">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-white text-gray-700 border border-gray-300 rounded-md px-2 py-1 text-xs flex items-center"
+            >
               <i className="bi bi-plus mr-1"></i>
               <span className="mr-1">Tambah Mentor</span>
             </button>
@@ -99,46 +144,87 @@ export default function MentorBranchCard() {
               }}
             >
               <option value="All">Semua Divisi</option>
-              <option value="UI/UX">UI/UX</option>
-              <option value="Web Developer">Web Developer</option>
-              <option value="Mobile">Mobile</option>
-              <option value="Digital Marketing">Digital Marketing</option>
+              {divisions.map((division) => (
+                <option key={division.id} value={division.id}>
+                  {division.nama}
+                </option>
+              ))}
             </select>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          {displayedBranches.map((branch) => (
-            <div key={branch.id} className="bg-white border border-[#D5DBE7] rounded-lg overflow-hidden">
-              <div className="relative">
-                <img src={branch.backgroundImage} alt="Background" className="w-full h-32 object-cover" />
-                <div className="absolute -bottom-4 left-0 right-0 flex justify-center">
-                  <div className="rounded-full overflow-hidden border-2 border-white bg-white w-16 h-16">
-                    <img src={branch.logoImage} alt="Logo" className="w-full h-full object-cover" />
+          {displayedBranches.map((branch) => {
+            const cover = branch.foto.find((f) => f.type === "cover");
+            const profile = branch.foto.find((f) => f.type === "profile");
+            const user = branch.user || {};
+
+            return (
+              <div
+                key={branch.id}
+                className="bg-white border border-[#D5DBE7] rounded-lg overflow-hidden"
+              >
+                <div className="relative">
+                  <img
+                    src={`${import.meta.env.VITE_API_URL_FILE}/storage/${
+                      cover?.path
+                    }`}
+                    alt="Background"
+                    className="w-full h-32 object-cover"
+                  />
+                  <div className="absolute -bottom-4 left-0 right-0 flex justify-center">
+                    <div className="rounded-full overflow-hidden border-2 border-white bg-white w-16 h-16">
+                      <img
+                        src={`${import.meta.env.VITE_API_URL_FILE}/storage/${
+                          profile?.path
+                        }`}
+                        alt="Logo"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="pt-8 px-3 pb-4">
+                  <h3 className="font-bold text-sm text-gray-800 text-center mb-1">
+                    {user.nama || "Nama Tidak Ditemukan"}{" "}
+                  </h3>
+                  <p className="text-xs text-black-500 text-center mb-3 italic">
+                    {branch.divisi?.nama || "Divisi Tidak Diketahui"}{" "}
+                  </p>
+                  <p className="text-xs text-black-600 text-center mb-1">
+                    {user.email || "Email Tidak Diketahui"}{" "}
+                  </p>
+                  <p className="text-xs text-black-600 text-center mb-1">
+                    {user.telepon || "Telepon Tidak Diketahui"}{" "}
+                  </p>
+                  <div className="flex justify-center mt-2">
+                    <div className="border border-[#D5DBE7] rounded p-2 w-full flex justify-between items-center space-x-2">
+                      <button
+                        onClick={() => handleViewDetail(branch)}
+                        className="text-blue-500 border border-blue-500 rounded px-3 py-1 text-xs hover:bg-blue-50"
+                      >
+                        Lihat Detail
+                      </button>
+                      <button
+                        onClick={() => handleEditMentor(branch)}
+                        className="text-orange-500 border border-orange-500 rounded px-3 py-1 text-xs hover:bg-orange-50"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleOpenDeleteModal(branch.id)}
+                        className="text-red-500 border border-red-500 rounded px-3 py-1 text-xs hover:bg-red-50"
+                      >
+                        Hapus
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="pt-8 px-3 pb-4">
-                <h3 className="font-bold text-sm text-gray-800 text-center mb-1">{branch.name}</h3>
-                <p className="text-xs text-black-500 text-center mb-3 italic">{branch.division}</p>
-                <p className="text-xs text-black-600 text-center mb-1">{branch.email}</p>
-                <div className="flex justify-center mt-2">
-                  <div className="border border-[#D5DBE7] rounded p-2 w-full flex justify-between items-center space-x-2">
-                    <button onClick={() => handleViewDetail(branch.id)} className="text-blue-500 border border-blue-500 rounded px-3 py-1 text-xs hover:bg-blue-50">
-                      Lihat Detail
-                    </button>
-                    <button className="text-orange-500 border border-orange-500 rounded px-3 py-1 text-xs hover:bg-orange-50">Edit</button>
-                    <button onClick={() => handleOpenDeleteModal(branch.id)} className="text-red-500 border border-red-500 rounded px-3 py-1 text-xs hover:bg-red-50">
-                      Hapus
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        {/* Pagination */}
         <div className="flex items-center justify-between mt-6">
           <div className="flex-1">
             <ReactPaginate
@@ -160,11 +246,30 @@ export default function MentorBranchCard() {
           </div>
         </div>
 
-        {/* Modal tambah mentor */}
-        <ModalTambahMentor isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSave={handleAddMentor} />
+        <ModalTambahMentor
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            setEditingMentor(null);
+          }}
+          onSuccess={() => {
+            fetchMentors();
+          }}
+          mode={editingMentor ? "edit" : "add"}
+          mentorData={editingMentor}
+        />
 
-        {/* Modal delete mentor */}
-        <ModalDelete isOpen={modalState.showDeleteModal} onClose={handleCloseDeleteModal} onConfirm={handleDeleteBranch} />
+        <ModalDelete
+          isOpen={modalState.showDeleteModal}
+          onClose={handleCloseDeleteModal}
+          onConfirm={handleDeleteBranch}
+        />
+
+        <ModalDetailMentor
+          isOpen={isDetailModalOpen}
+          onClose={() => setIsDetailModalOpen(false)}
+          mentor={selectedMentor}
+        />
       </div>
     </Card>
   );

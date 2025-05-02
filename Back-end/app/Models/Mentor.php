@@ -21,16 +21,12 @@ class Mentor extends Model
         'id',
         'id_user',
         'id_divisi',
+        'id_cabang'
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user');
-    }
-
-    public function divisiCabang()
-    {
-        return $this->belongsTo(Divisi_cabang::class, 'id_divisi_cabang');
     }
 
     public function magang()

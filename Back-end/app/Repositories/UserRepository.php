@@ -9,10 +9,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository implements UserInterface
 {
-    public function getAll(): Collection
-    {
-        return User::all();
-    }
 
     public function getAdminByCabang(int $id): Collection
     {

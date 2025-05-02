@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class NotifikasiRepository implements NotifikasiInterface
 {
-    public function getAll(): Collection
+    public function getAll($id): Collection
     {
         return Notifikasi::all();
     }

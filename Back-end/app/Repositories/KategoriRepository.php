@@ -10,7 +10,7 @@ class KategoriRepository implements KategoriInterface
 {
     public function getAll(): Collection
     {
-        return Kategori::with('foto')->get();
+        return Kategori::all();
     }
 
     public function find(int $id): ? Kategori
@@ -27,7 +27,7 @@ class KategoriRepository implements KategoriInterface
     {
         $category = Kategori::findOrFail($id);
         $category->update($data);
-        
+
         return $category;
     }
 

@@ -18,7 +18,7 @@ class Sekolah extends Model
         'telepon',
         'jenis_institusi',
         'website',
-        'id_perusahaan'
+        'id_cabang'
     ];
 
     public $timestamps = false;
@@ -37,8 +37,9 @@ class Sekolah extends Model
     {
         return $this->hasMany(Peserta::class, 'sekolah_id', 'id');
     }
-    public function perusahaan()
+
+    public function cabang()
     {
-        return $this->belongsTo(Perusahaan::class, 'id_perusahaan', 'id');
+        return $this->belongsTo(Cabang::class, 'id_cabang', 'id');
     }
 }

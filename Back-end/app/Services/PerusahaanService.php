@@ -27,9 +27,10 @@ class PerusahaanService
         $this->userInterface = $userInterface;
     }
 
-    public function getAllPerusahaan()
-    {
+    public function getPerusahaan()
+    {   
         $data = $this->PerusahaanInterface->getAll();
+        
         return Api::response(
             PerusahaanResource::collection($data),
             'Berhasil mengambil data perusahaan',
@@ -79,7 +80,7 @@ class PerusahaanService
                 throw new \Exception('Tidak ada data yang dikirim untuk diperbarui');
             }
             $userData = array_filter([
-                'name' => $data['nama'] ?? null,
+                'nama' => $data['nama'] ?? null,
                 'telepon' => $data['telepon'] ?? null,
                 'email' => $data['email'] ?? null,
             ]);

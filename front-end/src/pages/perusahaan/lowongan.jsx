@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ChevronRight } from 'lucide-react';
 import Chart from 'react-apexcharts'; // langsung import tanpa dynamic
 
-// Job Card Component with ApexCharts
+
 const JobCard = ({ job, onClick, isActive }) => {
-  // ApexCharts options
   const chartOptions = {
     chart: {
       type: 'line',
@@ -57,8 +56,6 @@ const JobCard = ({ job, onClick, isActive }) => {
       show: false
     }
   };
-
-  // Chart series
   const chartSeries = [
     {
       name: job.title,
@@ -68,7 +65,7 @@ const JobCard = ({ job, onClick, isActive }) => {
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-sm p-4 cursor-pointer transition-all duration-300 ${
+      className={`bg-white rounded-xl border border-slate-400/[0.5] py-6 px-4 w-full cursor-pointer transition-all duration-300 ${
         isActive ? 'ring-2 ring-blue-500' : 'hover:shadow-md'
       }`}
       onClick={onClick}
@@ -84,9 +81,9 @@ const JobCard = ({ job, onClick, isActive }) => {
             job.color === 'indigo' ? 'text-indigo-500' : 
             'text-emerald-500'
           }`}>
-            {job.iconType === "people" && <span>👥</span>}
-            {job.iconType === "display" && <span>📊</span>}
-            {job.iconType === "graduate" && <span>🎓</span>}
+            {job.iconType === "people" && <i className="bi bi-people-fill"></i>}
+            {job.iconType === "display" && <i className="bi bi-bar-chart-line-fill"></i>}
+            {job.iconType === "graduate" && <i className="bi bi-mortarboard-fill"></i>}
           </div>
         </div>
         <span className="text-sm font-medium">{job.title}</span>
@@ -110,7 +107,7 @@ const JobCard = ({ job, onClick, isActive }) => {
   );
 };
 
-// Job Detail Component
+
 const JobDetail = ({ job, onClose }) => {
   if (!job) return null;
   
@@ -128,7 +125,7 @@ const JobDetail = ({ job, onClose }) => {
   }, [onClose]);
   
   return (
-    <div className="bg-white rounded-xl shadow-md p-6 h-full">
+    <div className="bg-white rounded-xl p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Detail Lowongan</h2>
         <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
@@ -140,14 +137,14 @@ const JobDetail = ({ job, onClose }) => {
       
       <div className="mb-4">
         <img 
-          src="/api/placeholder/800/200" 
+          src="/assets/img/Cover.png" 
           alt="Company" 
           className="w-full h-32 object-cover rounded-lg mb-3"
         />
         <div className="relative -mt-8 flex justify-center">
           <div className="w-16 h-16 bg-white rounded-full p-1 shadow-md">
             <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
-              <span className="text-2xl">🏢</span>
+            <i className="bi bi-building text-xl"></i>
             </div>
           </div>
         </div>
@@ -161,7 +158,7 @@ const JobDetail = ({ job, onClose }) => {
         
         <div>
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 text-blue-500">📊</div>
+          <div className="w-5 h-5 text-blue-500"><i className="bi bi-bar-chart-line-fill"></i></div>
             <span className="text-sm text-gray-500">Status Lowongan:</span>
           </div>
           <p className="pl-7 text-sm font-medium">
@@ -209,7 +206,7 @@ const JobDetail = ({ job, onClose }) => {
       </div>
       
       <div className="mt-8 flex gap-2">
-        <button className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 text-sm hover:bg-gray-50 flex-1">
+        <button onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 text-sm hover:bg-gray-50 flex-1">
           Tutup Lowongan
         </button>
         <button className="px-4 py-2 bg-orange-500 text-white rounded-lg text-sm hover:bg-orange-600 flex-1">
@@ -225,7 +222,6 @@ export default function App() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [showModal, setShowModal] = useState(false);
   
-  // Job data for cards and table
   const jobData = [
     {
       id: 1,
@@ -320,7 +316,7 @@ export default function App() {
     },
   ];
 
-  const filteredData = sortStatus === 'All'
+ const filteredData = sortStatus === 'All'
     ? tableData
     : tableData.filter((job) => job.status === sortStatus);
 
@@ -349,11 +345,9 @@ export default function App() {
   };
 
   return (
-    <div className="max-w-9xl mx-auto p-4 h-screen">
-      <div className={`flex transition-all duration-300 ${selectedJob ? 'flex-row' : 'flex-col'}`}>
-        {/* Main Content Area */}
-        <div className={`${selectedJob ? 'w-7/12 pr-4' : 'w-full'} transition-all duration-300`}>
-          {/* Cards Section */}
+    <div className="max-w-9xl mx-auto p-4">
+      <div className={`flex transition-all duration-500 ${selectedJob ? 'flex-row' : 'flex-col'}`}>
+        <div className={`${selectedJob ? 'w-9/12 pr-4' : 'w-full'} transition-all duration-300`}>
           <div className={`grid ${selectedJob ? 'grid-cols-3' : 'grid-cols-1 md:grid-cols-3'} gap-4 mb-6`}>
             {jobData.map((job) => (
               <JobCard 
@@ -365,9 +359,7 @@ export default function App() {
             ))}
           </div>
           
-          {/* Table Section */}
-          <div className="bg-white rounded-xl shadow-md mt-4">
-            {/* Header */}
+          <div className="bg-white rounded-xl overflow-hidden mt-4">
             <div className="flex items-center justify-between mb-2 p-4">
               <h1 className="text-lg font-semibold">Cabang Perusahaan</h1>
               <div className="flex items-center space-x-2">
@@ -376,7 +368,7 @@ export default function App() {
                   className="bg-white text-gray-700 border border-gray-300 rounded-md px-3 py-1 text-xs flex items-center"
                 >
                   <span className="mr-1">+</span>
-                  <span>Tambah Divisi</span>
+                  <span>Tambah Lowongan</span>
                 </button>
                 <div className="flex items-center">
                   <span className="mr-2 text-xs">Sort by:</span>
@@ -393,7 +385,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Table */}
             <div className="overflow-x-auto">
               <table className="min-w-full bg-white">
                 <thead className="bg-gray-100">
@@ -436,9 +427,8 @@ export default function App() {
           </div>
         </div>
         
-        {/* Detail Panel */}
         {selectedJob && (
-          <div className="w-5/12 transition-all duration-300">
+          <div className="w-1/3 transition-all duration-300">
             <JobDetail job={selectedJob} onClose={handleCloseDetail} />
           </div>
         )}

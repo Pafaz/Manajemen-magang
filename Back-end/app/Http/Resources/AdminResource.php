@@ -16,7 +16,7 @@ class AdminResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'id_perusahaan' => $this->id_perusahaan,
+            'id_cabang' => $this->id_cabang,
             'user' => new UserResource($this->user),
             'foto' => FotoResource::collection($this->foto),
         ];

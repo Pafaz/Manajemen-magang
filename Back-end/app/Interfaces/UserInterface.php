@@ -8,7 +8,7 @@ use App\Interfaces\Base\DeleteInterface;
 use App\Interfaces\Base\GetAllInterface;
 use App\Interfaces\Base\UpdateInterface;
 
-interface UserInterface extends GetAllInterface, CreateInterface, DeleteInterface
+interface UserInterface extends CreateInterface, DeleteInterface
 {
     public function find(string $email): ? User;
 

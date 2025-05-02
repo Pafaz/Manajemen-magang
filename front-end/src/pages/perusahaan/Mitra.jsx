@@ -1,4 +1,3 @@
-import { useState } from "react";
 import PerusahaanCard from "../../components/cards/PerusahaanCard"; // Import the new component
 import DaftarMitra from "../../components/cards/DaftarMitra";
 

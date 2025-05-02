@@ -1,21 +1,31 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import Modal from "../Modal";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
+import ModalTambahCabang from "../modal/ModalTambahCabang";
 
 const NavAdmin = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isCabangDropdownOpen, setIsCabangDropdownOpen] = useState(false);
   const [isRinging, setIsRinging] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isTambahCabangModalOpen, setIsTambahCabangModalOpen] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState("2 Bulan");
   const [discount, setDiscount] = useState(10);
   const { token, user } = useContext(AuthContext);
   const [verived, setVerived] = useState(null);
   const [idUser, setId] = useState(null);
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const [isLoadingCabang, setIsLoadingCabang] = useState(false);
+  const [cabang, setisCabang] = useState([]);
+  const cabangDropdownRef = useRef(null);
+  const isActive = (path) => currentPath === path;
   useEffect(() => {
     if (user && user.id) {
       setId(user.id);
@@ -24,6 +34,19 @@ const NavAdmin = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        cabangDropdownRef.current &&
+        !cabangDropdownRef.current.contains(event.target)
+      ) {
+        setIsCabangDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   const packagePrice = 100000;
   const calculateSubtotal = () => {
     const months = parseInt(selectedDuration.split(" ")[0]);
@@ -90,8 +113,61 @@ const NavAdmin = () => {
     }
   };
 
+  const getAllCabang = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/cabang`, {
+        headers: {
+          Authorization: `Bearer ${
+            localStorage.getItem("token") || sessionStorage.getItem("token")
+          }`,
+        },
+      });
+      setIsLoadingCabang(true);
+      setisCabang(res.data.data);
+    } catch (error) {
+      console.log("GAGAL AMBIL DATA CABANG", error);
+    } finally {
+      setIsLoadingCabang(false);
+    }
+  };
+
+  const handleClickActivecabang = async ($id_cabang) => {
+    try {
+       await axios.post(
+        `${import.meta.env.VITE_API_URL}/set-cabang-aktif`,
+        {id_cabang: $id_cabang},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleTambahCabang = () => {
+    setIsLoadingCabang(true);
+    setIsCabangDropdownOpen(false);
+    setTimeout(() => {
+      setIsLoadingCabang(false);
+      setIsTambahCabangModalOpen(true);
+    }, 2000);
+  };
+
+  const handleTambahPremiumCabang = () => {
+    setIsLoadingCabang(true);
+    setIsCabangDropdownOpen(false);
+    setTimeout(() => {
+      setIsLoadingCabang(false);
+      setIsPremiumModalOpen(true);
+    }, 200);
+  };
+
   useEffect(() => {
     checkIsVerived();
+    getAllCabang();
   }, []);
 
   useEffect(() => {
@@ -112,8 +188,215 @@ const NavAdmin = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleSave = async (data) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/cabang`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(res);
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        console.log("Validasi Gagal:", error.response.data.errors);
+      } else {
+        console.log("Gagal menyimpan data cabang:", error);
+      }
+    }
+  };
+
   return (
     <nav className="bg-white w-full h-[60px] flex items-center px-10 sticky top-0 z-50 border-b border-b-slate-300">
+      <div className="flex gap-4 items-center">
+        {/* Dashboard Link */}
+        <Link
+          to="/perusahaan/dashboard"
+          className={`font-semibold text-sm px-4 py-2 rounded-full flex items-center transition-colors ${
+            isActive("/perusahaan/dashboard")
+              ? "text-[#0069AB] underline"
+              : "text-black hover:underline"
+          }`}
+        >
+          Dashboard
+        </Link>
+
+        {/* Kelola Cabang with Dropdown */}
+        <div className="relative" ref={cabangDropdownRef}>
+          <button
+            onClick={() => setIsCabangDropdownOpen(!isCabangDropdownOpen)}
+            className={`font-semibold text-sm px-4 py-2 rounded-full flex items-center gap-2 transition-colors ${
+              isActive("/admin/cabang") ||
+              currentPath.includes("/admin/cabang/")
+                ? "text-[#0069AB] underline"
+                : "text-black hover:underline"
+            }`}
+          >
+            Perusahaan
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className={`h-4 w-4 transition-transform duration-300 ${
+                isCabangDropdownOpen ? "rotate-180" : ""
+              }`}
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 11.292l3.71-4.06a.75.75 0 111.1 1.02l-4.25 4.65a.75.75 0 01-1.1 0l-4.25-4.65a.75.75 0 01.02-1.06z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
+
+          {/* Cabang Dropdown Menu */}
+          {isCabangDropdownOpen && (
+            <div className="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden z-50">
+              {isLoadingCabang ? (
+                <div className="py-4 px-4 text-center text-gray-600">
+                  <div className="flex justify-center items-center">
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                  </div>
+                </div>
+              ) : cabang.length === 0 ? (
+                <div className="py-4 px-4">
+                  <p className="text-gray-600 text-sm mb-3">Belum ada Cabang</p>
+                  <button
+                    onClick={() => {
+                      setIsTambahCabangModalOpen(true);
+                      setIsCabangDropdownOpen(false);
+                    }}
+                    className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Tambah Cabang
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div className="border-b border-gray-200">
+                    <Link
+                      to="/perusahaan/cabang"
+                      className={`block px-4 py-2 text-sm hover:bg-gray-100 ${
+                        isActive("/perusahaan/cabang")
+                          ? "bg-gray-100 font-medium"
+                          : ""
+                      }`}
+                      onClick={() => setIsCabangDropdownOpen(false)}
+                    >
+                      Semua Cabang
+                    </Link>
+                  </div>
+                  <div className="max-h-60 overflow-y-auto">
+                    {cabang.map((cabang) => (
+                      <Link
+                        key={cabang.id}
+                        to={`/perusahaan/cabang/${cabang.id}`}
+                        className={`block px-4 py-2 text-sm hover:bg-gray-100 ${
+                          currentPath === `/perusahaan/cabang/${cabang.id}`
+                            ? "bg-gray-100 font-medium"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          setIsCabangDropdownOpen(false);
+                          handleClickActivecabang(cabang.id);
+                        }}                        
+                      >
+                        {cabang.nama}
+                      </Link>
+                    ))}
+                  </div>
+                  <div className="border-t border-gray-200 py-2 px-4 hover:bg-gray-100">
+                    {cabang.length === 1 ? (
+                      <button
+                        onClick={handleTambahPremiumCabang}
+                        className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                      >
+                        {isLoadingCabang ? (
+                          <div className="py-4 px-4 text-center text-gray-600">
+                            <div className="flex justify-center items-center">
+                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                            </div>
+                          </div>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        Tambah Cabang
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleTambahCabang}
+                        className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                      >
+                        {isLoadingCabang ? (
+                          <div className="py-4 px-4 text-center text-gray-600">
+                            <div className="flex justify-center items-center">
+                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                            </div>
+                          </div>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        Tambah Cabang
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Kelola Lowongan */}
+        <Link
+          to="/perusahaan/lowongan"
+          className={`font-semibold text-sm px-4 py-2 rounded-full flex items-center transition-colors ${
+            isActive("/perusahaan/lowongan")
+              ? "text-[#0069AB] underline"
+              : "text-black hover:underline"
+          }`}
+        >
+          Lowongan
+        </Link>
+      </div>
+
       <div className="flex gap-5 ml-auto items-center">
         <div className="w-7 h-7 rounded-full bg-indigo-100 relative flex justify-center items-center">
           <div className="bg-red-500 w-2 h-2 rounded-full absolute top-1 right-2 animate-ping"></div>
@@ -373,6 +656,11 @@ const NavAdmin = () => {
           </div>
         </div>
       </Modal>
+      <ModalTambahCabang
+        isOpen={isTambahCabangModalOpen}
+        onClose={() => setIsTambahCabangModalOpen(false)}
+        onSave={handleSave}
+      />
     </nav>
   );
 };

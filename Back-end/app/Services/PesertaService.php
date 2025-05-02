@@ -5,26 +5,33 @@ namespace App\Services;
 use App\Helpers\Api;
 use App\Http\Resources\PesertaDetailResource;
 use App\Http\Resources\PesertaResource;
+use App\Interfaces\MagangInterface;
 use App\Interfaces\PesertaInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class PesertaService
 {
     private PesertaInterface $pesertaInterface;
+    private MagangInterface $magangInterface;
     private FotoService $foto;
 
-    public function __construct(PesertaInterface $pesertaInterface, FotoService $foto)
+    public function __construct(PesertaInterface $pesertaInterface, FotoService $foto, MagangInterface $magangInterface)
     {
         $this->foto = $foto;
         $this->pesertaInterface = $pesertaInterface;
+        $this->magangInterface = $magangInterface;
     }
 
-    public function getAllPeserta()
+    public function getPeserta($id, $isUpdate = false)
     {
-        $data = $this->pesertaInterface->getAll();
+        $idcabang = auth('sanctum')->user()->id_cabang_aktif;
+        $data = $isUpdate
+            ? $this->pesertaInterface->find($id)
+            : $this->pesertaInterface->getAll($idcabang);
+            
         return Api::response(
             PesertaResource::collection($data),
-            'Peserta Fetched Successfully',
+            'Berhasil mengambil data peserta', 
         );
     }
 
@@ -46,48 +53,50 @@ class PesertaService
         );
     }
 
-    public function getPesertaById($id){
-        $peserta = $this->pesertaInterface->find($id);
-        return Api::response(
-            PesertaDetailResource::make($peserta),
-            'Peserta Fetched Successfully',
-            Response::HTTP_OK
-        );
-    }
-
-    public function createPeserta(array $data)
+    public function simpanProfilPeserta(array $data, bool $isUpdate = false, $id = null)
     {
-        $peserta = $this->pesertaInterface->create($data);
-        $peserta->user->update([
-            'name' => $data['nama'],
-            'telepon' => $data['telepon']
-        ]);
+        if ($isUpdate) {
+            $peserta = $this->pesertaInterface->update($id, $data);
+            $peserta->user->update([
+                'nama' => $data['nama'],
+                'telepon' => $data['telepon']
+            ]);
+            
+            $statusCode = Response::HTTP_OK;
+            $message = 'Peserta berhasil memperbarui profil';
+        } else {
+            $data['id_user'] = auth('sanctum')->user()->id;
+            $peserta = $this->pesertaInterface->create($data);
+            $peserta->user->update([
+                'nama' => $data['nama'],
+                'telepon' => $data['telepon']
+            ]);
+            $statusCode = Response::HTTP_CREATED;
+            $message = 'Peserta berhasil melengkapi profil';
+        }
+
         $files = [
-            'foto' => 'profile',
+            'foto_profil' => 'foto_profile',
             'cv' => 'cv',
             'pernyataan_diri' => 'pernyataan_diri',
             'pernyataan_ortu' => 'pernyataan_ortu',
         ];
+
         foreach ($files as $key => $tipe) {
             if (!empty($data[$key])) {
-                $this->foto->createFoto($data[$key], $peserta->id, $tipe);
+                if ($isUpdate) {
+                    $this->foto->updateFoto($data[$key], $peserta->id, $tipe);
+                } else {
+                    $this->foto->createFoto($data[$key], $peserta->id, $tipe);
+                }
             }
         }
 
-        return Api::response(
-            PesertaResource::make($peserta),
-            'Peserta Created Successfully',
-            Response::HTTP_CREATED
-        );
-    }
 
-    public function updatePeserta(array $data, $id)
-    {
-        $peserta = $this->pesertaInterface->update($id, $data);
         return Api::response(
             PesertaResource::make($peserta),
-            'Peserta Updated Successfully',
-            Response::HTTP_OK
+            $message,
+            $statusCode
         );
     }
 

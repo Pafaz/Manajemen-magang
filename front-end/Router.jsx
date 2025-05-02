@@ -19,6 +19,7 @@ import PendataanAdmin from "./src/pages/admin/PendataanAdmin";
 import PerusahaanLayout from "./src/layout/PerusahaanLayout";
 import DashboardPerusahaan from "./src/pages/perusahaan/Dashboard";
 import BerandaPerusahaan from "./src/pages/perusahaan/BerandaPerusahaan";
+import CabangPerusahaan from "./src/pages/perusahaan/CabangPerusahaan";
 import DetailCabang from "./src/pages/perusahaan/DetailCabang";
 import Admin from "./src/pages/perusahaan/Admin";
 import Mentor from "./src/pages/perusahaan/Mentor";
@@ -30,9 +31,10 @@ import Pendataan from "./src/pages/perusahaan/Pendataan";
 import DataAbsensi from "./src/pages/perusahaan/Absensi";
 import RFID from "./src/pages/perusahaan/RFID";
 import Surat from "./src/pages/perusahaan/Surat";
-import KategoriProject from "./src/pages/perusahaan/KategoriProject";
 import Lowongan from "./src/pages/perusahaan/lowongan";
 import SettingsPerusahaan from "./src/pages/perusahaan/SettingsPerusahaan";
+import Detailsmentor from "./src/components/cards/DetailMentor";
+import DetailSiswa from "./src/components/cards/DetailSiswa";
 import Gallery from "./src/pages/Gallery";
 import Procedure from "./src/pages/Procedure";
 import Contact from "./src/pages/Contact";
@@ -45,6 +47,7 @@ import SelectAuth from "./src/pages/Auth/SelectAuth";
 import GoogleSuccess from "./src/pages/Auth/GoogleSuccess";
 import AuthLayout from "./src/layout/AuthLayout";
 import CompanyRegistrationForm from "./src/pages/perusahaan/PerusahaanForm";
+import DetailMentor from "./src/components/cards/DetailMentor";
 
 export const router = createBrowserRouter([
   {
@@ -214,12 +217,12 @@ export const router = createBrowserRouter([
         element: <Surat />,
       },
       {
-        path: "RFID",
-        element: <RFID />,
+        path :"cabang",
+        element : <CabangPerusahaan />
       },
       {
-        path: "kat-projek",
-        element: <KategoriProject />,
+        path: "RFID",
+        element: <RFID />,
       },
       {
         path: "settings",
@@ -232,7 +235,19 @@ export const router = createBrowserRouter([
       {
         path: "update-perusahaan/:id_perusahaan",
         element : <SettingsPerusahaan/>
-      }
+      },
+      {
+        path : "mentor/:mentorId",
+        element : <Detailsmentor />
+      },
+      {
+        path : "detail-siswa",
+        element : <DetailSiswa/>
+      },
+      {
+        path: "detailmentor",
+        element : <DetailMentor/>
+      },
     ],
   },
   {

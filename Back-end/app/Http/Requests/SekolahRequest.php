@@ -17,7 +17,7 @@ class SekolahRequest extends BaseFormRequest
             return [
                 'nama' => 'sometimes|string|max:50|unique:sekolah,nama',
                 'alamat' => 'sometimes|string|max:255',
-                'telepon' => 'sometimes|numeric|digits_between:10,12',
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:sekolah,telepon',
                 'jenis_institusi' => 'sometimes|string|max:50',
                 'website' => 'nullable|url',
                 'jurusan' => 'sometimes|array|min:1',
@@ -29,7 +29,7 @@ class SekolahRequest extends BaseFormRequest
         return [
             'nama' => 'required|string|max:50|unique:sekolah,nama',
             'alamat' => 'required|string|max:255',
-            'telepon' => 'required|numeric|digits_between:10,12',
+            'telepon' => 'required|numeric|digits_between:10,12|unique:sekolah,telepon',
             'jenis_institusi' => 'required|string|max:50',
             'website' => 'nullable|url',
             'jurusan' => 'required|array',

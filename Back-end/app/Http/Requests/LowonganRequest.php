@@ -30,7 +30,8 @@ class LowonganRequest extends BaseFormRequest
                 'max_kuota' => 'sometimes|integer|min:1',
                 'durasi' => 'sometimes|integer|min:1',
                 'requirement' => 'sometimes|string',
-                'jobdesc' => 'sometimes|string'
+                'jobdesc' => 'sometimes|string',
+                'kategori' => 'sometimes|in:offline,online'
             ];
         }
         return [
@@ -41,7 +42,8 @@ class LowonganRequest extends BaseFormRequest
             'max_kuota' => 'required|integer|min:1',
             'durasi' => 'required|integer|min:1',
             'requirement' => 'string|required',
-            'jobdesc' => 'string|required'
+            'jobdesc' => 'string|required',
+            'kategori' => 'required|in:offline,online'
         ];
     }
 }

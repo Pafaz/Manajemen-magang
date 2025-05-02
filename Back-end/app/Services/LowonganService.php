@@ -57,6 +57,7 @@ class LowonganService
                 'tanggal_mulai' => $data['tanggal_mulai'],
                 'tanggal_selesai' => $data['tanggal_selesai'],
                 'durasi' => $data['durasi'],
+                'kategori' => $data['kategori'],
                 'max_kuota' => $data['max_kuota'],
                 'requirement' => $data['requirement'],
                 'jobdesc' => $data['jobdesc']

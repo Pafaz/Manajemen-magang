@@ -24,6 +24,7 @@ class Lowongan extends Model
         'durasi',
         'jobdesc',
         'status',
+        'kategori'
     ];
 
     public function perusahaan()

@@ -53,5 +53,4 @@ class MentorRequest extends BaseFormRequest
             'cover' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
-
 }

@@ -69,7 +69,7 @@ class PerusahaanService
         try {
             $user = auth('sanctum')->user();
 
-            if (!$isUpdate && $user->perusahaan) {
+            if ($user->perusahaan) {
                 throw new \Exception('Perusahaan sudah terdaftar');
             }
             if ($isUpdate && !$user->perusahaan) {

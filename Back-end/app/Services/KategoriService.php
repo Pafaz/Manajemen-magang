@@ -7,7 +7,7 @@ use App\Http\Resources\CategoryResource;
 use App\Interfaces\KategoriInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class KategoriService 
+class KategoriService
 {
     private KategoriInterface $KategoriInterface;
     private FotoService $foto;
@@ -21,21 +21,21 @@ class KategoriService
 
     public function getCategories($id = null)
     {
+        $data = $this->KategoriInterface->getAll();
+        return Api::response(
+            CategoryResource::collection($data),
+            'Categories Fetched Successfully',
+        );
+    }
 
-        $kategori = $this->KategoriInterface->find($id);
-        if (!$kategori) {
-            return Api::response(null, 'Kategori tidak ditemukan', Response::HTTP_NOT_FOUND);
-        }
-
-        $data = $id
-            ? CategoryResource::make($this->KategoriInterface->find($id))
-            : CategoryResource::collection($this->KategoriInterface->getAll());
-
-        $message = $id 
-            ? 'Berhasil mengambil data kategori'
-            : 'Berhasil mengambil semua data kategori';
-
-        return Api::response($data, $message);
+    public function createCategory(array $data)
+    {
+        $category = $this->KategoriInterface->create($data);
+        return Api::response(
+            CategoryResource::make($category),
+            'Category created successfully',
+            Response::HTTP_CREATED
+        );
     }
 
     public function simpanKategori(array $data, bool $isUpdate = false, $id = null)
@@ -57,10 +57,10 @@ class KategoriService
                 'id_perusahaan' => $perusahaanId,
                 'nama' => $data['nama'],
             ]);
-        
+
         if (!empty($data['card'])) {
-            $isUpdate 
-                ? $this->foto->updateFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card') 
+            $isUpdate
+                ? $this->foto->updateFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card')
                 : $this->foto->createFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card');
         }
         $message = $isUpdate
@@ -73,8 +73,8 @@ class KategoriService
 
         return Api::response(
             CategoryResource::make($category),
-            $message,
-            $statusCode,
+            'Category updated successfully',
+            Response::HTTP_OK
         );
 
     }

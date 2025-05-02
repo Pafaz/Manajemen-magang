@@ -22,21 +22,10 @@ const NavAdmin = () => {
   const [idUser, setId] = useState(null);
   const location = useLocation();
   const currentPath = location.pathname;
-  
-  // Dummy cabang data
-  const [cabangList, setCabangList] = useState([
-    { id: 1, nama_cabang: "Cabang Jakarta Pusat" },
-    { id: 2, nama_cabang: "Cabang Surabaya" },
-    { id: 3, nama_cabang: "Cabang Bandung" },
-    { id: 4, nama_cabang: "Cabang Malang" },
-    { id: 5, nama_cabang: "Cabang Yogyakarta" }
-  ]);
   const [isLoadingCabang, setIsLoadingCabang] = useState(false);
-  
+  const [cabang, setisCabang] = useState([]);
   const cabangDropdownRef = useRef(null);
-
   const isActive = (path) => currentPath === path;
-
   useEffect(() => {
     if (user && user.id) {
       setId(user.id);
@@ -45,18 +34,19 @@ const NavAdmin = () => {
     }
   }, [user]);
 
-  // Close cabang dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (cabangDropdownRef.current && !cabangDropdownRef.current.contains(event.target)) {
+      if (
+        cabangDropdownRef.current &&
+        !cabangDropdownRef.current.contains(event.target)
+      ) {
         setIsCabangDropdownOpen(false);
       }
     };
-    
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
   const packagePrice = 100000;
   const calculateSubtotal = () => {
     const months = parseInt(selectedDuration.split(" ")[0]);
@@ -109,18 +99,6 @@ const NavAdmin = () => {
     alert("Pembayaran berhasil! Akun Anda telah ditingkatkan ke Pro.");
   };
 
-  const handleTambahCabang = () => {
-    // Handle adding a new cabang
-    setIsTambahCabangModalOpen(false);
-    // Simulate adding a new cabang to the list
-    const newCabang = {
-      id: cabangList.length + 1,
-      nama_cabang: `Cabang Baru ${cabangList.length + 1}`
-    };
-    setCabangList([...cabangList, newCabang]);
-    alert(`Cabang ${newCabang.nama_cabang} berhasil ditambahkan!`);
-  };
-
   const checkIsVerived = async () => {
     try {
       const response = await axios.get(
@@ -135,8 +113,61 @@ const NavAdmin = () => {
     }
   };
 
+  const getAllCabang = async () => {
+    try {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/cabang`, {
+        headers: {
+          Authorization: `Bearer ${
+            localStorage.getItem("token") || sessionStorage.getItem("token")
+          }`,
+        },
+      });
+      setIsLoadingCabang(true);
+      setisCabang(res.data.data);
+    } catch (error) {
+      console.log("GAGAL AMBIL DATA CABANG", error);
+    } finally {
+      setIsLoadingCabang(false);
+    }
+  };
+
+  const handleClickActivecabang = async ($id_cabang) => {
+    try {
+       await axios.post(
+        `${import.meta.env.VITE_API_URL}/set-cabang-aktif`,
+        {id_cabang: $id_cabang},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleTambahCabang = () => {
+    setIsLoadingCabang(true);
+    setIsCabangDropdownOpen(false);
+    setTimeout(() => {
+      setIsLoadingCabang(false);
+      setIsTambahCabangModalOpen(true);
+    }, 2000);
+  };
+
+  const handleTambahPremiumCabang = () => {
+    setIsLoadingCabang(true);
+    setIsCabangDropdownOpen(false);
+    setTimeout(() => {
+      setIsLoadingCabang(false);
+      setIsPremiumModalOpen(true);
+    }, 200);
+  };
+
   useEffect(() => {
     checkIsVerived();
+    getAllCabang();
   }, []);
 
   useEffect(() => {
@@ -157,10 +188,27 @@ const NavAdmin = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSave = () => {
-    console.log("klik");
-    
-  }
+  const handleSave = async (data) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/cabang`,
+        data,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      console.log(res);
+    } catch (error) {
+      if (error.response && error.response.status === 422) {
+        console.log("Validasi Gagal:", error.response.data.errors);
+      } else {
+        console.log("Gagal menyimpan data cabang:", error);
+      }
+    }
+  };
 
   return (
     <nav className="bg-white w-full h-[60px] flex items-center px-10 sticky top-0 z-50 border-b border-b-slate-300">
@@ -170,8 +218,8 @@ const NavAdmin = () => {
           to="/perusahaan/dashboard"
           className={`font-semibold text-sm px-4 py-2 rounded-full flex items-center transition-colors ${
             isActive("/perusahaan/dashboard")
-              ? "bg-[#0069AB] text-white shadow-md"
-              : "text-[#0069AB] hover:underline"
+              ? "text-[#0069AB] underline"
+              : "text-black hover:underline"
           }`}
         >
           Dashboard
@@ -182,15 +230,18 @@ const NavAdmin = () => {
           <button
             onClick={() => setIsCabangDropdownOpen(!isCabangDropdownOpen)}
             className={`font-semibold text-sm px-4 py-2 rounded-full flex items-center gap-2 transition-colors ${
-              isActive("/admin/cabang") || currentPath.includes("/admin/cabang/")
-                ? "bg-[#0069AB] text-white shadow-md"
-                : "text-[#0069AB] hover:underline"
+              isActive("/admin/cabang") ||
+              currentPath.includes("/admin/cabang/")
+                ? "text-[#0069AB] underline"
+                : "text-black hover:underline"
             }`}
           >
             Perusahaan
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className={`h-4 w-4 transition-transform duration-300 ${isCabangDropdownOpen ? "rotate-180" : ""}`}
+              className={`h-4 w-4 transition-transform duration-300 ${
+                isCabangDropdownOpen ? "rotate-180" : ""
+              }`}
               viewBox="0 0 20 20"
               fill="currentColor"
             >
@@ -209,10 +260,9 @@ const NavAdmin = () => {
                 <div className="py-4 px-4 text-center text-gray-600">
                   <div className="flex justify-center items-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
-                    <span className="ml-2">Loading...</span>
                   </div>
                 </div>
-              ) : cabangList.length === 0 ? (
+              ) : cabang.length === 0 ? (
                 <div className="py-4 px-4">
                   <p className="text-gray-600 text-sm mb-3">Belum ada Cabang</p>
                   <button
@@ -241,9 +291,11 @@ const NavAdmin = () => {
                 <div>
                   <div className="border-b border-gray-200">
                     <Link
-                      to="/admin/cabang"
+                      to="/perusahaan/cabang"
                       className={`block px-4 py-2 text-sm hover:bg-gray-100 ${
-                        isActive("/admin/cabang") ? "bg-gray-100 font-medium" : ""
+                        isActive("/perusahaan/cabang")
+                          ? "bg-gray-100 font-medium"
+                          : ""
                       }`}
                       onClick={() => setIsCabangDropdownOpen(false)}
                     >
@@ -251,41 +303,80 @@ const NavAdmin = () => {
                     </Link>
                   </div>
                   <div className="max-h-60 overflow-y-auto">
-                    {cabangList.map((cabang) => (
+                    {cabang.map((cabang) => (
                       <Link
                         key={cabang.id}
-                        to={`/admin/cabang/${cabang.id}`}
+                        to={`/perusahaan/cabang/${cabang.id}`}
                         className={`block px-4 py-2 text-sm hover:bg-gray-100 ${
-                          currentPath === `/admin/cabang/${cabang.id}` ? "bg-gray-100 font-medium" : ""
+                          currentPath === `/perusahaan/cabang/${cabang.id}`
+                            ? "bg-gray-100 font-medium"
+                            : ""
                         }`}
-                        onClick={() => setIsCabangDropdownOpen(false)}
+                        onClick={() => {
+                          setIsCabangDropdownOpen(false);
+                          handleClickActivecabang(cabang.id);
+                        }}                        
                       >
-                        {cabang.nama_cabang}
+                        {cabang.nama}
                       </Link>
                     ))}
                   </div>
-                  <div className="border-t border-gray-200">
-                    <button
-                      className="flex items-center gap-2 w-full text-left px-4 py-2 text-sm font-medium text-blue-600 hover:bg-gray-100"
-                      onClick={() => {
-                        setIsTambahCabangModalOpen(true);
-                        setIsCabangDropdownOpen(false);
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
+                  <div className="border-t border-gray-200 py-2 px-4 hover:bg-gray-100">
+                    {cabang.length === 1 ? (
+                      <button
+                        onClick={handleTambahPremiumCabang}
+                        className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
                       >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Tambah Cabang
-                    </button>
+                        {isLoadingCabang ? (
+                          <div className="py-4 px-4 text-center text-gray-600">
+                            <div className="flex justify-center items-center">
+                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                            </div>
+                          </div>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        Tambah Cabang
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleTambahCabang}
+                        className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                      >
+                        {isLoadingCabang ? (
+                          <div className="py-4 px-4 text-center text-gray-600">
+                            <div className="flex justify-center items-center">
+                              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
+                            </div>
+                          </div>
+                        ) : (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        )}
+                        Tambah Cabang
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
@@ -298,8 +389,8 @@ const NavAdmin = () => {
           to="/perusahaan/lowongan"
           className={`font-semibold text-sm px-4 py-2 rounded-full flex items-center transition-colors ${
             isActive("/perusahaan/lowongan")
-              ? "bg-[#0069AB] text-white shadow-md"
-              : "text-[#0069AB] hover:underline"
+              ? "text-[#0069AB] underline"
+              : "text-black hover:underline"
           }`}
         >
           Lowongan
@@ -565,9 +656,13 @@ const NavAdmin = () => {
           </div>
         </div>
       </Modal>
-      <ModalTambahCabang isOpen={isTambahCabangModalOpen} onClose={() => setIsTambahCabangModalOpen(false)} onSave={handleSave}/>
+      <ModalTambahCabang
+        isOpen={isTambahCabangModalOpen}
+        onClose={() => setIsTambahCabangModalOpen(false)}
+        onSave={handleSave}
+      />
     </nav>
-  )
+  );
 };
 
 export default NavAdmin;

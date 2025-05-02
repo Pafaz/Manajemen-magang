@@ -46,7 +46,7 @@ const PerusahaanLayout = () => {
           link: "/perusahaan/divisi",
         },
         {
-          icon: "bi-pc-display",
+          icon: "bi-buildings",
           label: "Mitra",
           link: "/perusahaan/mitra",
         },
@@ -76,11 +76,6 @@ const PerusahaanLayout = () => {
           link: "/perusahaan/RFID",
         },
         {
-          icon: "bi-list-task",
-          label: "Kategori Project",
-          link: "/perusahaan/kat-projek",
-        },
-        {
           icon: "bi-card-checklist",
           label: "Piket",
           link: "/perusahaan/piket",
@@ -96,17 +91,17 @@ const PerusahaanLayout = () => {
 
   const footerMenus = ["License", "More Themes", "Documentation", "Support"];
 
-  // useEffect(() => {
-  //   if ((role && role !== "perusahaan") || !token) {
-  //     const redirectTo = localStorage.getItem("location");
-  //     if (redirectTo) {
-  //       navigate(redirectTo);
-  //       localStorage.removeItem("location");
-  //     } else {
-  //       navigate("/");
-  //     }
-  //   }
-  // }, [role]);
+  useEffect(() => {
+    if ((role && role !== "perusahaan") || !token) {
+      const redirectTo = localStorage.getItem("location");
+      if (redirectTo) {
+        navigate(redirectTo);
+        localStorage.removeItem("location");
+      } else {
+        navigate("/");
+      }
+    }
+  }, [role]);
 
   return (
     <div className="w-full flex">

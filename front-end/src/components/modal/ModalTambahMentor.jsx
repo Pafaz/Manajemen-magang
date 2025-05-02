@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 
 const ModalTambahMentor = ({
   isOpen,
   onClose,
-  onSave,
+  onSuccess,
   mode = "add",
   mentorData = null,
 }) => {
@@ -14,20 +15,44 @@ const ModalTambahMentor = ({
     headerPhoto: null,
     branch: "",
     division: "",
+    phoneNumber: "",
+    password: "",
   });
+  const [divisions, setDivisions] = useState([]);
+  const [editingMentor, setEditingMentor] = useState(null);
 
-  // Reset form when modal opens
   useEffect(() => {
     if (isOpen) {
+      const fetchDivisions = async () => {
+        try {
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL}/divisi`,
+            {
+              headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+              },
+            }
+          );
+          setDivisions(response.data.data || []);
+        } catch (error) {
+          console.error("Error fetching divisions:", error);
+        }
+      };
+
+      fetchDivisions();
+
       if (mode === "edit" && mentorData) {
         setFormData({
-          email: mentorData.email || "",
-          name: mentorData.name || "",
-          mentorPhoto: null,
-          headerPhoto: null,
+          email: mentorData.user.email || "",
+          name: mentorData.user.nama || "",
+          mentorPhoto: null, // Jangan reset foto di sini
+          headerPhoto: null, // Jangan reset foto di sini
           branch: mentorData.branch || "",
-          division: mentorData.division || "",
+          division: mentorData.divisi?.id || "",
+          phoneNumber: mentorData.user.telepon || "",
+          password: "", // Jangan memuat password saat mengedit
         });
+        setEditingMentor(mentorData); // Set data mentor yang sedang diedit
       } else {
         setFormData({
           email: "",
@@ -36,87 +61,115 @@ const ModalTambahMentor = ({
           headerPhoto: null,
           branch: "",
           division: "",
+          phoneNumber: "",
+          password: "",
         });
+        setEditingMentor(null);
       }
     }
   }, [isOpen, mode, mentorData]);
 
-  // Close modal when Escape key is pressed
-  useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.key === "Escape") {
-        onClose();
-      }
-    };
-
-    if (isOpen) {
-      document.addEventListener("keydown", handleEsc);
-    }
-
-    return () => {
-      document.removeEventListener("keydown", handleEsc);
-    };
-  }, [isOpen, onClose]);
-
-  // Prevent page scrolling when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
-
-  // Close modal when clicking on backdrop
-  const handleBackdropClick = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: files[0],
-    });
+    }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave(formData);
+
+    const requiredFields = ["name", "email", "phoneNumber", "division"];
+
+    if (mode === "add") {
+      requiredFields.push("password"); // Hanya perlu password pada mode add
+    }
+
+    const isValid = requiredFields.every((field) =>
+      formData[field] ? true : false
+    );
+
+    if (!isValid) {
+      alert("Semua field wajib diisi!");
+      return;
+    }
+
+    const formPayload = new FormData();
+    formPayload.append("nama", formData.name);
+    formPayload.append("email", formData.email);
+    formPayload.append("telepon", formData.phoneNumber);
+    formPayload.append("id_divisi", formData.division);
+
+    if (mode === "add" && formData.password) {
+      formPayload.append("password", formData.password);
+    }
+
+    // Kirim foto hanya jika ada file baru yang dipilih
+    if (formData.mentorPhoto) {
+      formPayload.append("profile", formData.mentorPhoto);
+    }
+
+    if (formData.headerPhoto) {
+      formPayload.append("cover", formData.headerPhoto);
+    }
+
+    try {
+      if (editingMentor) {
+        formPayload.append("_method", "PUT");
+
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/mentor/${editingMentor.id}`,
+          formPayload,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        onSuccess();
+      } else {
+        await axios.post(
+          `${import.meta.env.VITE_API_URL}/mentor`,
+          formPayload,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+      }
+      onClose();
+      onSuccess();
+      setEditingMentor(null);
+    } catch (error) {
+      console.error("Error submitting mentor data:", error);
+    }
   };
 
-  const handleCancel = () => {
-    onClose();
-  };
+  if (!isOpen) return null;
 
   return (
     <div
       className="fixed inset-0 bg-black/40 flex justify-center items-center z-[999]"
-      onClick={handleBackdropClick}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4 overflow-hidden">
-        {/* Modal Header */}
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-3xl mx-4 overflow-hidden">
+        {/* Header */}
         <div className="border-b px-6 py-4 flex justify-between items-center">
           <h3 className="font-bold text-lg text-blue-800">
             {mode === "edit" ? "Edit Mentor" : "Tambah Mentor"}
           </h3>
-
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600"
@@ -137,114 +190,95 @@ const ModalTambahMentor = ({
           </button>
         </div>
 
-        {/* Modal Body - Form */}
+        {/* Form */}
         <div className="px-6 py-4">
-          <form onSubmit={handleSubmit}>
-            {/* Email Input */}
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  Nama
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  placeholder="Masukkan Nama"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1 block">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  placeholder="Masukkan Email"
+                  required
+                />
+              </div>
+            </div>
+
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Masukkan Email
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Nomor Telepon
               </label>
               <input
-                type="email"
-                name="email"
-                value={formData.email}
+                type="number"
+                name="phoneNumber"
+                value={formData.phoneNumber}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                placeholder="Masukkan Email"
+                placeholder="Masukkan Nomor Telepon"
                 required
               />
             </div>
 
-            {/* Name Input */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Masukkan Nama
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Password
               </label>
               <input
-                type="text"
-                name="name"
-                value={formData.name}
+                type="password"
+                name="password"
+                value={formData.password}
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                placeholder="Masukkan Nama Disini"
-                required
+                placeholder="Masukkan Password"
+                // Password hanya wajib pada mode 'add'
+                required={mode === "add" && !editingMentor}
               />
             </div>
 
-            {/* Mentor Photo Upload */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Foto Mentor
-              </label>
-              <div className="flex">
-                <label className="flex-shrink-0 cursor-pointer px-3 py-2 border border-gray-300 rounded-l-md bg-gray-50 text-gray-600 hover:bg-gray-100">
-                  Choose File
-                  <input
-                    type="file"
-                    name="mentorPhoto"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    accept="image/*"
-                  />
-                </label>
-                <span className="flex-grow px-3 py-2 border border-gray-300 border-l-0 rounded-r-md bg-white">
-                  {formData.mentorPhoto
-                    ? formData.mentorPhoto.name
-                    : "No File Chosen"}
-                </span>
-              </div>
-            </div>
+            <FileUpload
+              label="Foto Mentor"
+              name="mentorPhoto"
+              file={
+                formData.mentorPhoto ||
+                (editingMentor ? editingMentor.foto[0]?.path : null)
+              }
+              onChange={handleFileChange}
+            />
 
-            {/* Header Photo Upload */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Foto Header
-              </label>
-              <div className="flex">
-                <label className="flex-shrink-0 cursor-pointer px-3 py-2 border border-gray-300 rounded-l-md bg-gray-50 text-gray-600 hover:bg-gray-100">
-                  Choose File
-                  <input
-                    type="file"
-                    name="headerPhoto"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    accept="image/*"
-                  />
-                </label>
-                <span className="flex-grow px-3 py-2 border border-gray-300 border-l-0 rounded-r-md bg-white">
-                  {formData.headerPhoto
-                    ? formData.headerPhoto.name
-                    : "No File Chosen"}
-                </span>
-              </div>
-            </div>
+            <FileUpload
+              label="Foto Header"
+              name="headerPhoto"
+              file={
+                formData.headerPhoto ||
+                (editingMentor ? editingMentor.divisi.foto[0]?.path : null)
+              }
+              onChange={handleFileChange}
+            />
 
-            {/* Branch Select */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Masukkan Cabang Perusahaan
-              </label>
-              <select
-                name="branch"
-                value={formData.branch}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="" disabled>
-                  Pilih Cabang Perusahaan
-                </option>
-                <option value="cabang-a">Cabang A</option>
-                <option value="cabang-b">Cabang B</option>
-                <option value="cabang-c">Cabang C</option>
-              </select>
-            </div>
-
-            {/* Division Select */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Masukkan Divisi
+              <label className="text-sm font-medium text-gray-700 mb-1 block">
+                Divisi
               </label>
               <select
                 name="division"
@@ -256,18 +290,24 @@ const ModalTambahMentor = ({
                 <option value="" disabled>
                   Pilih Divisi
                 </option>
-                <option value="UI/UX">UI/UX</option>
-                <option value="Web Developer">Web Developer</option>
-                <option value="Mobile">Mobile</option>
-                <option value="Digital Marketing">Digital Marketing</option>
+                {divisions.length > 0 ? (
+                  divisions.map((division) => (
+                    <option key={division.id} value={division.id}>
+                      {division.nama}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    Tidak ada divisi
+                  </option>
+                )}
               </select>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex justify-end space-x-2">
               <button
                 type="button"
-                onClick={handleCancel}
+                onClick={onClose}
                 className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
               >
                 Batal
@@ -285,5 +325,28 @@ const ModalTambahMentor = ({
     </div>
   );
 };
+
+const FileUpload = ({ label, name, onChange }) => (
+  <div className="mb-4">
+    <label className="text-sm font-medium text-gray-700 mb-1 block">
+      {label}
+    </label>
+    <div className="flex items-center">
+      <label className="flex-shrink-0 cursor-pointer px-3 py-2 border border-gray-300 rounded-l-md bg-gray-50 text-gray-600 hover:bg-gray-100">
+        Choose File
+        <input
+          type="file"
+          name={name}
+          onChange={onChange}
+          className="hidden"
+          accept="image/*"
+        />
+      </label>
+      <span className="flex-grow px-3 py-3 border border-gray-300 border-l-0 rounded-r-md bg-white overflow-hidden w-full text-xs">
+        No File Chosen
+      </span>
+    </div>
+  </div>
+);
 
 export default ModalTambahMentor;

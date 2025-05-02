@@ -61,7 +61,7 @@ export default function SummaryCards() {
         {summaryData.map((item, index) => (
           <div 
             key={index}
-            className="bg-white rounded-xl shadow-md p-4 flex flex-col transform transition-all duration-300 hover:shadow-lg"
+              className="bg-white rounded-xl border border-slate-400/[0.5] p-4 flex flex-col transform transition-all duration-300 hover:shadow-lg"
           >
             <div className="flex items-start mb-10">
               <div className={`${item.bgColor} p-3 rounded-lg mr-3`}>

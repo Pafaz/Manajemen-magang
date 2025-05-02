@@ -9,6 +9,7 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [role, setRole] = useState(null);
   const [errors, setErrors] = useState(null);
+  // const [idCabang , setIdcabang] = useState(null);
   const [tempRegisterData, setTempRegisterData] = useState(null);
 
   const getUser = useCallback(async () => {

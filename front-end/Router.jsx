@@ -31,7 +31,6 @@ import Pendataan from "./src/pages/perusahaan/Pendataan";
 import DataAbsensi from "./src/pages/perusahaan/Absensi";
 import RFID from "./src/pages/perusahaan/RFID";
 import Surat from "./src/pages/perusahaan/Surat";
-import KategoriProject from "./src/pages/perusahaan/KategoriProject";
 import Lowongan from "./src/pages/perusahaan/lowongan";
 import SettingsPerusahaan from "./src/pages/perusahaan/SettingsPerusahaan";
 import Detailsmentor from "./src/components/cards/DetailMentor";
@@ -224,10 +223,6 @@ export const router = createBrowserRouter([
       {
         path: "RFID",
         element: <RFID />,
-      },
-      {
-        path: "kat-projek",
-        element: <KategoriProject />,
       },
       {
         path: "settings",

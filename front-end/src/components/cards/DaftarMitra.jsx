@@ -11,12 +11,11 @@ import axios from "axios";
 
 export default function UniversityCardGrid() {
   const [partners, setPartners] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const categoryDropdownRef = useRef(null);
-
   const [showModal, setShowModal] = useState(false);
   const [editingPartner, setEditingPartner] = useState(null);
   const [formData, setFormData] = useState({
@@ -27,47 +26,24 @@ export default function UniversityCardGrid() {
     website: "",
     foto_header: null,
     jurusan: [],
+    id_cabang:"1"
   });
-
-  const [newMajor, setNewMajor] = useState("");
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [partnerToDelete, setPartnerToDelete] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
 
   const categories = ["All", "Sekolah", "Perusahaan", "Lembaga"];
   const majorsList = ["Informatika", "Agribusiness", "Manajemen"];
-
-  useEffect(() => {
-    // Dummy data for demonstration purposes
-    const fethAllData = async () => {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/mitra`, {
-        headers : {
-          Authorization : `Bearer ${localStorage.getItem("token")}`
-        }
-      })
-      const data = response.data;
-      setPartners(data);
-      console.log(data);
-      
-    } 
-    fethAllData();
-    setLoading(false);
-  }, []);
-
-  const refresh = () => {
-    console.log("Refreshing data...");
-  };
-
   const handleSelectCategory = (category) => {
     setSelectedCategory(category);
     setShowCategoryDropdown(false);
   };
 
-  // Filter partners based on selected category
   const filtered =
     selectedCategory === "All"
       ? partners
       : partners.filter((p) => p.jenis_institusi === selectedCategory);
+
   const openAdd = () => {
     setEditingPartner(null);
     setFormData({
@@ -78,9 +54,34 @@ export default function UniversityCardGrid() {
       website: "",
       foto_header: null,
       jurusan: [],
+      id_cabang:"1"
     });
     setShowModal(true);
   };
+
+  const fetchAllData = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/mitra`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setPartners(response.data.data);
+    } catch (err) {
+      console.error("Gagal memuat data mitra:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+  useEffect(() => {
+    fetchAllData();
+  }, []);
+  
 
   const openEdit = (p) => {
     setEditingPartner(p);
@@ -91,6 +92,7 @@ export default function UniversityCardGrid() {
       jenis_institusi: p.jenis_institusi,
       website: p.website || "",
       foto_header: null,
+      id_cabang:"1",
       jurusan: p.jurusan.map((j) => j.nama),
     });
     setShowModal(true);
@@ -101,7 +103,6 @@ export default function UniversityCardGrid() {
     if (name === "foto_header") {
       setFormData((f) => ({ ...f, foto_header: files[0] }));
     } else if (name === "jurusan" && type === "select-one") {
-      // For single select, don't add duplicates
       const selectedMajor = value;
       if (selectedMajor && !formData.jurusan.includes(selectedMajor)) {
         setFormData((f) => ({
@@ -114,34 +115,62 @@ export default function UniversityCardGrid() {
     }
   };
 
-  // Add custom major
-  const handleAddCustomMajor = () => {
-    if (newMajor.trim() && !formData.jurusan.includes(newMajor.trim())) {
-      setFormData((f) => ({
-        ...f,
-        jurusan: [...f.jurusan, newMajor.trim()],
-      }));
-      setNewMajor("");
-    }
-  };
-
-  // Remove major from selected list
-  const handleRemoveMajor = (majorToRemove) => {
-    setFormData((f) => ({
-      ...f,
-      jurusan: f.jurusan.filter((major) => major !== majorToRemove),
-    }));
-  };
-
-  const savePartner = (e) => {
+  const savePartner = async (e) => {
     e.preventDefault();
-    
-    if (editingPartner) {
-      console.log("Updated partner:", { ...editingPartner, ...formData });
-    } else {
-      console.log("Added new partner:", formData);
+
+    const formPayload = new FormData();
+    formPayload.append("nama", formData.nama);
+    formPayload.append("alamat", formData.alamat);
+    formPayload.append("telepon", formData.telepon);
+    formPayload.append("jenis_institusi", formData.jenis_institusi);
+    formPayload.append("website", formData.website || "");
+    formPayload.append("id_cabang", "1"); 
+
+    if (formData.foto_header) {
+      formPayload.append("foto_header", formData.foto_header);
     }
-    setShowModal(false);
+    formData.jurusan.forEach((j, idx) => {
+      formPayload.append(`jurusan[${idx}]`, j);
+    });
+
+    const headers = {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "multipart/form-data",
+    };
+
+    try {
+      const url = editingPartner
+        ? `${import.meta.env.VITE_API_URL}/mitra/${
+            editingPartner.id
+          }?_method=PUT`
+        : `${import.meta.env.VITE_API_URL}/mitra`;
+
+        console.log(formData);
+        
+      await axios.post(url, formPayload, { headers });
+      
+      setLoading(false)
+      setShowModal(false);
+      setEditingPartner(null);
+      setFormData({
+        nama: "",
+        alamat: "",
+        telepon: "",
+        jenis_institusi: "",
+        website: "",
+        jurusan: [""],
+        foto_header: null,
+        id_cabang:"1"
+      });
+      window.location.href="/perusahaan/mitra"
+    } catch (err) {
+      console.error(
+        "Gagal menyimpan mitra:",
+        err.response?.data || err.message
+      );
+    }finally {
+      setLoading(false)
+    }
   };
 
   const confirmDelete = (p) => {
@@ -149,18 +178,30 @@ export default function UniversityCardGrid() {
     setShowDeleteModal(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
+    if (!partnerToDelete) return;
     setDeleteLoading(true);
-    // Simulate API call with setTimeout
-    setTimeout(() => {
-      console.log("Deleted partner:", partnerToDelete);
+
+    try {
+      await axios.delete(
+        `${import.meta.env.VITE_API_URL}/mitra/${partnerToDelete.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
       setShowDeleteModal(false);
+      setPartnerToDelete(null);
+      window.location.href="/perusahaan/mitra"
+    } catch (err) {
+      console.error("Gagal menghapus mitra:", err);
+    } finally {
       setDeleteLoading(false);
-      refresh();
-    }, 1000);
+    }
   };
 
-  // Handle clicking outside the dropdown to close it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -247,13 +288,17 @@ export default function UniversityCardGrid() {
                 >
                   <div className="relative">
                     <img
-                      src={`/api/placeholder/400/200`}
+                      src={`${import.meta.env.VITE_API_URL_FILE}/storage/${
+                        university.foto[0].path
+                      }`}
                       alt="Cover"
                       className="w-full h-32 object-cover"
                     />
                     <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-purple-500 border-2 border-white flex items-center justify-center">
                       <img
-                        src={`/api/placeholder/48/48`}
+                        src={`${import.meta.env.VITE_API_URL_FILE}/storage/${
+                          university.foto[0].path
+                        }`}
                         alt="Logo"
                         className="w-10 h-10 object-cover rounded-full"
                       />
@@ -336,7 +381,7 @@ export default function UniversityCardGrid() {
                     Telepon
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     name="telepon"
                     value={formData.telepon}
                     onChange={handleFormChange}
@@ -397,18 +442,6 @@ export default function UniversityCardGrid() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Foto Header
-                </label>
-                <input
-                  type="file"
-                  name="foto_header"
-                  onChange={handleFormChange}
-                  className="w-full p-2 border border-gray-300 rounded-md text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Jurusan
                 </label>
 
@@ -431,7 +464,6 @@ export default function UniversityCardGrid() {
                   </select>
                 </div>
 
-                {/* Selected jurusan list */}
                 <div className="mt-2">
                   <p className="text-sm font-medium text-gray-700 mb-1">
                     Jurusan Terpilih:
@@ -446,7 +478,7 @@ export default function UniversityCardGrid() {
                           {major}
                           <button
                             type="button"
-                            onClick={() => handleRemoveMajor(major)}
+                            onClick={() => handleDelete(major)}
                             className="ml-1 text-blue-600 hover:text-blue-800"
                           >
                             <X size={14} />

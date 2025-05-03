@@ -2,6 +2,8 @@ import React from "react";
 
 export default function ModalDetailMentor({ isOpen, onClose, mentor }) {
   if (!isOpen || !mentor) return null;
+  console.log(mentor);
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/40 backdrop-blur-sm animate-fade-in">
@@ -17,7 +19,7 @@ export default function ModalDetailMentor({ isOpen, onClose, mentor }) {
         </h2>
         <div className="flex flex-col items-center space-y-3">
           <img
-            src={mentor.logoImage}
+          src={`${import.meta.env.VITE_API_URL_FILE}/storage/${mentor}`}
             alt={mentor.name}
             className="w-28 h-28 rounded-full object-cover border-4 border-blue-100 shadow-md"
           />

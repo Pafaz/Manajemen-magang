@@ -7,7 +7,7 @@ use App\Http\Resources\CategoryResource;
 use App\Interfaces\KategoriInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class KategoriService 
+class KategoriService
 {
     private KategoriInterface $KategoriInterface;
     private FotoService $foto;
@@ -31,7 +31,7 @@ class KategoriService
             ? CategoryResource::make($this->KategoriInterface->find($id))
             : CategoryResource::collection($this->KategoriInterface->getAll());
 
-        $message = $id 
+        $message = $id
             ? 'Berhasil mengambil data kategori'
             : 'Berhasil mengambil semua data kategori';
 
@@ -57,10 +57,10 @@ class KategoriService
                 'id_perusahaan' => $perusahaanId,
                 'nama' => $data['nama'],
             ]);
-        
+
         if (!empty($data['card'])) {
-            $isUpdate 
-                ? $this->foto->updateFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card') 
+            $isUpdate
+                ? $this->foto->updateFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card')
                 : $this->foto->createFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card');
         }
         $message = $isUpdate
@@ -73,8 +73,8 @@ class KategoriService
 
         return Api::response(
             CategoryResource::make($category),
-            $message,
-            $statusCode,
+            'Category updated successfully',
+            Response::HTTP_OK
         );
 
     }

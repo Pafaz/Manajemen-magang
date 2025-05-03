@@ -1,4 +1,3 @@
-import { useState } from "react";
 import DataApproval from "../../components/cards/DataApproval";
 import PerusahaanCard from "../../components/cards/PerusahaanCard"; // Import the new component
 

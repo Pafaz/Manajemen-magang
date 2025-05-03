@@ -4,6 +4,7 @@ import ReactPaginate from "react-paginate";
 import ModalTambahAdminCabang from "../../components/modal/ModalTambahAdminCabang";
 import ModalDeleteAdminCabang from "../modal/ModalDeleteAdminCabang";
 import ModalDetailAdminCabang from "../../components/modal/ModalDetailAdminCabang";
+import Loading from "../../components/Loading"; // Keep this one
 import axios from "axios";
 
 export default function CompanyBranchCard() {
@@ -18,24 +19,27 @@ export default function CompanyBranchCard() {
     branchToDetail: null,
     branchToEdit: null,
   });
+  const [loading, setLoading] = useState(true);
+
+  const fetchAdmins = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/admin`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setBranches(response.data.data);
+    } catch (error) {
+      console.error("Error fetching admins:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/admin`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setBranches(response.data.data);
-      } catch (error) {
-        console.error("Error fetching admins:", error);
-      }
-    };
-
     fetchAdmins();
   }, []);
 
@@ -79,6 +83,7 @@ export default function CompanyBranchCard() {
         showDeleteModal: false,
         branchToDelete: null,
       });
+      fetchAdmins();
     } catch (error) {
       console.error("Error deleting admin:", error);
     }
@@ -96,15 +101,16 @@ export default function CompanyBranchCard() {
     });
   };
 
+  if (loading) return <Loading />; // Show loading until data is fetched
+
   return (
     <Card>
       <div className="mt-8 px-1 pb-6">
-        {/* Header section */}
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">Admin</h1>
           <div className="flex items-center space-x-2">
             <button
-               onClick={() =>
+              onClick={() =>
                 setModalState((prevState) => ({
                   ...prevState,
                   showModal: true,
@@ -127,7 +133,6 @@ export default function CompanyBranchCard() {
           </div>
         </div>
 
-        {/* Branch cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {displayedBranches.map((branch) => {
             const cover = branch.foto?.find((f) => f.type === "cover");
@@ -198,7 +203,6 @@ export default function CompanyBranchCard() {
           })}
         </div>
 
-        {/* Pagination */}
         <div className="flex items-center justify-between mt-6">
           <div className="flex-1">
             <ReactPaginate
@@ -221,9 +225,9 @@ export default function CompanyBranchCard() {
         </div>
       </div>
 
-      {/* Modals */}
       <ModalTambahAdminCabang
         isOpen={modalState.showModal}
+        onSucces={() => fetchAdmins()}
         onClose={() => setModalState({ showModal: false, branchToEdit: null })}
         branchToEdit={modalState.branchToEdit}
       />

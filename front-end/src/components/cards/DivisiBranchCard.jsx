@@ -3,9 +3,9 @@ import Card from "./Card";
 import TempatkanModal from "../modal/TempatkanModal";
 import Penempatan from "./Penempatan";
 import Detaildivisi from "../modal/WebDevModal";
-import WebDevModal from "../modal/WebDevModal";
 import axios from "axios";
 import ModalDivisi from "../modal/ModalDivisi";
+import LoadingCards from "../cards/LoadingCards";
 
 export default function DivisiBranchCard() {
   const [branches, setBranches] = useState([]);
@@ -21,6 +21,7 @@ export default function DivisiBranchCard() {
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
+  const [loading, setLoading] = useState(true);
 
   const getDataAllDevsion = async () => {
     try {
@@ -30,6 +31,7 @@ export default function DivisiBranchCard() {
         },
       });
       setBranches(res.data.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -44,24 +46,28 @@ export default function DivisiBranchCard() {
   };
 
   const handleDeleteClick = async (id) => {
-    const isConfirmed = window.confirm("Apakah Anda yakin ingin menghapus divisi ini?");
+    const isConfirmed = window.confirm(
+      "Apakah Anda yakin ingin menghapus divisi ini?"
+    );
     if (!isConfirmed) {
       return;
     }
-  
+
     try {
       if (isConfirmed) {
         await axios.delete(`${import.meta.env.VITE_API_URL}/divisi/${id}`, {
-         headers: {
-           'Authorization': `Bearer ${localStorage.getItem('token')}`,
-         },
-       });
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
       }
     } catch (error) {
-      console.error('Gagal menghapus divisi:', error.response ? error.response.data : error.message);
+      console.error(
+        "Gagal menghapus divisi:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
-  
 
   const handlePlace = (item) => {
     setSelectedItem(item);
@@ -73,6 +79,9 @@ export default function DivisiBranchCard() {
     setIsDetaildivisiOpen(true);
   };
 
+  if (loading) return <LoadingCards />;
+
+  
   return (
     <Card>
       <div className="mt-8 px-1 pb-6">
@@ -103,7 +112,9 @@ export default function DivisiBranchCard() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {displayedBranches.map((branch) => {
-              const foto_cover = branch.foto?.find((f) => f.type === "foto_cover");
+              const foto_cover = branch.foto?.find(
+                (f) => f.type === "foto_cover"
+              );
               return (
                 <div
                   key={branch.id}
@@ -111,9 +122,9 @@ export default function DivisiBranchCard() {
                 >
                   <div className="rounded-md overflow-hidden mb-3">
                     <img
-                      src={`${
-                        import.meta.env.VITE_API_URL_FILE
-                      }/storage/${foto_cover?.path}`}
+                      src={`${import.meta.env.VITE_API_URL_FILE}/storage/${
+                        foto_cover?.path
+                      }`}
                       alt="Background"
                       className="w-full h-32 object-cover rounded-md cursor-pointer hover:opacity-90 transition-opacity"
                       onClick={() => handleDetailDevision(branch)}
@@ -154,8 +165,8 @@ export default function DivisiBranchCard() {
                       </button>
                       <button
                         onClick={() => {
-                          setShowModal(true)
-                          setSelectedDivision(branch)
+                          setShowModal(true);
+                          setSelectedDivision(branch);
                         }}
                         className="text-orange-500 border border-orange-500 rounded px-3 py-1 text-xs hover:bg-orange-50"
                       >

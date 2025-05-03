@@ -5,11 +5,7 @@ import ReactPaginate from "react-paginate";
 import ModalTambahMentor from "../../components/modal/ModalTambahMentor";
 import ModalDelete from "../../components/modal/ModalDeleteAdminCabang";
 import ModalDetailMentor from "../../components/modal/ModalDetailMentor";
-<<<<<<< HEAD
-import Loading from "../../components/Loading";
-=======
 import Loading from "../../components/cards/Loading";
->>>>>>> d1b37f8 (Update Front-end components and UI)
 
 export default function MentorBranchCard() {
   const [selectedMentor, setSelectedMentor] = useState(null);
@@ -26,7 +22,6 @@ export default function MentorBranchCard() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
   const [selectedDivision, setSelectedDivision] = useState("All");
-  const [loading,setLoading] = useState(true)
   const filteredBranches = Array.isArray(branches)
     ? selectedDivision === "All"
       ? branches
@@ -52,11 +47,7 @@ export default function MentorBranchCard() {
         }
       );
       setBranches(Array.isArray(response.data?.data) ? response.data.data : []);
-<<<<<<< HEAD
-      setLoading(false)
-=======
       setLoading(false);
->>>>>>> d1b37f8 (Update Front-end components and UI)
     } catch (error) {
       console.error("Error fetching mentors:", error);
     } finally {
@@ -138,11 +129,7 @@ export default function MentorBranchCard() {
     }
   };
 
-<<<<<<< HEAD
-  if(loading) return <Loading/>
-=======
   if (loading) return <Loading />;
->>>>>>> d1b37f8 (Update Front-end components and UI)
 
   return (
     <Card>

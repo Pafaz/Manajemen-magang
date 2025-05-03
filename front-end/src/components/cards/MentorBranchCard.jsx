@@ -5,6 +5,7 @@ import ReactPaginate from "react-paginate";
 import ModalTambahMentor from "../../components/modal/ModalTambahMentor";
 import ModalDelete from "../../components/modal/ModalDeleteAdminCabang";
 import ModalDetailMentor from "../../components/modal/ModalDetailMentor";
+import Loading from "../../components/Loading";
 
 export default function MentorBranchCard() {
   const [selectedMentor, setSelectedMentor] = useState(null);
@@ -21,7 +22,7 @@ export default function MentorBranchCard() {
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
   const [selectedDivision, setSelectedDivision] = useState("All");
-
+  const [loading,setLoading] = useState(true)
   const filteredBranches = Array.isArray(branches)
     ? selectedDivision === "All"
       ? branches
@@ -47,6 +48,7 @@ export default function MentorBranchCard() {
         }
       );
       setBranches(Array.isArray(response.data?.data) ? response.data.data : []);
+      setLoading(false)
     } catch (error) {
       console.error("Error fetching mentors:", error);
     }
@@ -117,10 +119,13 @@ export default function MentorBranchCard() {
         branches.filter((branch) => branch.id !== modalState.selectedBranchId)
       );
       handleCloseDeleteModal();
+      fetchMentors();
     } catch (error) {
       console.error("Error deleting mentor:", error);
     }
   };
+
+  if(loading) return <Loading/>
 
   return (
     <Card>

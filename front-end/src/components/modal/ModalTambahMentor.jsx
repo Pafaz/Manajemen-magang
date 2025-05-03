@@ -108,6 +108,7 @@ const ModalTambahMentor = ({
     formPayload.append("email", formData.email);
     formPayload.append("telepon", formData.phoneNumber);
     formPayload.append("id_divisi", formData.division);
+    formPayload.append("id_cabang", "1");
 
     if (mode === "add" && formData.password) {
       formPayload.append("password", formData.password);

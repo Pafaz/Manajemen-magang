@@ -8,6 +8,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import axios from "axios";
+import Loading from "../Loading";
 
 export default function UniversityCardGrid() {
   const [partners, setPartners] = useState([]);
@@ -143,10 +144,7 @@ export default function UniversityCardGrid() {
         ? `${import.meta.env.VITE_API_URL}/mitra/${
             editingPartner.id
           }?_method=PUT`
-        : `${import.meta.env.VITE_API_URL}/mitra`;
-
-        console.log(formData);
-        
+        : `${import.meta.env.VITE_API_URL}/mitra`;        
       await axios.post(url, formPayload, { headers });
       
       setLoading(false)
@@ -218,7 +216,7 @@ export default function UniversityCardGrid() {
     };
   }, []);
 
-  if (loading) return <div className="h-screen">Loading...</div>;
+  if (loading) return <Loading/>;
   if (error) return <div className="text-red-500">{error}</div>;
 
   return (

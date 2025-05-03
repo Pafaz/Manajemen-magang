@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit }) => {
+const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit,onSuccess }) => {
   const isEditMode = Boolean(branchToEdit);
 
   const [formData, setFormData] = useState({
@@ -96,8 +96,8 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit }) => {
       const response = await axios.post(url, formPayload, { headers });
   
       if (response.status === 200 || response.status === 201) {
+        onSuccess()
         onClose();
-        window.location.href="http://localhost:5173/perusahaan/admin"
       } else {
         console.log("Gagal menyimpan data admin.");
       }

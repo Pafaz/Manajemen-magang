@@ -4,12 +4,14 @@ import ReactPaginate from "react-paginate";
 import ModalTambahAdminCabang from "../../components/modal/ModalTambahAdminCabang";
 import ModalDeleteAdminCabang from "../modal/ModalDeleteAdminCabang";
 import ModalDetailAdminCabang from "../../components/modal/ModalDetailAdminCabang";
+import Loading from "../../components/Loading";
 import axios from "axios";
 
 export default function CompanyBranchCard() {
   const [branches, setBranches] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
+  const [loading,setLoading] = useState(true)
   const [modalState, setModalState] = useState({
     showModal: false,
     showDeleteModal: false,
@@ -18,24 +20,24 @@ export default function CompanyBranchCard() {
     branchToDetail: null,
     branchToEdit: null,
   });
+  const fetchAdmins = async () => {
+    try {
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/admin`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setBranches(response.data.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching admins:", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchAdmins = async () => {
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_API_URL}/admin`,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          }
-        );
-        setBranches(response.data.data);
-      } catch (error) {
-        console.error("Error fetching admins:", error);
-      }
-    };
-
     fetchAdmins();
   }, []);
 
@@ -79,6 +81,7 @@ export default function CompanyBranchCard() {
         showDeleteModal: false,
         branchToDelete: null,
       });
+      fetchAdmins();
     } catch (error) {
       console.error("Error deleting admin:", error);
     }
@@ -96,15 +99,16 @@ export default function CompanyBranchCard() {
     });
   };
 
+  if(loading) return  <Loading/>
+
   return (
     <Card>
       <div className="mt-8 px-1 pb-6">
-        {/* Header section */}
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">Admin</h1>
           <div className="flex items-center space-x-2">
             <button
-               onClick={() =>
+              onClick={() =>
                 setModalState((prevState) => ({
                   ...prevState,
                   showModal: true,
@@ -127,7 +131,6 @@ export default function CompanyBranchCard() {
           </div>
         </div>
 
-        {/* Branch cards grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {displayedBranches.map((branch) => {
             const cover = branch.foto?.find((f) => f.type === "cover");
@@ -198,34 +201,35 @@ export default function CompanyBranchCard() {
           })}
         </div>
 
-        {/* Pagination */}
-        <div className="flex items-center justify-between mt-6">
-          <div className="flex-1">
-            <ReactPaginate
-              previousLabel="← Sebelumnya"
-              nextLabel="Berikutnya →"
-              breakLabel="..."
-              pageCount={Math.ceil(branches.length / itemsPerPage)}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={handlePageClick}
-              containerClassName="flex justify-center items-center space-x-2"
-              pageLinkClassName="px-3 py-1 text-sm rounded-md text-gray-700 hover:bg-blue-100"
-              activeLinkClassName="bg-blue-500 text-white"
-              previousClassName="mr-auto"
-              nextClassName="ml-auto"
-              previousLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
-              nextLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
-            />
+        {displayedBranches.length > 0 && (
+          <div className="flex items-center justify-between mt-6">
+            <div className="flex-1">
+              <ReactPaginate
+                previousLabel="← Sebelumnya"
+                nextLabel="Berikutnya →"
+                breakLabel="..."
+                pageCount={Math.ceil(branches.length / itemsPerPage)}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName="flex justify-center items-center space-x-2"
+                pageLinkClassName="px-3 py-1 text-sm rounded-md text-gray-700 hover:bg-blue-100"
+                activeLinkClassName="bg-blue-500 text-white"
+                previousClassName="mr-auto"
+                nextClassName="ml-auto"
+                previousLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
+                nextLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
-      {/* Modals */}
       <ModalTambahAdminCabang
         isOpen={modalState.showModal}
         onClose={() => setModalState({ showModal: false, branchToEdit: null })}
         branchToEdit={modalState.branchToEdit}
+        onSuccess={() => fetchAdmins()}
       />
 
       <ModalDeleteAdminCabang

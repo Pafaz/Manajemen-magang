@@ -47,8 +47,8 @@ class SekolahService
     {
         DB::beginTransaction();
         try {
-            $dataSekolah = collect($data)->only(['nama', 'alamat', 'telepon', 'jenis_institusi', 'website'])->toArray();
-            $dataSekolah['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
+            $dataSekolah = collect($data)->only(['nama', 'alamat', 'telepon', 'jenis_institusi', 'website', 'id_cabang'])->toArray();
+            // $dataSekolah['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
             $sekolah = $isUpdate
                 ? $this->SekolahInterface->update($id, $dataSekolah)
                 : $this->SekolahInterface->create($dataSekolah);

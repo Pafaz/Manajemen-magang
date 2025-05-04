@@ -98,7 +98,7 @@ class PerusahaanService
                 'surat_legalitas' => 'surat_legalitas',
                 'profil_background' => 'profil_background',
             ];
-
+            
             foreach ($files as $key => $type) {
                 if (!empty($data[$key])) {
                     if ($isUpdate) {

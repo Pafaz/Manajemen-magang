@@ -27,7 +27,7 @@ class PesertaService
         $idcabang = auth('sanctum')->user()->id_cabang_aktif;
         $data = $isUpdate
             ? $this->pesertaInterface->find($id)
-            : $this->pesertaInterface->getAll($idcabang);
+            : $this->pesertaInterface->getAll();
             
         return Api::response(
             PesertaResource::collection($data),
@@ -76,10 +76,8 @@ class PesertaService
         }
 
         $files = [
-            'foto_profil' => 'foto_profile',
+            'foto_profil' => 'foto_profil',
             'cv' => 'cv',
-            'pernyataan_diri' => 'pernyataan_diri',
-            'pernyataan_ortu' => 'pernyataan_ortu',
         ];
 
         foreach ($files as $key => $tipe) {

@@ -55,39 +55,39 @@ return Application::configure(basePath: dirname(__DIR__))
             switch (true) {
                 case $e instanceof ModelNotFoundException:
                 case $e instanceof NotFoundHttpException:
-                    return Api::response(null, 'Resource Not Found'. $e->getMessage(), Response::HTTP_NOT_FOUND, [], 'error');
+                    return Api::response(null, 'Resource Not Found '. $e->getMessage(), Response::HTTP_NOT_FOUND, [], 'error');
 
                 case $e instanceof ValidationException:
-                    return Api::response(null, 'Validation failed'. $e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY, $e->errors(), 'error');
+                    return Api::response(null, 'Validation failed '. $e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY, $e->errors(), 'error');
 
                 case $e instanceof AuthenticationException:
-                    return Api::response(null, 'Unauthorized access'. $e->getMessage(), Response::HTTP_UNAUTHORIZED, [], 'error');
+                    return Api::response(null, 'Unauthorized access '. $e->getMessage(), Response::HTTP_UNAUTHORIZED, [], 'error');
 
                 case $e instanceof AuthorizationException:
-                    return Api::response(null, 'Forbidden: You do not have permission'. $e->getMessage(), Response::HTTP_FORBIDDEN, [], 'error');
+                    return Api::response(null, 'Forbidden: You do not have permission '. $e->getMessage(), Response::HTTP_FORBIDDEN, [], 'error');
 
                 case $e instanceof TooManyRequestsHttpException:
                 case $e instanceof ThrottleRequestsException:
-                    return Api::response(null, 'Too many requests, please slow down' . $e->getMessage(), Response::HTTP_TOO_MANY_REQUESTS, [], 'error');
+                    return Api::response(null, 'Too many requests, please slow down ' . $e->getMessage(), Response::HTTP_TOO_MANY_REQUESTS, [], 'error');
 
                 case $e instanceof QueryException:
-                    return Api::response(null, 'A database error occurred' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR, [], 'error');
+                    return Api::response(null, 'A database error occurred ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR, [], 'error');
 
                 case $e instanceof HttpException:
                     $status = $e->getStatusCode();
                     $message = match ($status) {
-                        Response::HTTP_NOT_FOUND => 'Resource Not Found'. $e->getMessage(),
-                        Response::HTTP_UNAUTHORIZED => 'Unauthorized access'. $e->getMessage(),
-                        Response::HTTP_FORBIDDEN => 'Forbidden: You do not have permission'. $e->getMessage(),
-                        Response::HTTP_INTERNAL_SERVER_ERROR => 'Internal Server Error'. $e->getMessage(),
-                        Response::HTTP_BAD_REQUEST => 'Bad Request'. $e->getMessage(),
-                        Response::HTTP_UNPROCESSABLE_ENTITY => 'Unprocessable Entity'. $e->getMessage(),
-                        Response::HTTP_METHOD_NOT_ALLOWED => 'Method Not Allowed'. $e->getMessage(),
-                        Response::HTTP_NOT_ACCEPTABLE => 'Not Acceptable'. $e->getMessage(),
-                        Response::HTTP_CONFLICT => 'Conflict'. $e->getMessage(),
-                        Response::HTTP_PRECONDITION_FAILED => 'Precondition Failed'. $e->getMessage(),
-                        Response::HTTP_UNSUPPORTED_MEDIA_TYPE => 'Unsupported Media Type'. $e->getMessage(),
-                        default => 'Unknown Error' . $e->getMessage(),
+                        Response::HTTP_NOT_FOUND => 'Resource Not Found '. $e->getMessage(),
+                        Response::HTTP_UNAUTHORIZED => 'Unauthorized access '. $e->getMessage(),
+                        Response::HTTP_FORBIDDEN => 'Forbidden: You do not have permission '. $e->getMessage(),
+                        Response::HTTP_INTERNAL_SERVER_ERROR => 'Internal Server Error '. $e->getMessage(),
+                        Response::HTTP_BAD_REQUEST => 'Bad Request '. $e->getMessage(),
+                        Response::HTTP_UNPROCESSABLE_ENTITY => 'Unprocessable Entity '. $e->getMessage(),
+                        Response::HTTP_METHOD_NOT_ALLOWED => 'Method Not Allowed '. $e->getMessage(),
+                        Response::HTTP_NOT_ACCEPTABLE => 'Not Acceptable '. $e->getMessage(),
+                        Response::HTTP_CONFLICT => 'Conflict '. $e->getMessage(),
+                        Response::HTTP_PRECONDITION_FAILED => 'Precondition Failed '. $e->getMessage(),
+                        Response::HTTP_UNSUPPORTED_MEDIA_TYPE => 'Unsupported Media Type '. $e->getMessage(),
+                        default => 'Unknown Error ' . $e->getMessage(),
                     };
 
                     return Api::response(null, $message, $status, [], 'error');

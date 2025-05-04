@@ -11,17 +11,20 @@ class Magang extends Model
     use HasFactory;
 
     protected $table = 'magang';
+    public $timestamps = false;
 
     protected $fillable = [
         'id_peserta',
-        'id_perusahaan',
         'id_mentor',
-        'id_cabang',
-        'tipe',
+        'id_lowongan',
+        'tipe', //offline, online
         'mulai',
         'selesai',
-        'status',
+        'status', //menunggu, diterima, ditolak
     ];
+    public function lowongan(){
+        return $this->belongsTo(Lowongan::class, 'id_lowongan');
+    }
 
     public function peserta()
     {
@@ -30,5 +33,10 @@ class Magang extends Model
     public function mentor()
     {
         return $this->belongsTo(Mentor::class, 'id_mentor');
+    }
+
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi');
     }
 }

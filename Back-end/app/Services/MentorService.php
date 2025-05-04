@@ -48,42 +48,53 @@ class MentorService
         );
     }
 
-    public function createMentor(array $data)
+        public function simpanMentor(string $id = null, array $data)
     {
         DB::beginTransaction();
 
         try {
             $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
 
-            $user = $this->userInterface->create([
-                'nama' => $data['nama'],
-                'email' => $data['email'],
-                'telepon' => $data['telepon'],
-                'password' => bcrypt($data['password']),
-            ]);
+            if ($id) {
+                $mentor = $this->mentorInterface->find($id);
 
-            $user->assignRole('Mentor');
+                if (!$mentor) {
+                    return Api::response(
+                        null,
+                        'Mentor not found',
+                        Response::HTTP_NOT_FOUND
+                    );
+                }
 
-            $mentor = $this->mentorInterface->create([
-                'id' => Str::uuid(),
-                'id_divisi' => $data['id_divisi'],
-                'id_user' => $user->id,
-                'id_cabang' => $id_cabang
-            ]);
+                $id_user = $mentor->user->id;
+                $this->userInterface->update($id_user, $data);
+                $updatedMentor = $this->mentorInterface->update($id, $data);
+            } else {
+                $user = $this->userInterface->create([
+                    'nama' => $data['nama'],
+                    'email' => $data['email'],
+                    'telepon' => $data['telepon'],
+                    'password' => bcrypt($data['password']),
+                ]);
 
-            if (!$mentor) {
-                DB::rollBack();
-                return Api::response(
-                    null,
-                    'Failed to create Mentor.',
-                    Response::HTTP_INTERNAL_SERVER_ERROR
-                );
+                $user->assignRole('Mentor');
+
+                $mentor = $this->mentorInterface->create([
+                    'id' => Str::uuid(),
+                    'id_divisi' => $data['id_divisi'],
+                    'id_user' => $user->id,
+                    'id_cabang' => $id_cabang
+                ]);
             }
-
             $files = [
                 'profile' => 'profile',
                 'cover' => 'cover'
             ];
+
+            if ((!empty($data['profile']) || !empty($data['cover'])) && $id) {
+                $this->foto->deleteFoto($mentor->id);
+            }
+
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
                     $this->foto->createFoto($data[$key], $mentor->id, $tipe);
@@ -91,67 +102,22 @@ class MentorService
             }
 
             DB::commit();
+
             return Api::response(
-                MentorResource::make($mentor),
-                'Berhasil Membuat Mentor',
-                Response::HTTP_CREATED
+                MentorResource::make($id ? $updatedMentor : $mentor),
+                $id ? 'Berhasil Mengubah Mentor' : 'Berhasil Membuat Mentor',
+                $id ? Response::HTTP_OK : Response::HTTP_CREATED
             );
         } catch (Exception $e) {
             DB::rollBack();
             return Api::response(
                 null,
-                'Failed to create Mentor: ' . $e->getMessage(),
+                'Gagal Menyimpan Mentor: ' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
 
-    public function updateMentor(string $id, array $data)
-    {
-        try {
-            $mentor = $this->mentorInterface->find($id);
-
-            if (!$mentor) {
-                return Api::response(
-                    null,
-                    'Mentor not found',
-                    Response::HTTP_NOT_FOUND
-                );
-            }
-
-            $id_user = $mentor->user->id;
-
-            $this->userInterface->update($id_user, $data);
-
-            $updatedMentor = $this->mentorInterface->update($id, $data);
-
-            if (!empty($data['profile']) || !empty($data['cover'])) {
-                $this->foto->deleteFoto($mentor->id);
-
-                $files = [
-                    'profile' => 'profile',
-                    'cover' => 'cover'
-                ];
-                foreach ($files as $key => $tipe) {
-                    if (!empty($data[$key])) {
-                        $this->foto->createFoto($data[$key], $mentor->id, $tipe);
-                    }
-                }
-            }
-
-            return Api::response(
-                MentorResource::make($updatedMentor),
-                'Berhasil Mengubah Mentor',
-                Response::HTTP_OK
-            );
-        } catch (Exception $e) {
-            return Api::response(
-                null,
-                'Gagal Mengubah Mentor: ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-        }
-    }
 
     public function deleteMentor(string $id)
     {

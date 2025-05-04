@@ -37,7 +37,7 @@ class MentorController extends Controller
      */
     public function store(MentorRequest $request)
     {
-        return $this->mentorService->createMentor($request->validated());
+        return $this->mentorService->simpanMentor(null, data: $request->validated());
     }
 
     /**
@@ -61,7 +61,7 @@ class MentorController extends Controller
      */
     public function update(string $id, MentorRequest $request)
     {
-        return $this->mentorService->updateMentor($id, $request->validated());
+        return $this->mentorService->simpanMentor($id, $request->validated());
     }
 
     /**

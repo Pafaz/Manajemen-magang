@@ -17,8 +17,7 @@ class RegisterController extends Controller
         $this->UserService = $UserService;
     }
 
-
-    public function register(RegisterRequest $request,$role)
+    public function register(RegisterRequest $request, $role)
     {
         return $this->UserService->register($request->validated(), $role);
     }

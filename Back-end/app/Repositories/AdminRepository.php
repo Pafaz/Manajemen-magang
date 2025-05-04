@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 class AdminRepository implements AdminInterface
 {
-    public function getAll(): Collection
+    public function getAll($id = null): Collection
     {
         return Admin_cabang::all();
     }

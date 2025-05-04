@@ -5,6 +5,7 @@ import ReactPaginate from "react-paginate";
 import ModalTambahMentor from "../../components/modal/ModalTambahMentor";
 import ModalDelete from "../../components/modal/ModalDeleteAdminCabang";
 import ModalDetailMentor from "../../components/modal/ModalDetailMentor";
+import Loading from "../../components/cards/Loading";
 
 export default function MentorBranchCard() {
   const [selectedMentor, setSelectedMentor] = useState(null);
@@ -16,12 +17,11 @@ export default function MentorBranchCard() {
     showDeleteModal: false,
     selectedBranchId: null,
   });
-
+  const [loading, setLoading] = useState(true);
   const [branches, setBranches] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 12;
   const [selectedDivision, setSelectedDivision] = useState("All");
-
   const filteredBranches = Array.isArray(branches)
     ? selectedDivision === "All"
       ? branches
@@ -47,8 +47,11 @@ export default function MentorBranchCard() {
         }
       );
       setBranches(Array.isArray(response.data?.data) ? response.data.data : []);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching mentors:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -116,15 +119,21 @@ export default function MentorBranchCard() {
       setBranches(
         branches.filter((branch) => branch.id !== modalState.selectedBranchId)
       );
+      fetchMentors();
       handleCloseDeleteModal();
+      fetchMentors();
     } catch (error) {
       console.error("Error deleting mentor:", error);
+    }finally{
+      setLoading(false)
     }
   };
 
+  if (loading) return <Loading />;
+
   return (
     <Card>
-      <div className="mt-8 px-1 pb-6">
+      <div className="mt-3 px-2 pb-6">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl font-bold">Mentor Terdaftar</h1>
           <div className="flex items-center space-x-2">
@@ -200,7 +209,7 @@ export default function MentorBranchCard() {
                   <div className="flex justify-center mt-2">
                     <div className="border border-[#D5DBE7] rounded p-2 w-full flex justify-between items-center space-x-2">
                       <button
-                        onClick={() => handleViewDetail(branch)}
+                        onClick={() => handleViewDetail(profile?.path)}
                         className="text-blue-500 border border-blue-500 rounded px-3 py-1 text-xs hover:bg-blue-50"
                       >
                         Lihat Detail
@@ -225,26 +234,28 @@ export default function MentorBranchCard() {
           })}
         </div>
 
-        <div className="flex items-center justify-between mt-6">
-          <div className="flex-1">
-            <ReactPaginate
-              previousLabel="← Sebelumnya"
-              nextLabel="Berikutnya →"
-              breakLabel="..."
-              pageCount={pageCount}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={3}
-              onPageChange={handlePageClick}
-              containerClassName="flex justify-center items-center space-x-2"
-              pageLinkClassName="px-3 py-1 text-sm rounded-md text-gray-700 hover:bg-blue-100"
-              activeLinkClassName="bg-blue-500 text-white"
-              previousClassName="mr-auto"
-              nextClassName="ml-auto"
-              previousLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
-              nextLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
-            />
+        {displayedBranches.length > 0 && (
+          <div className="flex items-center justify-between mt-6">
+            <div className="flex-1">
+              <ReactPaginate
+                previousLabel="← Sebelumnya"
+                nextLabel="Berikutnya →"
+                breakLabel="..."
+                pageCount={pageCount}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={3}
+                onPageChange={handlePageClick}
+                containerClassName="flex justify-center items-center space-x-2"
+                pageLinkClassName="px-3 py-1 text-sm rounded-md text-gray-700 hover:bg-blue-100"
+                activeLinkClassName="bg-blue-500 text-white"
+                previousClassName="mr-auto"
+                nextClassName="ml-auto"
+                previousLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
+                nextLinkClassName="border border-gray-300 px-4 py-2 text-sm rounded-md text-gray-600 hover:bg-gray-100"
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         <ModalTambahMentor
           isOpen={isModalOpen}

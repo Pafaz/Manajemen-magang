@@ -49,7 +49,7 @@ const ModalDivisi = ({ showModal, setShowModal, editingDivision = null, onSucces
     newDivision.categories.forEach((cat, i) =>
       formData.append(`kategori_proyek[${i}]`, cat)
     );
-    formData.append("id_cabang","1")
+    formData.append("id_cabang","2")
     if (selectedFile) formData.append('foto_cover', selectedFile);
     if (editingDivision) formData.append('_method', 'PUT');
 

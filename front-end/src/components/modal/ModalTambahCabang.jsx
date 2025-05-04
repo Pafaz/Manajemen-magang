@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-export default function ModalTambahCabang({ isOpen, onClose, onSave }) {
+export default function ModalTambahCabang({ isOpen, onClose, onSave,getFetchData }) {
   const [formData, setFormData] = useState({
     nama: "",
     logo: null,
@@ -101,6 +101,8 @@ export default function ModalTambahCabang({ isOpen, onClose, onSave }) {
 
     onSave(data);
     resetForm();
+    getFetchData()
+    onClose();
   };
 
   const resetForm = () => {
@@ -116,6 +118,7 @@ export default function ModalTambahCabang({ isOpen, onClose, onSave }) {
     setIsCustomBusinessField(false);
     setLogoFileName("No File Chosen");
     setFotoCoverFileName("No File Chosen");
+    
   };
 
   if (!isOpen) return null;

@@ -22,21 +22,12 @@ class MentorRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        if ($this->method() == "PUT") {
+        if ($this->isUpdate()) {
             return [
                 'nama' => 'sometimes|string',
-                'email' => [
-                    'sometimes',
-                    'email',
-                    Rule::unique('users', 'email')->ignore($this->route('mentor'))
-                ],
+                'email' => 'sometimes|email|unique:users,email',
                 'password' => 'sometimes|string',
-                'telepon' => [
-                    'sometimes',
-                    'numeric',
-                    'digits_between:10,12',
-                    Rule::unique('users', 'telepon')->ignore($this->route('mentor'))
-                ],
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon',
                 'id_divisi' => 'sometimes|exists:divisi,id',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048'

@@ -17,6 +17,7 @@ const ModalTambahMentor = ({
     division: "",
     phoneNumber: "",
     password: "",
+    id_cabang:"1"
   });
   const [divisions, setDivisions] = useState([]);
   const [editingMentor, setEditingMentor] = useState(null);
@@ -91,7 +92,7 @@ const ModalTambahMentor = ({
     const requiredFields = ["name", "email", "phoneNumber", "division"];
 
     if (mode === "add") {
-      requiredFields.push("password"); // Hanya perlu password pada mode add
+      requiredFields.push("password");
     }
 
     const isValid = requiredFields.every((field) =>
@@ -108,12 +109,12 @@ const ModalTambahMentor = ({
     formPayload.append("email", formData.email);
     formPayload.append("telepon", formData.phoneNumber);
     formPayload.append("id_divisi", formData.division);
+    formPayload.append("id_cabang", "2");
 
     if (mode === "add" && formData.password) {
       formPayload.append("password", formData.password);
     }
 
-    // Kirim foto hanya jika ada file baru yang dipilih
     if (formData.mentorPhoto) {
       formPayload.append("profile", formData.mentorPhoto);
     }

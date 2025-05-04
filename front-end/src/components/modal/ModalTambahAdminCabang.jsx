@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
-const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit }) => {
+const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit,onSucces }) => {
   const isEditMode = Boolean(branchToEdit);
 
   const [formData, setFormData] = useState({
@@ -12,7 +12,7 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit }) => {
     headerPhoto: null,
     email: "",
     phoneNumber: "",
-    id_cabang: 1,
+    id_cabang: 2,
   });
 
   const [adminPhotoName, setAdminPhotoName] = useState("No File Chosen");
@@ -27,7 +27,7 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit }) => {
         password: "",
         adminPhoto: null,
         headerPhoto: null,
-        id_cabang: branchToEdit.id_cabang || 1,
+        id_cabang: branchToEdit.id_cabang || 2,
       });
     } else {
       setFormData({
@@ -38,7 +38,7 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit }) => {
         headerPhoto: null,
         email: "",
         phoneNumber: "",
-        id_cabang: 1,
+        id_cabang: 2,
       });
       setAdminPhotoName("No File Chosen");
       setHeaderPhotoName("No File Chosen");
@@ -97,7 +97,8 @@ const ModalTambahAdminCabang = ({ isOpen, onClose, branchToEdit }) => {
   
       if (response.status === 200 || response.status === 201) {
         onClose();
-        window.location.href="http://localhost:5173/perusahaan/admin"
+        onSucces()
+        // window.location.href="http://localhost:5173/perusahaan/admin"
       } else {
         console.log("Gagal menyimpan data admin.");
       }

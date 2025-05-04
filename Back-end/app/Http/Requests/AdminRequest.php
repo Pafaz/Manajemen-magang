@@ -26,7 +26,7 @@ class AdminRequest extends BaseFormRequest
                 'nama' => 'sometimes|string|max:255',
                 'email' => 'sometimes|string|email|max:255',
                 'password' => 'sometimes|string',
-                'telepon' => 'sometimes|string',
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'id_cabang' => 'sometimes|exists:cabang,id'
@@ -36,7 +36,7 @@ class AdminRequest extends BaseFormRequest
             'nama' => 'required|string|max:255',
             'email' => 'required|string|email|max:255',
             'password' => 'sometimes|string',
-            'telepon' => 'required|string',
+            'telepon' => 'required|numeric|digits_between:10,12|unique:users,telepon',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'cover' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'id_cabang' => 'required|exists:cabang,id'

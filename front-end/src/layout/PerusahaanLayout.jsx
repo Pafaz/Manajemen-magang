@@ -143,7 +143,7 @@ const PerusahaanLayout = () => {
                         <Link
                           key={subIdx}
                           to={sub.link}
-                          className={`flex items-center gap-3 text-sm px-3 py-1 rounded transition-all duration-300 ${
+                          className={`flex items-center gap-3 text-sm px-3 py-1 rounded transition-all text-slate-700 duration-300 ${
                             location.pathname === sub.link
                               ? "bg-sky-50 text-sky-500"
                               : "hover:text-sky-500 hover:bg-sky-50"

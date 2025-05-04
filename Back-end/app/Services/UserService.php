@@ -44,7 +44,6 @@ class UserService
             'user' => new UserResource($user),
             'token' => $token,
             'role' => $user->getRoleNames()->first(),
-            'status' => "success"
         ];
 
         return Api::response($responseData, 'User  registered successfully', Response::HTTP_CREATED);
@@ -71,7 +70,6 @@ class UserService
             'user' => new UserResource($user),
             'role' => $user->getRoleNames()[0],
             'token' => $token,
-            'status' => 'success'
         ];
 
         return Api::response(

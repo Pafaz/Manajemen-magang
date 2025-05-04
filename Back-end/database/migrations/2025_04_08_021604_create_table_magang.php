@@ -14,19 +14,16 @@ return new class extends Migration
         Schema::create('magang', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
-            $table->uuid('id_perusahaan');
+            $table->unsignedBigInteger('id_lowongan');
             $table->uuid('id_mentor')->nullable();
-            $table->unsignedBigInteger('id_cabang')->nullable();
             $table->enum('tipe', ['offline', 'online']);
             $table->enum('status', ['menunggu', 'diterima', 'ditolak'])->default('menunggu');
             $table->date('mulai');
             $table->date('selesai');
-            $table->timestamps();
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
             $table->foreign('id_mentor')->references('id')->on('mentor')->onDelete('cascade');
-            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
-            $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
+            $table->foreign('id_lowongan')->references('id')->on('lowongan')->onDelete('cascade');
         });
 
         Schema::create('surat', function (Blueprint $table) {

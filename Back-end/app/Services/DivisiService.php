@@ -44,8 +44,8 @@ class DivisiService
     {
         DB::beginTransaction();
         try {
-            $divisiData = collect($data)->only('nama')->toArray();
-            $divisiData['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
+            $divisiData = collect($data)->only(['nama', 'id_cabang'])->toArray();
+            // $divisiData['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
             $divisi = $isUpdate
                 ? $this->DivisiInterface->update($id, $divisiData)
                 : $this->DivisiInterface->create($divisiData);

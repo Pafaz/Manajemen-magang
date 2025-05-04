@@ -30,8 +30,15 @@ class MagangService
 
     public function applyMagang(array $data)
     {
+        $peserta = auth('sanctum')->user()->peserta;
+        // dd($peserta);
         $magang = $this->MagangInterface->create([
-            
+            'id_peserta' => $peserta->id,
+            'id_lowongan' => $data['id_lowongan'],
+            'tipe' => $data['tipe'],
+            'mulai' => $data['mulai'],
+            'selesai' => $data['selesai'],
+            'status' => 'menunggu',
         ]);
 
         $files = [
@@ -41,13 +48,28 @@ class MagangService
 
         foreach ($files as $key => $type) {
             if (!empty($data[$key])) {
-                $this->foto->createFoto($data[$key], $perusahaan->id, $type);
+                $this->foto->createFoto($data[$key],  $magang->id, $type);
             }
         }
         return Api::response(
             MagangResource::make($magang),
             'Berhasil mengajukan magang',
             Response::HTTP_CREATED
+        );
+    }
+
+    public function approvalMagang(int $id, array $data)
+    {
+        $magang = $this->MagangInterface->find($id);
+        $magang->status = $data['status'];
+        $magang->save();
+        
+        $message = $data['status'] == 'diterima' ? 'Berhasil menyetujui magang' : 'Berhasil menolak magang';
+
+        return Api::response(
+            MagangResource::make($magang),
+            $message,
+            Response::HTTP_OK
         );
     }
 

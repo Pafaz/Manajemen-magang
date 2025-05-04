@@ -29,7 +29,6 @@ class AdminRequest extends BaseFormRequest
                 'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
-                'id_cabang' => 'sometimes|exists:cabang,id'
             ];
         }
         return [
@@ -39,7 +38,6 @@ class AdminRequest extends BaseFormRequest
             'telepon' => 'required|numeric|digits_between:10,12|unique:users,telepon',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'cover' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'id_cabang' => 'required|exists:cabang,id'
         ];
     }
 }

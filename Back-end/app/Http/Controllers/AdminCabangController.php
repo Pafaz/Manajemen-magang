@@ -34,7 +34,7 @@ class AdminCabangController extends Controller
      */
     public function store(AdminRequest $request)
     {
-        return $this->adminService->createAdmin($request->validated());
+        return $this->adminService->simpanAdmin(null, $request->validated());
     }
 
     /**
@@ -58,7 +58,7 @@ class AdminCabangController extends Controller
      */
     public function update(AdminRequest $request, string $id)
     {
-        return $this->adminService->updateAdmin($id, $request->validated());
+        return $this->adminService->simpanAdmin($id, data: $request->validated());
     }
 
     /**

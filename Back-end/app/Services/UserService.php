@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 use App\Interfaces\UserInterface;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Socialite\Facades\Socialite;
 use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Response;
@@ -98,11 +101,6 @@ class UserService
         );
     }
 
-    public function resetPassword(array $data)
-    {
-        $user = $this->UserInterface->find($data['email']);
-    }
-
     public function updatePassword(array $data)
     {
         // $userId = auth()->user();
@@ -183,5 +181,97 @@ class UserService
             'token' => $token,
             'role' => $user->getRoleNames()->first() // Return role yang sebenarnya
         ], 'Login berhasil');
+    }
+
+    public function sendOtp($request)
+    {
+        $email = $request->email;
+        try {
+            $otp = rand(1000, 9999);
+
+            $expiresAt = Carbon::now()->addMinutes(5);
+
+            DB::table('password_resets')->insert([
+                'email' => $email,
+                'otp' => $otp,
+                'created_at' => Carbon::now(),
+                'expires_at' => $expiresAt,
+            ]);
+
+            $content = "Kode OTP kamu untuk reset password adalah: $otp. OTP ini akan kadaluarsa selama 5 menit.";
+            Mail::raw($content, function ($message) use ($email) {
+                $message->to($email)
+                        ->subject('Password Reset OTP');
+            });
+
+            return Api::response(
+                null,
+                'OTP telah terkirim di email kamu'
+            );
+        } catch (\Exception $e) {
+            return Api::response(
+                null,
+                'Gagal Mengirim OTP: '.$e->getMessage(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    public function verifyOtp($request)
+    {
+        $reset = DB::table('password_resets')
+                    ->where('email', $request->email)
+                    ->where('otp', $request->otp)
+                    ->where('expires_at', '>', Carbon::now())
+                    ->first();
+
+        if ($reset) {
+            return Api::response(
+                null,
+                'OTP benar, kamu dapat mengganti password sekarang'
+            );
+        } else {
+            return Api::response(
+                null,
+                'OTP salah atau telah kadaluarsa',
+                Response::HTTP_OK
+            );
+        }
+    }
+
+    public function updatePasswordWithOtp($request)
+    {
+        $reset = DB::table('password_resets')
+                    ->where('email', $request->email)
+                    ->where('otp', $request->otp)
+                    ->where('expires_at', '>', Carbon::now())
+                    ->first();
+
+        if (!$reset) {
+            return Api::response(
+                null,
+                'OTP salah atau telah kadaluarsa',
+                Response::HTTP_OK
+            );
+        }
+
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            $user->password = bcrypt($request->password);
+            $user->save();
+
+            DB::table('password_resets')->where('email', $request->email)->delete();
+
+            return Api::response(
+                null,
+                'Password Berhasil di Update'
+            );
+        } else {
+            return Api::response(
+                null,
+                'Pengguna tidak ditemukan',
+                Response::HTTP_NOT_FOUND
+            );
+        }
     }
 }

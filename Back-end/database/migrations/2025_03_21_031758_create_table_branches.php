@@ -37,7 +37,6 @@ return new class extends Migration
             $table->integer('durasi');
             $table->string('requirement');
             $table->string('jobdesc');
-            $table->enum('kategori', ['offline', 'online']);
             $table->boolean('status')->default(true);
             $table->timestamps();
 

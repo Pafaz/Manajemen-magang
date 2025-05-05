@@ -10,18 +10,15 @@ class Izin extends Model
     /** @use HasFactory<\Database\Factories\IzinFactory> */
     use HasFactory;
     protected $table = 'izin';
+    public $timestamps = false;
     protected $fillable = [
         'id',
         'id_peserta',
-        'id_admin',
-        'id_absensi',
-        'tanggal',
         'status',
-        'sesi',
-        'status_izin',
-        'alasan',
-        'tanggal_mulai',
-        'tanggal_selesai'
+        'deskripsi',
+        'mulai',
+        'selesai',
+        'status_izin'
     ];
 
     public function absensi()

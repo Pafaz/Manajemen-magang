@@ -4,8 +4,6 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use App\Http\Resources\MagangDetailResource;
-use App\Models\Magang;
-use PhpParser\Node\Stmt\Return_;
 use App\Interfaces\UserInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;

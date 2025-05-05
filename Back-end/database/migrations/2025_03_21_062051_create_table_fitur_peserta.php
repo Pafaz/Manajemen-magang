@@ -46,19 +46,12 @@ return new class extends Migration
         Schema::create('izin', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
-            $table->uuid('id_admin');
-            $table->unsignedBigInteger('id_absensi');
-            $table->date('tanggal');
             $table->enum('status', ['izin', 'sakit']);
-            $table->enum('sesi', ['pagi', 'siang', 'mahasiswa']);
             $table->enum('status_izin', ['diterima', 'ditolak', 'menunggu']);
-            $table->string('alasan');
-            $table->date('tanggal_mulai');
-            $table->date('tanggal_selesai');
-            $table->timestamps();
+            $table->string('deskripsi');
+            $table->date('mulai');
+            $table->date('selesai');
 
-            $table->foreign('id_absensi')->references('id')->on('absensi')->onDelete('cascade');
-            $table->foreign('id_admin')->references('id')->on('admin_cabang')->onDelete('cascade');
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
         });
 

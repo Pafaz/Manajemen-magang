@@ -20,7 +20,7 @@ class MagangController extends Controller
     }
     public function index()
     {
-        return $this->magangService->getAllPesertaMagang();
+        return $this->magangService->getAllPesertaMagang('diterima');
     }
 
     /**

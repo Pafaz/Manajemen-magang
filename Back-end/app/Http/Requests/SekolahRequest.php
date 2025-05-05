@@ -21,6 +21,7 @@ class SekolahRequest extends BaseFormRequest
                 'jurusan' => 'sometimes|array|min:1',
                 'jurusan.*' => 'sometimes|string|max:50|distinct',
                 'foto_header' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+                'logo' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             ];
         }
 
@@ -33,6 +34,7 @@ class SekolahRequest extends BaseFormRequest
             'jurusan' => 'required|array',
             'jurusan.*' => 'required|string|max:50|distinct',
             'foto_header' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'logo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 

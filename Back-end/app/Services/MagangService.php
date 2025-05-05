@@ -3,31 +3,36 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use App\Http\Resources\MagangDetailResource;
+use App\Models\Magang;
 use PhpParser\Node\Stmt\Return_;
+use App\Interfaces\UserInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
 use App\Http\Resources\MagangResource;
 use App\Http\Resources\PesertaResource;
-use App\Models\Magang;
 use Symfony\Component\HttpFoundation\Response;
 
 class MagangService
 {
     private MagangInterface $MagangInterface;
     private FotoService $foto;
+    private UserInterface $userInterface;
 
-    public function __construct(MagangInterface $MagangInterface, FotoService $foto)
+    public function __construct(MagangInterface $MagangInterface, FotoService $foto, UserInterface $userInterface)
     {
         $this->MagangInterface = $MagangInterface;
         $this->foto = $foto;
+        $this->userInterface = $userInterface;
     }
 
-    public function getAllPesertaMagang()
+    public function getAllPesertaMagang($status = null)
     {
-        $data = $this->MagangInterface->getAll();
+        $id = auth('sanctum')->user()->id_cabang_aktif;
+        $data = $this->MagangInterface->getAll($id, $status);
         return Api::response(
             MagangResource::collection($data),
-            'Magang Fetched Successfully', 
+            'Berhasil mendapatkan data peserta magang', 
         );
     }
 
@@ -58,11 +63,11 @@ class MagangService
 
         foreach ($files as $key => $type) {
             if (!empty($data[$key])) {
-                $this->foto->createFoto($data[$key],  $magang->id.'_'.$key, $type, 'magang');
+                $this->foto->createFoto($data[$key],  $magang->id, $type, 'magang');
             }
         }
         return Api::response(
-            MagangResource::make($magang),
+            MagangDetailResource::make($magang),
             'Berhasil mengajukan magang',
             Response::HTTP_CREATED
         );
@@ -90,9 +95,8 @@ class MagangService
             $magang->status = $data['status'];
             $magang->save();
 
-            $setCabang = auth('sanctum')->user()->id_cabang_aktif = $magang->lowongan->cabang->id;
-            $setCabang->save();
-
+            $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
+            // dd($setCabang);
             // Hapus magang jika statusnya ditolak
             if ($data['status'] == 'ditolak') {
                 $magang->delete();

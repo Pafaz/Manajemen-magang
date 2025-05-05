@@ -62,10 +62,18 @@ class SekolahService
                 $sekolah->jurusan()->sync($jurusanIds);
             }
 
-            if (!empty($data['foto_header'])) {
-                $isUpdate
-                    ? $this->foto->updateFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah', 'sekolah')
-                    : $this->foto->createFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah', 'sekolah');
+            $files = [
+                'foto_header' => 'foto_header',
+                'logo' => 'logo',
+            ];
+            foreach ($files as $key => $type) {
+                if (!empty($data[$key])) {
+                    if ($isUpdate) {
+                        $this->foto->updateFoto($data[$key], $sekolah->id, $type, 'sekolah');
+                    } else {
+                        $this->foto->createFoto($data[$key], $sekolah->id, $type, 'sekolah');
+                    }
+                }
             }
 
             DB::commit();

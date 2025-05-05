@@ -23,6 +23,7 @@ class LowonganResource extends JsonResource
             'requirement' => $this->requirement,
             'jobdesc' => $this->jobdesc,
             'kategori' => $this->kategori,
+            'status' => $this->status,
             'perusahaan' => new PerusahaanResource($this->perusahaan),
             'divisi' => new DivisiResource($this->divisi)
         ];

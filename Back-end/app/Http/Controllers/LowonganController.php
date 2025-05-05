@@ -36,7 +36,7 @@ class LowonganController extends Controller
      */
     public function store(LowonganRequest $request)
     {
-        return $this->lowonganService->createLowongan($request->validated());
+        return $this->lowonganService->simpanLowongan(null, $request->validated());
     }
 
     /**
@@ -60,7 +60,7 @@ class LowonganController extends Controller
      */
     public function update(LowonganRequest $request, int $id)
     {
-        return $this->lowonganService->updateLowongan($id, $request->validated());
+        return $this->lowonganService->simpanLowongan($id, $request->validated());
     }
 
     /**
@@ -68,6 +68,11 @@ class LowonganController extends Controller
      */
     public function destroy(int $id)
     {
-        return $this->lowonganService->deleteLowongan($id);
+        //
+    }
+
+    public function tutupLowongan(int $id)
+    {
+        return $this->lowonganService->tutupLowongan($id);
     }
 }

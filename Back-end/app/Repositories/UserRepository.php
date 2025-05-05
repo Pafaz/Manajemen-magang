@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Models\User;
 use App\Interfaces\UserInterface;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository implements UserInterface

@@ -21,12 +21,13 @@ class AdminRequest extends BaseFormRequest
      */
     public function rules(): array
     {
+        $adminId = $this->route('admin');
         if ($this->isUpdate()) {
             return [
                 'nama' => 'sometimes|string|max:255',
-                'email' => 'sometimes|string|email|max:255',
+                'email' => 'sometimes|string|email|max:255|unique:users,email,' .$adminId,
                 'password' => 'sometimes|string',
-                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon',
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon,' . $adminId,
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             ];

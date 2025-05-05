@@ -22,12 +22,13 @@ class MentorRequest extends BaseFormRequest
      */
     public function rules(): array
     {
+        $mentorId = $this->route('mentor');
         if ($this->isUpdate()) {
             return [
                 'nama' => 'sometimes|string',
-                'email' => 'sometimes|email|unique:users,email',
+                'email' => 'sometimes|email|max:255|unique:users,email' . $mentorId,
                 'password' => 'sometimes|string',
-                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon',
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon' . $mentorId,
                 'id_divisi' => 'sometimes|exists:divisi,id',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048'

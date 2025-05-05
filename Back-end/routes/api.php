@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
 use App\Http\Controllers\PiketController;
@@ -16,19 +17,18 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\AdminCabangController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\AdminPerusahaanController;
 use App\Http\Controllers\Auth\GoogleAuthController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
-
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register/{role}', [RegisterController::class, 'register']);
 Route::get('/auth/{role}', [GoogleAuthController::class, 'redirectAuth']);
 Route::get('/auth/callback/peserta', [GoogleAuthController::class, 'callbackPeserta']);
 Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackPerusahaan']);
-Route::post('/send-reset-password', [ForgotPasswordController::class, 'submitForgetPasswordForm']);
-Route::post('/update-password', [ForgotPasswordController::class, 'reset']);
+Route::post('/send-otp', [PasswordResetController::class, 'sendOtp']);
+Route::post('/verify-otp', [PasswordResetController::class, 'verifyOtp']);
+Route::post('/update-password-otp', [PasswordResetController::class, 'updatePassword']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     //Peserta

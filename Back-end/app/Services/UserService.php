@@ -56,7 +56,7 @@ class UserService
         if (!$user || !password_verify($data['password'], $user->password)) {
             return Api::response(
                 null,
-                'Invalid credentials',
+                'Password Salah',
                 Response::HTTP_UNAUTHORIZED
             );
         }

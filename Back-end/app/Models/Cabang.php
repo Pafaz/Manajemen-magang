@@ -34,7 +34,7 @@ class Cabang extends Model
     }
     public function foto()
     {
-        return $this->hasMany(Foto::class, 'id_referensi', 'id');
+        return $this->hasMany(Foto::class, 'id_referensi', 'id')->where('context', 'cabang');
     }
 
     public function cabang(){

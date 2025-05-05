@@ -17,7 +17,6 @@ class Magang extends Model
         'id_peserta',
         'id_mentor',
         'id_lowongan',
-        'tipe', //offline, online
         'mulai',
         'selesai',
         'status', //menunggu, diterima, ditolak
@@ -37,6 +36,6 @@ class Magang extends Model
 
     public function foto()
     {
-        return $this->hasMany(Foto::class, 'id_referensi');
+        return $this->hasMany(Foto::class, 'id_referensi')->where('context', 'magang');
     }
 }

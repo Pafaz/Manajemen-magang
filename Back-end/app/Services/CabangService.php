@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\DB;
 use App\Interfaces\CabangInterface;
 use Illuminate\Support\Facades\Log;
 use App\Http\Resources\CabangResource;
-use App\Interfaces\PerusahaanInterface;
 use App\Interfaces\UserInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -83,9 +82,9 @@ class CabangService
             foreach ($files as $key => $type) {
                 if (!empty($data[$key])) {
                     if ($isUpdate) {
-                        $this->foto->updateFoto($data[$key], $cabang->id, $type);
+                        $this->foto->updateFoto($data[$key], $cabang->id, $type, 'cabang');
                     } else {
-                        $this->foto->createFoto($data[$key], $cabang->id, $type);
+                        $this->foto->createFoto($data[$key], $cabang->id, $type, 'cabang');
                     }
                 }
             }

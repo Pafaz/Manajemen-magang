@@ -10,12 +10,16 @@ class MagangRepository implements MagangInterface
 {
     public function getAll(): Collection
     {
-        return Magang::all();
+        return Magang::with('peserta', 'lowongan', 'foto')->where('status', 'diterima')->get();
     }
 
     public function find(int $id): ? Magang
     {
-        return Magang::findOrFail($id)->first();
+        return Magang::findOrFail($id);
+    }
+    public function alreadyApply($idPeserta, $idLowongan): ? Magang
+    {
+        return Magang::where('id_peserta', $idPeserta)->where('id_lowongan', $idLowongan)->first();
     }
 
     public function create(array $data): ? Magang

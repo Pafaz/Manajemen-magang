@@ -42,6 +42,6 @@ class Admin_cabang extends Model
 
     public function foto()
     {
-        return $this->hasMany(Foto::class, 'id_referensi', 'id');
+        return $this->hasMany(Foto::class, 'id_referensi', 'id')->where('context', 'admin_cabang');
     }
 }

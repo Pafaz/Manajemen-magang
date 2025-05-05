@@ -14,7 +14,7 @@ class PesertaRepository implements PesertaInterface
         return Peserta::all();
     }
 
-    public function getByPerusahaan( $id): Collection
+    public function getByPerusahaan($id): Collection
     {
         return Peserta::where('id_perusahaan', $id)->get();
     }

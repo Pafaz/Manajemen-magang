@@ -97,7 +97,7 @@ class MentorService
 
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
-                    $this->foto->createFoto($data[$key], $mentor->id, $tipe);
+                    $this->foto->createFoto($data[$key], $mentor->id, $tipe, 'mentor');
                 }
             }
 

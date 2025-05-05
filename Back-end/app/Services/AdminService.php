@@ -94,7 +94,7 @@ class AdminService
 
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
-                    $this->foto->createFoto($data[$key], $admin->id, $tipe);
+                    $this->foto->createFoto($data[$key], $admin->id, $tipe, 'admin');
                 }
             }
 

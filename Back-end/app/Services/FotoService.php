@@ -31,7 +31,7 @@ class FotoService
         return $foto;
     }
 
-    public function createFoto($file, $idReferensi, $type)
+    public function createFoto($file, $idReferensi, $type, $context)
     {
         if (!($file instanceof \Illuminate\Http\UploadedFile)) {
             throw new \InvalidArgumentException('Invalid file upload.');
@@ -44,12 +44,13 @@ class FotoService
         $foto = $this->FotoInterface->create([
             'id_referensi' => $idReferensi,
             'type' => $type,
+            'context' => $context,
             'path' => $path,
         ]);
         return $foto;
     }
 
-    public function updateFoto($file, $idReferensi, $type)
+    public function updateFoto($file, $idReferensi, $type, $context)
     {
         if (!($file instanceof \Illuminate\Http\UploadedFile)) {
             throw new \InvalidArgumentException('Invalid file upload.');
@@ -71,6 +72,7 @@ class FotoService
                 $this->FotoInterface->create([
                     'id_referensi' => $idReferensi,
                     'type' => $type,
+                    'context' => $context,
                     'path' => $path,
                 ]);
             } else {

@@ -3,9 +3,12 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use PhpParser\Node\Stmt\Return_;
+use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
 use App\Http\Resources\MagangResource;
-use App\Http\Resources\JurusanResource;
+use App\Http\Resources\PesertaResource;
+use App\Models\Magang;
 use Symfony\Component\HttpFoundation\Response;
 
 class MagangService
@@ -19,7 +22,7 @@ class MagangService
         $this->foto = $foto;
     }
 
-    public function getAllMagang()
+    public function getAllPesertaMagang()
     {
         $data = $this->MagangInterface->getAll();
         return Api::response(
@@ -30,17 +33,24 @@ class MagangService
 
     public function applyMagang(array $data)
     {
-        $peserta = auth('sanctum')->user()->peserta;
+        $user = auth('sanctum')->user();
+        if (!$user->peserta) {
+            return Api::response(null, 'Silahkan lengkapi data diri terlebih dahulu', Response::HTTP_FORBIDDEN);
+        }
+
+        if ($this->MagangInterface->alreadyApply($user->peserta->id, $data['id_lowongan'])) {
+            return Api::response(null, 'Anda sudah mengajukan magang di lowongan ini', Response::HTTP_FORBIDDEN);
+        }
         // dd($peserta);
         $magang = $this->MagangInterface->create([
-            'id_peserta' => $peserta->id,
+            'id_peserta' => $user->peserta->id,
             'id_lowongan' => $data['id_lowongan'],
-            'tipe' => $data['tipe'],
             'mulai' => $data['mulai'],
             'selesai' => $data['selesai'],
             'status' => 'menunggu',
         ]);
 
+        
         $files = [
             'surat_pernyataan_diri' => 'surat_pernyataan_diri',
             'surat_pernyataan_ortu' => 'surat_pernyataan_ortu',
@@ -48,7 +58,7 @@ class MagangService
 
         foreach ($files as $key => $type) {
             if (!empty($data[$key])) {
-                $this->foto->createFoto($data[$key],  $magang->id, $type);
+                $this->foto->createFoto($data[$key],  $magang->id.'_'.$key, $type, 'magang');
             }
         }
         return Api::response(
@@ -60,18 +70,55 @@ class MagangService
 
     public function approvalMagang(int $id, array $data)
     {
-        $magang = $this->MagangInterface->find($id);
-        $magang->status = $data['status'];
-        $magang->save();
-        
-        $message = $data['status'] == 'diterima' ? 'Berhasil menyetujui magang' : 'Berhasil menolak magang';
+        DB::beginTransaction();
 
-        return Api::response(
-            MagangResource::make($magang),
-            $message,
-            Response::HTTP_OK
-        );
+        try {
+            // Ambil data magang yang ingin disetujui atau ditolak
+            $magang = $this->MagangInterface->find($id);
+
+            // Cek apakah status yang diberikan valid
+            if (!in_array($data['status'], ['diterima', 'ditolak'])) {
+                return Api::response(null, 'Status tidak valid', Response::HTTP_BAD_REQUEST);
+            }
+
+            // Cek jika status sudah sesuai dengan yang ingin diubah, hindari update yang tidak perlu
+            if ($magang->status == $data['status']) {
+                return Api::response(null, 'Status sudah sesuai', Response::HTTP_OK);
+            }
+
+            // Update status magang
+            $magang->status = $data['status'];
+            $magang->save();
+
+            $setCabang = auth('sanctum')->user()->id_cabang_aktif = $magang->lowongan->cabang->id;
+            $setCabang->save();
+
+            // Hapus magang jika statusnya ditolak
+            if ($data['status'] == 'ditolak') {
+                $magang->delete();
+                $message = 'Berhasil menolak magang';
+            } else {
+                $message = 'Berhasil menyetujui magang';
+            }
+
+            // Commit transaksi
+            DB::commit();
+
+            // Kembalikan respons
+            return Api::response(
+                MagangResource::make($magang),
+                $message,
+                Response::HTTP_OK
+            );
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi kesalahan
+            DB::rollBack();
+
+            // Kembalikan respons kesalahan
+            return Api::response(null, 'Terjadi kesalahan, silakan coba lagi' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
+
 
     public function getMagangById(int $id)
     {

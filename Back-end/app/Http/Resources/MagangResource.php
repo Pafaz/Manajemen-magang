@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Foto;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,15 +15,16 @@ class MagangResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // dd($this);
         return [
             'id' => $this->id,
             'id_peserta' => $this->id_peserta,
             'id_mentor' => $this->id_mentor,
-            'id_divisi_cabang' => $this->id_divisi_cabang,
             'tipe' => $this->tipe,
             'status' => $this->status,
-            'tanggal_mulai' => $this->tanggal_mulai,
-            'tanggal_selesai' => $this->tanggal_selesai
+            'tanggal_mulai' => $this->mulai,
+            'tanggal_selesai' => $this->selesai,
+            'berkas' => FotoResource::collection($this->foto),
         ];
     }
 }

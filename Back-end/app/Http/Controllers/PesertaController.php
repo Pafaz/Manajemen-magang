@@ -20,7 +20,7 @@ class PesertaController extends Controller
 
     public function index()
     {
-        return $this->pesertaService->getAllPeserta();
+        return $this->pesertaService->getPeserta();
     }
 
     /**
@@ -35,7 +35,7 @@ class PesertaController extends Controller
      */
     public function store(PesertaRequest $request)
     {
-        return $this->pesertaService->createPeserta($request->validated());
+        return $this->pesertaService->simpanProfilPeserta($request->validated());
     }
 
     /**
@@ -43,7 +43,17 @@ class PesertaController extends Controller
      */
     public function show($id)
     {
-        return $this->pesertaService->getPesertaById($id);
+        return $this->pesertaService->getPeserta($id);
+    }
+
+    public function showByPerusahaan($id_perusahaan)
+    {
+        return $this->pesertaService->getPesertaByPerusahaan($id_perusahaan);
+    }
+
+    public function showByCabang($id_cabang)
+    {
+        return $this->pesertaService->getPesertaByCabang($id_cabang);
     }
 
     /**
@@ -57,9 +67,9 @@ class PesertaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(PesertaRequest $request, $id)
     {
-        return $this->pesertaService->updatePeserta($request->all(), $id);
+        return $this->pesertaService->simpanProfilPeserta($request->all(), true, $id);
     }
 
     /**

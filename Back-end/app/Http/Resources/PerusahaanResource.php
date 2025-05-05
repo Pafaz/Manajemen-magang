@@ -16,11 +16,22 @@ class PerusahaanResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'id_user' => $this->id_user,
+            'nama' => $this->user->nama,
+            'telepon' => $this->user->telepon,
+            'email' => $this->user->email,
             'deskripsi' => $this->deskripsi,
             'alamat' => $this->alamat,
-            'instagram' => $this->instagram,
+            'provinsi' => $this->provinsi,
+            'kota' => $this->kota,
+            'kecamatan' => $this->kecamatan,
+            'kode_pos' => $this->kode_pos,
             'website' => $this->website,
-            'user' => new UserResource($this->user),
+            'tanggal_berdiri' => $this->tanggal_berdiri,
+            'nama_penanggung_jawab' => $this->nama_penanggung_jawab,
+            'nomor_penanggung_jawab' => $this->nomor_penanggung_jawab,
+            'jabatan_penanggung_jawab' => $this->jabatan_penanggung_jawab,
+            'email_penanggung_jawab' => $this->email_penanggung_jawab,
         ];
     }
 }

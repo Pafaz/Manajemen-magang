@@ -22,15 +22,18 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+    protected $guard_name = 'api';
     protected $keyType = 'string';
     public $incrementing = false;
     protected $table = 'users';
     protected $fillable = [
-        'name',
+        'nama',
         'email',
         'telepon',
         'password',
-        'id_google',
+        'google_id',
+        'id_cabang_aktif',
+        'avatar',
         'email_verified_at',
     ];
 
@@ -57,13 +60,23 @@ class User extends Authenticatable
         ];
     }
 
-    // protected static function boot()
-    // {
-    //     parent::boot();
-
-    //     static::creating(function ($model) {
-    //         $model->id = (string) Str::uuid();
-    //     });
-    // }
+    public function perusahaan()
+    {
+        return $this->hasOne(Perusahaan::class, 'id_user', 'id');
+    }
     
+    public function peserta()
+    {
+        return $this->hasOne(Peserta::class, 'id_user', 'id');
+    }
+
+    public function admin_cabang()
+    {
+        return $this->hasOne(Admin_cabang::class, 'id_user', 'id');
+    }
+
+    public function mentor()
+    {
+        return $this->hasOne(Mentor::class, 'id_user', 'id');
+    }
 }

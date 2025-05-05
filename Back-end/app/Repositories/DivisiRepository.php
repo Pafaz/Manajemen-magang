@@ -8,24 +8,26 @@ use Illuminate\Database\Eloquent\Collection;
 
 class DivisiRepository implements DivisiInterface
 {
-    public function getAll(): Collection
+    public function getAll($id): Collection
     {
-        return Divisi::all();
+        return Divisi::where('id_cabang', $id)->get();
     }
 
     public function find(int $id): ? Divisi
     {
-        return Divisi::findOrFail($id)->first();
+        return Divisi::findOrFail($id);
     }
 
     public function create(array $data): ? Divisi
     {
-        return Divisi::create([ $data]);
+        return Divisi::firstOrCreate($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Divisi
     {
-        return Divisi::where('id', $id)->update([$data]);
+        $divisi = Divisi::findOrFail($id);
+        $divisi->update($data);
+        return $divisi;
     }
 
     public function delete(int $id): void

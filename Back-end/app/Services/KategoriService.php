@@ -7,42 +7,76 @@ use App\Http\Resources\CategoryResource;
 use App\Interfaces\KategoriInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-class KategoriService 
+class KategoriService
 {
     private KategoriInterface $KategoriInterface;
+    private FotoService $foto;
 
-    public function __construct(KategoriInterface $KategoriInterface)
+    public function __construct(KategoriInterface $KategoriInterface, FotoService $foto)
     {
         $this->KategoriInterface = $KategoriInterface;
+        $this->foto = $foto;
+
     }
 
-    public function getCategories()
+    public function getCategories($id = null)
     {
-        $data = $this->KategoriInterface->getAll();
-        return Api::response(
-            CategoryResource::collection($data),
-            'Categories Fetched Successfully', 
-        );
+
+        $kategori = $id ? $this->KategoriInterface->find($id) : $this->KategoriInterface->getAll();
+        if (!$kategori) {
+            return Api::response(null, 'Kategori tidak ditemukan', Response::HTTP_NOT_FOUND);
+        }
+
+        $data = $id
+            ? CategoryResource::make($this->KategoriInterface->find($id))
+            : CategoryResource::collection($this->KategoriInterface->getAll());
+
+        $message = $id
+            ? 'Berhasil mengambil data kategori'
+            : 'Berhasil mengambil semua data kategori';
+
+        return Api::response($data, $message);
     }
 
-    public function createCategory(array $data)
+    public function simpanKategori(array $data, bool $isUpdate = false, $id = null)
     {
-        $category = $this->KategoriInterface->create($data);
-        return Api::response(
-            CategoryResource::make($category),
-            'Category created successfully',
-            Response::HTTP_CREATED
-        );
-    }
+        $user = auth('sanctum')->user();
+        $perusahaanId = $user->perusahaan->id;
 
-    public function updateCategory(int $id, array $data)
-    {
-        $category = $this->KategoriInterface->update($id, $data);
+        // dd($perusahaanId);
+        if (!$perusahaanId) {
+            return Api::response(null, 'Perusahaan tidak ditemukan.', Response::HTTP_FORBIDDEN);
+        }
+
+        $category = $isUpdate
+            ? $this->KategoriInterface->update(id: $id, data: [
+                'id_perusahaan' => $perusahaanId,
+                'nama' => $data['nama'],
+            ])
+            : $this->KategoriInterface->create([
+                'id_perusahaan' => $perusahaanId,
+                'nama' => $data['nama'],
+            ]);
+
+        if (!empty($data['card'])) {
+            $isUpdate
+                ? $this->foto->updateFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card')
+                : $this->foto->createFoto($data['card'], $category->id.$category->nama.$perusahaanId, 'card');
+        }
+        $message = $isUpdate
+            ? 'Berhasil memperbarui kategori'
+            : 'Berhasil membuat kategori';
+
+        $statusCode = $isUpdate
+            ? Response::HTTP_OK
+            : Response::HTTP_CREATED;
+
         return Api::response(
             CategoryResource::make($category),
             'Category updated successfully',
             Response::HTTP_OK
         );
+
     }
 
     public function deleteCategory(int $id)
@@ -50,18 +84,9 @@ class KategoriService
         $this->KategoriInterface->delete($id);
         return Api::response(
             null,
-            'Category deleted successfully',
+            'Kategori berhasil dihapus',
             Response::HTTP_OK
         );
     }
 
-    public function getCategoryById(int $id)
-    {
-        $category = $this->KategoriInterface->find($id);
-        return Api::response(
-            CategoryResource::make($category),
-            'Category fetched successfully',
-            Response::HTTP_OK
-        );
-    }
 }

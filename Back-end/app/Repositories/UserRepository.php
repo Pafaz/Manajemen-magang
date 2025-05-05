@@ -2,15 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\UserInterface;
 use App\Models\User;
+use App\Interfaces\UserInterface;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Collection;
 
 class UserRepository implements UserInterface
 {
-    public function getAll(): Collection
+
+    public function getAdminByCabang(int $id): Collection
     {
-        return User::all();
+        return User::where('id_cabang', $id)->get();
     }
 
     public function find(string $email): ? User
@@ -20,7 +22,7 @@ class UserRepository implements UserInterface
 
     public function findId(string $id): ? User
     {
-        return User::where('id' , $id)->first();
+        return User::findOrFail($id);
     }
 
     public function create(array $data): User
@@ -28,14 +30,23 @@ class UserRepository implements UserInterface
         return User::create($data);
     }
 
+    public function firstOrCreateByEmail(array $attributes, array $values): User
+    {
+        return User::firstOrCreate($attributes, $values);
+    }
+
     public function update(string $id, array $data): User
     {
-
         return tap(User::findOrFail($id))->update($data);
     }
 
-    public function delete(int $id): void
+    public function delete($id): void
     {
-        User::findOrFail($id)->delete();
+        $user = User::findOrFail($id);
+    
+        $user->roles()->detach();
+
+        $user->delete();
     }
+    
 }

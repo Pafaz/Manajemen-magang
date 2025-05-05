@@ -20,7 +20,7 @@ class CabangController extends Controller
      */
     public function index()
     {
-        return $this->cabangService->getAllCabang();
+        return $this->cabangService->getCabang();
     }
 
     /**
@@ -36,15 +36,15 @@ class CabangController extends Controller
      */
     public function store(CabangRequest $request)
     {
-        return $this->cabangService->createCabang($request->validated());
+        return $this->cabangService->simpanCabang($request->validated());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Cabang $cabang)
+    public function show($cabang)
     {
-        //
+        return $this->cabangService->getCabang($cabang);
     }
 
     /**
@@ -52,16 +52,16 @@ class CabangController extends Controller
      */
     public function edit(CabangRequest $request)
     {
-        $id_perusahaan = $this->cabangService->getCabangByPerusahaanId($request->id_perusahaan);
-        return $this->cabangService->updateCabang($request->validated(), $id);
+        // $id_perusahaan = $this->cabangService->getCabangByPerusahaanId($request->id_perusahaan);
+        // return $this->cabangService->updateCabang($request->validated(), $id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cabang $cabang)
+    public function update(CabangRequest $request,  $cabang)
     {
-        //
+        return $this->cabangService->simpanCabang($request->validated(), true, $cabang);
     }
 
     /**
@@ -69,6 +69,11 @@ class CabangController extends Controller
      */
     public function destroy(Cabang $cabang)
     {
-        //
+        return $this->cabangService->deleteCabang($cabang->id);
+    }
+
+    public function setCabangAktif(Request $request)
+    {
+        return $this->cabangService->setCabangAktif($request->id_cabang);
     }
 }

@@ -6,7 +6,6 @@ use App\Helpers\Api;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\JurusanInterface;
 use App\Interfaces\SekolahInterface;
-use App\Http\Resources\SchoolResource;
 use App\Http\Resources\JurusanResource;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,6 +26,7 @@ class JurusanService
         return Api::response(
             JurusanResource::collection($data),
             'Jurusan Fetched Successfully',
+            Response::HTTP_OK
         );
     }
 

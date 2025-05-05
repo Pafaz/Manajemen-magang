@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Api;
 use App\Models\Perusahaan;
-use App\Http\Requests\StorePerusahaanRequest;
-use App\Http\Requests\UpdatePerusahaanRequest;
 use App\Services\PerusahaanService;
+use App\Http\Requests\PerusahaanRequest;
+use App\Http\Resources\PerusahaanDetailResource;
+use App\Http\Resources\PerusahaanResource;
+use Symfony\Component\HttpFoundation\Response;
 
 class PerusahaanController extends Controller
 {
@@ -20,7 +23,7 @@ class PerusahaanController extends Controller
     }
     public function index()
     {
-        return$this->perusahaanService->getAllPerusahaan();
+        return $this->perusahaanService->getPerusahaan();
     }
 
     /**
@@ -34,43 +37,41 @@ class PerusahaanController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePerusahaanRequest $request)
+    public function store(PerusahaanRequest $request)
     {
-        // dd($request->all());
-        return $this->perusahaanService->createPerusahaan($request->validated());
+        return $this->perusahaanService->simpanProfil($request->validated(), false);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show( $id)
-    {
-        return $this->perusahaanService->getPerusahaanById($id);
-    }
 
+    public function show()
+    {
+        return $this->perusahaanService->isCompleteProfil();
+    }
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Perusahaan $perusahaan)
+    public function edit()
     {
-        //
+        return $this->perusahaanService->getPerusahaanByAuth();
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdatePerusahaanRequest $request,  $id)
+    public function update(PerusahaanRequest $request)
     {
-        return $this->perusahaanService->updatePerusahaan($request->validated(), $id);
+        return $this->perusahaanService->simpanProfil($request->validated(), true);
     }
-    
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
         return $this->perusahaanService->deletePerusahaan($id);
     }
-
 }

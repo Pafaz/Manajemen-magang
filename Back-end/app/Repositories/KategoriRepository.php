@@ -20,14 +20,14 @@ class KategoriRepository implements KategoriInterface
 
     public function create(array $data): ? Kategori
     {
-        return Kategori::create( $data);
+        return Kategori::firstOrCreate( $data);
     }
 
     public function update(int $id, array $data): Kategori
     {
         $category = Kategori::findOrFail($id);
         $category->update($data);
-        
+
         return $category;
     }
 

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MentorRequest;
 use App\Models\Mentor;
+use App\Services\MentorService;
 use Illuminate\Http\Request;
 
 class MentorController extends Controller
@@ -10,9 +12,16 @@ class MentorController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private MentorService $mentorService;
+
+    public function __construct(MentorService $mentorService)
+    {
+        $this->mentorService = $mentorService;
+    }
+
     public function index()
     {
-        //
+        return $this->mentorService->getAllMentor();
     }
 
     /**
@@ -26,17 +35,17 @@ class MentorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MentorRequest $request)
     {
-        //
+        return $this->mentorService->simpanMentor(null, data: $request->validated());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Mentor $mentor)
+    public function show(string $id)
     {
-        //
+        return $this->mentorService->findMentor($id);
     }
 
     /**
@@ -50,16 +59,16 @@ class MentorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Mentor $mentor)
+    public function update(string $id, MentorRequest $request)
     {
-        //
+        return $this->mentorService->simpanMentor($id, $request->validated());
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Mentor $mentor)
+    public function destroy(string $id)
     {
-        //
+        return $this->mentorService->deleteMentor($id);
     }
 }

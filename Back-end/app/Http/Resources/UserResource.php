@@ -17,12 +17,10 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'nama' => $this->name,
+            'nama' => $this->nama,
             'email' => $this->email,
             'telepon' => $this->telepon,
-            'id_google' => $this->id_google,
-            'created_at' => Carbon::parse($this->created_at)->format('d-m-Y'),
-            'updated_at' => Carbon::parse($this->updated_at)->format('d-m-Y'),
+            'id_google' => $this->google_id,
         ];
     }
 }

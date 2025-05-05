@@ -2,18 +2,8 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class SekolahRequest extends FormRequest
+class SekolahRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -21,33 +11,40 @@ class SekolahRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->method() == 'PUT') {
+            return [
+                'nama' => 'sometimes|string|max:50|unique:sekolah,nama,' . $this->route('mitra'),
+                'alamat' => 'sometimes|string|max:255',
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:sekolah,telepon',
+                'jenis_institusi' => 'sometimes|string|max:50',
+                'website' => 'nullable|url',
+                'jurusan' => 'sometimes|array|min:1',
+                'jurusan.*' => 'sometimes|string|max:50|distinct',
+                'foto_header' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+                'id_cabang' => 'sometimes|string|max:50|exists:cabang,id',
+            ];
+        }
+
         return [
             'nama' => 'required|string|max:50|unique:sekolah,nama',
             'alamat' => 'required|string|max:255',
-            'telepon' => 'required|numeric|digits_between:10,12',
+            'telepon' => 'required|numeric|digits_between:10,12|unique:sekolah,telepon',
+            'jenis_institusi' => 'required|string|max:50',
+            'website' => 'nullable|url',
             'jurusan' => 'required|array',
-            'jurusan.*' => 'string|max:50|distinct',
+            'jurusan.*' => 'required|string|max:50|distinct',
+            'foto_header' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'id_cabang' => 'required|string|max:50|exists:cabang,id',
         ];
     }
 
-    public function messages(): array
-    {
-        return [
-            'nama.required' => 'Nama Sekolah harus diisi.',
-            'nama.unique' => 'Nama Sekolah sudah ada.',
-            'alamat.required' => 'Alamat Sekolah harus diisi.',
-            'telepon.required' => 'Telepon Sekolah harus diisi.',
-            'nama.string' => 'Nama Sekolah harus berupa huruf.',
-            'alamat.string' => 'Alamat Sekolah harus berupa huruf.',
-            'nama.max' => 'Nama Sekolah tidak boleh lebih dari 50 karakter.',
-            'alamat.max' => 'Alamat Sekolah tidak boleh lebih dari 255 karakter.',
-            'telepon.digits_between' => 'Telepon Sekolah harus berupa angka dan terdiri dari 10 hingga 12 digit.',
-            'telepon.numeric' => 'Telepon Sekolah harus berupa angka.',
-            'jurusan.required' => 'Jurusan Sekolah harus diisi.',
-            'jurusan.array' => 'Jurusan Sekolah harus berupa array.',
-            'jurusan.*.string' => 'Jurusan Sekolah harus berupa huruf.',
-            'jurusan.*.max' => 'Jurusan Sekolah tidak boleh lebih dari 50 karakter.',
-            'jurusan.*.distinct' => 'Jurusan Sekolah tidak boleh ada yang sama.',
-        ];
+    public function messages () : array {
+        return array_merge(parent::messages(), [
+            'jurusan.required' => 'Minimal harus ada 1 jurusan.',
+            'jurusan.array' => 'Format jurusan tidak valid.',
+            'jurusan.*.string' => 'Setiap jurusan harus berupa teks.',
+            'jurusan.*.max' => 'Setiap jurusan maksimal 50 karakter.',
+            'jurusan.*.distinct' => 'Jurusan tidak boleh duplikat.',
+        ]);
     }
 }

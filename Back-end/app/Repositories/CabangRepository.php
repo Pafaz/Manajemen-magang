@@ -20,20 +20,20 @@ class CabangRepository implements CabangInterface
         return Cabang::where('id_perusahaan', $id)->get();
     }
 
-    public function find(int $id): ? Cabang
+    public function find(int $id, $perusahaanId): ?Cabang
     {
-        return Cabang::findOrFail($id)->first();
+        return Cabang::findOrFail($id)->where('id_perusahaan', $perusahaanId)->first();
     }
 
-    public function create(array $data): ? Cabang
+    public function create(array $data): ?Cabang
     {
-        return Cabang::create([ $data]);
+        return Cabang::create($data);
     }
 
     public function update(int $id, array $data): Model
     {
-        $cabang = Cabang::where('id', $id);
-        $cabang->update([$data]);
+        $cabang = Cabang::findOrFail($id);
+        $cabang->update($data);
         return $cabang;
     }
 

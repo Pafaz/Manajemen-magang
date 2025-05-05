@@ -12,14 +12,17 @@ class Cabang extends Model
     use HasFactory;
 
     protected $table = 'cabang';
+    protected $fillable = [
+        'id_perusahaan',
+        'nama',
+        'bidang_usaha',
+        'provinsi',
+        'kota',
+    ];
 
     public function adminCabang()
     {
         return $this->hasMany(Admin_cabang::class, 'id_cabang', 'id');
-    }
-    public function divisiCabang()
-    {
-        return $this->hasMany(Divisi_cabang::class, 'id_cabang', 'id');
     }
     public function perusahaan()
     {
@@ -28,5 +31,13 @@ class Cabang extends Model
     public function divisi()
     {
         return $this->hasMany(Divisi::class, 'id_cabang', 'id');
+    }
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi', 'id');
+    }
+
+    public function cabang(){
+        return $this->hasMany(Cabang::class, 'id_cabang', 'id');
     }
 }

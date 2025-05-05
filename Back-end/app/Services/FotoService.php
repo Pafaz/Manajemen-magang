@@ -10,6 +10,7 @@ use App\Interfaces\JurusanInterface;
 use App\Http\Resources\JurusanResource;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Str;
 
 class FotoService
 {
@@ -20,94 +21,78 @@ class FotoService
         $this->FotoInterface = $FotoInterface;
     }
 
-    public function getByTypeandReferenceId(string $type, int $id_referensi)
+    public function getByReferenceId($id_referensi){
+        return $this->FotoInterface->find($id_referensi);
+
+    }
+    public function getByTypeandReferenceId(string $type, $id_referensi)
     {
         $foto = $this->FotoInterface->getByTypeandReferenceId($type, $id_referensi);
-        if ($foto) {
-            return Api::response(
-                new FotoResource($foto),
-                'Data found',
-                Response::HTTP_OK
-            );
-        } else {
-            return Api::response(
-                null,
-                'Data not found',
-                Response::HTTP_NOT_FOUND
-            );
-        }
+        return $foto;
     }
+
     public function createFoto($file, $idReferensi, $type)
     {
-        DB::beginTransaction();
-
-        try {
-            $path = $file->store("foto/{$type}/{$idReferensi}", 'public');
-
-            $foto = $this->FotoInterface->create([
-                'id_referensi' => $idReferensi,
-                'type' => $type,
-                'path' => $path,
-            ]);
-
-            DB::commit();
-
-            return Api::response(
-                JurusanResource::make($foto),
-                'Foto uploaded successfully',
-                Response::HTTP_CREATED
-            );
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return Api::response(
-                null,
-                'Failed to upload foto: ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+        if (!($file instanceof \Illuminate\Http\UploadedFile)) {
+            throw new \InvalidArgumentException('Invalid file upload.');
         }
+    
+        $uuid = Str::uuid()->toString();
+        $ext = $file->getClientOriginalExtension();
+        $path = $file->storeAs("{$type}/{$idReferensi}", "{$uuid}.{$ext}", 'public');
+
+        $foto = $this->FotoInterface->create([
+            'id_referensi' => $idReferensi,
+            'type' => $type,
+            'path' => $path,
+        ]);
+        return $foto;
     }
 
-    public function updateFoto(int $id, array $data)
+    public function updateFoto($file, $idReferensi, $type)
     {
+        if (!($file instanceof \Illuminate\Http\UploadedFile)) {
+            throw new \InvalidArgumentException('Invalid file upload.');
+        }
+
         DB::beginTransaction();
+
         try {
-            $path = $data['file']->store('foto/' . $data['type'] . '/' . $data['id_referensi'], 'public');
+            $uuid = Str::uuid()->toString();
+            $ext = $file->getClientOriginalExtension();
+            $path = $file->storeAs("{$type}/{$idReferensi}", "{$uuid}.{$ext}", 'public');
 
-            $foto = $this->FotoInterface->find($id);
+            $foto = $this->FotoInterface->getByTypeandReferenceId($type, $idReferensi);
             if (!$foto) {
-                return Api::response(
-                    null,
-                    'Foto not found',
-                    Response::HTTP_NOT_FOUND
-                );
+                return throw new \InvalidArgumentException('Foto not found.');
+            }
+                
+            if (!$foto) {
+                $this->FotoInterface->create([
+                    'id_referensi' => $idReferensi,
+                    'type' => $type,
+                    'path' => $path,
+                ]);
+            } else {
+                if (Storage::disk('public')->exists($foto->path)) {
+                    Storage::disk('public')->delete($foto->path);
+                }
+
+                $this->FotoInterface->update($foto->id, [
+                    'path' => $path,
+                ]);
             }
 
-            // Hapus file lama
-            if (Storage::disk('public')->exists($foto->path)) {
-                Storage::disk('public')->delete($foto->path);
-            }
-
-            // Update foto
-            $foto = $this->FotoInterface->update($id, [
-                'id_referensi' => $data['id_referensi'],
-                'type' => $data['type'],
+            $updated = $this->FotoInterface->update($foto->id, [
                 'path' => $path,
             ]);
 
             DB::commit();
-            return Api::response(
-                null,
-                'Foto updated successfully',
-                Response::HTTP_OK
-            );
+
+            return $updated;
         } catch (\Exception $e) {
             DB::rollBack();
-            return Api::response(
-                null,
-                'Failed to update foto: ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return Api::response(null, 'Failed to update foto: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -115,8 +100,7 @@ class FotoService
     public function deleteFoto(int $id)
     {
         $foto = $this->FotoInterface->find($id);
-        $this->FotoInterface->delete($id);
-        // Hapus file dari storage
+        $this->FotoInterface->delete($foto->id);
         if (Storage::disk('public')->exists($foto->path)) {
             Storage::disk('public')->delete($foto->path);
         }

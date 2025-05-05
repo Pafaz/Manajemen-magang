@@ -18,14 +18,29 @@ class PerusahaanRepository implements PerusahaanInterface
         return Perusahaan::findOrFail($id)->first();
     }
 
+
+    public function findByUser($id): ? Perusahaan
+    {
+
+        return Perusahaan::where('id_user' , $id)->first();
+    }
+
     public function create(array $data): ? Perusahaan
     {
         return Perusahaan::create( [
             'id_user' => auth('sanctum')->user()->id,
             'deskripsi' => $data['deskripsi'],
+            'provinsi' => $data['provinsi'],
+            'kota' => $data['kota'],
+            'kecamatan' => $data['kecamatan'],
             'alamat' => $data['alamat'],
+            'kode_pos' => $data['kode_pos'],
             'website' => $data['website'],
-            'instagram' => $data['instagram'],
+            'nama_penanggung_jawab' => $data['nama_penanggung_jawab'],
+            'nomor_penanggung_jawab' => $data['nomor_penanggung_jawab'],
+            'jabatan_penanggung_jawab' => $data['jabatan_penanggung_jawab'],
+            'email_penanggung_jawab' => $data['email_penanggung_jawab'],
+            'tanggal_berdiri' => $data['tanggal_berdiri'],
         ]);
     }
 

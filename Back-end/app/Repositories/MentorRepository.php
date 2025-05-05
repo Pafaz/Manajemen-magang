@@ -8,27 +8,29 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MentorRepository implements MentorInterface
 {
-    public function getAll(): Collection
+    public function getAll($id = null): Collection
     {
         return Mentor::all();
     }
 
-    public function find(int $id): ? Mentor
+    public function find($id): ?Mentor
     {
         return Mentor::findOrFail($id)->first();
     }
 
-    public function create(array $data): ? Mentor
+    public function create(array $data): ?Mentor
     {
-        return Mentor::create([ $data]);
+        return Mentor::create($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update($id, array $data): Mentor
     {
-        return Mentor::where('id', $id)->update([$data]);
+        $mentor = Mentor::findOrFail($id);
+        $mentor->update($data);
+        return $mentor;
     }
 
-    public function delete(int $id): void
+    public function delete($id): void
     {
         Mentor::findOrFail($id)->delete();
     }

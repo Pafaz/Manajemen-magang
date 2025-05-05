@@ -15,14 +15,22 @@ class LoginController extends Controller
         $this->UserService = $UserService;
     }
 
+    public function getData(Request $request)
+    {
+        return $this->UserService->getData($request->user());
+    }
+
     public function login(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
+            'remember_me' => 'nullable|boolean',
         ]);
 
-        return $this->UserService->Login($request->all());
+        $data['remember_me'] = $data['remember_me'] ?? false;
+
+        return $this->UserService->Login($data);
     }
 
     public function logout(Request $request)

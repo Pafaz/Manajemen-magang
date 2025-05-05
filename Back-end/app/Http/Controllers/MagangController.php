@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\MagangRequest;
 use App\Models\Magang;
 use App\Services\MagangService;
 use Illuminate\Http\Request;
@@ -33,9 +34,9 @@ class MagangController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(MagangRequest $request)
     {
-        return $this->magangService->createMagang($request->all());
+        return $this->magangService->applyMagang($request->validated());
     }
 
     /**

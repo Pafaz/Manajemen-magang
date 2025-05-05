@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Services\UserService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
@@ -17,13 +17,8 @@ class RegisterController extends Controller
         $this->UserService = $UserService;
     }
 
-    public function registerPeserta(RegisterRequest $request)
+    public function register(RegisterRequest $request, $role)
     {
-        return $this->UserService->register($request->validated(), 'peserta');
-    }
-
-    public function registerPerusahaan(RegisterRequest $request)
-    {
-        return $this->UserService->register($request->validated(), 'perusahaan');
+        return $this->UserService->register($request->validated(), $role);
     }
 }

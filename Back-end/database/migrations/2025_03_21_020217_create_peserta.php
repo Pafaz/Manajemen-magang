@@ -29,26 +29,6 @@ return new class extends Migration
             $table->foreign('id_sekolah')->references('id')->on('sekolah')->onDelete('cascade');
         });
 
-        Schema::create('perusahaan', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('id_user');
-            $table->string('deskripsi');
-            $table->string('provinsi');
-            $table->string('kota');
-            $table->string('kecamatan');
-            $table->string('desa');
-            $table->string('alamat');
-            $table->string('kode_pos');
-            $table->string('website');
-            $table->string('instagram');
-            $table->boolean('is_premium')->default(false);
-            $table->boolean('is_active')->default(true);
-            $table->integer('cabang_limit')->default(1);
-            $table->integer('admin_limit')->default(1);
-            $table->timestamps();
-
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-        });
 
         Schema::create('notifikasi', function (Blueprint $table) {
             $table->id()->primary();
@@ -68,7 +48,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('notifikasi');
-        Schema::dropIfExists('perusahaan');
         Schema::dropIfExists('peserta');
     }
 };

@@ -2,18 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class CabangRequest extends FormRequest
+class CabangRequest extends BaseFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return false;
-    }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -21,20 +12,23 @@ class CabangRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->isUpdate()) {
+            return [
+                'nama' => 'sometimes|string',
+                'bidang_usaha' => 'sometimes|string',
+                'provinsi' => 'sometimes|string',
+                'kota' => 'sometimes|string',
+                'logo' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
+                'profil_cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+            ];
+        }
         return [
-            'name' => 'required|string|max:255',
-            'alamat' => 'required|string',
-            'id_perusahaan' => 'required|integer',
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'required' => ':attribute wajib diisi.',
-            'string' => ':attribute harus berupa teks.',
-            'max' => ':attribute tidak boleh lebih dari :max karakter.',
-            'integer' => ':attribute harus berupa angka.',
+            'nama' => 'required|string',
+            'bidang_usaha' => 'required|string',
+            'provinsi' => 'required|string',
+            'kota' => 'required|string',
+            'logo' => 'required|image|mimes:png,jpeg,jpg|max:2048',
+            'profil_cover' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

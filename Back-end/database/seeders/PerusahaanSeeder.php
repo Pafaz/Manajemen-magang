@@ -2,8 +2,15 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Foto;
+use App\Models\User;
+use App\Models\Cabang;
+use App\Models\Divisi;
+use App\Models\Kategori;
+use App\Models\Perusahaan;
+use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PerusahaanSeeder extends Seeder
 {
@@ -12,6 +19,74 @@ class PerusahaanSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $perusahaan = User::create([
+            'id' => Str::uuid(),
+            'nama' => 'Perusahaan',
+            'email' => 'perusahaan@example',
+            'password' => bcrypt('password'),
+            'id_cabang_aktif' => 1,
+        ]);
+
+        $perusahaan->assignRole('perusahaan');
+
+        $perusahaan_record = Perusahaan::create([
+            'id' => Str::uuid(),  // Membuat UUID baru
+            'id_user' => $perusahaan->id,  // Menyambungkan perusahaan ke user pertama
+            'deskripsi' => 'Perusahaan teknologi yang bergerak di bidang software development dan IT consulting.',
+            'provinsi' => 'DKI Jakarta',
+            'kota' => 'Jakarta Selatan',
+            'alamat' => 'Jl. Teknologi No.1, Jakarta',
+            'kode_pos' => '12345',
+            'website' => 'https://www.perusahaan-example.com',
+            'nama_penanggung_jawab' => 'John Doe',
+            'nomor_penanggung_jawab' => '1234567890',
+            'jabatan_penanggung_jawab' => 'CEO',
+            'email_penanggung_jawab' => 'GK0YV@example.com',
+            'tanggal_berdiri' => '2022-01-01',
+            'kecamatan' => 'ngijo'
+        ]);
+
+        Foto::create([
+            'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
+            'path' => 'uploads/foto/npwp_perusahaan_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
+            'type' => 'npwp',  // Tipe file
+        ]);
+
+        // Menambahkan foto legalitas_perusahaan
+        Foto::create([
+            'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
+            'path' => 'uploads/foto/legalitas_perusahaan_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
+            'type' => 'surat_legalitas',  // Tipe file
+        ]);
+
+        // Menambahkan foto logo_perusahaan
+        Foto::create([
+            'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
+            'path' => 'uploads/foto/profile_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
+            'type' => 'profile',  // Tipe file
+        ]);
+
+        Cabang::create([
+            'nama' => 'Hummatech Malang',
+            'bidang_usaha' => 'Software Development',
+            'provinsi' => 'Jawa Timur',
+            'kota' => 'Surabaya',
+            'id_perusahaan' => $perusahaan_record->id
+        ]);
+
+        // $kategori = Kategori::create([
+        //     'id_perusahaan' => $perusahaan_record->id,
+        //     'nama' => 'Tahap Pemula',
+        //     'created_at' => now(),
+        //     'updated_at' => now()
+        // ]);
+
+        // Divisi::create([
+        //     'id_perusahaan' => $perusahaan_record->id,
+        //     'nama' => 'Front-End',
+        //     'id_kategori-proyek' => $kategori->id,
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
     }
 }

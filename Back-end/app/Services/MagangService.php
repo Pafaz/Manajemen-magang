@@ -11,10 +11,12 @@ use Symfony\Component\HttpFoundation\Response;
 class MagangService
 {
     private MagangInterface $MagangInterface;
+    private FotoService $foto;
 
-    public function __construct(MagangInterface $MagangInterface)
+    public function __construct(MagangInterface $MagangInterface, FotoService $foto)
     {
         $this->MagangInterface = $MagangInterface;
+        $this->foto = $foto;
     }
 
     public function getAllMagang()
@@ -26,13 +28,48 @@ class MagangService
         );
     }
 
-    public function createMagang(array $data)
+    public function applyMagang(array $data)
     {
-        $magang = $this->MagangInterface->create($data);
+        $peserta = auth('sanctum')->user()->peserta;
+        // dd($peserta);
+        $magang = $this->MagangInterface->create([
+            'id_peserta' => $peserta->id,
+            'id_lowongan' => $data['id_lowongan'],
+            'tipe' => $data['tipe'],
+            'mulai' => $data['mulai'],
+            'selesai' => $data['selesai'],
+            'status' => 'menunggu',
+        ]);
+
+        $files = [
+            'surat_pernyataan_diri' => 'surat_pernyataan_diri',
+            'surat_pernyataan_ortu' => 'surat_pernyataan_ortu',
+        ];
+
+        foreach ($files as $key => $type) {
+            if (!empty($data[$key])) {
+                $this->foto->createFoto($data[$key],  $magang->id, $type);
+            }
+        }
         return Api::response(
             MagangResource::make($magang),
-            'Magang created successfully',
+            'Berhasil mengajukan magang',
             Response::HTTP_CREATED
+        );
+    }
+
+    public function approvalMagang(int $id, array $data)
+    {
+        $magang = $this->MagangInterface->find($id);
+        $magang->status = $data['status'];
+        $magang->save();
+        
+        $message = $data['status'] == 'diterima' ? 'Berhasil menyetujui magang' : 'Berhasil menolak magang';
+
+        return Api::response(
+            MagangResource::make($magang),
+            $message,
+            Response::HTTP_OK
         );
     }
 

@@ -14,12 +14,15 @@ class SchoolResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // dd($this);
         return [
             'id' => $this->id,
             'nama' => $this->nama,
             'alamat' => $this->alamat,
             'telepon' => $this->telepon,
-            // 'jurusan' => JurusanResource::collection($this->jurusan),
+            'jenis_institusi' => $this->jenis_institusi,
+            'foto' => FotoResource::collection($this->foto),
+            'jurusan' => JurusanResource::collection($this->jurusan),
         ];
     }
 }

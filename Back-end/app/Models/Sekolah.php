@@ -16,6 +16,9 @@ class Sekolah extends Model
         'nama',
         'alamat',
         'telepon',
+        'jenis_institusi',
+        'website',
+        'id_cabang'
     ];
 
     public $timestamps = false;
@@ -24,16 +27,19 @@ class Sekolah extends Model
     {
         return $this->belongsToMany(Jurusan::class, 'jurusan_sekolah', 'id_sekolah', 'id_jurusan');
     }
+
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi');
+    }
+
     public function peserta()
     {
         return $this->hasMany(Peserta::class, 'sekolah_id', 'id');
     }
-    public function getJurusan()
+
+    public function cabang()
     {
-        return $this->hasMany(Jurusan::class, 'id', 'jurusan_id');
-    }
-    public function getPeserta()
-    {
-        return $this->hasMany(Peserta::class, 'sekolah_id', 'id');
+        return $this->belongsTo(Cabang::class, 'id_cabang', 'id');
     }
 }

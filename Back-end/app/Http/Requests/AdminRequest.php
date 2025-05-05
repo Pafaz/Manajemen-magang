@@ -22,7 +22,7 @@ class AdminRequest extends BaseFormRequest
     public function rules(): array
     {
         $adminId = $this->route('admin');
-        if ($this->isUpdate()) {
+        if ($this->method() === 'PUT') {
             return [
                 'nama' => 'sometimes|string|max:255',
                 'email' => 'sometimes|string|email|max:255|unique:users,email,' .$adminId,

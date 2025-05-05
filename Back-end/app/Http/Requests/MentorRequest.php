@@ -23,7 +23,7 @@ class MentorRequest extends BaseFormRequest
     public function rules(): array
     {
         $mentorId = $this->route('mentor');
-        if ($this->isUpdate()) {
+        if ($this->method() === 'PUT') {
             return [
                 'nama' => 'sometimes|string',
                 'email' => 'sometimes|email|max:255|unique:users,email' . $mentorId,

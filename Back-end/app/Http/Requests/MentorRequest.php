@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Mentor;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,12 +24,19 @@ class MentorRequest extends BaseFormRequest
     public function rules(): array
     {
         $mentorId = $this->route('mentor');
+    
+        $userId = null;
+        if ($mentorId && $this->method() === 'PUT') {
+            $mentor = Mentor::with('user')->find($mentorId);
+            $userId = $mentor?->user?->id;
+        }
+
         if ($this->method() === 'PUT') {
             return [
                 'nama' => 'sometimes|string',
-                'email' => 'sometimes|email|max:255|unique:users,email' . $mentorId,
+                'email' => 'sometimes|email|max:255|unique:users,email' . $userId,
                 'password' => 'sometimes|string',
-                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon' . $mentorId,
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon' . $userId,
                 'id_divisi' => 'sometimes|exists:divisi,id',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048'

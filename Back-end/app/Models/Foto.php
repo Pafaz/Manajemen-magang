@@ -15,6 +15,7 @@ class Foto extends Model
     protected $fillable = [
         'type',
         'id_referensi',
+        'context',
         'path',
     ];
 

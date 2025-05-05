@@ -44,14 +44,14 @@ class PesertaService
         );
     }
 
-    public function getPesertaByPerusahaan($perusahaan){
-        $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
-        return Api::response(
-            PesertaResource::collection($data),
-            'Peserta Fetched Successfully',
-            Response::HTTP_OK
-        );
-    }
+    // public function getPesertaByPerusahaan($perusahaan){
+    //     $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
+    //     return Api::response(
+    //         PesertaResource::collection($data),
+    //         'Peserta Fetched Successfully',
+    //         Response::HTTP_OK
+    //     );
+    // }
 
     public function simpanProfilPeserta(array $data, bool $isUpdate = false, $id = null)
     {
@@ -66,6 +66,9 @@ class PesertaService
             $message = 'Peserta berhasil memperbarui profil';
         } else {
             $data['id_user'] = auth('sanctum')->user()->id;
+            if (auth('sanctum')->user()->peserta) {
+                return Api::response(null, 'Anda sudah melengkapi profil', Response::HTTP_FORBIDDEN);
+            }
             $peserta = $this->pesertaInterface->create($data);
             $peserta->user->update([
                 'nama' => $data['nama'],
@@ -76,16 +79,16 @@ class PesertaService
         }
 
         $files = [
-            'foto_profil' => 'foto_profil',
+            'profile' => 'profile',
             'cv' => 'cv',
         ];
 
         foreach ($files as $key => $tipe) {
             if (!empty($data[$key])) {
                 if ($isUpdate) {
-                    $this->foto->updateFoto($data[$key], $peserta->id, $tipe);
+                    $this->foto->updateFoto($data[$key], $peserta->id, $tipe, 'peserta');
                 } else {
-                    $this->foto->createFoto($data[$key], $peserta->id, $tipe);
+                    $this->foto->createFoto($data[$key], $peserta->id, $tipe, 'peserta');
                 }
             }
         }

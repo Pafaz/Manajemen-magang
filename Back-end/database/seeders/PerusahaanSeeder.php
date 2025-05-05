@@ -50,6 +50,7 @@ class PerusahaanSeeder extends Seeder
             'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
             'path' => 'uploads/foto/npwp_perusahaan_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
             'type' => 'npwp',  // Tipe file
+            'context' => 'perusahaan'
         ]);
 
         // Menambahkan foto legalitas_perusahaan
@@ -57,6 +58,7 @@ class PerusahaanSeeder extends Seeder
             'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
             'path' => 'uploads/foto/legalitas_perusahaan_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
             'type' => 'surat_legalitas',  // Tipe file
+            'context' => 'perusahaan'
         ]);
 
         // Menambahkan foto logo_perusahaan
@@ -64,6 +66,7 @@ class PerusahaanSeeder extends Seeder
             'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
             'path' => 'uploads/foto/profile_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
             'type' => 'profile',  // Tipe file
+            'context' => 'perusahaan'
         ]);
 
         Cabang::create([

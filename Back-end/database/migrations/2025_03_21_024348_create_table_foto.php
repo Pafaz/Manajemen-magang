@@ -12,12 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('foto', function (Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
             $table->string('id_referensi');
             $table->string('path');
             $table->string('type');
-            $table->timestamps();
+            $table->string('context'); // contoh: 'magang', 'sekolah', 'admin'
+        
+            // Index untuk mempercepat query berdasarkan referensi dan context
+            $table->index(['id_referensi', 'context', 'type']);
         });
+        
     }
 
     /**

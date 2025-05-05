@@ -52,4 +52,9 @@ class Peserta extends Model
     {
         return $this->hasMany(Izin::class, 'id_peserta');
     }
+
+    public function foto()
+    {
+        return $this->hasMany(Foto::class, 'id_referensi')->where('context', 'peserta');
+    }
 }

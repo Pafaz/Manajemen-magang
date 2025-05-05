@@ -20,7 +20,7 @@ class MagangController extends Controller
     }
     public function index()
     {
-        return $this->magangService->getAllMagang();
+        return $this->magangService->getAllPesertaMagang();
     }
 
     /**
@@ -58,9 +58,9 @@ class MagangController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Magang $magang)
+    public function update(MagangRequest $request, $magang)
     {
-        //
+        return $this->magangService->approvalMagang($magang, $request->validated());
     }
 
     /**

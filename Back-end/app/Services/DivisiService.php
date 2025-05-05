@@ -44,8 +44,8 @@ class DivisiService
     {
         DB::beginTransaction();
         try {
-            $divisiData = collect($data)->only(['nama', 'id_cabang'])->toArray();
-            // $divisiData['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
+            $divisiData = collect($data)->only(['nama'])->toArray();
+            $divisiData['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
             $divisi = $isUpdate
                 ? $this->DivisiInterface->update($id, $divisiData)
                 : $this->DivisiInterface->create($divisiData);
@@ -62,8 +62,8 @@ class DivisiService
 
             if (!empty($data['foto_cover'])) {
                 $isUpdate
-                    ? $this->foto->updateFoto($data['foto_cover'], $divisi->id, 'foto_cover')
-                    : $this->foto->createFoto($data['foto_cover'], $divisi->id, 'foto_cover');
+                    ? $this->foto->updateFoto($data['foto_cover'], $divisi->id, 'foto_cover', 'divisi')
+                    : $this->foto->createFoto($data['foto_cover'], $divisi->id, 'foto_cover', 'divisi');
             }
 
             DB::commit();

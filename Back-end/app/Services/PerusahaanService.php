@@ -102,9 +102,9 @@ class PerusahaanService
             foreach ($files as $key => $type) {
                 if (!empty($data[$key])) {
                     if ($isUpdate) {
-                        $this->foto->updateFoto($data[$key], $perusahaan->id, $type);
+                        $this->foto->updateFoto($data[$key], $perusahaan->id, $type, 'perusahaan');
                     } else {
-                        $this->foto->createFoto($data[$key], $perusahaan->id, $type);
+                        $this->foto->createFoto($data[$key], $perusahaan->id, $type, 'perusahaan');
                     }
                 }
             }

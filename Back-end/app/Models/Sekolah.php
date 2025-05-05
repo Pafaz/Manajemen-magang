@@ -30,7 +30,7 @@ class Sekolah extends Model
 
     public function foto()
     {
-        return $this->hasMany(Foto::class, 'id_referensi');
+        return $this->hasMany(Foto::class, 'id_referensi')->where('context', 'sekolah');
     }
 
     public function peserta()

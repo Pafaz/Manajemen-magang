@@ -47,8 +47,8 @@ class SekolahService
     {
         DB::beginTransaction();
         try {
-            $dataSekolah = collect($data)->only(['nama', 'alamat', 'telepon', 'jenis_institusi', 'website', 'id_cabang'])->toArray();
-            // $dataSekolah['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
+            $dataSekolah = collect($data)->only(['nama', 'alamat', 'telepon', 'jenis_institusi', 'website'])->toArray();
+            $dataSekolah['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
             $sekolah = $isUpdate
                 ? $this->SekolahInterface->update($id, $dataSekolah)
                 : $this->SekolahInterface->create($dataSekolah);
@@ -64,8 +64,8 @@ class SekolahService
 
             if (!empty($data['foto_header'])) {
                 $isUpdate
-                    ? $this->foto->updateFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah')
-                    : $this->foto->createFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah');
+                    ? $this->foto->updateFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah', 'sekolah')
+                    : $this->foto->createFoto($data['foto_header'], $sekolah->id, 'foto_header_sekolah', 'sekolah');
             }
 
             DB::commit();

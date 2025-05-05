@@ -9,5 +9,5 @@ use App\Interfaces\Base\GetAllInterface;
 
 interface MagangInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface
 {
-    //
+    public function alreadyApply($idPeserta, $idLowongan);
 }

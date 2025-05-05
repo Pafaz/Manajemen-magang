@@ -16,6 +16,9 @@ class PesertaResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'nama' => $this->user->nama,
+            'telepon' => $this->user->telepon,
+            'email' => $this->user->email,
             'jurusan' => $this->jurusan->nama,
             'sekolah' => $this->sekolah->nama,
             'nomor_identitas' => $this->nomor_identitas,
@@ -24,6 +27,7 @@ class PesertaResource extends JsonResource
             'jenis_kelamin' => $this->jenis_kelamin,
             'kelas' => $this->kelas,
             'alamat' => $this->alamat,
+            'foto' => FotoResource::collection($this->foto ?? collect()),
         ];
     }
 }

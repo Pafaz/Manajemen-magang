@@ -30,6 +30,6 @@ class Divisi extends Model
 
     public function foto()
     {
-        return $this->hasMany(Foto::class, 'id_referensi');
+        return $this->hasMany(Foto::class, 'id_referensi')->where('context', 'divisi');
     }
 }

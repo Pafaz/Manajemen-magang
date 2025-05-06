@@ -15,7 +15,7 @@ class SekolahRequest extends BaseFormRequest
             return [
                 'nama' => 'sometimes|string|max:50|unique:sekolah,nama,' . $this->route('mitra'),
                 'alamat' => 'sometimes|string|max:255',
-                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:sekolah,telepon',
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:sekolah,telepon,' . $this->route('mitra'),
                 'jenis_institusi' => 'sometimes|string|max:50',
                 'website' => 'nullable|url',
                 'jurusan' => 'sometimes|array|min:1',

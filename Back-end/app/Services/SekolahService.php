@@ -47,6 +47,14 @@ class SekolahService
     {
         DB::beginTransaction();
         try {
+            $user = auth('sanctum')->user();
+
+            if (!$user->perusahaan) {
+                throw new \Exception("Lengkapi profil perusahaan anda terlebih dahulu");
+            }
+            if (!$user->perusahaan->cabang()->where('id', $user->id_cabang_aktif)->exists()) {
+                throw new \Exception("Anda harus membuat atau memilih cabang terlebih dahulu");
+            }
             $dataSekolah = collect($data)->only(['nama', 'alamat', 'telepon', 'jenis_institusi', 'website'])->toArray();
             $dataSekolah['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
             $sekolah = $isUpdate

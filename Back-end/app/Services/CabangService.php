@@ -51,7 +51,7 @@ class CabangService
             $user = auth('sanctum')->user();
 
             if (!$user->perusahaan) {
-                throw new \Exception("Perusahaan belum terdaftar");
+                throw new \Exception("Lengkapi profil perusahaan anda terlebih dahulu");
             }
 
             if (!$isUpdate && $user->perusahaan->cabang()->count() >= 1) {
@@ -102,11 +102,12 @@ class CabangService
 
             return Api::response(
                 null,
-                'Gagal membuat cabang' . $e->getMessage(),
+                'Gagal membuat cabang: ' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }
+
 
     public function deleteCabang($id)
     {

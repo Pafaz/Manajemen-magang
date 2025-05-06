@@ -14,13 +14,16 @@ class Izin extends Model
     protected $fillable = [
         'id',
         'id_peserta',
-        'status',
+        'jenis',
         'deskripsi',
         'mulai',
         'selesai',
         'status_izin'
     ];
 
+    public function foto(){
+        return $this->hasOne(Foto::class, 'id_foto')->where('context', 'izin');
+    }
     public function absensi()
     {
         return $this->belongsTo(Absensi::class, 'id_absensi');

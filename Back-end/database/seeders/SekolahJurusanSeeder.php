@@ -15,12 +15,14 @@ class SekolahJurusanSeeder extends Seeder
             'nama' => 'Sekolah Menengah Atas 1 Jakarta',
             'alamat' => 'Jl. Raya No. 1, Jakarta',
             'telepon' => '021-1234567',
+            'jenis_institusi' => 'Politeknik'
         ]);
 
         $sekolah2 = Sekolah::create([
             'nama' => 'Sekolah Menengah Atas 2 Bandung',
             'alamat' => 'Jl. Bandung No. 3, Bandung',
             'telepon' => '022-7654321',
+            'jenis_institusi' => 'Politeknik'
         ]);
 
         // Menambahkan data Jurusan

@@ -46,7 +46,7 @@ return new class extends Migration
         Schema::create('izin', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
-            $table->enum('status', ['izin', 'sakit']);
+            $table->enum('jenis', ['izin', 'sakit']);
             $table->enum('status_izin', ['diterima', 'ditolak', 'menunggu']);
             $table->string('deskripsi');
             $table->date('mulai');

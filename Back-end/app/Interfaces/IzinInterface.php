@@ -8,7 +8,7 @@ use App\Interfaces\Base\DeleteInterface;
 use App\Interfaces\Base\GetAllInterface;
 use App\Interfaces\Base\UpdateInterface;
 
-interface IzinInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
+interface IzinInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface,UpdateInterface
 {
     //
 }

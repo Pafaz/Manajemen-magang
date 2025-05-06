@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\IzinRequest;
 use App\Models\Izin;
+use App\Services\IzinService;
 use Illuminate\Http\Request;
 
 class IzinController extends Controller
@@ -10,6 +12,13 @@ class IzinController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private IzinService $izinService;
+
+    public function __construct(IzinService $izinService)
+    {
+        $this->izinService = $izinService;
+    }
+
     public function index()
     {
         //
@@ -26,9 +35,9 @@ class IzinController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(IzinRequest $request)
     {
-        //
+        return $this->izinService->simpanIzinPeserta($request->validated());
     }
 
     /**
@@ -50,9 +59,9 @@ class IzinController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Izin $izin)
+    public function update(IzinRequest $request, $izin)
     {
-        //
+        return $this->izinService->updateStatusIzin($request->validated(), $izin);
     }
 
     /**

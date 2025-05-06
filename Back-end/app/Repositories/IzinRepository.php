@@ -20,12 +20,14 @@ class IzinRepository implements IzinInterface
 
     public function create(array $data): ? Izin
     {
-        return Izin::create([ $data]);
+        return Izin::create($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Izin
     {
-        return Izin::where('id', $id)->update([$data]);
+        $izin = Izin::findOrFail($id);
+        $izin->update($data);
+        return $izin;
     }
 
     public function delete(int $id): void

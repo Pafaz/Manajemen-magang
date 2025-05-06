@@ -84,7 +84,7 @@ class PesertaService
 
             $dataPeserta = collect($data)->only([
                 'nama', 'telepon', 'alamat', 'jenis_kelamin', 'tempat_lahir', 
-                'tanggal_lahir', 'nomor_identitas', 'id_sekolah', 'jurusan', 'kelas'
+                'tanggal_lahir', 'nomor_identitas', 'sekolah', 'jurusan', 'kelas'
             ])->toArray();
 
             if (!$isUpdate) {

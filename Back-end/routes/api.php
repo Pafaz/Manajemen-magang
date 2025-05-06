@@ -51,7 +51,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('mentor', MentorController::class);
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('lowongan', LowonganController::class);
-        Route::patch('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
+        Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
         Route::put('/izin/{id}', [IzinController::class, 'update']);
 

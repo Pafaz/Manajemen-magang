@@ -20,12 +20,14 @@ class SuratRepository implements SuratInterface
 
     public function create(array $data): ? Surat
     {
-        return Surat::create([ $data]);
+        return Surat::create( $data);
     }
 
     public function update(int $id, array $data): mixed
     {
-        return Surat::where('id', $id)->update([$data]);
+        $surat = Surat::findOrFail($id);
+        $surat->update($data);
+        return $surat;
     }
 
     public function delete(int $id): void

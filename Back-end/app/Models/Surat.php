@@ -17,22 +17,25 @@ class Surat extends Model
         'id_admin_cabang',
         'id_perusahaan',
         'jenis',
-        'tanggal',
-        'nomor',
-        'isi',
+        'file_path',
         'created_at',
         'updated_at',
     ];
 
     // relasi ke peserta magang
-    public function peserta_magang()
+    public function peserta()
     {
-        return $this->belongsTo(Peserta::class, 'id_peserta_magang');
+        return $this->belongsTo(Peserta::class, 'id_peserta');
     }
 
     // relasi ke admin cabang
     public function admin_cabang()
     {
-        return $this->belongsTo(User::class, 'id_admin_cabang');
+        return $this->belongsTo(Cabang::class, 'id_admin_cabang');
+    }
+
+    public function perusahaan()
+    {
+        return $this->belongsTo(Perusahaan::class,'id_perusahaan');
     }
 }

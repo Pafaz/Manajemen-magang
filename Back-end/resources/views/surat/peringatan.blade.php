@@ -158,42 +158,42 @@
 <body>
     <div class="header">
         <!-- Gambar Header -->
-        <img src="{{ asset('images/kop.png') }}" alt="Header Background" class="header-bg">
+        <img src="/assets/img/banner/kopsurat.png" alt="Header Background" class="header-bg">
         
         <div class="logo">
             <!-- Logo perusahaan bisa diletakkan di sini -->
-            <img src="{{ asset('images/logo.png') }}" alt="Logo Perusahaan">
+            <img src="/assets/logo" alt="Logo Perusahaan">
         </div>
         <div class="company-info">
-            <div class="company-name">{{ $perusahaan }}</div>
+            <div class="company-name">{{ $nama_perusahaan }}</div>
             <div class="company-address">{{ $alamat_perusahaan }}</div>
             <div class="contact-info">
                 <div class="contact-item">
-                    <span class="contact-icon">📞</span> {{ $telepon_perusahaan }}
+                    <span class="contact-icon">📞</span> {{ $no_telepon }}
                 </div>
                 <div class="contact-item">
-                    <span class="contact-icon">✉️</span> {{ $email_perusahaan }}
+                    <span class="contact-icon">✉️</span> {{ $email }}
                 </div>
                 <div class="contact-item">
-                    <span class="contact-icon">🌐</span> {{ $website_perusahaan }}
+                    <span class="contact-icon">🌐</span> {{ $website }}
                 </div>
             </div>
         </div>
     </div>
     
     <div class="content">
-        <p style="margin-top: 20px; margin-bottom: 8px;">{{ $no_surat }}</p>
+        <p style="margin-top: 20px; margin-bottom: 8px;">Nomor : 316/PKL/HMTI/2025</p>
         <p style="margin-top: 0; margin-bottom: 8px;">Lamp. : -</p>
         <p style="margin-top: 0; margin-bottom: 20px;">Perihal : <strong>Praktek Kerja Lapangan</strong></p>
         
         <p style="margin-bottom: 8px;">Kepada Yth:<br>
         {{ $mitra }}<br>
         {{ $alamat_mitra }}<br>
-        Telp. {{ $telepon_mitra }}</p>
+        Telp. {{ $telepon_perusahaan }}</p>
         
         <p>Dengan hormat,</p>
         
-        <p>Menindaklanjuti surat permohonan Praktek Kerja Lapangan yang Bapak/Ibu ajukan, bersama ini kami menyatakan bahwa dapat MENERIMA siswa {{ $mitra }} untuk melaksanakan PKL di {{ $perusahaan }} pada tanggal {{ $tanggal_mulai }} - {{ $tanggal_selesai }}. Adapun nama siswa tersebut adalah sebagai berikut:</p>
+        <p>Menindaklanjuti surat permohonan Praktek Kerja Lapangan yang Bapak/Ibu ajukan, bersama ini kami menyatakan bahwa dapat MENERIMA siswa {{ $mitra }} untuk melaksanakan PKL di {{ $nama_perusahaan }} pada tanggal {{ $tanggal_mulai }} - {{ $tanggal_selesai }}. Adapun nama siswa tersebut adalah sebagai berikut:</p>
         
         <table>
             <tr>
@@ -203,7 +203,7 @@
             </tr>
             <tr>
                 <td>1</td>
-                <td>{{ $peserta }}</td>
+                <td>{{ $nama_peserta }}</td>
                 <td>{{ $no_identitas }}</td>
             </tr>
         </table>
@@ -211,13 +211,13 @@
         <p>Demikian surat ini kami sampaikan dan atas kerja samanya kami mengucapkan terima kasih.</p>
         
         <div class="footer">
-            <div class="company-sign">{{ $perusahaan }}</div>
+            <div class="company-sign">{{ $nama_perusahaan }}</div>
             <div class="qrcode">
-                <img src="{{ asset('images/qrcode.jpeg') }}" alt="Header Background" class="header-bg">
+                <img src="/assets/img/barcode.png" alt="Header Background" class="header-bg">
             </div>
             <div class="signature">
-                <strong>{{ $penanggung_jawab }}</strong><br>
-                {{ $jabatan_pj }}
+                <strong>{{ $nama_penanggung_jawab }}</strong><br>
+                {{ $jabatan_penanggung_jawab }}
             </div>
         </div>
     </div>

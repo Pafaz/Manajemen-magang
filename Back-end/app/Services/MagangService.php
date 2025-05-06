@@ -11,19 +11,23 @@ use App\Http\Resources\MagangResource;
 use App\Http\Resources\PesertaResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\MagangDetailResource;
+use App\Models\Surat;
 use Symfony\Component\HttpFoundation\Response;
 
 class MagangService
 {
     private MagangInterface $MagangInterface;
     private FotoService $foto;
+
+    private SuratService $suratService;
     private UserInterface $userInterface;
 
-    public function __construct(MagangInterface $MagangInterface, FotoService $foto, UserInterface $userInterface)
+    public function __construct(MagangInterface $MagangInterface, FotoService $foto, UserInterface $userInterface, SuratService $suratService)
     {
         $this->MagangInterface = $MagangInterface;
         $this->foto = $foto;
         $this->userInterface = $userInterface;
+        $this->suratService = $suratService;
     }
 
     public function getAllPesertaMagang($status = null)
@@ -51,7 +55,7 @@ class MagangService
         if ($this->MagangInterface->alreadyApply($user->peserta->id, $data['id_lowongan'])) {
             return Api::response(null, 'Anda sudah mengajukan magang di lowongan ini', Response::HTTP_FORBIDDEN);
         }
-        // dd($peserta);
+
         $magang = $this->MagangInterface->create([
             'id_peserta' => $user->peserta->id,
             'id_lowongan' => $data['id_lowongan'],
@@ -85,7 +89,6 @@ class MagangService
         try {
             $magang = $this->MagangInterface->find($id);
 
-            // dd($magang);
             if (!in_array($data['status'], ['diterima', 'ditolak'])) {
                 return Api::response(null, 'Status tidak valid', Response::HTTP_BAD_REQUEST);
             }
@@ -97,18 +100,30 @@ class MagangService
             $magang->status = $data['status'];
             $magang->save();
 
-            $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
+            $id_peserta = $magang->peserta->user->id;
+
+            $this->userInterface->update($id_peserta, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
 
             $dataSurat = [
-                            'nomor' => '154',
-                            'sekolah' => $magang->peserta->user->nama,
-                            'alamat_sekolah' => $magang->peserta->sekolah->alamat,
-                            'nama_perusahaan' => $magang->lowongan->perusahaan->user->nama,
-                            'tanggal_mulai' => $magang->mulai,
-                            'tanggal_selesai' => $magang->selesai,
-                            'peserta' => $magang->peserta->user->nama,
-                            'no_identitas' => $magang->peserta->nomor_identitas
-                        ];
+                'id_peserta' => $magang->peserta->id,
+                'id_cabang' => $magang->lowongan->cabang->id,
+                'id_perusahaan' => $magang->lowongan->perusahaan->id,
+                'perusahaan' => $magang->lowongan->perusahaan->user->nama,
+                'alamat_perusahaan' => $magang->lowongan->perusahaan->alamat,
+                'telepon_perusahaan' => $magang->lowongan->perusahaan->user->telepon,
+                'email_perusahaan' => $magang->lowongan->perusahaan->user->email,
+                'website_perusahaan' => $magang->lowongan->perusahaan->website,
+                'no_surat' => 'CARA PRAKOSO',
+                'mitra' => $magang->peserta->sekolah->nama,
+                'alamat_mitra' => $magang->peserta->sekolah->alamat,
+                'telepon_mitra' => $magang->peserta->sekolah->telepon,
+                'tanggal_mulai' => $magang->mulai,
+                'tanggal_selesai' => $magang->selesai,
+                'peserta'=> $magang->peserta->user->nama,
+                'no_identitas' => $magang->peserta->nomor_identitas,
+                'penanggung_jawab' => $magang->lowongan->perusahaan->nama_penanggung_jawab,
+                'jabatan_pj'=> $magang->lowongan->perusahaan->jabatan_penanggung_jawab,
+            ];
 
             // dd($dataSurat);
 
@@ -117,13 +132,7 @@ class MagangService
                 $message = 'Berhasil menolak magang';
             } else {
                 $message = 'Berhasil menyetujui magang';
-
-                $pdf = Pdf::loadView('surat.penerimaan', $dataSurat);
-
-                $fileName = 'surat-penerimaan-' . $magang->id_lowongan . '.pdf';
-                $filePath = 'surat_penerimaan/' . $fileName;
-
-                Storage::disk('public')->put($filePath, $pdf->output());
+                $this->suratService->createSurat($dataSurat, 'penerimaan');
             }
 
             DB::commit();

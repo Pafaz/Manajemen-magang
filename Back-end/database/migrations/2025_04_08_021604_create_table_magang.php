@@ -35,11 +35,8 @@ return new class extends Migration
             $table->uuid('id_admin_cabang')->nullable();
             $table->uuid('id_perusahaan');
             $table->enum('jenis', ['penerimaan', 'peringatan']);
-            $table->date('tanggal');
-            $table->string('nomor');
-            $table->text('isi');
-            $table->timestamps();
             $table->string('file_path');
+            $table->timestamps();
 
             $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');

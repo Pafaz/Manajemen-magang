@@ -3,12 +3,14 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\MagangDetailResource;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Interfaces\UserInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
 use App\Http\Resources\MagangResource;
 use App\Http\Resources\PesertaResource;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\MagangDetailResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class MagangService
@@ -32,6 +34,11 @@ class MagangService
             MagangResource::collection($data),
             'Berhasil mendapatkan data peserta magang', 
         );
+    }
+
+    public function countPendaftar($lowonganId)
+    {
+        return $this->MagangInterface->countPendaftar($lowonganId);
     }
 
     public function applyMagang(array $data)
@@ -76,47 +83,59 @@ class MagangService
         DB::beginTransaction();
 
         try {
-            // Ambil data magang yang ingin disetujui atau ditolak
             $magang = $this->MagangInterface->find($id);
 
-            // Cek apakah status yang diberikan valid
+            // dd($magang);
             if (!in_array($data['status'], ['diterima', 'ditolak'])) {
                 return Api::response(null, 'Status tidak valid', Response::HTTP_BAD_REQUEST);
             }
 
-            // Cek jika status sudah sesuai dengan yang ingin diubah, hindari update yang tidak perlu
             if ($magang->status == $data['status']) {
                 return Api::response(null, 'Status sudah sesuai', Response::HTTP_OK);
             }
 
-            // Update status magang
             $magang->status = $data['status'];
             $magang->save();
 
             $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
-            // dd($setCabang);
-            // Hapus magang jika statusnya ditolak
+
+            $dataSurat = [
+                            'nomor' => '154',
+                            'sekolah' => $magang->peserta->user->nama,
+                            'alamat_sekolah' => $magang->peserta->sekolah->alamat,
+                            'nama_perusahaan' => $magang->lowongan->perusahaan->user->nama,
+                            'tanggal_mulai' => $magang->mulai,
+                            'tanggal_selesai' => $magang->selesai,
+                            'peserta' => $magang->peserta->user->nama,
+                            'no_identitas' => $magang->peserta->nomor_identitas
+                        ];
+
+            // dd($dataSurat);
+
             if ($data['status'] == 'ditolak') {
                 $magang->delete();
                 $message = 'Berhasil menolak magang';
             } else {
                 $message = 'Berhasil menyetujui magang';
+
+                $pdf = Pdf::loadView('surat.penerimaan', $dataSurat);
+
+                $fileName = 'surat-penerimaan-' . $magang->id_lowongan . '.pdf';
+                $filePath = 'surat_penerimaan/' . $fileName;
+
+                Storage::disk('public')->put($filePath, $pdf->output());
             }
 
-            // Commit transaksi
             DB::commit();
 
-            // Kembalikan respons
             return Api::response(
                 MagangResource::make($magang),
                 $message,
                 Response::HTTP_OK
             );
         } catch (\Exception $e) {
-            // Rollback transaksi jika terjadi kesalahan
             DB::rollBack();
 
-            // Kembalikan respons kesalahan
             return Api::response(null, 'Terjadi kesalahan, silakan coba lagi' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

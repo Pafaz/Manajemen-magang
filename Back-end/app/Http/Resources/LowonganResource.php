@@ -14,6 +14,7 @@ class LowonganResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // dd($this);
         return [
             'id' => $this->id,
             'tanggal_mulai' => $this->tanggal_mulai,
@@ -22,9 +23,10 @@ class LowonganResource extends JsonResource
             'durasi' => $this->durasi,
             'requirement' => $this->requirement,
             'jobdesc' => $this->jobdesc,
-            'kategori' => $this->kategori,
             'status' => $this->status,
+            'total_pendaftar' => $this->totalPeserta,
             'perusahaan' => new PerusahaanDetailResource($this->perusahaan),
+            'cabang' => new CabangResource($this->cabang),
             'divisi' => new DivisiResource($this->divisi)
         ];
     }

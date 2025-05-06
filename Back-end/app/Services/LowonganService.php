@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Interfaces\LowonganInterface;
 use App\Http\Resources\LowonganResource;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,15 +12,17 @@ use Symfony\Component\HttpFoundation\Response;
 class LowonganService
 {
     private LowonganInterface $lowonganInterface;
+    private MagangService $magangService;
 
-    public function __construct(LowonganInterface $lowonganInterface)
+    public function __construct(LowonganInterface $lowonganInterface, MagangService $magangService)
     {
         $this->lowonganInterface = $lowonganInterface;
+        $this->magangService = $magangService;
     }
 
     public function getAllLowongan()
     {
-        $data = $this->lowonganInterface->getAll($id = null);  // Tidak perlu $id jika getAll tanpa filter
+        $data = $this->lowonganInterface->getAll($id = null);
         return Api::response(
             LowonganResource::collection($data),
             'Lowongan Berhasil ditampilkan'
@@ -29,6 +32,7 @@ class LowonganService
     public function getLowonganById($id)
     {
         $data = $this->lowonganInterface->find($id);
+
         if (!$data) {
             return Api::response(
                 null,
@@ -36,6 +40,10 @@ class LowonganService
                 Response::HTTP_NOT_FOUND
             );
         }
+
+        $totalPeserta = $this->magangService->countPendaftar($id);
+
+        $data->totalPeserta = $totalPeserta;
 
         return Api::response(
             LowonganResource::collection([$data]),
@@ -135,10 +143,5 @@ class LowonganService
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-    }
-    
-    public function countTotalPendaftar($id)
-    {
-
     }
 }

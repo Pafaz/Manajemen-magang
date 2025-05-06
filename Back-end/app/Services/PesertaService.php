@@ -44,6 +44,23 @@ class PesertaService
         );
     }
 
+    public function isCompleteProfil()
+    {
+        if (!auth('sanctum')->user()->peserta) {
+            return Api::response(
+                'false',
+                'Peserta belum melengkapi profil',
+                Response::HTTP_OK
+            );
+        }
+
+        return Api::response(
+            'true',
+            'Peserta telah melengkapi profil',
+            Response::HTTP_OK
+        );
+    }
+
     // public function getPesertaByPerusahaan($perusahaan){
     //     $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
     //     return Api::response(

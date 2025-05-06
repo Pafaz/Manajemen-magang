@@ -11,4 +11,5 @@ interface MagangInterface extends CreateInterface, DeleteInterface, FindInterfac
 {
     public function alreadyApply($idPeserta, $idLowongan);
     public function getAll($id, $status);
+    public function countPendaftar($lowonganId);
 }

@@ -13,10 +13,10 @@ class PesertaRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        if($this->isUpdate()){
+        if($this->method() == 'PUT') {
             return [
                 'nama' => 'sometimes|string|max:255',
-                'telepon' => 'sometimes|string|max:15|regex:/^[0-9]+$/|min_digits:10|max_digits:15',
+                'telepon' => 'sometimes|string|max:15|regex:/^[0-9]+$/|min_digits:10|max_digits:15|unique:users,telepon,' . auth('sanctum')->user()->id . ',id',
                 'alamat' => 'sometimes|string|max:255',
                 'tempat_lahir' => 'sometimes|string|max:255',
                 'tanggal_lahir' => 'sometimes|date',
@@ -25,12 +25,8 @@ class PesertaRequest extends BaseFormRequest
                 'sekolah' => 'sometimes|exists:sekolah,id',
                 'jurusan' => 'sometimes|exists:jurusan,id',
                 'kelas' => 'sometimes|string|max:10',
-                'mulai_magang' => 'sometimes|date',
-                'selesai_magang' => 'sometimes|date|after:mulai_magang',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'cv' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
-                'pernyataan_diri' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
-                'sertifikat' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
             ];
         }
         return [
@@ -44,15 +40,8 @@ class PesertaRequest extends BaseFormRequest
             'sekolah' => 'required|exists:sekolah,id',
             'jurusan' => 'required|exists:jurusan,id',
             'kelas' => 'required|string|max:10',
-            // 'mulai_magang' => 'required|date',
-            // 'selesai_magang' => 'required|date|after:mulai_magang',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'cv' => 'required|image|mimes:png,jpeg,jpg|max:2048',
-            // 'pernyataan_diri' => 'required|image|mimes:png,jpeg,jpg|max:2048',
-            // 'pernyataan_ortu' => 'required|image|mimes:png,jpeg,jpg|max:2048',
-            // 'perusahaan' => 'required|exists:perusahaan,id',
-            // 'cabang' => 'required|exists:cabang,id',
-            // 'divisi' => 'required|exists:divisi,id',
         ];
     }
 

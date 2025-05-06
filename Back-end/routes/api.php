@@ -37,6 +37,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('jurusan', JurusanController::class);
         Route::apiResource('magang', MagangController::class);
+        Route::get('/peserta/detail', [PesertaController::class, 'show']);
     });
 
     //Perusahaan

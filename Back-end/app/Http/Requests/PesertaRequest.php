@@ -41,7 +41,7 @@ class PesertaRequest extends BaseFormRequest
             'jurusan' => 'required|exists:jurusan,id',
             'kelas' => 'required|string|max:10',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'cv' => 'required|image|mimes:png,jpeg,jpg|max:2048',
+            'cv' => 'required|image|mimes:pdf,doc,docx|max:2048',
         ];
     }
 

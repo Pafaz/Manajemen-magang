@@ -26,7 +26,7 @@ class PesertaRequest extends BaseFormRequest
                 'jurusan' => 'sometimes|string',
                 'kelas' => 'sometimes|string|max:10',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
-                'cv' => 'sometimes|image|mimes:pdf,doc,docx|max:2048',
+                'cv' => 'sometimes|mimes:pdf,doc,docx|max:2048',
             ];
         }
         return [
@@ -41,7 +41,7 @@ class PesertaRequest extends BaseFormRequest
             'jurusan' => 'required|string',
             'kelas' => 'required|string|max:10',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'cv' => 'required|image|mimes:pdf,doc,docx|max:2048',
+            'cv' => 'required|mimes:pdf,doc,docx|max:2048',
         ];
     }
 

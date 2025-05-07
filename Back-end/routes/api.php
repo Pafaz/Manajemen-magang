@@ -1,19 +1,22 @@
 <?php
 
-use App\Http\Controllers\JamKantorController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
+use App\Http\Controllers\IzinController;
 use App\Http\Controllers\PiketController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\DivisiController;
+use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\MagangController;
 use App\Http\Controllers\MentorController;
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LowonganController;
+use App\Http\Controllers\JamKantorController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PerusahaanController;
 use App\Http\Controllers\AdminCabangController;
@@ -21,8 +24,6 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
-use App\Http\Controllers\IzinController;
-use App\Http\Controllers\JurnalController;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register/{role}', [RegisterController::class, 'register']);
@@ -36,10 +37,12 @@ Route::post('/update-password-otp', [PasswordResetController::class, 'updatePass
 Route::group(['middleware' => 'auth:sanctum'], function () {
     //Peserta
     Route::group(['role:peserta'], function () {
+        Route::apiResource('peserta', PesertaController::class);
         Route::apiResource('jurnal',JurnalController::class);
         Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('jurusan', JurusanController::class);
         Route::apiResource('magang', MagangController::class);
+        Route::post('/absensi', [AbsensiController::class, 'store']);
         Route::post('/izin', [IzinController::class, 'store']);
         Route::get('/peserta/detail', [PesertaController::class, 'show']);
     });

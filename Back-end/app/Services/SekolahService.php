@@ -52,11 +52,8 @@ class SekolahService
             if (!$user->perusahaan) {
                 throw new \Exception("Lengkapi profil perusahaan anda terlebih dahulu");
             }
-            if (!$user->perusahaan->cabang()->where('id', $user->id_cabang_aktif)->exists()) {
-                throw new \Exception("Anda harus membuat atau memilih cabang terlebih dahulu");
-            }
-            $dataSekolah = collect($data)->only(['nama', 'alamat', 'telepon', 'jenis_institusi', 'website'])->toArray();
-            $dataSekolah['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
+            $dataSekolah = collect($data)->only(['nama', 'alamat', 'telepon', 'jenis_institusi'])->toArray();
+            $dataSekolah['id_perusahaan'] = auth('sanctum')->user()->perusahaan->id;
             $sekolah = $isUpdate
                 ? $this->SekolahInterface->update($id, $dataSekolah)
                 : $this->SekolahInterface->create($dataSekolah);
@@ -108,6 +105,72 @@ class SekolahService
             );
         }
     }
+
+    // {
+    //     DB::beginTransaction();
+    //     try {
+
+    //         $dataSekolah = collect($data)->only(['nama'])->toArray();
+    //         $sekolah = $isUpdate
+    //             ? $this->SekolahInterface->update($id, $dataSekolah)
+    //             : $this->SekolahInterface->create($dataSekolah);
+
+    //         $jurusanIds = [];
+    //         if (!empty($data['jurusan'])) {
+    //             foreach ($data['jurusan'] as $namaJurusan) {
+    //                 $jurusan = $this->JurusanInterface->firstOrCreate(['nama' => $namaJurusan]);
+    //                 $jurusanIds[] = $jurusan->id;
+    //             }
+    //             $sekolah->jurusan()->sync($jurusanIds);
+    //         }
+
+    //         $files = [
+    //             'foto_header' => 'foto_header',
+    //             'logo' => 'logo',
+    //         ];
+    //         foreach ($files as $key => $type) {
+    //             if (!empty($data[$key])) {
+    //                 if ($isUpdate) {
+    //                     $this->foto->updateFoto($data[$key], $sekolah->id, $type, 'sekolah');
+    //                 } else {
+    //                     $this->foto->createFoto($data[$key], $sekolah->id, $type, 'sekolah');
+    //                 }
+    //             }
+    //         }
+
+    //         DB::commit();
+
+    //         $message = $isUpdate
+    //             ? 'Sekolah & jurusan berhasil diperbarui'
+    //             : 'Sekolah & jurusan berhasil disimpan';
+
+    //         $statusCode = $isUpdate
+    //             ? Response::HTTP_OK
+    //             : Response::HTTP_CREATED;
+
+    //         return Api::response(
+    //             SchoolResource::make($sekolah->load('jurusan', 'foto')),
+    //             $message,
+    //             $statusCode
+    //         );
+    //     } catch (\Throwable $th) {
+    //         DB::rollBack();
+    //         return Api::response(
+    //             null,
+    //             'Gagal menyimpan sekolah: ' . $th->getMessage(),
+    //             Response::HTTP_INTERNAL_SERVER_ERROR
+    //         );
+    //     }
+    // }
+
+    // public function getMitrabyPeserta()
+    // {
+    //     return Api::response(
+    //         SchoolResource::collection($this->SekolahInterface->getAllSekolah()),
+    //         'Berhasil mengambil semua data sekolah',
+    //         Response::HTTP_OK
+    //     );
+    // }
 
     public function deleteSchool(int $id)
     {

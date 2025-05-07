@@ -7,6 +7,7 @@ use App\Models\Izin;
 use App\Interfaces\IzinInterface;
 use App\Interfaces\KategoriInterface;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\IzinResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class IzinService
@@ -29,8 +30,8 @@ class IzinService
         }
 
         $data = $id
-            ? CategoryResource::make($this->izinInterface->find($id))
-            : CategoryResource::collection($this->izinInterface->getAll());
+            ? IzinResource::make($this->izinInterface->find($id))
+            : IzinResource::collection($this->izinInterface->getAll());
 
         $message = $id
             ? 'Berhasil mengambil data Izin'
@@ -47,9 +48,9 @@ class IzinService
             return Api::response(null, 'Peserta belum melengkapi profil dahulu.', Response::HTTP_FORBIDDEN);
         }
 
-        if (!$user->peserta->id_cabang_aktif) {
-            return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
-        }
+        // if (!$user->peserta->id_cabang_aktif) {
+        //     return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
+        // }
 
         $dataIzin = [
             'id_peserta' => $user->peserta->id,

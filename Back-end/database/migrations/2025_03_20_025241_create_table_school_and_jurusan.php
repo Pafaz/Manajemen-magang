@@ -30,10 +30,9 @@ return new class extends Migration
             $table->string('alamat');
             $table->string('telepon');
             $table->string('jenis_institusi');
-            $table->string('website')->nullable();
-            $table->unsignedBigInteger('id_cabang');
+            $table->unsignedBigInteger('id_perusahaan');
 
-            $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
+            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
         });
 
         Schema::create('jurusan', function (Blueprint $table) {

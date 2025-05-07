@@ -22,7 +22,7 @@ class Izin extends Model
     ];
 
     public function foto(){
-        return $this->hasOne(Foto::class, 'id_foto')->where('context', 'izin');
+        return $this->hasOne(Foto::class, 'id_referensi')->where('context', 'izin');
     }
     public function absensi()
     {

@@ -21,6 +21,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 use App\Http\Controllers\IzinController;
+use App\Http\Controllers\JurnalController;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register/{role}', [RegisterController::class, 'register']);
@@ -34,7 +35,7 @@ Route::post('/update-password-otp', [PasswordResetController::class, 'updatePass
 Route::group(['middleware' => 'auth:sanctum'], function () {
     //Peserta
     Route::group(['role:peserta'], function () {
-        Route::apiResource('peserta', PesertaController::class);
+        Route::apiResource('jurnal',JurnalController::class);
         Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('jurusan', JurusanController::class);
         Route::apiResource('magang', MagangController::class);
@@ -54,6 +55,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
         Route::put('/izin/{id}', [IzinController::class, 'update']);
+        Route::get('/izin', [IzinController::class, 'index']);
 
         //perusahaan
         Route::post('/perusahaan', [PerusahaanController::class, 'store']);

@@ -18,7 +18,7 @@ class Sekolah extends Model
         'telepon',
         'jenis_institusi',
         'website',
-        'id_cabang'
+        'id_perusahaan'
     ];
 
     public $timestamps = false;
@@ -33,13 +33,8 @@ class Sekolah extends Model
         return $this->hasMany(Foto::class, 'id_referensi')->where('context', 'sekolah');
     }
 
-    public function peserta()
+    public function perusahaan()
     {
-        return $this->hasMany(Peserta::class, 'sekolah_id', 'id');
-    }
-
-    public function cabang()
-    {
-        return $this->belongsTo(Cabang::class, 'id_cabang', 'id');
+        return $this->belongsTo(Perusahaan::class, 'id_perusahaan');
     }
 }

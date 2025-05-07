@@ -36,14 +36,6 @@ class Peserta extends Model
     {
         return $this->belongsTo(Magang::class, 'id_magang');
     }
-    public function jurusan()
-    {
-        return $this->belongsTo(Jurusan::class, 'id_jurusan');
-    }
-    public function sekolah()
-    {
-        return $this->belongsTo(Sekolah::class, 'id_sekolah');
-    }
     public function absensi()
     {
         return $this->hasMany(Absensi::class, 'id_peserta');

@@ -64,16 +64,8 @@ class MagangService
             'status' => 'menunggu',
         ]);
 
-        
-        $files = [
-            'surat_pernyataan_diri' => 'surat_pernyataan_diri',
-            'surat_pernyataan_ortu' => 'surat_pernyataan_ortu',
-        ];
-
-        foreach ($files as $key => $type) {
-            if (!empty($data[$key])) {
-                $this->foto->createFoto($data[$key],  $magang->id, $type, 'magang');
-            }
+        if (!empty($data['surat_pernyataan_diri'])) {
+            $this->foto->createFoto($data['surat_pernyataan_diri'],  $magang->id, 'surat_pernyataan_diri', 'magang');
         }
         return Api::response(
             MagangDetailResource::make($magang),

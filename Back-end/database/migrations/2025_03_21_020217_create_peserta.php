@@ -14,19 +14,15 @@ return new class extends Migration
         Schema::create('peserta', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('id_user');
-            $table->unsignedBigInteger('id_jurusan');
-            $table->unsignedBigInteger('id_sekolah');
+            $table->string('jurusan');
+            $table->string('sekolah');
             $table->string('nomor_identitas');
             $table->string('tempat_lahir');
             $table->date('tanggal_lahir');
             $table->enum('jenis_kelamin', ['L', 'P']);
-            $table->enum('kelas', [ '11','12', 'Mahasiswa']);
             $table->string('alamat');
-            $table->timestamps();
-
+            
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('id_jurusan')->references('id')->on('jurusan')->onDelete('cascade');
-            $table->foreign('id_sekolah')->references('id')->on('sekolah')->onDelete('cascade');
         });
 
 

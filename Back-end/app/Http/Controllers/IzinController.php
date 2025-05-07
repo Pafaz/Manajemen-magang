@@ -21,7 +21,7 @@ class IzinController extends Controller
 
     public function index()
     {
-        //
+        return $this->izinService->getIzin();
     }
 
     /**

@@ -12,6 +12,7 @@ use App\Interfaces\PiketInterface;
 use App\Interfaces\SuratInterface;
 use App\Interfaces\CabangInterface;
 use App\Interfaces\DivisiInterface;
+use App\Interfaces\JurnalInterface;
 use App\Interfaces\MagangInterface;
 use App\Interfaces\MentorInterface;
 use App\Interfaces\ProyekInterface;
@@ -34,6 +35,7 @@ use Illuminate\Support\Facades\Event;
 use App\Interfaces\JamKantorInterface;
 use App\Repositories\CabangRepository;
 use App\Repositories\DivisiRepository;
+use App\Repositories\JurnalRepository;
 use App\Repositories\MagangRepository;
 use App\Repositories\MentorRepository;
 use App\Repositories\ProyekRepository;
@@ -88,6 +90,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SuratInterface::class, SuratRepository::class);
         $this->app->bind(UserInterface::class, UserRepository::class);
         $this->app->bind(AdminInterface::class, AdminRepository::class);
+        $this->app->bind(JurnalInterface::class, JurnalRepository::class);
     }
 
     /**

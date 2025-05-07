@@ -26,7 +26,7 @@ class SekolahRepository implements SekolahInterface
             'alamat' => $data['alamat'],
             'telepon' => $data['telepon'],
             'jenis_institusi' => $data['jenis_institusi'],
-            'id_cabang' => $data['id_cabang'],
+            'id_perusahaan' => $data['id_perusahaan'],
         ]);
     }
 

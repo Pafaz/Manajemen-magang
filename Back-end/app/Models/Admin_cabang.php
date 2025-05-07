@@ -23,10 +23,6 @@ class Admin_cabang extends Model
     {
         return $this->belongsTo(Cabang::class, 'id_cabang', 'id');
     }
-    public function divisiCabang()
-    {
-        return $this->belongsTo(Divisi_cabang::class, 'id_divisi_cabang', 'id');
-    }
     public function divisi()
     {
         return $this->belongsTo(Divisi::class, 'id_divisi_cabang', 'id');
@@ -39,9 +35,8 @@ class Admin_cabang extends Model
     {
         return $this->belongsTo(User::class, 'id_user', 'id');
     }
-
     public function foto()
     {
-        return $this->hasMany(Foto::class, 'id_referensi', 'id')->where('context', 'admin_cabang');
+        return $this->hasMany(Foto::class, 'id_referensi', 'id');
     }
 }

@@ -34,9 +34,9 @@ class MentorRequest extends BaseFormRequest
         if ($this->method() === 'PUT') {
             return [
                 'nama' => 'sometimes|string',
-                'email' => 'sometimes|email|max:255|unique:users,email' . $userId,
+                'email' => 'sometimes|email|max:255|unique:users,email,' . $userId,
                 'password' => 'sometimes|string',
-                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon' . $userId,
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon,' . $userId,
                 'id_divisi' => 'sometimes|exists:divisi,id',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048'

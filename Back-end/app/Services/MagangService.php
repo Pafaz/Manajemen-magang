@@ -76,6 +76,7 @@ class MagangService
 
     public function approvalMagang(int $id, array $data)
     {
+        // dd($id, $data);
         DB::beginTransaction();
 
         try {
@@ -96,6 +97,7 @@ class MagangService
 
             $this->userInterface->update($id_peserta, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
 
+            // dd($magang->lowongan->id_cabang);
             $dataSurat = [
                 'id_peserta' => $magang->peserta->id,
                 'id_cabang' => $magang->lowongan->cabang->id,
@@ -106,9 +108,9 @@ class MagangService
                 'email_perusahaan' => $magang->lowongan->perusahaan->user->email,
                 'website_perusahaan' => $magang->lowongan->perusahaan->website,
                 'no_surat' => 'CARA PRAKOSO',
-                'mitra' => $magang->peserta->sekolah->nama,
-                'alamat_mitra' => $magang->peserta->sekolah->alamat,
-                'telepon_mitra' => $magang->peserta->sekolah->telepon,
+                'sekolah' => $magang->peserta->sekolah,
+                // 'alamat_mitra' => $magang->peserta->sekolah->alamat,
+                // 'telepon_mitra' => $magang->peserta->sekolah->telepon,
                 'tanggal_mulai' => $magang->mulai,
                 'tanggal_selesai' => $magang->selesai,
                 'peserta'=> $magang->peserta->user->nama,

@@ -68,4 +68,14 @@ class JamKantorController extends Controller
     {
         //
     }
+
+    public function unactivatedJamKantor($id)
+    {
+        return $this->jamKantorService->updateStatusJamKantor($id, false);
+    }
+
+    public function activatedJamKantor($id)
+    {
+        return $this->jamKantorService->updateStatusJamKantor($id, true);
+    }
 }

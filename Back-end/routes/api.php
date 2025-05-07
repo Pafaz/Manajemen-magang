@@ -24,6 +24,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
+use App\Http\Controllers\SuratController;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register/{role}', [RegisterController::class, 'register']);
@@ -57,6 +58,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('lowongan', LowonganController::class);
         Route::apiResource('jam-kantor', JamKantorController::class);
+        Route::put('jam-kantor/{id}/nonaktif', [JamKantorController::class, 'unactivatedJamKantor']);
+        Route::put('jam-kantor/{id}/aktif', [JamKantorController::class, 'activatedJamKantor']);
+        Route::apiResource('surat', SuratController::class);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
         Route::put('/izin/{id}', [IzinController::class, 'update']);

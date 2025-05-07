@@ -32,31 +32,29 @@ return new class extends Migration
         Schema::create('surat', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
-            $table->uuid('id_admin_cabang')->nullable();
-            $table->uuid('id_perusahaan');
+            $table->unsignedBigInteger('id_cabang');
             $table->enum('jenis', ['penerimaan', 'peringatan']);
             $table->string('file_path');
             $table->timestamps();
 
-            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
-            $table->foreign('id_admin_cabang')->references('id')->on('admin_cabang')->onDelete('cascade');
+            $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
         });
 
         Schema::create('jam_kantor', function (Blueprint $table) {
             $table->id()->primary();
-            $table->uuid('id_perusahaan');
-            $table->unsignedBigInteger('id_cabang')->nullable();
+            $table->unsignedBigInteger('id_cabang');
             $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
-            $table->enum('jenis_sesi', ['pagi', 'siang', 'penuh']);
-            $table->time('masuk');
-            $table->time('istirahat_mulai');
-            $table->time('istirahat_selesai');
-            $table->time('pulang');
-            $table->timestamps();
+            $table->time('awal_masuk');
+            $table->time('akhir_masuk');
+            $table->time('awal_istirahat');
+            $table->time('akhir_istirahat');
+            $table->time('awal_kembali');
+            $table->time('akhir_kembali');
+            $table->time('awal_pulang');
+            $table->time('akhir_pulang');
 
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
-            $table->foreign('id_perusahaan')->references('id')->on('perusahaan')->onDelete('cascade');
         });
     }
 

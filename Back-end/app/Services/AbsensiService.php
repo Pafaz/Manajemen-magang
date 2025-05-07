@@ -2,76 +2,91 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Helpers\Api;
-use App\Http\Resources\IzinResource;
-use App\Http\Resources\JurnalResource;
 use App\Interfaces\JurnalInterface;
+use App\Interfaces\AbsensiInterface;
+use App\Http\Resources\JurnalResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class AbsensiService
 {
-    private FotoService $foto;
-    private JurnalInterface $jurnalInterface;
-    public function __construct(JurnalInterface $jurnalInterface, FotoService $foto)
+
+    private JamKantorService $jamKantorService;
+    private AbsensiInterface $absensiInterface;
+    public function __construct(JamKantorService $jamKantorService, AbsensiInterface $absensiInterface)
     {
-        $this->foto = $foto;
-        $this->jurnalInterface = $jurnalInterface;
+        $this->absensiInterface = $absensiInterface;
+        $this->jamKantorService = $jamKantorService;
     }
 
-    public function getJurnal($id = null)
+    // public function getJurnal($id = null)
+    // {
+
+    //     $jurnal = $id ? $this->jurnalInterface->find($id) : $this->jurnalInterface->getAll();
+    //     if (!$jurnal) {
+    //         return Api::response(null, 'Jurnal tidak ditemukan', Response::HTTP_NOT_FOUND);
+    //     }
+
+    //     $data = $id
+    //         ? JurnalResource::make($this->jurnalInterface->find($id))
+    //         : JurnalResource::collection($this->jurnalInterface->getAll());
+
+    //     $message = $id
+    //         ? 'Berhasil mengambil data jurnal'
+    //         : 'Berhasil mengambil semua data jurnal';
+
+    //     return Api::response($data, $message);
+    // }
+
+    public function simpanAbsensi()
     {
-
-        $jurnal = $id ? $this->jurnalInterface->find($id) : $this->jurnalInterface->getAll();
-        if (!$jurnal) {
-            return Api::response(null, 'Jurnal tidak ditemukan', Response::HTTP_NOT_FOUND);
-        }
-
-        $data = $id
-            ? JurnalResource::make($this->jurnalInterface->find($id))
-            : JurnalResource::collection($this->jurnalInterface->getAll());
-
-        $message = $id
-            ? 'Berhasil mengambil data jurnal'
-            : 'Berhasil mengambil semua data jurnal';
-
-        return Api::response($data, $message);
-    }
-
-    public function simpanAbsensi(array $data, $isUpdate = false, $id = null)
-    {
-        // dd($data);
         $user = auth('sanctum')->user();
+        $peserta = $user->peserta;
 
-        if (!$user->peserta || !$user->peserta->id) {
-            return Api::response(null, 'Peserta belum melengkapi profil.', Response::HTTP_FORBIDDEN);
+        if (!$peserta || !$peserta->id || !$peserta->id_cabang_aktif) {
+            return Api::response(null, 'Peserta belum melengkapi profil atau belum terdaftar magang.', Response::HTTP_FORBIDDEN);
         }
 
-        // if (!$user->peserta->id_cabang_aktif) {
-        //     return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
-        // }
-        if(now()->format('H:i:s') < '08:00:00' || now()->format('H:i:s') > '16:00:00'){
-            $jam = now()->format('H:i:s');
-        } else 
+        $hariIni = strtolower(Carbon::now()->translatedFormat('l')); // "senin", "selasa", ...
+        $jamSekarang = now()->format('H:i:s');
+        $tanggalHariIni = date('Y-m-d');
 
-        $jurnal = $isUpdate
-            ? $this->jurnalInterface->update($id, $jam)
-            : $this->jurnalInterface->create([
-                'id_peserta' => $user->peserta->id,
-                'tanggal' => date('Y-m-d'),
-                'masuk' => now(),
-            ]);
+        // Ambil jam kantor hari ini
+        $jamKantor = collect($this->jamKantorService->getJamKantor()['data'] ?? [])
+            ->firstWhere('hari', $hariIni);
 
-        if (!empty($data['bukti'])) {
-            $isUpdate 
-            ? $this->foto->updateFoto($data['bukti'], $jurnal->id, 'bukti', 'jurnal')
-            : $this->foto->createFoto($data['bukti'], $jurnal->id, 'bukti', 'jurnal');
+        if (!$jamKantor) {
+            return Api::response(null, 'Jam kantor untuk hari ini belum diatur.', Response::HTTP_NOT_FOUND);
         }
 
-        return Api::response(
-            JurnalResource::make($jurnal),
-            $isUpdate ? 'Berhasil memperbarui jurnal' : 'Berhasil membuat jurnal',
-            Response::HTTP_OK
-        );
+        $absensiHariIni = $this->absensiInterface->findByDate($peserta->id, $tanggalHariIni);
+
+        if (!$absensiHariIni) {
+            if ($jamSekarang >= $jamKantor['awal_masuk'] && $jamSekarang <= $jamKantor['akhir_masuk']) {
+                $status = $jamSekarang > $jamKantor['awal_masuk'] ? 'hadir' : 'hadir'; // atau 'terlambat'
+                $absensi = $this->absensiInterface->create([
+                    'id_peserta' => $peserta->id,
+                    'tanggal'    => $tanggalHariIni,
+                    'masuk'      => now(),
+                    'status'     => $status,
+                ]);
+            } else {
+                return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
+            }
+        } else {
+            if (!$absensiHariIni->istirahat && $jamSekarang >= $jamKantor['awal_istirahat'] && $jamSekarang <= $jamKantor['akhir_istirahat']) {
+                $absensi = $this->absensiInterface->update($absensiHariIni->id, ['istirahat' => now()]);
+            } elseif (!$absensiHariIni->kembali && $jamSekarang >= $jamKantor['awal_kembali'] && $jamSekarang <= $jamKantor['akhir_kembali']) {
+                $absensi = $this->absensiInterface->update($absensiHariIni->id, ['kembali' => now()]);
+            } elseif (!$absensiHariIni->pulang && $jamSekarang >= $jamKantor['awal_pulang'] && $jamSekarang <= $jamKantor['akhir_pulang']) {
+                $absensi = $this->absensiInterface->update($absensiHariIni->id, ['pulang' => now()]);
+            } else {
+                return Api::response(null, 'Semua sesi absensi sudah diisi atau waktu tidak valid.', Response::HTTP_FORBIDDEN);
+            }
+        }
+
+        return Api::response($absensi, 'Berhasil melakukan absen', Response::HTTP_OK);
     }
 
 }

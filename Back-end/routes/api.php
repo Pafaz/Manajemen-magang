@@ -44,7 +44,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('magang', MagangController::class);
         Route::post('/absensi', [AbsensiController::class, 'store']);
         Route::post('/izin', [IzinController::class, 'store']);
-        Route::get('/peserta/detail', [PesertaController::class, 'show']);
+        Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
     });
 
     //Perusahaan

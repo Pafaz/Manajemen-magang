@@ -41,8 +41,12 @@ class PesertaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show()
+    public function show($id)
     {
+        return $this->pesertaService->getPeserta($id);
+    }
+
+    public function isCompleteProfil(){
         return $this->pesertaService->isCompleteProfil();
     }
 

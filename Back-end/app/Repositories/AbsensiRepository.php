@@ -19,6 +19,13 @@ class AbsensiRepository implements AbsensiInterface
         return Absensi::findOrFail($id)->first();
     }
 
+    public function findByDate($idPeserta, $tanggal)
+{
+    return Absensi::where('id_peserta', $idPeserta)
+        ->whereDate('tanggal', $tanggal)
+        ->first();
+}
+
     public function create(array $data): ? Absensi
     {
         return Absensi::create([$data]);

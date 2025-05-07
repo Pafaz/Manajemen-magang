@@ -29,7 +29,7 @@ class IzinController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**

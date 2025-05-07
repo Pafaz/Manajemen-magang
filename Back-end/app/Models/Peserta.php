@@ -17,17 +17,16 @@ class Peserta extends Model
 
     protected $fillable = [
         'id_user',
-        'id_jurusan',
-        'id_sekolah',
+        'jurusan',
+        'sekolah',
         'nomor_identitas',
         'tempat_lahir',
         'tanggal_lahir',
         'jenis_kelamin',
-        'kelas',
         'alamat',
     ];
-    // public $timestamps = false;
 
+    public $timestamps = false;
     public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id');

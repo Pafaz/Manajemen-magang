@@ -10,5 +10,5 @@ use App\Interfaces\Base\UpdateInterface;
 
 interface AbsensiInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
-    //
+    public function findByDate($idPeserta, $tanggal);
 }

@@ -63,14 +63,14 @@ class PesertaService
         );
     }
 
-    // public function getPesertaByPerusahaan($perusahaan){
-    //     $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
-    //     return Api::response(
-    //         PesertaResource::collection($data),
-    //         'Peserta Fetched Successfully',
-    //         Response::HTTP_OK
-    //     );
-    // }
+    public function getPesertaByPerusahaan($perusahaan){
+        $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
+        return Api::response(
+            PesertaResource::collection($data),
+            'Peserta Fetched Successfully',
+            Response::HTTP_OK
+        );
+    }
 
     public function simpanProfilPeserta(array $data, bool $isUpdate = false, $id = null)
     {
@@ -84,7 +84,7 @@ class PesertaService
 
             $dataPeserta = collect($data)->only([
                 'nama', 'telepon', 'alamat', 'jenis_kelamin', 'tempat_lahir', 
-                'tanggal_lahir', 'nomor_identitas', 'sekolah', 'jurusan', 'kelas'
+                'tanggal_lahir', 'nomor_identitas', 'sekolah', 'jurusan'
             ])->toArray();
 
             if (!$isUpdate) {

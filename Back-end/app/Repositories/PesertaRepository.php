@@ -28,13 +28,12 @@ class PesertaRepository implements PesertaInterface
     {
         return Peserta::create([ 
             'id_user' => $data['id_user'],
-            'id_jurusan' => $data['jurusan'],
-            'id_sekolah' => $data['sekolah'],
+            'jurusan' => $data['jurusan'],
+            'sekolah' => $data['sekolah'],
             'nomor_identitas' => $data['nomor_identitas'],
             'tempat_lahir' => $data['tempat_lahir'],
             'tanggal_lahir' => $data['tanggal_lahir'],
             'jenis_kelamin' => $data['jenis_kelamin'],
-            'kelas' => $data['kelas'],
             'alamat' => $data['alamat'],
         ]);
     }

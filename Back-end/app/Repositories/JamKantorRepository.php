@@ -20,13 +20,18 @@ class JamKantorRepository implements JamKantorInterface
 
     public function create(array $data): ? Jam_Kantor
     {
-        return Jam_Kantor::create([ $data]);
+        return Jam_Kantor::create($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update($id, array $data): Jam_Kantor
     {
-        return Jam_Kantor::where('id', $id)->update([$data]);
+        $jamKantor = Jam_Kantor::findOrFail( $id );
+
+        $jamKantor->update($data);
+
+        return $jamKantor;
     }
+
 
     public function delete(int $id): void
     {

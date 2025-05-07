@@ -10,22 +10,28 @@ class Jam_Kantor extends Model
     /** @use HasFactory<\Database\Factories\JamKantorFactory> */
     use HasFactory;
 
+    public $timestamps = false;
     protected $table = 'jam_kantor';
 
     protected $fillable = [
-        'id_perusahaan',
         'id_cabang',
         'hari',
-        'jenis_sesi',
-        'masuk',
-        'istirahat',
-        'kembali',
-        'pulang',
-        'created_at',
-        'updated_at'
+        'awal_masuk',
+        'akhir_masuk',
+        'awal_istirahat',
+        'akhir_istirahat',
+        'awal_kembali',
+        'akhir_kembali',
+        'awal_pulang',
+        'akhir_pulang',
     ];
     public function cabang()
     {
-        return $this->belongsTo(Cabang::class, 'id_cabang');
+        return $this->hasMany(Cabang::class, 'id_cabang');
+    }
+
+    public function perusahaan()
+    {
+        return $this->hasMany(Perusahaan::class,'id_perusahaan');
     }
 }

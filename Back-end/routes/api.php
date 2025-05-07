@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\JamKantorController;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
@@ -52,6 +53,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('mentor', MentorController::class);
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('lowongan', LowonganController::class);
+        Route::apiResource('jam-kantor', JamKantorController::class);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
         Route::put('/izin/{id}', [IzinController::class, 'update']);

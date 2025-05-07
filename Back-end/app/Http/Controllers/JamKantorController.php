@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\JamKantorRequest;
 use App\Models\Jam_Kantor;
+use App\Services\JamKantorService;
 use Illuminate\Http\Request;
 
 class JamKantorController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private JamKantorService $jamKantorService;
+
+    public function __construct(JamKantorService $jamKantorService)
+    {
+        $this->jamKantorService = $jamKantorService;
+    }
+
     public function index()
     {
-        //
+        return $this->jamKantorService->getJamKantor();
     }
 
     /**
@@ -26,9 +32,9 @@ class JamKantorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(JamKantorRequest $request)
     {
-        //
+        return $this->jamKantorService->simpanJamKantor($request->validated(), null);
     }
 
     /**
@@ -50,9 +56,9 @@ class JamKantorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Jam_Kantor $jam_Kantor)
+    public function update(JamKantorRequest $request, $id)
     {
-        //
+        return $this->jamKantorService->simpanJamKantor($request->validated(), $id);
     }
 
     /**

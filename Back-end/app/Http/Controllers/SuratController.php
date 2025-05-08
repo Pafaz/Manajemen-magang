@@ -4,15 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Models\Surat;
 use Illuminate\Http\Request;
+use App\Services\SuratService;
+use App\Http\Requests\SuratPeringatanRequest;
+
+use function PHPUnit\Framework\returnSelf;
 
 class SuratController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private SuratService $suratService;
+
+    public function __construct(SuratService $suratService)
+    {
+        $this->suratService = $suratService;
+    }
+
     public function index()
     {
-        //
+        return $this->suratService->getSuratByCabang('penerimaan', );
     }
 
     /**
@@ -20,15 +28,15 @@ class SuratController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(SuratPeringatanRequest $request)
     {
-        //
+        return $this->suratService->createSurat($request->validated(), 'peringatan');
     }
 
     /**

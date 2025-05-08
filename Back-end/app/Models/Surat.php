@@ -14,8 +14,7 @@ class Surat extends Model
 
     protected $fillable = [
         'id_peserta',
-        'id_admin_cabang',
-        'id_perusahaan',
+        'id_cabang',
         'jenis',
         'file_path',
         'created_at',
@@ -29,13 +28,8 @@ class Surat extends Model
     }
 
     // relasi ke admin cabang
-    public function admin_cabang()
+    public function cabang()
     {
-        return $this->belongsTo(Cabang::class, 'id_admin_cabang');
-    }
-
-    public function perusahaan()
-    {
-        return $this->belongsTo(Perusahaan::class,'id_perusahaan');
+        return $this->belongsTo(Cabang::class, 'id_cabang');
     }
 }

@@ -158,14 +158,14 @@
 <body>
     <div class="header">
         <!-- Gambar Header -->
-        <img src="/assets/img/banner/kopsurat.png" alt="Header Background" class="header-bg">
+        <img src="{{ public_path('images/kop.png') }}" alt="Header Background" class="header-bg">
         
         <div class="logo">
             <!-- Logo perusahaan bisa diletakkan di sini -->
-            <img src="/assets/logo" alt="Logo Perusahaan">
+            <img src="{{ public_path('images/logo.png') }}" alt="Logo Perusahaan">
         </div>
         <div class="company-info">
-            <div class="company-name">{{ $nama_perusahaan }}</div>
+            <div class="company-name">{{ $perusahaan }}</div>
             <div class="company-address">{{ $alamat_perusahaan }}</div>
             <div class="contact-info">
                 <div class="contact-item">
@@ -182,38 +182,22 @@
     </div>
     
     <div class="content">
-        <p style="margin-top: 20px; margin-bottom: 8px;">Nomor : 316/PKL/HMTI/2025</p>
+        <p style="margin-top: 20px; margin-bottom: 8px;">Nomor : {{ $nomor_surat }}/SP/{{ $bulan }}/{{ $tahun }}</p>
         <p style="margin-top: 0; margin-bottom: 8px;">Lamp. : -</p>
-        <p style="margin-top: 0; margin-bottom: 20px;">Perihal : <strong>Praktek Kerja Lapangan</strong></p>
-        
-        <p style="margin-bottom: 8px;">Kepada Yth:<br>
-        {{ $mitra }}<br>
-        {{ $alamat_mitra }}<br>
-        Telp. {{ $telepon_perusahaan }}</p>
+        <p style="margin-top: 0; margin-bottom: 20px;">Perihal : <strong>Surat Peringatan Kerja</strong></p>
         
         <p>Dengan hormat,</p>
         
-        <p>Menindaklanjuti surat permohonan Praktek Kerja Lapangan yang Bapak/Ibu ajukan, bersama ini kami menyatakan bahwa dapat MENERIMA siswa {{ $mitra }} untuk melaksanakan PKL di {{ $nama_perusahaan }} pada tanggal {{ $tanggal_mulai }} - {{ $tanggal_selesai }}. Adapun nama siswa tersebut adalah sebagai berikut:</p>
-        
-        <table>
-            <tr>
-                <th>No</th>
-                <th>Nama Lengkap</th>
-                <th>Nomer Induk/NIM</th>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>{{ $nama_peserta }}</td>
-                <td>{{ $no_identitas }}</td>
-            </tr>
-        </table>
-        
-        <p>Demikian surat ini kami sampaikan dan atas kerja samanya kami mengucapkan terima kasih.</p>
+        <p>Dengan ini kami beritahukan jika kami sudah memutuskan untuk memberikan <b>{{ $keterangan_surat }}</b> kepada <b>{{ $nama }}</b> Asal {{ $sekolah }} , pada tanggal {{ $tanggal }}.</p>
+
+        <p> Keputusan ini terpaksa kami ambil setelah mempertimbangkan banyak hal, diantaranya : yang bersangkutan telah melanggar peraturan yang telah diterapkan oleh perusahaan yaitu {{ $alasan }}. Kami berharap agar yang bersangkutan bisa menerima dan memaklumi keputusan ini dan jika mengulangi kembali harus bersedia untuk dikembalikan dan diberhentikan sebagai peserta magang di {{ $perusahaan }}</p>
+
+        <p>emikian surat peringatan kerja ini kami sampaikan, atas perhatian dan kerjasamanya, kami ucapkan terimakasih.</p>
         
         <div class="footer">
-            <div class="company-sign">{{ $nama_perusahaan }}</div>
+            <div class="company-sign">{{ $perusahaan }}</div>
             <div class="qrcode">
-                <img src="/assets/img/barcode.png" alt="Header Background" class="header-bg">
+                <img src="{{ public_path('images/qrcode.jpeg') }}" alt="Header Background" class="header-bg">
             </div>
             <div class="signature">
                 <strong>{{ $nama_penanggung_jawab }}</strong><br>

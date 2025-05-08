@@ -56,8 +56,18 @@ class SuratRepository implements SuratInterface
         }
         
         if ($withPeserta) {
-            $query->with('peserta.user');
-            $query->with('peserta.magang');
+            $query->with(['peserta.user' => function($query){
+                $query->select('id', 'nama');
+            }]);
+            $query->with(['peserta.foto' => function($query){
+                $query->where('type', 'profile');
+            }]);
+        }
+
+        if ($jenis == 'penerimaan') {
+            $query->with(['peserta.magang' => function($query) {
+                $query->select('id', 'id_peserta', 'mulai', 'selesai', 'status')->where('status', 'diterima');
+            }]);
         }
         
         return $query->get();

@@ -13,9 +13,9 @@ class JamKantorRepository implements JamKantorInterface
         return Jam_Kantor::all();
     }
 
-    public function find(int $id): ? Jam_Kantor
+    public function find($hari): ? Jam_Kantor
     {
-        return Jam_Kantor::findOrFail($id)->first();
+        return Jam_Kantor::where('hari', $hari)->first();
     }
 
     public function create(array $data): ? Jam_Kantor

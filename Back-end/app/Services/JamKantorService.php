@@ -79,13 +79,13 @@ class JamKantorService
         }
     }
 
-    public function updateStatusJamKantor($id, $status)
+    public function updateStatusJamKantor($hari, $status)
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
         DB::beginTransaction();
 
         try {
-            $jamKantor = $this->jamKantorInterface->find($id);
+            $jamKantor = $this->jamKantorInterface->find($hari);
 
             if ($jamKantor && $jamKantor->id_cabang == $id_cabang) {
                 $jamKantor->status = $status;

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Models\User;
 use App\Models\Peserta;
 use App\Interfaces\PesertaInterface;
 use Illuminate\Support\Facades\Auth;
@@ -14,10 +15,15 @@ class PesertaRepository implements PesertaInterface
         return Peserta::all();
     }
 
-    public function getByPerusahaan($id): Collection
+
+    public function getByCabang($idCabang): Collection
     {
-        return Peserta::where('id_perusahaan', $id)->get();
+        return Peserta::join('users', 'peserta.id_user', '=', 'users.id')
+            ->where('users.id_cabang_aktif', $idCabang)
+            ->select('peserta.*') 
+            ->get();
     }
+
 
     public function find( $id): ? Peserta
     {

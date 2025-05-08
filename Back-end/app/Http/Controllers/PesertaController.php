@@ -50,14 +50,14 @@ class PesertaController extends Controller
         return $this->pesertaService->isCompleteProfil();
     }
 
-    public function showByPerusahaan($id_perusahaan)
-    {
-        return $this->pesertaService->getPesertaByPerusahaan($id_perusahaan);
-    }
+    // public function showByPerusahaan($id_perusahaan)
+    // {
+    //     return $this->pesertaService->getPesertaByPerusahaan($id_perusahaan);
+    // }
 
-    public function showByCabang($id_cabang)
+    public function showByCabang()
     {
-        return $this->pesertaService->getPesertaByCabang($id_cabang);
+        return $this->pesertaService->getPesertaByCabang();
     }
 
     /**

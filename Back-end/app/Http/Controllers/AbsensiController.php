@@ -18,7 +18,7 @@ class AbsensiController extends Controller
     }
     public function index()
     {
-        //
+        return $this->absensiService->getAbsensi();
     }
 
     /**

@@ -10,6 +10,6 @@ use App\Interfaces\Base\GetAllInterface;
 interface MagangInterface extends CreateInterface, DeleteInterface, FindInterface
 {
     public function alreadyApply($idPeserta, $idLowongan);
-    public function getAll($id, $status);
+    public function getAll($id);
     public function countPendaftar($lowonganId);
 }

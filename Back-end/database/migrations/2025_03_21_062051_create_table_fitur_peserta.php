@@ -26,10 +26,11 @@ return new class extends Migration
             $table->uuid('id_peserta');
             $table->date('tanggal');
             $table->time('masuk');
-            $table->time('istirahat');
-            $table->time('kembali');
-            $table->time('pulang');
-            $table->enum('status', ['hadir', 'alfa', 'izin', 'sakit']);
+            $table->time('istirahat')->nullable();
+            $table->time('kembali')->nullable();
+            $table->time('pulang')->nullable();
+            $table->enum('status', ['hadir', 'alfa', 'izin', 'sakit', 'terlambat
+            ']);
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
         });

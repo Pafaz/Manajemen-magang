@@ -11,7 +11,7 @@ class AbsensiRepository implements AbsensiInterface
 {
     public function getAll(): Collection
     {
-        return Absensi::all();
+        return Absensi::where('id_peserta', auth('sanctum')->user()->peserta->id)->get();
     }
 
     public function find(int $id): ? Absensi
@@ -28,13 +28,13 @@ class AbsensiRepository implements AbsensiInterface
 
     public function create(array $data): ? Absensi
     {
-        return Absensi::create([$data]);
+        return Absensi::create($data);
     }
 
     public function update(int $id, array $data): Model
     {
-        $absensi = Absensi::where('id', $id);
-        $absensi->update([$data]);
+        $absensi = Absensi::findOrFail($id);
+        $absensi->update($data);
         return $absensi;
     }
 

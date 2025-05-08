@@ -8,10 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class MagangRepository implements MagangInterface
 {
-    public function getAll($id, $status): Collection
+    public function getAll($id): Collection
     {
         return Magang::with('peserta', 'lowongan', 'foto')
-            ->where('status', $status)
             ->whereHas('lowongan', function ($query) use ($id) {
                 $query->where('id_cabang', $id);
             })->get();

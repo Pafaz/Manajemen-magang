@@ -61,7 +61,7 @@ class IzinController extends Controller
      */
     public function update(IzinRequest $request, $izin)
     {
-        return $this->izinService->updateStatusIzin($request->validated(), $izin);
+        return $this->izinService->approveIzin($request->validated(), $izin);
     }
 
     /**

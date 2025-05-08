@@ -35,7 +35,6 @@ class AbsensiService
     {
         $user = auth('sanctum')->user();
         $peserta = $user->peserta;
-        // dd($peserta->id);
 
         // if (!$peserta || !$peserta->id || !$peserta->id_cabang_aktif) {
         //     return Api::response(null, 'Peserta belum melengkapi profil atau belum terdaftar magang.', Response::HTTP_FORBIDDEN);

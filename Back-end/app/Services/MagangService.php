@@ -34,6 +34,7 @@ class MagangService
     {
         $id = auth('sanctum')->user()->id_cabang_aktif;
         $data = $this->MagangInterface->getAll($id);
+
         return Api::response(
             MagangResource::collection($data),
             'Berhasil mendapatkan data peserta magang', 
@@ -140,6 +141,75 @@ class MagangService
             DB::rollBack();
 
             return Api::response(null, 'Terjadi kesalahan, silakan coba lagi' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function approveMany(array $ids, string $status)
+    {
+        DB::beginTransaction();
+
+        try {
+            $results = [];
+
+            foreach ($ids as $id) {
+                $magang = $this->MagangInterface->find($id);
+
+                if (!$magang) {
+                    $results[] = ['id' => $id, 'status' => 'gagal', 'alasan' => 'Data tidak ditemukan'];
+                    continue;
+                }
+
+                if (!in_array($status, ['diterima', 'ditolak'])) {
+                    $results[] = ['id' => $id, 'status' => 'gagal', 'alasan' => 'Status tidak valid'];
+                    continue;
+                }
+
+                if ($magang->status == $status) {
+                    $results[] = ['id' => $id, 'status' => 'gagal', 'alasan' => 'Status sudah sesuai'];
+                    continue;
+                }
+
+                $magang->status = $status;
+                $magang->save();
+
+                // Update user cabang aktif
+                $id_peserta = $magang->peserta->user->id;
+                $this->userInterface->update($id_peserta, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
+
+                if ($status === 'ditolak') {
+                    $magang->delete();
+                } else {
+                    $dataSurat = [
+                        'id_peserta' => $magang->peserta->id,
+                        'id_cabang' => $magang->lowongan->cabang->id,
+                        'id_perusahaan' => $magang->lowongan->perusahaan->id,
+                        'perusahaan' => $magang->lowongan->perusahaan->user->nama,
+                        'alamat_perusahaan' => $magang->lowongan->perusahaan->alamat,
+                        'telepon_perusahaan' => $magang->lowongan->perusahaan->user->telepon,
+                        'email_perusahaan' => $magang->lowongan->perusahaan->user->email,
+                        'website_perusahaan' => $magang->lowongan->perusahaan->website,
+                        'no_surat' => 'CARA PRAKOSO',
+                        'sekolah' => $magang->peserta->sekolah,
+                        'tanggal_mulai' => $magang->mulai,
+                        'tanggal_selesai' => $magang->selesai,
+                        'peserta'=> $magang->peserta->user->nama,
+                        'no_identitas' => $magang->peserta->nomor_identitas,
+                        'penanggung_jawab' => $magang->lowongan->perusahaan->nama_penanggung_jawab,
+                        'jabatan_pj'=> $magang->lowongan->perusahaan->jabatan_penanggung_jawab,
+                    ];
+
+                    $this->suratService->createSurat($dataSurat, 'penerimaan');
+                }
+
+                $results[] = ['id' => $id, 'status' => 'sukses'];
+            }
+
+            DB::commit();
+
+            return Api::response($results, 'Batch approval selesai', Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Api::response(null, 'Terjadi kesalahan: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

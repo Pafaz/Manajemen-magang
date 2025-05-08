@@ -11,6 +11,7 @@ class MagangRepository implements MagangInterface
     public function getAll($id): Collection
     {
         return Magang::with('peserta', 'lowongan', 'foto')
+            ->where('status', 'menunggu')
             ->whereHas('lowongan', function ($query) use ($id) {
                 $query->where('id_cabang', $id);
             })->get();

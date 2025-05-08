@@ -5,20 +5,24 @@ namespace App\Services;
 use App\Helpers\Api;
 use App\Models\Izin;
 use App\Interfaces\IzinInterface;
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\IzinResource;
 use App\Interfaces\KategoriInterface;
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\IzinResource;
+use App\Interfaces\AbsensiInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class IzinService
 {
     private IzinInterface $izinInterface;
     private FotoService $foto;
+    private AbsensiInterface $absensiInterface;
 
-    public function __construct(IzinInterface $izinInterface, FotoService $foto)
+    public function __construct(IzinInterface $izinInterface, FotoService $foto, AbsensiInterface $absensiInterface)
     {
         $this->foto = $foto;
         $this->izinInterface = $izinInterface;
+        $this->absensiInterface = $absensiInterface;
     }
 
     public function getIzin($id = null)
@@ -48,9 +52,9 @@ class IzinService
             return Api::response(null, 'Peserta belum melengkapi profil dahulu.', Response::HTTP_FORBIDDEN);
         }
 
-        // if (!$user->peserta->id_cabang_aktif) {
-        //     return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
-        // }
+        if (!$user->peserta->id_cabang_aktif) {
+            return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
+        }
 
         $dataIzin = [
             'id_peserta' => $user->peserta->id,
@@ -74,7 +78,7 @@ class IzinService
         );
     }
 
-    public function updateStatusIzin(array $data, $id)
+    public function approveIzin(array $data, $id)
     {
         if ($data['status_izin'] === 'ditolak') {
             $this->izinInterface->delete($id);
@@ -84,12 +88,52 @@ class IzinService
         $izin = $this->izinInterface->update($id, [
             'status_izin' => $data['status_izin'],
         ]);
-
+        $this->absensiInterface->create([
+            'id_peserta' => $izin->peserta->id,
+            'tanggal' => $izin->mulai,
+        ])
         return Api::response(
             $izin,
             'Berhasil memperbarui status izin',
             Response::HTTP_OK
         );
+    }
+
+    public function approveManyIzin(array $ids, string $status)
+    {
+        DB::beginTransaction();
+
+        try {
+            $results = [];
+
+            foreach ($ids as $id) {
+                $izin = $this->izinInterface->find($id);
+
+                if (!$izin) {
+                    $results[] = ['id' => $id, 'status' => 'gagal', 'alasan' => 'Data tidak ditemukan'];
+                    continue;
+                }
+
+                if (!in_array($status, ['diterima', 'ditolak'])) {
+                    $results[] = ['id' => $id, 'status' => 'gagal', 'alasan' => 'Status tidak valid'];
+                    continue;
+                }
+
+                if ($status === 'ditolak') {
+                    $this->izinInterface->delete($id);
+                    $results[] = ['id' => $id, 'status' => 'ditolak dan dihapus'];
+                } else {
+                    $this->izinInterface->update($id, ['status_izin' => $status]);
+                    $results[] = ['id' => $id, 'status' => 'status diubah menjadi diterima'];
+                }
+            }
+
+            DB::commit();
+            return Api::response($results, 'Batch update status izin selesai', Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Api::response(null, 'Terjadi kesalahan: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
 

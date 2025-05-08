@@ -28,7 +28,6 @@ class MagangController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -50,9 +49,14 @@ class MagangController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Magang $magang)
+    public function approveMany(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'status' => 'required|string|in:diterima,ditolak',
+        ]);
+    
+        return $this->magangService->approveMany($validated['ids'], $validated['status']);
     }
 
     /**

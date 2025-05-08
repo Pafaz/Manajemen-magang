@@ -24,7 +24,8 @@ class JamKantorResource extends JsonResource
             "awal_kembali" => $this->awal_kembali,
             "akhir_kembali" => $this->akhir_kembali,
             "awal_pulang" => $this->awal_pulang,
-            "akhir_pulang" => $this->akhir_pulang
+            "akhir_pulang" => $this->akhir_pulang,
+            "status" => $this->status
         ];
     }
 }

@@ -24,6 +24,7 @@ class Jam_Kantor extends Model
         'akhir_kembali',
         'awal_pulang',
         'akhir_pulang',
+        'status',
     ];
     public function cabang()
     {

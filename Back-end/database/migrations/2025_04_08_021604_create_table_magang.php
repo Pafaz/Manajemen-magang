@@ -34,6 +34,8 @@ return new class extends Migration
             $table->uuid('id_peserta');
             $table->unsignedBigInteger('id_cabang');
             $table->enum('jenis', ['penerimaan', 'peringatan']);
+            $table->string('keterangan_surat')->nullable();
+            $table->string('alasan')->nullable();
             $table->string('file_path');
             $table->timestamps();
 
@@ -46,13 +48,14 @@ return new class extends Migration
             $table->unsignedBigInteger('id_cabang');
             $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
             $table->time('awal_masuk');
-            $table->time('akhir_masuk');
-            $table->time('awal_istirahat');
-            $table->time('akhir_istirahat');
-            $table->time('awal_kembali');
-            $table->time('akhir_kembali');
+            $table->time('akhir_masuk')->nullable();
+            $table->time('awal_istirahat')->nullable();
+            $table->time('akhir_istirahat')->nullable();
+            $table->time('awal_kembali')->nullable();
+            $table->time('akhir_kembali')->nullable();
             $table->time('awal_pulang');
-            $table->time('akhir_pulang');
+            $table->time('akhir_pulang')->nullable();
+            $table->boolean('status')->default(true);
 
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
         });

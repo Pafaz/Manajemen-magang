@@ -158,11 +158,11 @@
 <body>
     <div class="header">
         <!-- Gambar Header -->
-        <img src="{{ asset('images/kop.png') }}" alt="Header Background" class="header-bg">
+        <img src="{{ public_path('images/kop.png') }}" alt="Header Background" class="header-bg">
         
         <div class="logo">
             <!-- Logo perusahaan bisa diletakkan di sini -->
-            <img src="{{ asset('images/logo.png') }}" alt="Logo Perusahaan">
+            <img src="{{ public_path('images/logo.png') }}" alt="Logo Perusahaan">
         </div>
         <div class="company-info">
             <div class="company-name">{{ $perusahaan }}</div>
@@ -187,13 +187,11 @@
         <p style="margin-top: 0; margin-bottom: 20px;">Perihal : <strong>Praktek Kerja Lapangan</strong></p>
         
         <p style="margin-bottom: 8px;">Kepada Yth:<br>
-        {{ $mitra }}<br>
-        {{ $alamat_mitra }}<br>
-        Telp. {{ $telepon_mitra }}</p>
+        {{ $sekolah }}<br>
         
         <p>Dengan hormat,</p>
         
-        <p>Menindaklanjuti surat permohonan Praktek Kerja Lapangan yang Bapak/Ibu ajukan, bersama ini kami menyatakan bahwa dapat MENERIMA siswa {{ $mitra }} untuk melaksanakan PKL di {{ $perusahaan }} pada tanggal {{ $tanggal_mulai }} - {{ $tanggal_selesai }}. Adapun nama siswa tersebut adalah sebagai berikut:</p>
+        <p>Menindaklanjuti surat permohonan Praktek Kerja Lapangan yang Bapak/Ibu ajukan, bersama ini kami menyatakan bahwa dapat MENERIMA siswa {{ $sekolah }} untuk melaksanakan PKL di {{ $perusahaan }} pada tanggal {{ $tanggal_mulai }} - {{ $tanggal_selesai }}. Adapun nama siswa tersebut adalah sebagai berikut:</p>
         
         <table>
             <tr>
@@ -213,7 +211,7 @@
         <div class="footer">
             <div class="company-sign">{{ $perusahaan }}</div>
             <div class="qrcode">
-                <img src="{{ asset('images/qrcode.jpeg') }}" alt="Header Background" class="header-bg">
+                <img src="{{ public_path('images/qrcode.jpeg') }}" alt="Header Background" class="header-bg">
             </div>
             <div class="signature">
                 <strong>{{ $penanggung_jawab }}</strong><br>

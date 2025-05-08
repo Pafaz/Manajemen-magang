@@ -81,4 +81,36 @@ class JamKantorService
             return Api::response(null,'Gagal Menyimpan data Jam Kantor: ' . $e->getMessage());
         }
     }
+
+    public function updateStatusJamKantor($id, $status)
+    {
+        $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
+        DB::beginTransaction();
+
+        try {
+            // Find the Jam Kantor entry by its ID and check if it's from the active branch
+            $jamKantor = $this->jamKantorInterface->find($id);
+
+            if ($jamKantor && $jamKantor->id_cabang == $id_cabang) {
+                // Update the status of the Jam Kantor
+                $jamKantor->status = $status;
+                $jamKantor->save();
+
+                DB::commit();
+
+                return Api::response(
+                    new JamKantorResource($jamKantor),
+                    'Status Jam Kantor berhasil diupdate',
+                    Response::HTTP_OK
+                );
+            } else {
+                return Api::response(null, 'Jam Kantor tidak ditemukan atau tidak sesuai dengan cabang aktif', Response::HTTP_NOT_FOUND);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return Api::response(null, 'Gagal Mengubah status Jam Kantor: ' . $e->getMessage());
+        }
+    }
+
 }

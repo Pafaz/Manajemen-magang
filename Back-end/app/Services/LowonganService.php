@@ -79,7 +79,8 @@ class LowonganService
                     'durasi' => $data['durasi'],
                     'max_kuota' => $data['max_kuota'],
                     'requirement' => $data['requirement'],
-                    'jobdesc' => $data['jobdesc']
+                    'jobdesc' => $data['jobdesc'],
+                    'status' => true
                 ]);
     
                 if (!$lowongan) {

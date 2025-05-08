@@ -59,8 +59,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('lowongan', LowonganController::class);
         Route::apiResource('jam-kantor', JamKantorController::class);
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
-        Route::put('jam-kantor/{id}/nonaktif', [JamKantorController::class, 'unactivatedJamKantor']);
-        Route::put('jam-kantor/{id}/aktif', [JamKantorController::class, 'activatedJamKantor']);
+        Route::put('jam-kantor/{hari}/nonaktif', [JamKantorController::class, 'unactivatedJamKantor']);
+        Route::put('jam-kantor/{hari}/aktif', [JamKantorController::class, 'activatedJamKantor']);
         Route::apiResource('surat', SuratController::class);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);

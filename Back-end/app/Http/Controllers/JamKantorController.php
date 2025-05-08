@@ -56,10 +56,11 @@ class JamKantorController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(JamKantorRequest $request, $id)
+    public function update(JamKantorRequest $request, $hari)
     {
-        return $this->jamKantorService->simpanJamKantor($request->validated(), $id);
+        return $this->jamKantorService->simpanJamKantor($request->validated(), $hari);
     }
+
 
     /**
      * Remove the specified resource from storage.

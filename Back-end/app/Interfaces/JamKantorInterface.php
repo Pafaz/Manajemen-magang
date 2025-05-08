@@ -10,5 +10,5 @@ use App\Interfaces\Base\UpdateInterface;
 
 interface JamKantorInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
-    //
+    public function updateByHari($hari, $id_cabang, array $data);
 }

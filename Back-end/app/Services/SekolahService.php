@@ -24,8 +24,9 @@ class SekolahService
 
     public function getSchools($id = null)
     {
-        $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
-        $school = $id ? $this->SekolahInterface->find($id) : $this->SekolahInterface->getAll($id_cabang);
+        $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
+        
+        $school = $id ? $this->SekolahInterface->find($id) : $this->SekolahInterface->getAll($id_perusahaan);
 
         if (!$school) {
             return Api::response(null, 'Sekolah tidak ditemukan', Response::HTTP_NOT_FOUND);

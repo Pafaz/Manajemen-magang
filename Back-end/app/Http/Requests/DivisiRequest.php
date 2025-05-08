@@ -15,14 +15,14 @@ class DivisiRequest extends BaseFormRequest
     {
         if($this->isUpdate()){
             return [
-                'nama' => 'sometimes|string|max:50|unique:divisi,nama,' . $this->route('divisi'),
+                'nama' => 'sometimes|string|max:50,' . $this->route('divisi'),
                 'kategori_proyek' => 'sometimes|array|min:1',
                 'kategori_proyek.*' => 'sometimes|string|max:50|distinct',
                 'foto_cover' => 'sometimes|image|mimes:png,jpg|max:2048',
             ];
         }
         return [
-            'nama' => 'required|string|max:50|unique:divisi,nama',
+            'nama' => 'required|string|max:50',
             'kategori_proyek' => 'required|array|min:1',
             'kategori_proyek.*' => 'required|string|max:50|distinct',
             'foto_cover' => 'required|image|mimes:png,jpg|max:2048',

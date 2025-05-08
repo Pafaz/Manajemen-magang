@@ -30,10 +30,10 @@ class MagangService
         $this->suratService = $suratService;
     }
 
-    public function getAllPesertaMagang($status = null)
+    public function getAllPesertaMagang()
     {
         $id = auth('sanctum')->user()->id_cabang_aktif;
-        $data = $this->MagangInterface->getAll($id, $status);
+        $data = $this->MagangInterface->getAll($id);
         return Api::response(
             MagangResource::collection($data),
             'Berhasil mendapatkan data peserta magang', 

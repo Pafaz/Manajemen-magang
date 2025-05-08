@@ -26,6 +26,22 @@ class JamKantorService
         return Api::response($data, 'Jam Kantor Berhasil ditampilkan');
     }
 
+    public function getJamKantorToday()
+    {
+        $user = auth('sanctum')->user();
+
+        if (!$user || !$user->id_cabang_aktif) {
+            return null;
+        }
+
+        $hariIni = strtolower(now()->locale('id')->dayName);
+        return $this->jamKantorInterface->getAll()
+            ->where('id_cabang', $user->id_cabang_aktif)
+            ->firstWhere('hari', $hariIni);
+    }
+
+
+
     public function simpanJamKantor(array $data, $id = null)
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;

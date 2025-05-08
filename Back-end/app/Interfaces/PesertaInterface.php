@@ -10,5 +10,5 @@ use App\Interfaces\Base\UpdateInterface;
 
 interface PesertaInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
-    public function getByPerusahaan($perusahaan);
+    public function getByCabang($perusahaan);
 }

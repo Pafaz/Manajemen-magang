@@ -14,19 +14,16 @@ use Symfony\Component\HttpFoundation\Response;
 class PesertaService
 {
     private PesertaInterface $pesertaInterface;
-    private MagangInterface $magangInterface;
     private FotoService $foto;
 
-    public function __construct(PesertaInterface $pesertaInterface, FotoService $foto, MagangInterface $magangInterface)
+    public function __construct(PesertaInterface $pesertaInterface, FotoService $foto)
     {
         $this->foto = $foto;
         $this->pesertaInterface = $pesertaInterface;
-        $this->magangInterface = $magangInterface;
     }
 
     public function getPeserta($id = null, $isUpdate = false)
     {
-        $idcabang = auth('sanctum')->user()->id_cabang_aktif;
         $data = $isUpdate
             ? $this->pesertaInterface->find($id)
             : $this->pesertaInterface->getAll();
@@ -37,8 +34,9 @@ class PesertaService
         );
     }
 
-    public function getPesertaByCabang($cabang){
-        $data = $this->pesertaInterface->find($cabang);
+    public function getPesertaByCabang(){
+        $cabang = auth('sanctum')->user()->id_cabang_aktif;
+        $data = $this->pesertaInterface->getByCabang($cabang);
         return Api::response(
             PesertaResource::collection($data),
             'Peserta Fetched Successfully',
@@ -63,14 +61,14 @@ class PesertaService
         );
     }
 
-    public function getPesertaByPerusahaan($perusahaan){
-        $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
-        return Api::response(
-            PesertaResource::collection($data),
-            'Peserta Fetched Successfully',
-            Response::HTTP_OK
-        );
-    }
+    // public function getPesertaByPerusahaan($perusahaan){
+    //     $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
+    //     return Api::response(
+    //         PesertaResource::collection($data),
+    //         'Peserta Fetched Successfully',
+    //         Response::HTTP_OK
+    //     );
+    // }
 
     public function simpanProfilPeserta(array $data, bool $isUpdate = false, $id = null)
     {

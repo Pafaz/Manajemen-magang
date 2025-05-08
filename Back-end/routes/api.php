@@ -39,10 +39,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['role:peserta'], function () {
         Route::apiResource('peserta', PesertaController::class);
         Route::apiResource('jurnal',JurnalController::class);
-        Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('jurusan', JurusanController::class);
         Route::apiResource('magang', MagangController::class);
         Route::post('/absensi', [AbsensiController::class, 'store']);
+        Route::get('/absensi', [AbsensiController::class, 'index']);
         Route::post('/izin', [IzinController::class, 'store']);
         Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
     });
@@ -57,6 +57,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('lowongan', LowonganController::class);
         Route::apiResource('jam-kantor', JamKantorController::class);
+        Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
         Route::put('/izin/{id}', [IzinController::class, 'update']);

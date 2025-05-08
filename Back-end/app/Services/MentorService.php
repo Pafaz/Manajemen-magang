@@ -48,7 +48,7 @@ class MentorService
         );
     }
 
-        public function simpanMentor(string $id = null, array $data)
+        public function simpanMentor( $id = null, array $data)
     {
         DB::beginTransaction();
 

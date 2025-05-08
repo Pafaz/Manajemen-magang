@@ -32,6 +32,20 @@ class JamKantorRepository implements JamKantorInterface
         return $jamKantor;
     }
 
+    public function updateByHari($hari, $id_cabang, array $data): Jam_Kantor
+    {
+        $jamKantor = Jam_Kantor::where('hari', $hari)->where('id_cabang', $id_cabang)->first();
+
+        if (!$jamKantor) {
+            throw new \Exception("Jam kantor untuk hari {$hari} tidak ditemukan.");
+        }
+
+        $jamKantor->update($data);
+
+        return $jamKantor;
+    }
+
+
 
     public function delete(int $id): void
     {

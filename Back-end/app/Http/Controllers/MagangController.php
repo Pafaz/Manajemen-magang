@@ -41,9 +41,9 @@ class MagangController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Magang $magang)
+    public function show($magang)
     {
-        //
+        return $this->magangService->getMagangbyId($magang);
     }
 
     /**

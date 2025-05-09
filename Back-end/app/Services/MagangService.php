@@ -41,6 +41,15 @@ class MagangService
         );
     }
 
+    public function getMagangbyId($id){
+        $data = $this->MagangInterface->find($id);
+
+        return Api::response(
+            new MagangDetailResource($data),
+            'Berhasil mendapatkan data magang',
+        );
+    }
+
     public function countPendaftar($lowonganId)
     {
         return $this->MagangInterface->countPendaftar($lowonganId);
@@ -206,16 +215,5 @@ class MagangService
             DB::rollBack();
             return Api::response(null, 'Terjadi kesalahan: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
-
-
-    public function getMagangById(int $id)
-    {
-        $magang = $this->MagangInterface->find($id);
-        return Api::response(
-            MagangResource::make($magang),
-            'Magang fetched successfully',
-            Response::HTTP_OK
-        );
     }
 }

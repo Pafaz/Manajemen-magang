@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
 use App\Http\Controllers\IzinController;
@@ -48,7 +47,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/absensi', [AbsensiController::class, 'index']);
         Route::post('/izin', [IzinController::class, 'store']);
         Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
-        Route::get('/complete/magang', [MagangController::class, 'isMagang']);
+        Route::get('/complete/magang', [PesertaController::class, 'isMagang']);
     });
 
     //Perusahaan

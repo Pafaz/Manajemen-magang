@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use App\Interfaces\LowonganInterface;
 use App\Http\Resources\LowonganResource;
+use App\Interfaces\CabangInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class LowonganService
@@ -14,18 +14,31 @@ class LowonganService
     private LowonganInterface $lowonganInterface;
     private MagangService $magangService;
 
-    public function __construct(LowonganInterface $lowonganInterface, MagangService $magangService)
+    private CabangInterface $cabangInterface;
+
+    public function __construct(LowonganInterface $lowonganInterface, MagangService $magangService, CabangInterface $cabangInterface)
     {
         $this->lowonganInterface = $lowonganInterface;
         $this->magangService = $magangService;
+        $this->cabangInterface = $cabangInterface;
     }
 
     public function getAllLowongan()
     {
-        $data = $this->lowonganInterface->getAll($id = null);
-        return Api::response(
+        $data = $this->lowonganInterface->getAll();
+        return Api::response(          
             LowonganResource::collection($data),
             'Lowongan Berhasil ditampilkan'
+        );
+    }
+
+    public function getLowonganByPerusahaan()
+    {
+        $user = auth('sanctum')->user();
+        $data = $this->lowonganInterface->getByPerusahaan($user->perusahaan->id);
+        return Api::response(
+            LowonganResource::collection($data),
+            'Lowongan '.$user->nama.' Berhasil ditampilkan'
         );
     }
 
@@ -53,8 +66,15 @@ class LowonganService
 
     public function simpanLowongan(int $id = null, array $data)
     {
-        $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
-        DB::beginTransaction(); 
+        $user = auth('sanctum')->user();
+        $perusahaan = $user->perusahaan;
+        $cabang = $this->cabangInterface->find($data['id_cabang'], $perusahaan->id);
+    
+        if (!$cabang || !$cabang->divisi()->where('id', $data['id_divisi'])->exists()) {
+            return Api::response(null, 'Cabang atau divisi tidak valid untuk perusahaan ini', Response::HTTP_FORBIDDEN);
+        }
+    
+        DB::beginTransaction();
     
         try {
             if ($id) {
@@ -70,8 +90,12 @@ class LowonganService
     
                 $lowongan = $this->lowonganInterface->update($id, $data);
             } else {
+                if (!$perusahaan->cabang()->where('id', $data['id_cabang'])->exists()) {
+                    return Api::response(null, 'Cabang tidak valid untuk perusahaan ini', Response::HTTP_FORBIDDEN);
+                }
+    
                 $lowongan = $this->lowonganInterface->create([
-                    'id_perusahaan' => $id_perusahaan,
+                    'id_perusahaan' => $perusahaan->id,
                     'id_cabang' => $data['id_cabang'],
                     'id_divisi' => $data['id_divisi'],
                     'tanggal_mulai' => $data['tanggal_mulai'],
@@ -82,14 +106,10 @@ class LowonganService
                     'jobdesc' => $data['jobdesc'],
                     'status' => true
                 ]);
+            }
     
-                if (!$lowongan) {
-                    return Api::response(
-                        null,
-                        'Failed to create Lowongan.',
-                        Response::HTTP_INTERNAL_SERVER_ERROR
-                    );
-                }
+            if (!$lowongan) {
+                throw new \Exception('Gagal membuat atau memperbarui lowongan.');
             }
     
             DB::commit();
@@ -99,7 +119,6 @@ class LowonganService
                 $id ? 'Berhasil Mengubah Lowongan' : 'Berhasil Membuat Lowongan',
                 $id ? Response::HTTP_OK : Response::HTTP_CREATED
             );
-    
         } catch (\Exception $e) {
             DB::rollBack();
             return Api::response(
@@ -109,6 +128,7 @@ class LowonganService
             );
         }
     }
+    
     
     public function tutupLowongan($id)
     {

@@ -10,5 +10,5 @@ use App\Interfaces\Base\UpdateInterface;
 
 interface LowonganInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
-    //
+    public function getByPerusahaan($id);
 }

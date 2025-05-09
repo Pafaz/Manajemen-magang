@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class SekolahRepository implements SekolahInterface
 {
-    public function getAll($idcabang): Collection
+    public function getAll($id_perusahaan): Collection
     {
-        return Sekolah::where('id_cabang', $idcabang)->get();
+        return Sekolah::where('id_perusahaan', $id_perusahaan)->get();
     }
 
     public function find(int $id): ? Sekolah

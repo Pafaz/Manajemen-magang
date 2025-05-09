@@ -34,6 +34,8 @@ Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackP
 Route::post('/send-otp', [PasswordResetController::class, 'sendOtp']);
 Route::post('/verify-otp', [PasswordResetController::class, 'verifyOtp']);
 Route::post('/update-password-otp', [PasswordResetController::class, 'updatePassword']);
+Route::get('/lowongan-all', [LowonganController::class,'getAllLowongan']);
+Route::get('/lowongan/{id}/detail', [LowonganController::class,'show']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     //Peserta
@@ -59,6 +61,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('lowongan', LowonganController::class);
         Route::apiResource('jam-kantor', JamKantorController::class);
+        Route::apiResource('piket', PiketController::class)->only(['index','store','update']);
 
         Route::apiResource('magang', MagangController::class);
         Route::put('/many/magang', [MagangController::class, 'approveMany']);

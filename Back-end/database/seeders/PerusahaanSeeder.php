@@ -2,13 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Models\Foto;
 use App\Models\User;
 use App\Models\Cabang;
 use App\Models\Divisi;
 use App\Models\Kategori;
 use App\Models\Perusahaan;
+use App\Models\Divisi_Kategori;
+use App\Models\Jam_Kantor;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -21,8 +23,8 @@ class PerusahaanSeeder extends Seeder
     {
         $perusahaan = User::create([
             'id' => Str::uuid(),
-            'nama' => 'Perusahaan',
-            'email' => 'perusahaan@example',
+            'nama' => 'PT. Elang Jaya',
+            'email' => 'elang@gmail.com',
             'password' => bcrypt('password'),
             'id_cabang_aktif' => 1,
         ]);
@@ -30,66 +32,125 @@ class PerusahaanSeeder extends Seeder
         $perusahaan->assignRole('perusahaan');
 
         $perusahaan_record = Perusahaan::create([
-            'id' => Str::uuid(),  // Membuat UUID baru
-            'id_user' => $perusahaan->id,  // Menyambungkan perusahaan ke user pertama
-            'deskripsi' => 'Perusahaan teknologi yang bergerak di bidang software development dan IT consulting.',
-            'provinsi' => 'DKI Jakarta',
-            'kota' => 'Jakarta Selatan',
-            'alamat' => 'Jl. Teknologi No.1, Jakarta',
-            'kode_pos' => '12345',
-            'website' => 'https://www.perusahaan-example.com',
-            'nama_penanggung_jawab' => 'John Doe',
-            'nomor_penanggung_jawab' => '1234567890',
-            'jabatan_penanggung_jawab' => 'CEO',
-            'email_penanggung_jawab' => 'GK0YV@example.com',
-            'tanggal_berdiri' => '2022-01-01',
-            'kecamatan' => 'ngijo'
+            'id'=> Str::uuid(),
+            'id_user' => $perusahaan->id,
+            'deskripsi' => 'Berdiri sejak tahun 2022 dan bergerak di bidang software development',
+            'provinsi' => 'Jawa Barat',
+            'kota' => 'Bandung',
+            'kecamatan' => 'Bandung Utara',
+            'alamat' => 'Jalan Ikan Hiu No.13',
+            'kode_pos' => '68417',
+            'website' => 'https://www.elang.com',
+            'is_premium' => false,
+            'is_active' => true,
+            'cabang_limit' => 1,
+            'nama_penanggung_jawab' => 'Afif CS',
+            'nomor_penanggung_jawab' => '087773827374',
+            'jabatan_penanggung_jawab' => 'HRD',
+            'email_penanggung_jawab' => 'afifhrd@gmail.com',
+            'tanggal_berdiri' => '2025-01-06',
         ]);
 
-        Foto::create([
-            'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
-            'path' => 'uploads/foto/npwp_perusahaan_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
-            'type' => 'npwp',  // Tipe file
-            'context' => 'perusahaan'
-        ]);
-
-        // Menambahkan foto legalitas_perusahaan
-        Foto::create([
-            'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
-            'path' => 'uploads/foto/legalitas_perusahaan_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
-            'type' => 'surat_legalitas',  // Tipe file
-            'context' => 'perusahaan'
-        ]);
-
-        // Menambahkan foto logo_perusahaan
-        Foto::create([
-            'id_referensi' => $perusahaan->id,  // Menyambungkan foto ke perusahaan
-            'path' => 'uploads/foto/profile_' . Str::uuid() . '.jpg',  // Path file (sesuaikan dengan lokasi file)
-            'type' => 'profile',  // Tipe file
-            'context' => 'perusahaan'
-        ]);
-
-        Cabang::create([
-            'nama' => 'Hummatech Malang',
+        $cabang_record = Cabang::create([
+            'id' => 1,
+            'id_perusahaan' => $perusahaan_record->id,
+            'nama'=> 'PT. Elang Jember',
             'bidang_usaha' => 'Software Development',
             'provinsi' => 'Jawa Timur',
-            'kota' => 'Surabaya',
-            'id_perusahaan' => $perusahaan_record->id
+            'kota'=> 'Jember',
         ]);
 
-        // $kategori = Kategori::create([
-        //     'id_perusahaan' => $perusahaan_record->id,
-        //     'nama' => 'Tahap Pemula',
-        //     'created_at' => now(),
-        //     'updated_at' => now()
-        // ]);
+        $divisi_record = Divisi::create([
+            'id'=> 1,
+            'nama' => 'Fullstack web developer',
+            'id_cabang' => $cabang_record->id,
+            'created_at' => Carbon::now(),
+            'updated_at'=> Carbon::now(),
+        ]);
 
-        // Divisi::create([
-        //     'id_perusahaan' => $perusahaan_record->id,
-        //     'nama' => 'Front-End',
-        //     'id_kategori-proyek' => $kategori->id,
-        //     'created_at' => now(),
-        //     'updated_at' => now(),
-        // ]);
+        $kategori_record = Kategori::create([
+            'id'=> 1,
+            'nama'=> 'Pengenalan',
+        ]);
+
+        $divisi_kategori = Divisi_Kategori::create([
+            'id_divisi' => $divisi_record->id,
+            'id_kategori' => $kategori_record->id
+        ]);
+
+        Jam_Kantor::create([
+            'id'=> 1,
+            'id_cabang' => $cabang_record->id,
+            'hari' => 'senin',
+            'awal_masuk' => '07:00',
+            'akhir_masuk' => '08:00',
+            'awal_istirahat' => '12:00',
+            'akhir_istirahat' => '13:00',
+            'awal_kembali' => '12:45',
+            'akhir_kembali' => '13:00',
+            'awal_pulang' => '16:00',
+            'akhir_pulang' => '17:00',
+            'status' => true,
+        ]);
+
+        Jam_Kantor::create([
+            'id'=> 2,
+            'id_cabang' => $cabang_record->id,
+            'hari' => 'selasa',
+            'awal_masuk' => '07:00',
+            'akhir_masuk' => '08:00',
+            'awal_istirahat' => '12:00',
+            'akhir_istirahat' => '13:00',
+            'awal_kembali' => '12:45',
+            'akhir_kembali' => '13:00',
+            'awal_pulang' => '16:00',
+            'akhir_pulang' => '17:00',
+            'status' => true,
+        ]);
+
+        Jam_Kantor::create([
+            'id'=> 3,
+            'id_cabang' => $cabang_record->id,
+            'hari' => 'rabu',
+            'awal_masuk' => '07:00',
+            'akhir_masuk' => '08:00',
+            'awal_istirahat' => '12:00',
+            'akhir_istirahat' => '13:00',
+            'awal_kembali' => '12:45',
+            'akhir_kembali' => '13:00',
+            'awal_pulang' => '16:00',
+            'akhir_pulang' => '17:00',
+            'status' => true,
+        ]);
+
+        Jam_Kantor::create([
+            'id'=> 4,
+            'id_cabang' => $cabang_record->id,
+            'hari' => 'kamis',
+            'awal_masuk' => '07:00',
+            'akhir_masuk' => '08:00',
+            'awal_istirahat' => '12:00',
+            'akhir_istirahat' => '13:00',
+            'awal_kembali' => '12:45',
+            'akhir_kembali' => '13:00',
+            'awal_pulang' => '16:00',
+            'akhir_pulang' => '17:00',
+            'status' => true,
+        ]);
+
+        Jam_Kantor::create([
+            'id'=> 5,
+            'id_cabang' => $cabang_record->id,
+            'hari' => 'jumat',
+            'awal_masuk' => '07:00',
+            'akhir_masuk' => '08:00',
+            'awal_istirahat' => '12:00',
+            'akhir_istirahat' => '13:00',
+            'awal_kembali' => '12:45',
+            'akhir_kembali' => '13:00',
+            'awal_pulang' => '16:00',
+            'akhir_pulang' => '17:00',
+            'status' => true,
+        ]);
     }
 }

@@ -20,7 +20,7 @@ class LowonganController extends Controller
      */
     public function index()
     {
-        return $this->lowonganService->getAllLowongan();
+        return $this->lowonganService->getLowonganByPerusahaan();
     }
 
     /**
@@ -74,5 +74,10 @@ class LowonganController extends Controller
     public function tutupLowongan(int $id)
     {
         return $this->lowonganService->tutupLowongan($id);
+    }
+
+    public function getAllLowongan()
+    {
+        return $this->lowonganService->getAllLowongan();
     }
 }

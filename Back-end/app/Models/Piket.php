@@ -13,12 +13,18 @@ class Piket extends Model
     protected $table = 'piket';
 
     protected $fillable = [
-        'id',
-        'hari'
+        'shift',
+        'hari',
+        'id_cabang',
     ];
 
     public function peserta()
     {
-        return $this->belongsToMany(User::class, 'id_user');
+        return $this->belongsToMany(Peserta::class, 'piket_peserta');
+    }
+
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'id_cabang');
     }
 }

@@ -60,7 +60,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('lowongan', LowonganController::class);
         Route::apiResource('jam-kantor', JamKantorController::class);
-        Route::apiResource('piket', PiketController::class)->only(['index','store','update']);
+        Route::apiResource('piket', PiketController::class)->only(['index','store','update','destroy']);
+        Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);
 
         Route::apiResource('magang', MagangController::class);
         Route::put('/many/magang', [MagangController::class, 'approveMany']);
@@ -86,6 +87,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Admin
     Route::group(['role:admin'], function () {
         Route::apiResource('piket', PiketController::class);
+        Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);
         Route::apiResource('kategori-proyek', KategoriController::class);
     });
 

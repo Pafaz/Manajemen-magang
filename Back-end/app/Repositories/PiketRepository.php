@@ -10,9 +10,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class PiketRepository implements PiketInterface
 {
-    public function getAll(): Collection
+    public function getAll($id = null): Collection
     {
-        return Piket::all();
+        return Piket::where("id_cabang", $id)->with('peserta')->get();
     }
 
     public function find(int $id): ? Piket
@@ -22,12 +22,35 @@ class PiketRepository implements PiketInterface
 
     public function create(array $data): ? Piket
     {
-        return Piket::create([ $data]);
+        $piket = Piket::create([
+            'id_cabang' => $data['id_cabang'],
+            'shift' => $data['shift'],
+            'hari'=> $data['hari'],
+        ]);
+
+        foreach ($data['peserta'] as $peserta) {
+            $piket->peserta()->attach($peserta);
+        }
+
+        return $piket;
     }
 
-    public function update(int $id, array $data): mixed
+    public function update($id, array $data): Piket
     {
-        return Piket::where('id', $id)->update([$data]);
+        $piket = Piket::findOrFail($id);
+        
+        $piket->update([
+            'id_cabang' => $data['id_cabang'],
+            'shift' => $data['shift'],
+            'hari' => $data['hari'],
+        ]);
+        
+        // Sync peserta if provided in the data
+        if (isset($data['peserta'])) {
+            $piket->peserta()->sync($data['peserta']);
+        }
+        
+        return $piket->load('peserta');
     }
 
     public function delete(int $id): void

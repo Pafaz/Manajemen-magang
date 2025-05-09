@@ -65,14 +65,29 @@ return new class extends Migration
             $table->unique(['id_peserta', 'bulan', 'tahun']);
         });
 
-        Schema::create('piket', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->uuid('id_peserta');
-            $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
-            $table->timestamps();
+        // Schema::create('piket', function (Blueprint $table) {
+        //     $table->id()->primary();
+        //     $table->uuid('id_peserta');
+        //     $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
+        //     $table->timestamps();
 
-            $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
+        //     $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
+        // });
+
+        Schema::create('piket', function (Blueprint $table) {
+            $table->id();
+            $table->enum('shift', ['pagi', 'sore']);
+            $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
+            $table->foreignId('id_cabang')->constrained('cabang')->onDelete('cascade');
+            $table->timestamps();
         });
+
+        Schema::create('piket_peserta', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('piket_id')->constrained('piket')->onDelete('cascade');
+            $table->foreignUuid('peserta_id')->constrained('peserta')->onDelete('cascade');
+            $table->timestamps();
+        });        
 
         Schema::create('izin', function (Blueprint $table) {
             $table->id()->primary();
@@ -94,6 +109,18 @@ return new class extends Migration
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
         });
+
+        // Schema::create('laporan_piket', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->foreignId('piket_id')->constrained('piket')->onDelete('cascade'); // jadwal piket
+        //     $table->foreignId('peserta_id')->constrained('peserta')->onDelete('cascade'); // peserta yg hadir
+        //     $table->date('tanggal');
+        //     $table->time('waktu_piket')->nullable();
+        //     $table->enum('kehadiran', ['hadir', 'tidak hadir', 'izin'])->default('hadir');
+        //     $table->text('catatan')->nullable();
+        //     $table->timestamps();
+        // });
+        
     }
 
     /**
@@ -105,5 +132,6 @@ return new class extends Migration
         Schema::dropIfExists('absensi');
         Schema::dropIfExists('piket');
         Schema::dropIfExists('izin');
+        Schema::dropIfExists('piket_peserta');
     }
 };

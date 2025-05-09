@@ -32,6 +32,16 @@ class IzinController extends Controller
         
     }
 
+    public function approveMany(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => 'required|array',
+            'status_izin' => 'required|string|in:diterima,ditolak',
+        ]);
+
+        return $this->izinService->approveManyIzin($validated['ids'], $validated['status_izin']);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -43,9 +53,9 @@ class IzinController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Izin $izin)
+    public function show($izin)
     {
-        //
+        return $this->izinService->getIzin($izin);
     }
 
     /**

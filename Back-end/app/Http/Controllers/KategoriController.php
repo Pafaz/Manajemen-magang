@@ -39,7 +39,7 @@ class KategoriController extends Controller
             'card' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        return $this->kategoriService->createCategory($request->validated());
+        return $this->kategoriService->simpanKategori($request->validated());
     }
 
     /**

@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Helpers\Api;
 use App\Models\Izin;
 use App\Interfaces\IzinInterface;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\IzinResource;
+use App\Interfaces\AbsensiInterface;
 use App\Interfaces\KategoriInterface;
 use App\Http\Resources\CategoryResource;
-use App\Interfaces\AbsensiInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class IzinService
@@ -52,12 +53,13 @@ class IzinService
             return Api::response(null, 'Peserta belum melengkapi profil dahulu.', Response::HTTP_FORBIDDEN);
         }
 
-        if (!$user->peserta->id_cabang_aktif) {
+        if (!$user->id_cabang_aktif) {
             return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
         }
 
         $dataIzin = [
             'id_peserta' => $user->peserta->id,
+            'id_cabang' => $user->id_cabang_aktif,
             'jenis' => $data['jenis'],
             'deskripsi' => $data['deskripsi'],
             'mulai' => $data['mulai'],
@@ -88,10 +90,20 @@ class IzinService
         $izin = $this->izinInterface->update($id, [
             'status_izin' => $data['status_izin'],
         ]);
-        $this->absensiInterface->create([
-            'id_peserta' => $izin->peserta->id,
-            'tanggal' => $izin->mulai,
-        ])
+        
+        // Buat absensi otomatis jika izin diterima
+        if ($izin && $izin->status_izin === 'diterima') {
+            $tanggalMulai = Carbon::parse($izin->mulai);
+            $tanggalSelesai = Carbon::parse($izin->selesai);
+
+            for ($date = $tanggalMulai->copy(); $date->lte($tanggalSelesai); $date->addDay()) {
+                $this->absensiInterface->create([
+                    'id_peserta' => $izin->id_peserta,
+                    'tanggal'    => $date->format('Y-m-d'),
+                    'status'     => 'izin',
+                ]);
+            }
+        }
         return Api::response(
             $izin,
             'Berhasil memperbarui status izin',
@@ -124,7 +136,20 @@ class IzinService
                     $results[] = ['id' => $id, 'status' => 'ditolak dan dihapus'];
                 } else {
                     $this->izinInterface->update($id, ['status_izin' => $status]);
+                    
                     $results[] = ['id' => $id, 'status' => 'status diubah menjadi diterima'];
+
+                     // Buat absensi otomatis
+                    $tanggalMulai = Carbon::parse(time: $izin->mulai);
+                    $tanggalSelesai = Carbon::parse($izin->selesai);
+                    for ($date = $tanggalMulai->copy(); $date->lte($tanggalSelesai); $date->addDay()) {
+                        $this->absensiInterface->create([
+                            'id_peserta' => $izin->id_peserta,
+                            'tanggal'    => $date->format('Y-m-d'),
+                            'status'     => 'izin',
+                        ]);
+                    }
+
                 }
             }
 

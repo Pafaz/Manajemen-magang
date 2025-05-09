@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('judul');
             $table->text('deskripsi');
             $table->date('tanggal');
-            
+
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
         });
 
@@ -77,6 +77,7 @@ return new class extends Migration
         Schema::create('izin', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
+            $table->unsignedBigInteger('id_cabang');
             $table->enum('jenis', ['izin', 'sakit']);
             $table->enum('status_izin', ['diterima', 'ditolak', 'menunggu']);
             $table->string('deskripsi');
@@ -90,7 +91,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('id_peserta');
             $table->string('rfid_code')->unique();
-            $table->timestamps();
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
         });

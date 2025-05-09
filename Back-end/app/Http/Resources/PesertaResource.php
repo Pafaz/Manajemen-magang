@@ -26,6 +26,8 @@ class PesertaResource extends JsonResource
             'tanggal_lahir' => $this->tanggal_lahir,
             'jenis_kelamin' => $this->jenis_kelamin,
             'alamat' => $this->alamat,
+            'mulai_magang' => $this->magang->mulai || null,
+            'selesai_magang' => $this->magang->selesai || null,
             'foto' => FotoResource::collection($this->foto?? collect()),
         ];
     }

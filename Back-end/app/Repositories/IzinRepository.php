@@ -10,12 +10,12 @@ class IzinRepository implements IzinInterface
 {
     public function getAll(): Collection
     {
-        return Izin::all();
+        return Izin::where('status_izin', 'menunggu')->where('id_cabang', auth('sanctum')->user()->id_cabang_aktif)->get();
     }
 
     public function find(int $id): ? Izin
     {
-        return Izin::findOrFail($id)->first();
+        return Izin::findOrFail($id);
     }
 
     public function create(array $data): ? Izin

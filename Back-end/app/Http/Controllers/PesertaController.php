@@ -50,6 +50,9 @@ class PesertaController extends Controller
         return $this->pesertaService->isCompleteProfil();
     }
 
+    public function isMagang(){
+        return $this->pesertaService->isMagang();
+    }
     // public function showByPerusahaan($id_perusahaan)
     // {
     //     return $this->pesertaService->getPesertaByPerusahaan($id_perusahaan);

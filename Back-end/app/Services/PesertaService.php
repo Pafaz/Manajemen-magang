@@ -61,6 +61,20 @@ class PesertaService
         );
     }
 
+    public function isMagang(){
+        if (!auth('sanctum')->user()->id_cabang_aktif) {
+            return Api::response(
+                'false',
+                'Peserta belum terdaftar magang',
+            );
+        }
+
+        return Api::response(
+            'true',
+            'Peserta telah terdaftar magang',
+        );
+    }
+
     // public function getPesertaByPerusahaan($perusahaan){
     //     $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
     //     return Api::response(

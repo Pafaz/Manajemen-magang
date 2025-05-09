@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/absensi', [AbsensiController::class, 'index']);
         Route::post('/izin', [IzinController::class, 'store']);
         Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
+        Route::get('/complete/magang', [MagangController::class, 'isMagang']);
     });
 
     //Perusahaan
@@ -60,7 +61,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('jam-kantor', JamKantorController::class);
 
         Route::apiResource('magang', MagangController::class);
-        Route::put('/approve/many', [MagangController::class, 'approveMany']);
+        Route::put('/many/magang', [MagangController::class, 'approveMany']);
 
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
         Route::put('jam-kantor/{hari}/nonaktif', [JamKantorController::class, 'unactivatedJamKantor']);
@@ -68,6 +69,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('surat', SuratController::class);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
+
+        Route::put('/many/izin', [IzinController::class, 'approveMany']);
         Route::put('/izin/{id}', [IzinController::class, 'update']);
         Route::get('/izin', [IzinController::class, 'index']);
 

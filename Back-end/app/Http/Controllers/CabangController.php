@@ -42,9 +42,10 @@ class CabangController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($cabang)
+    public function show()
     {
-        return $this->cabangService->getCabang($cabang);
+        $user = auth('sanctum')->user();
+        return $this->cabangService->getCabang($user->id_cabang_aktif, $user->perusahaan->id);
     }
 
     /**

@@ -48,4 +48,9 @@ class Peserta extends Model
     {
         return $this->hasMany(Foto::class, 'id_referensi')->where('context', 'peserta');
     }
+
+    public function pikets()
+    {
+        return $this->belongsToMany(Piket::class, 'piket_peserta');
+    }
 }

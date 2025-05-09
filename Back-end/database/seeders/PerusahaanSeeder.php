@@ -6,13 +6,13 @@ use App\Models\User;
 use App\Models\Cabang;
 use App\Models\Divisi;
 use App\Models\Kategori;
-use App\Models\Perusahaan;
-use App\Models\Divisi_Kategori;
+use App\Models\Lowongan;
 use App\Models\Jam_Kantor;
+use App\Models\Perusahaan;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
+use App\Models\Divisi_Kategori;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PerusahaanSeeder extends Seeder
 {
@@ -151,6 +151,19 @@ class PerusahaanSeeder extends Seeder
             'awal_pulang' => '16:00',
             'akhir_pulang' => '17:00',
             'status' => true,
+        ]);
+
+        Lowongan::create([
+            'id'=> 1,
+            'id_perusahaan' => $perusahaan_record->id,
+            'id_cabang' => $cabang_record->id,
+            'id_divisi' => $divisi_record->id,
+            'tanggal_mulai' => '2025-01-06',
+            'tanggal_selesai' => '2025-04-06',
+            'max_kuota' => 100,
+            'durasi'=> 6,
+            'requirement' => 'kkkkkkkkkkk',
+            'jobdesc'=> 'kkkkkkkkkkkkk',
         ]);
     }
 }

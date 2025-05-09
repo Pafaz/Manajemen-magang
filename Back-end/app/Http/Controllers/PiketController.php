@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PiketRequest;
 use App\Models\Piket;
+use App\Services\PiketService;
 use Illuminate\Http\Request;
 
 class PiketController extends Controller
 {
+    private PiketService $piketService;
+
+    public function __construct(PiketService $piketService)
+    {
+        $this->piketService = $piketService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return $this->piketService->getPiket();
     }
 
     /**
@@ -26,9 +34,9 @@ class PiketController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PiketRequest $request)
     {
-        //
+        return $this->piketService->simpanPiket($request->validated(), null);
     }
 
     /**
@@ -50,16 +58,24 @@ class PiketController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Piket $piket)
+    public function update(PiketRequest $request, $id)
     {
-        //
+        return $this->piketService->simpanPiket($request->validated(), $id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Piket $piket)
+    public function destroy($id)
     {
-        //
+        return $this->piketService->deletePiket($id);
+    }
+    
+    /**
+     * Remove a specific participant from a piket schedule
+     */
+    public function removePeserta($piketId, $pesertaId)
+    {
+        return $this->piketService->removePesertaFromPiket($piketId, $pesertaId);
     }
 }

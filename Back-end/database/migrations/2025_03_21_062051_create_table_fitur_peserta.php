@@ -16,23 +16,53 @@ return new class extends Migration
             $table->uuid('id_peserta');
             $table->string('judul');
             $table->text('deskripsi');
-            $table->timestamps();
+            $table->date('tanggal');
+            
+            $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
+        });
+
+        Schema::create('kehadiran', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('id_peserta');
+            $table->date('tanggal');
+            $table->enum('metode', ['online', 'rfid'])->nullable();
+
+            // Catatan waktu jika hadir normal
+            $table->time('jam_masuk')->nullable();
+            $table->time('jam_pulang')->nullable();
+            $table->time('jam_istirahat')->nullable(); 
+            $table->time('jam_kembali')->nullable();  
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
+            $table->unique(['id_peserta', 'tanggal']);
+            $table->index(['id_peserta', 'tanggal']);
         });
 
         Schema::create('absensi', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
             $table->date('tanggal');
-            $table->time('masuk');
-            $table->time('istirahat')->nullable();
-            $table->time('kembali')->nullable();
-            $table->time('pulang')->nullable();
-            $table->enum('status', ['hadir', 'alfa', 'izin', 'sakit', 'terlambat
-            ']);
+
+            $table->enum('status', ['alfa', 'izin', 'sakit', 'terlambat']);
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
+            $table->index('id_peserta');
+            $table->index(['id_peserta', 'tanggal']);
+        });
+
+        Schema::create('rekap_kehadiran', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('id_peserta');
+            $table->tinyInteger('bulan'); // 1 - 12
+            $table->smallInteger('tahun');
+
+            $table->tinyInteger('total_terlambat')->default(0);
+            $table->tinyInteger('total_hadir')->default(0);
+            $table->tinyInteger('total_izin')->default(0);
+            $table->tinyInteger('total_sakit')->default(0);
+            $table->tinyInteger('total_alpha')->default(0);
+
+            $table->unique(['id_peserta', 'bulan', 'tahun']);
         });
 
         Schema::create('piket', function (Blueprint $table) {

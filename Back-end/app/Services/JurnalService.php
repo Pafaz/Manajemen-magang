@@ -46,14 +46,15 @@ class JurnalService
             return Api::response(null, 'Peserta belum melengkapi profil.', Response::HTTP_FORBIDDEN);
         }
 
-        // if (!$user->peserta->id_cabang_aktif) {
-        //     return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
-        // }
+        if (!$user->peserta->id_cabang_aktif) {
+            return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
+        }
 
         $dataJurnal = [
             'id_peserta' => $user->peserta->id,
             'deskripsi' => $data['deskripsi'],
             'judul' => $data['judul'],
+            'tanggal' => $data['tanggal'],
         ];
 
         $jurnal = $isUpdate

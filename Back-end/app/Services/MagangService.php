@@ -93,11 +93,6 @@ class MagangService
 
             $magang->status = $data['status'];
             $magang->save();
-
-            $id_peserta = $magang->peserta->user->id;
-
-            $this->userInterface->update($id_peserta, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
-
             // dd($magang->lowongan->id_cabang);
             $dataSurat = [
                 'id_peserta' => $magang->peserta->id,
@@ -127,9 +122,9 @@ class MagangService
                 $message = 'Berhasil menolak magang';
             } else {
                 $message = 'Berhasil menyetujui magang';
+                $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
                 $this->suratService->createSurat($dataSurat, 'penerimaan');
             }
-
             DB::commit();
 
             return Api::response(

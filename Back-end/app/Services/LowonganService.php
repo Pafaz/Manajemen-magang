@@ -25,10 +25,20 @@ class LowonganService
 
     public function getAllLowongan()
     {
-        $data = $this->lowonganInterface->getAll($id = null);
-        return Api::response(
+        $data = $this->lowonganInterface->getAll();
+        return Api::response(          
             LowonganResource::collection($data),
             'Lowongan Berhasil ditampilkan'
+        );
+    }
+
+    public function getLowonganByPerusahaan()
+    {
+        $user = auth('sanctum')->user();
+        $data = $this->lowonganInterface->getByPerusahaan($user->perusahaan->id);
+        return Api::response(
+            LowonganResource::collection($data),
+            'Lowongan '.$user->nama.' Berhasil ditampilkan'
         );
     }
 

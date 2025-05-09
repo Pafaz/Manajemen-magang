@@ -41,6 +41,15 @@ class MagangService
         );
     }
 
+    public function getMagangbyId($id){
+        $data = $this->MagangInterface->find($id);
+
+        return Api::response(
+            new MagangDetailResource($data),
+            'Berhasil mendapatkan data magang',
+        );
+    }
+
     public function countPendaftar($lowonganId)
     {
         return $this->MagangInterface->countPendaftar($lowonganId);
@@ -93,11 +102,6 @@ class MagangService
 
             $magang->status = $data['status'];
             $magang->save();
-
-            $id_peserta = $magang->peserta->user->id;
-
-            $this->userInterface->update($id_peserta, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
-
             // dd($magang->lowongan->id_cabang);
             $dataSurat = [
                 'id_peserta' => $magang->peserta->id,
@@ -127,9 +131,9 @@ class MagangService
                 $message = 'Berhasil menolak magang';
             } else {
                 $message = 'Berhasil menyetujui magang';
+                $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
                 $this->suratService->createSurat($dataSurat, 'penerimaan');
             }
-
             DB::commit();
 
             return Api::response(
@@ -211,16 +215,5 @@ class MagangService
             DB::rollBack();
             return Api::response(null, 'Terjadi kesalahan: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }
-
-
-    public function getMagangById(int $id)
-    {
-        $magang = $this->MagangInterface->find($id);
-        return Api::response(
-            MagangResource::make($magang),
-            'Magang fetched successfully',
-            Response::HTTP_OK
-        );
     }
 }

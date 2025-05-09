@@ -24,10 +24,8 @@ class CabangService
         $this->userInterface = $userInterface;
     }
 
-    public function getCabang($id = null)
+    public function getCabang($id = null, $id_perusahaan = null)
     {
-        $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
-        
         $data = $id
                 ? collect([$this->cabangInterface->find($id, $id_perusahaan)]) 
                 : $this->cabangInterface->getCabangByPerusahaanId($id_perusahaan);

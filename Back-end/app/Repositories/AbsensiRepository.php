@@ -16,15 +16,15 @@ class AbsensiRepository implements AbsensiInterface
 
     public function find(int $id): ? Absensi
     {
-        return Absensi::findOrFail($id)->first();
+        return Absensi::findOrFail($id);
     }
 
     public function findByDate($idPeserta, $tanggal)
-{
-    return Absensi::where('id_peserta', $idPeserta)
-        ->whereDate('tanggal', $tanggal)
-        ->first();
-}
+    {
+        return Absensi::where('id_peserta', $idPeserta)
+            ->whereDate('tanggal', $tanggal)
+            ->first();
+    }
 
     public function create(array $data): ? Absensi
     {

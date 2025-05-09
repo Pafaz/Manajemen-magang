@@ -12,17 +12,13 @@ class Absensi extends Model
     use HasFactory;
 
     protected $table = 'absensi';
+    public $timestamps = false;
     protected $guarded = ['id'];
     protected $fillable = [
         'id_peserta',
         'tanggal',
-        'masuk',
-        'istirahat',
-        'kembali',
-        'pulang',
         'status'
     ];
-    public $timestamps = false;
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

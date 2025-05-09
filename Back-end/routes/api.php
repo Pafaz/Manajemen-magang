@@ -74,9 +74,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
 
         Route::put('/many/izin', [IzinController::class, 'approveMany']);
-        Route::put('/izin/{id}', [IzinController::class, 'update']);
         Route::get('/izin', [IzinController::class, 'index']);
-
+        Route::put('/izin/{id}', [IzinController::class, 'update']);
+        Route::get('/izin/{id}', [IzinController::class, 'show']);
         //perusahaan
         Route::post('/perusahaan', [PerusahaanController::class, 'store']);
         Route::get('/perusahaan/detail', [PerusahaanController::class, 'show']);

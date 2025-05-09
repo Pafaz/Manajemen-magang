@@ -56,7 +56,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('admin', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
-        Route::apiResource('cabang', CabangController::class);
+        Route::apiResource('cabang', CabangController::class)->only(['index','store']);
         Route::apiResource('mentor', MentorController::class);
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('lowongan', LowonganController::class);

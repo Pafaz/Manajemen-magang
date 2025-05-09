@@ -20,6 +20,7 @@ class CabangResource extends JsonResource
             'bidang_usaha' => $this->bidang_usaha,
             'provinsi' => $this->provinsi,
             'kota' => $this->kota,
+            'created_at' => $this->created_at,
             'foto' => FotoResource::collection($this->foto),
         ];
     }

@@ -22,7 +22,7 @@ class CabangRepository implements CabangInterface
 
     public function find(int $id, $perusahaanId): ?Cabang
     {
-        return Cabang::findOrFail($id)->where('id_perusahaan', $perusahaanId);
+        return Cabang::findOrFail($id)->where('id_perusahaan', $perusahaanId)->first();
     }
 
     public function create(array $data): ?Cabang

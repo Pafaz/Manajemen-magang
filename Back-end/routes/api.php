@@ -24,6 +24,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 use App\Http\Controllers\SuratController;
+use App\Models\Cabang;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register/{role}', [RegisterController::class, 'register']);
@@ -61,6 +62,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('lowongan', LowonganController::class);
         Route::apiResource('jam-kantor', JamKantorController::class);
         Route::apiResource('piket', PiketController::class)->only(['index','store','update']);
+        Route::get('/cabang-detail', [CabangController::class, 'show']);
+        Route::put('/cabang-update', [CabangController::class, 'update']);
 
         Route::apiResource('magang', MagangController::class);
         Route::put('/many/magang', [MagangController::class, 'approveMany']);

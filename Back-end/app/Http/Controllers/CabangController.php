@@ -60,9 +60,10 @@ class CabangController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CabangRequest $request,  $cabang)
+    public function update(CabangRequest $request)
     {
-        return $this->cabangService->simpanCabang($request->validated(), true, $cabang);
+
+        return $this->cabangService->simpanCabang($request->validated(), true, auth('sanctum')->user()->id_cabang_aktif);
     }
 
     /**

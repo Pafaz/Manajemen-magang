@@ -28,7 +28,6 @@ class LowonganRequest extends BaseFormRequest
                 'id_cabang' => 'sometimes|integer|exists:cabang,id',
                 'id_divisi' => 'sometimes|integer|exists:divisi,id',
                 'max_kuota' => 'sometimes|integer|min:1',
-                'durasi' => 'sometimes|integer|min:1',
                 'requirement' => 'sometimes|string',
                 'jobdesc' => 'sometimes|string',
             ];
@@ -39,7 +38,6 @@ class LowonganRequest extends BaseFormRequest
             'id_cabang' => 'required|integer|exists:cabang,id',
             'id_divisi' => 'required|integer|exists:divisi,id',
             'max_kuota' => 'required|integer|min:1',
-            'durasi' => 'required|integer|min:1',
             'requirement' => 'string|required',
             'jobdesc' => 'string|required',
         ];

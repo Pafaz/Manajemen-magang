@@ -100,7 +100,6 @@ class LowonganService
                     'id_divisi' => $data['id_divisi'],
                     'tanggal_mulai' => $data['tanggal_mulai'],
                     'tanggal_selesai' => $data['tanggal_selesai'],
-                    'durasi' => $data['durasi'],
                     'max_kuota' => $data['max_kuota'],
                     'requirement' => $data['requirement'],
                     'jobdesc' => $data['jobdesc'],

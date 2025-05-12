@@ -34,7 +34,6 @@ return new class extends Migration
             $table->integer('max_kuota');
             $table->date('tanggal_mulai');
             $table->date('tanggal_selesai');
-            $table->integer('durasi');
             $table->string('requirement');
             $table->string('jobdesc');
             $table->boolean('status')->default(true);

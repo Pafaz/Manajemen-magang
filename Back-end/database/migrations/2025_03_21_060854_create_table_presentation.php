@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jadwal_presentasi', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_mentor');
-            $table->string('judul');
+            // $table->string('judul');
             $table->string('kuota');
             $table->string('link_zoom')->nullable();
             $table->date('tanggal');

@@ -20,7 +20,15 @@ class PresentasiRepository implements PresentasiInterface
 
     public function create(array $data): ? Presentasi
     {
-        return Presentasi::create([ $data]);
+        return Presentasi::create([
+            "id_mentor"=> $data["id_mentor"],
+            'kuota' => $data['kuota'],
+            'link_zoom'=> $data['link_zoom'],
+            'tanggal'=> $data['tanggal'],
+            'waktu_mulai'=> $data['waktu_mulai'],
+            'waktu_selesai'=> $data['waktu_selesai'],
+            'tipe'=> $data['tipe'],
+        ]);
     }
 
     public function update(int $id, array $data): mixed

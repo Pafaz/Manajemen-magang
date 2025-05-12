@@ -25,14 +25,6 @@ class CabangController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(CabangRequest $request)
@@ -48,22 +40,13 @@ class CabangController extends Controller
         $user = auth('sanctum')->user();
         return $this->cabangService->getCabang($user->id_cabang_aktif, $user->perusahaan->id);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CabangRequest $request)
-    {
-        // $id_perusahaan = $this->cabangService->getCabangByPerusahaanId($request->id_perusahaan);
-        // return $this->cabangService->updateCabang($request->validated(), $id);
-    }
-
     /**
      * Update the specified resource in storage.
      */
-    public function update(CabangRequest $request,  $cabang)
+    public function update(CabangRequest $request)
     {
-        return $this->cabangService->simpanCabang($request->validated(), true, $cabang);
+
+        return $this->cabangService->simpanCabang($request->validated(), true, auth('sanctum')->user()->id_cabang_aktif);
     }
 
     /**

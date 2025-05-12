@@ -56,11 +56,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('admin', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
-        Route::apiResource('cabang', CabangController::class);
+        Route::apiResource('cabang', CabangController::class)->only(['index','store']);
         Route::apiResource('mentor', MentorController::class);
         Route::apiResource('cabang', CabangController::class);
         Route::apiResource('lowongan', LowonganController::class);
         Route::apiResource('jam-kantor', JamKantorController::class);
+        Route::get('/cabang-detail', [CabangController::class, 'show']);
+        Route::put('/cabang-update', [CabangController::class, 'update']);
         Route::apiResource('piket', PiketController::class)->only(['index','store','update','destroy']);
         Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);
 

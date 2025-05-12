@@ -18,6 +18,7 @@ class Cabang extends Model
         'bidang_usaha',
         'provinsi',
         'kota',
+        'created_at'
     ];
 
     public function adminCabang()
@@ -36,8 +37,4 @@ class Cabang extends Model
     {
         return $this->hasMany(Foto::class, 'id_referensi', 'id')->where('context', 'cabang');
     }
-
-    // public function cabang(){
-    //     return $this->hasMany(Cabang::class, 'id_cabang', 'id');
-    // }
 }

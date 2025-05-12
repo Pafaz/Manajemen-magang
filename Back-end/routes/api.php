@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FotoController;
 use App\Http\Controllers\IzinController;
 use App\Http\Controllers\PiketController;
+use App\Http\Controllers\SuratController;
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\DivisiController;
 use App\Http\Controllers\JurnalController;
@@ -18,12 +19,12 @@ use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\JamKantorController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PerusahaanController;
+use App\Http\Controllers\PresentasiController;
 use App\Http\Controllers\AdminCabangController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
-use App\Http\Controllers\SuratController;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register/{role}', [RegisterController::class, 'register']);
@@ -92,7 +93,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     //Mentor
-    Route::group(['role:mentor'], function () {});
+    Route::group(['role:mentor'], function () {
+        Route::apiResource('presentasi', PresentasiController::class);
+    });
 
     //Superadmin
     Route::group(['role:superadmin'], function () {});

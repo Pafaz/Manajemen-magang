@@ -70,4 +70,9 @@ class SuratController extends Controller
     {
         //
     }
+
+    public function getSuratPeringatan()
+    {
+        return $this->suratService->getSuratByCabang('peringatan');
+    }
 }

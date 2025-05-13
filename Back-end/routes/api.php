@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::put('jam-kantor/{hari}/nonaktif', [JamKantorController::class, 'unactivatedJamKantor']);
         Route::put('jam-kantor/{hari}/aktif', [JamKantorController::class, 'activatedJamKantor']);
         Route::apiResource('surat', SuratController::class);
+        Route::get('surat-peringatan', [SuratController::class,'getSuratPeringatan']);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
 

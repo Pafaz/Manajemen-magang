@@ -161,7 +161,6 @@ class PerusahaanSeeder extends Seeder
             'tanggal_mulai' => '2025-01-06',
             'tanggal_selesai' => '2025-04-06',
             'max_kuota' => 100,
-            'durasi'=> 6,
             'requirement' => 'kkkkkkkkkkk',
             'jobdesc'=> 'kkkkkkkkkkkkk',
         ]);

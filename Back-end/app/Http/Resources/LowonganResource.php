@@ -20,7 +20,6 @@ class LowonganResource extends JsonResource
             'tanggal_mulai' => $this->tanggal_mulai,
             'tanggal_selesai' => $this->tanggal_selesai,
             'max_kuota' => $this->max_kuota,
-            'durasi' => $this->durasi,
             'requirement' => $this->requirement,
             'jobdesc' => $this->jobdesc,
             'status' => $this->status,

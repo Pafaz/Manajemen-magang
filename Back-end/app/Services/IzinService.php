@@ -100,7 +100,7 @@ class IzinService
                 $this->absensiInterface->create([
                     'id_peserta' => $izin->id_peserta,
                     'tanggal'    => $date->format('Y-m-d'),
-                    'status'     => 'izin',
+                    'status'     => $izin->jenis,
                 ]);
             }
         }

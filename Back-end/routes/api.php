@@ -25,6 +25,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
+use App\Http\Controllers\KehadiranController;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register/{role}', [RegisterController::class, 'register']);
@@ -44,8 +45,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('jurnal',JurnalController::class);
         Route::apiResource('jurusan', JurusanController::class);
         Route::post('/magang', [MagangController::class, 'store']);
-        Route::post('/absensi', [AbsensiController::class, 'store']);
-        Route::get('/absensi', [AbsensiController::class, 'index']);
+        // Route::post('/absensi', [AbsensiController::class, 'store']);
+        // Route::get('/absensi', [AbsensiController::class, 'index']);
+        Route::post('/kehadiran', [KehadiranController::class, 'store']);
         Route::post('/izin', [IzinController::class, 'store']);
         Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
         Route::get('/complete/magang', [PesertaController::class, 'isMagang']);

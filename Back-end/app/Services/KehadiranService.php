@@ -5,6 +5,7 @@ namespace App\Services;
 use Carbon\Carbon;
 use App\Helpers\Api;
 use App\Models\RekapKehadiran;
+use Illuminate\Support\Facades\DB;
 use App\Interfaces\AbsensiInterface;
 use App\Interfaces\KehadiranInterface;
 use App\Interfaces\RekapKehadiranInterface;
@@ -12,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class KehadiranService
 {
+    public const METODE_ONLINE = 'online';
+    public const METODE_RFID = 'rfid';
 
     private JamKantorService $jamKantorService;
     private AbsensiInterface $absensiInterface;
@@ -32,7 +35,7 @@ class KehadiranService
     public function getKehadiran()
     {
 
-        $Kehadiran = $this->absensiInterface->getAll();
+        $Kehadiran = $this->kehadiranInterface->getAll();
         if (!$Kehadiran) {
             return Api::response(null, 'Absensi tidak ditemukan', Response::HTTP_NOT_FOUND);
         }
@@ -42,60 +45,85 @@ class KehadiranService
 
     public function simpanKehadiran()
     {
-        $user = auth('sanctum')->user();
-        $peserta = $user->peserta;
+        DB::beginTransaction();
+        try {
+            $user = auth('sanctum')->user();
+            $peserta = $user->peserta;
 
-        if (!$peserta || !$peserta->id || !$user->id_cabang_aktif) {
-            return Api::response(null, 'Peserta belum melengkapi profil atau belum terdaftar magang.', Response::HTTP_FORBIDDEN);
-        }
+            if (!$peserta) {
+                return Api::response(null, 'Peserta tidak ditemukan.', Response::HTTP_FORBIDDEN);
+            }
 
-        $jamSekarang = Carbon::now('Asia/Jakarta')->format('H:i:s');
-        $tanggalHariIni = date('Y-m-d');
+            $jamSekarang = Carbon::now('Asia/Jakarta')->format('H:i:s');
+            $tanggalHariIni = Carbon::now('Asia/Jakarta')->format('Y-m-d');
 
-        $jamKantor = $this->jamKantorService->getJamKantorToday();
-        // dd($jamKantor);
-        if (!$jamKantor) {
-            return Api::response(null, 'Jam kantor untuk hari ini belum diatur.', Response::HTTP_NOT_FOUND);
-        }
+            $jamKantor = $this->jamKantorService->getJamKantorToday();
+            if (!$jamKantor) {
+                return Api::response(null, 'Jam kantor untuk hari ini belum diatur.', Response::HTTP_NOT_FOUND);
+            }
 
-        $kehadiranHariIni = $this->kehadiranInterface->findByDate($peserta->id, $tanggalHariIni);
-        if($kehadiranHariIni) {
-            return Api::response(null, 'Anda sudah absen hari ini.', Response::HTTP_FORBIDDEN);
-        }
-        // Absen pertama kali (masuk)
-        if (!$kehadiranHariIni) {
-            if ($jamSekarang >= $jamKantor->awal_masuk && $jamSekarang <= $jamKantor->akhir_masuk) {
-                // dd($peserta->id);
-                $absensi = $this->kehadiranInterface->create([
-                    'id_peserta' => $peserta->id,
-                    'tanggal'    => $tanggalHariIni,
-                    'jam_masuk'      => $jamSekarang,
-                ]);
+            $izin = $this->absensiInterface->findByDate($peserta->id, $tanggalHariIni);
+            if($izin) {
+                return Api::response(null, 'Anda sudah absen hari ini.', Response::HTTP_FORBIDDEN);
+            }
+
+            $kehadiranHariIni = $this->kehadiranInterface->findByDate($peserta->id, $tanggalHariIni);
+            $kehadiran = null;
+
+            if (!$kehadiranHariIni) {
+                // Absen Masuk
+                if ($jamSekarang >= $jamKantor->awal_masuk && $jamSekarang <= $jamKantor->akhir_masuk) {
+                    $kehadiran = $this->kehadiranInterface->create([
+                        'id_peserta' => $peserta->id,
+                        'tanggal'    => $tanggalHariIni,
+                        'jam_masuk'  => $jamSekarang,
+                        'metode'     => self::METODE_ONLINE
+                    ]);
+                } else {
+                    return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
+                }
             } else {
-                return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
+                // Update sesi kehadiran berikutnya
+                if (!$kehadiranHariIni->jam_istirahat && $jamSekarang >= $jamKantor->awal_istirahat && $jamSekarang <= $jamKantor->akhir_istirahat) {
+                    $kehadiran = $this->kehadiranInterface->update($kehadiranHariIni->id, ['jam_istirahat' => $jamSekarang]);
+                } elseif (!$kehadiranHariIni->jam_kembali && $jamSekarang >= $jamKantor->awal_kembali && $jamSekarang <= $jamKantor->akhir_kembali) {
+                    $kehadiran = $this->kehadiranInterface->update($kehadiranHariIni->id, ['jam_kembali' => $jamSekarang]);
+                } elseif (!$kehadiranHariIni->jam_pulang && $jamSekarang >= $jamKantor->awal_pulang && $jamSekarang <= $jamKantor->akhir_pulang) {
+                    $kehadiran = $this->kehadiranInterface->update($kehadiranHariIni->id, ['jam_pulang' => $jamSekarang]);
+                }
             }
 
-        // Sudah pernah absen hari ini
-        } else {
-            $absensi = null;
-        
-            if (!$kehadiranHariIni->istirahat && $jamSekarang >= $jamKantor->awal_istirahat && $jamSekarang <= $jamKantor->akhir_istirahat) {
-                $absensi = $this->absensiInterface->update($kehadiranHariIni->id, ['jam_istirahat' => $jamSekarang]);
-            } elseif (!$kehadiranHariIni->kembali && $jamSekarang >= $jamKantor->awal_kembali && $jamSekarang <= $jamKantor->akhir_kembali) {
-                $absensi = $this->absensiInterface->update($kehadiranHariIni->id, ['jam_kembali' => $jamSekarang]);
-            } elseif (!$kehadiranHariIni->pulang && $jamSekarang >= $jamKantor->awal_pulang && $jamSekarang <= $jamKantor->akhir_pulang) {
-                $absensi = $this->absensiInterface->update($kehadiranHariIni->id, ['jam_pulang' => $jamSekarang]);
-            }
-        
-            if ($absensi) {
-                return Api::response($absensi, 'Berhasil melakukan absen', Response::HTTP_OK);
+            if ($kehadiran) {
+                DB::commit();
+                return Api::response($kehadiran, 'Berhasil melakukan absen.', Response::HTTP_OK);
             } else {
-                return Api::response(null, 'Semua sesi absensi sudah diisi atau waktu tidak valid.', Response::HTTP_FORBIDDEN);
+                DB::rollBack();
+                return Api::response(null, 'Semua sesi kehadiran sudah diisi atau waktu tidak valid.', Response::HTTP_FORBIDDEN);
             }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return Api::response(null, $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        return Api::response($absensi, 'Berhasil melakukan absen', Response::HTTP_OK);
     }
 
+    // public function updateRekapHarian( $peserta, Carbon $tanggal, bool $terlambat = false)
+    // {
+    //     $bulan = $tanggal->format('m');
+    //     $tahun = $tanggal->format('Y');
+
+    //     // Ambil atau buat rekap bulanan
+    //     $rekap = $this->rekapKehadiranInterface->findOrCreateByPesertaBulanTahun(
+    //         $peserta->id,
+    //         $bulan,
+    //         $tahun
+    //     );
+
+    //     $rekap->total_hadir += 1;
+    //     if ($terlambat) {
+    //         $rekap->total_terlambat += 1;
+    //     }
+
+    //     $rekap->save();
+    // }
 
 }

@@ -13,6 +13,7 @@ class Izin extends Model
     public $timestamps = false;
     protected $fillable = [
         'id',
+        'id_cabang',
         'id_peserta',
         'jenis',
         'deskripsi',

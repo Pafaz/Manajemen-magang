@@ -38,7 +38,7 @@ class CabangService
         return Api::response(
             CabangResource::collection($data),
             $message,
-            Response::HTTP_NOT_MODIFIED
+            Response::HTTP_OK
         );
     }
 

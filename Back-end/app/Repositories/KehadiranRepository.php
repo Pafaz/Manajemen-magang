@@ -33,10 +33,9 @@ class KehadiranRepository implements KehadiranInterface
 
     public function update(int $id, array $data): Kehadiran
     {
-        $category = Kehadiran::findOrFail($id);
-        $category->update($data);
-
-        return $category;
+        $kehadiran = Kehadiran::findOrFail($id);
+        $kehadiran->update($data);
+        return $kehadiran;
     }
 
     public function delete(int $id): void

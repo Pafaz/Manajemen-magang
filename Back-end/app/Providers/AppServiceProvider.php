@@ -33,6 +33,7 @@ use App\Repositories\PiketRepository;
 use App\Repositories\SuratRepository;
 use Illuminate\Support\Facades\Event;
 use App\Interfaces\JamKantorInterface;
+use App\Interfaces\KehadiranInterface;
 use App\Repositories\CabangRepository;
 use App\Repositories\DivisiRepository;
 use App\Repositories\JurnalRepository;
@@ -52,10 +53,13 @@ use App\Repositories\KategoriRepository;
 use App\Repositories\LowonganRepository;
 use App\Repositories\ProgressRepository;
 use App\Repositories\JamKantorRepository;
+use App\Repositories\KehadiranRepository;
 use App\Repositories\NotifikasiRepository;
 use App\Repositories\PerusahaanRepository;
 use App\Repositories\PresentasiRepository;
+use App\Interfaces\RekapKehadiranInterface;
 use App\Interfaces\JadwalPresentasiInterface;
+use App\Repositories\RekapKehadiranRepository;
 use App\Repositories\JadwalPresentasiRepository;
 
 class AppServiceProvider extends ServiceProvider
@@ -91,6 +95,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(UserInterface::class, UserRepository::class);
         $this->app->bind(AdminInterface::class, AdminRepository::class);
         $this->app->bind(JurnalInterface::class, JurnalRepository::class);
+        $this->app->bind(KehadiranInterface::class, KehadiranRepository::class);
+        $this->app->bind(RekapKehadiranInterface::class, RekapKehadiranRepository::class);
     }
 
     /**

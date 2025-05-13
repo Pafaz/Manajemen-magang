@@ -52,9 +52,9 @@ class CabangController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Cabang $cabang)
+    public function destroy( $cabang)
     {
-        return $this->cabangService->deleteCabang($cabang->id);
+        return $this->cabangService->deleteCabang($cabang);
     }
 
     public function setCabangAktif(Request $request)

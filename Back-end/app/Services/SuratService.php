@@ -95,6 +95,7 @@ class SuratService
 
     public function createSurat(array $data, string $jenis)
     {
+        // dd($data);
         DB::beginTransaction();
 
         try {
@@ -104,6 +105,8 @@ class SuratService
             $this->suratInterface->create([
                 'id_peserta' => $data['id_peserta'],
                 'id_cabang' => $isPenerimaan ? $data['id_cabang'] : auth('sanctum')->user()->id_cabang_aktif,
+                'keterangan_surat'=> $data['keterangan_surat'],
+                'alasan'=> $data['alasan'],
                 'jenis' => $jenis,
                 'file_path' => $filePath
             ]);

@@ -15,6 +15,8 @@ class Surat extends Model
     protected $fillable = [
         'id_peserta',
         'id_cabang',
+        'keterangan_surat',
+        'alasan',
         'jenis',
         'file_path',
         'created_at',

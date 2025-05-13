@@ -30,7 +30,6 @@ class PiketService
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
         $data['id_cabang'] = $id_cabang;
 
-        // Check if piket already exists for this day and branch
         $existingPiket = Piket::where('hari', $data['hari'])
             ->where('shift', $data['shift'])
             ->where('id_cabang', $id_cabang)
@@ -61,7 +60,6 @@ class PiketService
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
         
-        // Find the piket and ensure it belongs to the current branch
         $piket = Piket::where('id', $id)
             ->where('id_cabang', $id_cabang)
             ->first();
@@ -74,7 +72,6 @@ class PiketService
             );
         }
         
-        // Delete the piket (relationships will be deleted due to database cascade or by the model event)
         $this->piketInterface->delete($id);
         
         return Api::response(
@@ -84,15 +81,14 @@ class PiketService
         );
     }
 
-    public function removePesertaFromPiket(int $piketId, int $pesertaId)
+    public function removePesertaFromPiket(int $piketId, string $pesertaId)
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
         
-        // Find the piket and ensure it belongs to the current branch
         $piket = Piket::where('id', $piketId)
             ->where('id_cabang', $id_cabang)
             ->first();
-            
+
         if (!$piket) {
             return Api::response(
                 null,
@@ -101,10 +97,8 @@ class PiketService
             );
         }
         
-        // Detach only the specified participant
         $piket->peserta()->detach($pesertaId);
         
-        // Reload the piket with its participants
         $piket->load('peserta');
         
         return Api::response(

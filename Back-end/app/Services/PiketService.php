@@ -32,6 +32,7 @@ class PiketService
 
         // Check if piket already exists for this day and branch
         $existingPiket = Piket::where('hari', $data['hari'])
+            ->where('shift', $data['shift'])
             ->where('id_cabang', $id_cabang)
             ->first();
 
@@ -56,12 +57,6 @@ class PiketService
         );
     }
 
-    /**
-     * Delete a piket record along with its participant relationships
-     *
-     * @param int $id The ID of the piket to delete
-     * @return mixed API response
-     */
     public function deletePiket(int $id)
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
@@ -88,14 +83,7 @@ class PiketService
             Response::HTTP_OK
         );
     }
-    
-    /**
-     * Remove a specific participant from a piket schedule
-     *
-     * @param int $piketId The ID of the piket
-     * @param int $pesertaId The ID of the participant to remove
-     * @return mixed API response
-     */
+
     public function removePesertaFromPiket(int $piketId, int $pesertaId)
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;

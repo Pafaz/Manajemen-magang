@@ -78,4 +78,9 @@ class PiketController extends Controller
     {
         return $this->piketService->removePesertaFromPiket($piketId, $pesertaId);
     }
+
+    public function getPiketPeserta()
+    {
+        return $this->piketService->getPiket();
+    }
 }

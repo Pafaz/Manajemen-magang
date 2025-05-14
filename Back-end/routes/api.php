@@ -41,7 +41,7 @@ Route::get('/lowongan/{id}/detail', [LowonganController::class,'show']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     //Peserta
-    Route::group(['role:peserta'], function () {
+    Route::group(['middleware' => 'role:peserta'], function () {
         Route::apiResource('peserta', PesertaController::class);
         Route::apiResource('jurnal',JurnalController::class);
         Route::apiResource('jurusan', JurusanController::class);
@@ -52,10 +52,11 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/izin', [IzinController::class, 'store']);
         Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
         Route::get('/complete/magang', [PesertaController::class, 'isMagang']);
+        Route::get('/piket-peserta', [PiketController::class,'getPiketPeserta']);
     });
 
     //Perusahaan
-    Route::group(['role:perusahaan'], function () {
+    Route::group(['middleware' => 'role:perusahaan'], function () {
         Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('admin', AdminCabangController::class);
         Route::apiResource('divisi', DivisiController::class);
@@ -93,19 +94,19 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     //Admin
-    Route::group(['role:admin'], function () {
+    Route::group(['middleware' => 'role:admin'], function () {
         Route::apiResource('piket', PiketController::class);
         Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);
         Route::apiResource('kategori-proyek', KategoriController::class);
     });
 
     //Mentor
-    Route::group(['role:mentor'], function () {
+    Route::group(['middleware' => 'role:mentor'], function () {
         Route::apiResource('presentasi', JadwalPresentasiController::class)->only(['index','store', 'show']);
     });
 
     //Superadmin
-    Route::group(['role:superadmin'], function () {});
+    Route::group(['middleware' => 'role:superadmin'], function () {});
 
     //foto
     Route::post('/foto/{foto}/update', [FotoController::class, 'update']);

@@ -70,7 +70,7 @@ class AbsensiService
         }
     }
 
-    public function buatAbsensiDenganRekap(int $idPeserta, Carbon $tanggal, string $status)
+    public function buatAbsensiDenganRekap( $idPeserta, Carbon $tanggal, string $status)
     {
         $this->absensiInterface->create([
             'id_peserta' => $idPeserta,

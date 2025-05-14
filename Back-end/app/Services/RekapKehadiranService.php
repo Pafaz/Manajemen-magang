@@ -41,6 +41,7 @@ class RekapKehadiranService
         match ($status) {
             'izin' => $rekap->total_izin += 1,
             'sakit' => $rekap->total_sakit += 1,
+            'alfa' => $rekap->total_alpha += 1,
             default => throw new \InvalidArgumentException("Status absensi tidak valid"),
         };
 

@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Helpers\Api;
-use App\Http\Resources\JamKantorResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\JamKantorInterface;
+use App\Http\Resources\JamKantorResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class JamKantorService
@@ -34,9 +35,10 @@ class JamKantorService
             return null;
         }
 
-        $hariIni = strtolower(now()->locale('id')->dayName);
+        $hariIni = strtolower(Carbon::now('Asia/Jakarta')->locale('id')->dayName);
         return $this->jamKantorInterface->getAll()
             ->where('id_cabang', $user->id_cabang_aktif)
+            ->where('status',true)
             ->firstWhere('hari', $hariIni);
     }
 

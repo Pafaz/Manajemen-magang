@@ -66,7 +66,7 @@ class Peserta extends Model
 
     public function kehadiran()
     {
-        return $this->hasOne(Kehadiran::class, 'id_peserta');
+        return $this->hasMany(Kehadiran::class, 'id_peserta');
     }
 
     public function rekapKehadiran()

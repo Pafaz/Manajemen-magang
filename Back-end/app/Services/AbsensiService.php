@@ -44,7 +44,7 @@ class AbsensiService
 
     public function generateAlfaPesertaHarian(Carbon $tanggal)
     {
-        $pesertas = $this->magangService->getAllPesertaMagang(); // Hanya peserta aktif
+        $pesertas = $this->magangService->getAllPesertaMagang();
         
         $jamKantor = $this->jamKantorService->getJamKantorToday();
         if (!$jamKantor || !$jamKantor->status) {

@@ -21,6 +21,7 @@ class PesertaRepository implements PesertaInterface
     {
         return Peserta::with([
                 'user',
+                'magang',
                 'kehadiran',
                 'absensi',
                 'rekapKehadiran',

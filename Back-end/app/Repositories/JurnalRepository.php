@@ -12,7 +12,6 @@ class JurnalRepository implements JurnalInterface
     {
         return Jurnal::where('id_peserta', auth('sanctum')->user()->peserta->id)->get();
     }
-
     public function find(int $id): ?Jurnal
     {
         return Jurnal::findOrFail($id)->first();

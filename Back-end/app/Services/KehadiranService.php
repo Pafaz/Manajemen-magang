@@ -67,6 +67,8 @@ class KehadiranService
                 return Api::response(null, 'Anda sudah absen hari ini.', Response::HTTP_FORBIDDEN);
             }
 
+            
+            
             $kehadiranHariIni = $this->kehadiranInterface->findByDate($peserta->id, $tanggalHariIni);
             $kehadiran = null;
 
@@ -82,7 +84,7 @@ class KehadiranService
                         'metode'     => self::METODE_ONLINE
                     ]);
                     $this->rekapKehadiranService->updateRekapHarian($peserta->id, $tanggalHariIni, $terlambat);
-                
+
                 } else {
                     return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
                 }
@@ -96,7 +98,6 @@ class KehadiranService
                     $kehadiran = $this->kehadiranInterface->update($kehadiranHariIni->id, ['jam_pulang' => $jamSekarang]);
                 }
             }
-
             if ($kehadiran) {
                 DB::commit();
                 return Api::response($kehadiran, 'Berhasil melakukan absen.', Response::HTTP_OK);

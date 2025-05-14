@@ -16,7 +16,7 @@ class RekapKehadiranRepository implements RekapKehadiranInterface
     public function findOrCreateByPesertaBulanTahun( $peserta_id, $bulan, $tahun)
     {
         return RekapKehadiran::firstOrCreate([
-            'peserta_id' => $peserta_id,
+            'id_peserta' => $peserta_id,
             'bulan' => $bulan,
             'tahun' => $tahun,
         ]);

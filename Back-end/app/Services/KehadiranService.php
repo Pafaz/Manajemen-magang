@@ -80,8 +80,8 @@ class KehadiranService
 
             if (!$kehadiranHariIni) {
                 // Absen Masuk
-                if ($jamSekarang >= $jamKantor->awal_masuk && $jamSekarang <= $jamKantor->akhir_masuk) {
-                    $terlambat = $jamSekarang > $jamKantor->awal_masuk;
+                if ($jamSekarang >= $jamKantor->awal_masuk) {
+                    $terlambat = $jamSekarang >= $jamKantor->akhir_masuk && $jamSekarang <= $jamKantor->awal_istirahat;
 
                     $kehadiran = $this->kehadiranInterface->create([
                         'id_peserta' => $peserta->id,
@@ -89,9 +89,9 @@ class KehadiranService
                         'jam_masuk'  => $jamSekarang,
                         'metode'     => self::METODE_ONLINE
                     ]);
-                    
-                    $this->rekapKehadiranService->updateRekapHarian($peserta->id, $tanggalHariIni, $terlambat);
 
+                    $this->rekapKehadiranService->updateRekapHarian($peserta->id, $tanggalHariIni, $terlambat);
+                    return Api::response(null, $terlambat ? 'Absen berhasil, tetapi Anda terlambat.' : 'Absen berhasil.', Response::HTTP_OK);
                 } else {
                     return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
                 }

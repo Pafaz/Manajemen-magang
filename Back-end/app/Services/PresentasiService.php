@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use App\Http\Resources\DetailJadwalPresentasiResource;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\PresentasiInterface;
 use App\Http\Resources\PresentasiResource;
@@ -62,6 +63,11 @@ class PresentasiService
     public function getDetailJadwalPresentasi($id)
     {
         $data = $this->jadwalPresentasiInterface->find($id);
+
+        return Api::response(
+            DetailJadwalPresentasiResource::make($data),
+            'Data Presentasi Berhasil ditampilkan',
+        );
     }
 
     public function getJadwalPresentasi()
@@ -77,37 +83,4 @@ class PresentasiService
             'Jadwal Presentasi '. $nama_mentor . ' berhasil ditampilkan'
         );
     }
-    
-    // public function getAllJadwalPresentasiForPeserta()
-    // {
-    //     $peserta = Auth::user();
-    //     if (!$peserta || !$peserta->hasRole('peserta')) {
-    //         throw new \Exception('Only participants can view their presentation schedules');
-    //     }
-
-    //     // Get all internships (magang) for this participant
-    //     $magangIds = Magang::where('peserta_id', $peserta->id)->pluck('id');
-        
-    //     // Get unique mentor IDs from the participant's internships
-    //     $mentorIds = Magang::where('peserta_id', $peserta->id)
-    //         ->whereNotNull('mentor_id')
-    //         ->pluck('mentor_id')
-    //         ->unique();
-
-    //     // Get all presentations scheduled by these mentors
-    //     $presentasi = Presentasi::whereIn('mentor_id', $mentorIds)
-    //         ->orderBy('tanggal', 'asc')
-    //         ->orderBy('waktu_mulai', 'asc')
-    //         ->get();
-
-    //     // Add additional data about whether participant has already applied to this presentation
-    //     return $presentasi->map(function ($item) use ($peserta) {
-    //         $hasApplied = RiwayatPresentasi::where('presentasi_id', $item->id)
-    //             ->where('peserta_id', $peserta->id)
-    //             ->exists();
-            
-    //         $item->has_applied = $hasApplied;
-    //         return $item;
-    //     });
-    // }
 }

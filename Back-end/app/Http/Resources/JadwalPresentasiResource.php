@@ -19,11 +19,7 @@ class JadwalPresentasiResource extends JsonResource
             'judul' => $this->judul,
             'tanggal'=> $this->tanggal,
             'waktu_mulai' => $this->waktu_mulai,
-            'waktu_selesai' => $this->waktu_selesai,
-            'kuota' => $this->kuota,
-            'tipe' => $this->tipe,
-            'lokasi' => $this->lokasi ?? null,
-            'link_zoom' => $this->link_zoom ?? null,
+            'waktu_selesai' => $this->waktu_selesai
         ];
     }
 }

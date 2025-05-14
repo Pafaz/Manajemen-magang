@@ -77,21 +77,23 @@ class KehadiranService
             
             $kehadiranHariIni = $this->kehadiranInterface->findByDate($peserta->id, $tanggalHariIni);
             $kehadiran = null;
-
+            
+            $terlambat = $jamSekarang >= $jamKantor->akhir_masuk && $jamSekarang <= $jamKantor->awal_istirahat;
+            $statusTerlambat = $terlambat ? 1 : 0;
             if (!$kehadiranHariIni) {
                 // Absen Masuk
                 if ($jamSekarang >= $jamKantor->awal_masuk) {
-                    $terlambat = $jamSekarang >= $jamKantor->akhir_masuk && $jamSekarang <= $jamKantor->awal_istirahat;
 
                     $kehadiran = $this->kehadiranInterface->create([
                         'id_peserta' => $peserta->id,
                         'tanggal'    => $tanggalHariIni,
                         'jam_masuk'  => $jamSekarang,
-                        'metode'     => self::METODE_ONLINE
+                        'metode'     => self::METODE_ONLINE,
+                        'status_kehadiran' => $statusTerlambat
                     ]);
+                    // dd($kehadiran);
 
                     $this->rekapKehadiranService->updateRekapHarian($peserta->id, $tanggalHariIni, $terlambat);
-                    return Api::response(null, $terlambat ? 'Absen berhasil, tetapi Anda terlambat.' : 'Absen berhasil.', Response::HTTP_OK);
                 } else {
                     return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
                 }
@@ -107,7 +109,7 @@ class KehadiranService
             }
             if ($kehadiran) {
                 DB::commit();
-                return Api::response($kehadiran, 'Berhasil melakukan absen.', Response::HTTP_OK);
+                return Api::response($kehadiran, $terlambat ? 'Absen berhasil, tetapi Anda terlambat.' : 'Berhasil melakukan absen.', Response::HTTP_OK);
             } else {
                 DB::rollBack();
                 return Api::response(null, 'Semua sesi kehadiran sudah diisi atau waktu tidak valid.', Response::HTTP_FORBIDDEN);

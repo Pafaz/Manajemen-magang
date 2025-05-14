@@ -27,6 +27,7 @@ return new class extends Migration
             $table->uuid('id_peserta');
             $table->date('tanggal');
             $table->enum('metode', ['online', 'rfid'])->nullable();
+            $table->boolean('status_kehadiran');
 
             // Catatan waktu jika hadir normal
             $table->time('jam_masuk')->nullable();

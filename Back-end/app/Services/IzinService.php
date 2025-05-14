@@ -17,13 +17,16 @@ class IzinService
 {
     private IzinInterface $izinInterface;
     private FotoService $foto;
-    private AbsensiInterface $absensiInterface;
+    private AbsensiService $absensiService;
 
-    public function __construct(IzinInterface $izinInterface, FotoService $foto, AbsensiInterface $absensiInterface)
+    public function __construct(
+        IzinInterface $izinInterface, 
+        FotoService $foto, 
+        AbsensiService $absensiService,)
     {
         $this->foto = $foto;
         $this->izinInterface = $izinInterface;
-        $this->absensiInterface = $absensiInterface;
+        $this->absensiService = $absensiService;
     }
 
     public function getIzin($id = null)
@@ -91,17 +94,13 @@ class IzinService
             'status_izin' => $data['status_izin'],
         ]);
         
-        // Buat absensi otomatis jika izin diterima
+         // Buat absensi otomatis jika izin diterima
         if ($izin && $izin->status_izin === 'diterima') {
             $tanggalMulai = Carbon::parse($izin->mulai);
             $tanggalSelesai = Carbon::parse($izin->selesai);
 
             for ($date = $tanggalMulai->copy(); $date->lte($tanggalSelesai); $date->addDay()) {
-                $this->absensiInterface->create([
-                    'id_peserta' => $izin->id_peserta,
-                    'tanggal'    => $date->format('Y-m-d'),
-                    'status'     => $izin->jenis,
-                ]);
+                $this->absensiService->buatAbsensiDenganRekap($izin->id_peserta, $date, $izin->jenis);
             }
         }
         return Api::response(
@@ -134,22 +133,19 @@ class IzinService
                 if ($status === 'ditolak') {
                     $this->izinInterface->delete($id);
                     $results[] = ['id' => $id, 'status' => 'ditolak dan dihapus'];
-                } else {
-                    $this->izinInterface->update($id, ['status_izin' => $status]);
-                    
-                    $results[] = ['id' => $id, 'status' => 'status diubah menjadi diterima'];
+                    continue;
+                }
 
-                     // Buat absensi otomatis
-                    $tanggalMulai = Carbon::parse(time: $izin->mulai);
-                    $tanggalSelesai = Carbon::parse($izin->selesai);
-                    for ($date = $tanggalMulai->copy(); $date->lte($tanggalSelesai); $date->addDay()) {
-                        $this->absensiInterface->create([
-                            'id_peserta' => $izin->id_peserta,
-                            'tanggal'    => $date->format('Y-m-d'),
-                            'status'     => 'izin',
-                        ]);
-                    }
+                // Status diterima
+                $this->izinInterface->update($id, ['status_izin' => $status]);
+                $results[] = ['id' => $id, 'status' => 'status diubah menjadi diterima'];
 
+                // Buat absensi otomatis + update rekap
+                $tanggalMulai = Carbon::parse($izin->mulai);
+                $tanggalSelesai = Carbon::parse($izin->selesai);
+
+                for ($date = $tanggalMulai->copy(); $date->lte($tanggalSelesai); $date->addDay()) {
+                    $this->absensiService->buatAbsensiDenganRekap($izin->id_peserta, $date, $izin->jenis);
                 }
             }
 

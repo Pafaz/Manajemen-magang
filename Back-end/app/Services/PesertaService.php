@@ -37,6 +37,8 @@ class PesertaService
     public function getPesertaByCabang(){
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
         $data = $this->pesertaInterface->getByCabang($cabang);
+
+        dd($data);
         return Api::response(
             PesertaResource::collection($data),
             'Peserta Fetched Successfully',
@@ -74,15 +76,6 @@ class PesertaService
             'Peserta telah terdaftar magang',
         );
     }
-
-    // public function getPesertaByPerusahaan($perusahaan){
-    //     $data = $this->pesertaInterface->getByPerusahaan($perusahaan);
-    //     return Api::response(
-    //         PesertaResource::collection($data),
-    //         'Peserta Fetched Successfully',
-    //         Response::HTTP_OK
-    //     );
-    // }
 
     public function simpanProfilPeserta(array $data, bool $isUpdate = false, $id = null)
     {

@@ -38,7 +38,7 @@ class JurnalController extends Controller
             'judul' => 'required|string',
             'deskripsi' => 'required|string',
             'tanggal' => 'required|date',
-            'bukti' => 'required|image|mimes',
+            'bukti' => 'required|image|mimes:,jpeg',
         ]);
         return $this->jurnalService->simpanJurnal($jurnal);
     }
@@ -62,15 +62,15 @@ class JurnalController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $jurnal)
+    public function update(Request $request, $id)
     {
         $jurnal = $request->validate([
             'judul' => 'required|string',
-            'deskripsi' => 'required|string',
             'tanggal' => 'required|date',
-            'bukti' => 'required|image|mimes',
+            'deskripsi' => 'required|string',
+            'bukti' => 'required|image|mimes:png,jpg,jpeg',
         ]);
-        return $this->jurnalService->simpanJurnal($jurnal, true, $jurnal);
+        return $this->jurnalService->simpanJurnal($jurnal, true, $id);
     }
 
     /**

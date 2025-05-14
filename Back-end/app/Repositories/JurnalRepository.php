@@ -17,7 +17,6 @@ class JurnalRepository implements JurnalInterface
     {
         return Jurnal::findOrFail($id)->first();
     }
-
     public function firstOrCreate(array $attributes): Jurnal
     {
         return Jurnal::firstOrCreate($attributes);

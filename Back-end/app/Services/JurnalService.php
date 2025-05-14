@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\IzinResource;
 use App\Http\Resources\JurnalResource;
 use App\Interfaces\JurnalInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -36,7 +35,6 @@ class JurnalService
 
         return Api::response($data, $message);
     }
-
     public function simpanJurnal(array $data, $isUpdate = false, $id = null)
     {
         // dd($data);
@@ -46,7 +44,7 @@ class JurnalService
             return Api::response(null, 'Peserta belum melengkapi profil.', Response::HTTP_FORBIDDEN);
         }
 
-        if (!$user->peserta->id_cabang_aktif) {
+        if (!$user->id_cabang_aktif) {
             return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
         }
 

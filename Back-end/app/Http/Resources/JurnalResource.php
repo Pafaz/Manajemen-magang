@@ -13,9 +13,11 @@ class JurnalResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
-    {
+    {   
         return [
             'id' => $this->id,
+            'nama' => $this->peserta->user->nama,
+            'sekolah' => $this->peserta->sekolah,
             'judul' => $this->judul,
             'deskripsi' => $this->deskripsi,
             'tanggal' => $this->tanggal,

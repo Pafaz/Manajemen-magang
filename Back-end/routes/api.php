@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::put('/many/magang', [MagangController::class, 'approveMany']);
 
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
+        Route::get('/jurnal-peserta-cabang', [PesertaController::class, 'getJurnalPeserta']);
         Route::put('jam-kantor/{hari}/nonaktif', [JamKantorController::class, 'unactivatedJamKantor']);
         Route::put('jam-kantor/{hari}/aktif', [JamKantorController::class, 'activatedJamKantor']);
         Route::apiResource('surat', SuratController::class);

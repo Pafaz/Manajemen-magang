@@ -53,10 +53,11 @@ class PesertaController extends Controller
     public function isMagang(){
         return $this->pesertaService->isMagang();
     }
-    // public function showByPerusahaan($id_perusahaan)
-    // {
-    //     return $this->pesertaService->getPesertaByPerusahaan($id_perusahaan);
-    // }
+
+    public function getJurnalPeserta()
+    {
+        return $this->pesertaService->getJurnalPesertaByCabang();
+    }
 
     public function showByCabang()
     {

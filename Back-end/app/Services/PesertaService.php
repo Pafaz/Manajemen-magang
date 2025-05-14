@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use App\Http\Resources\JurnalResource;
 use App\Services\FotoService;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
@@ -40,6 +41,17 @@ class PesertaService
         // dd($data);
         return Api::response(
             PesertaResource::collection($data),
+            'Peserta Fetched Successfully',
+            Response::HTTP_OK
+        );
+    }
+
+    public function getJurnalPesertaByCabang(){
+        $cabang = auth('sanctum')->user()->id_cabang_aktif;
+        $data = $this->pesertaInterface->getJurnalPeserta($cabang);
+        // dd($data);
+        return Api::response(
+            $data,
             'Peserta Fetched Successfully',
             Response::HTTP_OK
         );

@@ -65,7 +65,6 @@ class JurnalController extends Controller
     {
         $jurnal = $request->validate([
             'judul' => 'required|string',
-            'tanggal' => 'required|date',
             'deskripsi' => 'required|string',
             'bukti' => 'required|image|mimes:png,jpg,jpeg',
         ]);

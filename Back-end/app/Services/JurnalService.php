@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Helpers\Api;
-use App\Http\Resources\JurnalResource;
 use App\Interfaces\JurnalInterface;
+use App\Http\Resources\JurnalResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class JurnalService
@@ -51,6 +52,7 @@ class JurnalService
         $dataJurnal = [
             'id_peserta' => $user->peserta->id,
             'deskripsi' => $data['deskripsi'],
+            'tanggal' => Carbon::now('Asia/Jakarta'),
             'judul' => $data['judul'],
         ];
 

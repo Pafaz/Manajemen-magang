@@ -6,8 +6,8 @@ use App\Helpers\Api;
 use Illuminate\Support\Carbon;
 use App\Interfaces\SuratInterface;
 use Illuminate\Support\Facades\DB;
-// use Barryvdh\DomPDF\Facade\Pdf;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
+// use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\PesertaInterface;
 use Illuminate\Support\Facades\Storage;
@@ -147,13 +147,13 @@ class SuratService
         $fileName = "surat-penerimaan-{$data['peserta']}-{$data['id_peserta']}.pdf";
         $filePath = self::SURAT_PENERIMAAN . '/' . $fileName;
 
-        // $pdf = Pdf::loadView('surat.penerimaan', $data);
+        $pdf = Pdf::loadView('surat.penerimaan', $data);
 
-        Pdf::view('surat.penerimaan', $data)
-            ->disk('public')
-            ->save($filePath);
+        // Pdf::view('surat.penerimaan', $data)
+        //     ->disk('public')
+        //     ->save($filePath);
 
-        // Storage::disk('public')->put($filePath, $pdf->output());
+        Storage::disk('public')->put($filePath, $pdf->output());
         
         return $filePath;
     }
@@ -184,13 +184,13 @@ class SuratService
         $fileName = "surat-peringatan-{$data['id_peserta']}-{$data['keterangan_surat']}.pdf";
         $filePath = self::SURAT_PERINGATAN . '/' . $fileName;
 
-        // $pdf = Pdf::loadView('surat.peringatan', $dataSurat);
+        $pdf = Pdf::loadView('surat.peringatan', $dataSurat);
 
-        Pdf::view('surat.peringatan', $dataSurat)
-            ->disk('public')
-            ->save($filePath);
+        // Pdf::view('surat.peringatan', $dataSurat)
+        //     ->disk('public')
+        //     ->save($filePath);
 
-        // Storage::disk('public')->put($filePath, $pdf->output());
+        Storage::disk('public')->put($filePath, $pdf->output());
         
         return $filePath;
     }

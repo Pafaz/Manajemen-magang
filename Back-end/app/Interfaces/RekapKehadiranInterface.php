@@ -9,5 +9,5 @@ use App\Interfaces\Base\GetAllInterface;
 
 interface RekapKehadiranInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface
 {
-    //
+    public function findOrCreateByPesertaBulanTahun($peserta_id, $bulan, $tahun);
 }

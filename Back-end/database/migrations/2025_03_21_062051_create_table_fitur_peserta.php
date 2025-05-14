@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('judul');
             $table->text('deskripsi');
             $table->date('tanggal');
+            $table->timestamps();
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
         });

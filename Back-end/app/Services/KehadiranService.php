@@ -19,17 +19,17 @@ class KehadiranService
     private JamKantorService $jamKantorService;
     private AbsensiInterface $absensiInterface;
     private KehadiranInterface $kehadiranInterface;
-    private RekapKehadiranInterface $rekapKehadiranInterface; 
+    private RekapKehadiranService $rekapKehadiranService; 
     public function __construct(
         JamKantorService $jamKantorService, 
         AbsensiInterface $absensiInterface,
-        RekapKehadiranInterface $rekapKehadiranInterface,
+        RekapKehadiranService $rekapKehadiranService,
         KehadiranInterface $kehadiranInterface)
     {
         $this->absensiInterface = $absensiInterface;
         $this->jamKantorService = $jamKantorService;
         $this->kehadiranInterface = $kehadiranInterface;
-        $this->rekapKehadiranInterface = $rekapKehadiranInterface;
+        $this->rekapKehadiranService = $rekapKehadiranService;
     }
 
     public function getKehadiran()
@@ -73,12 +73,16 @@ class KehadiranService
             if (!$kehadiranHariIni) {
                 // Absen Masuk
                 if ($jamSekarang >= $jamKantor->awal_masuk && $jamSekarang <= $jamKantor->akhir_masuk) {
+                    $terlambat = $jamSekarang > $jamKantor->awal_masuk;
+
                     $kehadiran = $this->kehadiranInterface->create([
                         'id_peserta' => $peserta->id,
                         'tanggal'    => $tanggalHariIni,
                         'jam_masuk'  => $jamSekarang,
                         'metode'     => self::METODE_ONLINE
                     ]);
+                    $this->rekapKehadiranService->updateRekapHarian($peserta->id, $tanggalHariIni, $terlambat);
+                
                 } else {
                     return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
                 }
@@ -105,25 +109,5 @@ class KehadiranService
             return Api::response(null, $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    // public function updateRekapHarian( $peserta, Carbon $tanggal, bool $terlambat = false)
-    // {
-    //     $bulan = $tanggal->format('m');
-    //     $tahun = $tanggal->format('Y');
-
-    //     // Ambil atau buat rekap bulanan
-    //     $rekap = $this->rekapKehadiranInterface->findOrCreateByPesertaBulanTahun(
-    //         $peserta->id,
-    //         $bulan,
-    //         $tahun
-    //     );
-
-    //     $rekap->total_hadir += 1;
-    //     if ($terlambat) {
-    //         $rekap->total_terlambat += 1;
-    //     }
-
-    //     $rekap->save();
-    // }
 
 }

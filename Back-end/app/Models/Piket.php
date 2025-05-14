@@ -20,8 +20,9 @@ class Piket extends Model
 
     public function peserta()
     {
-        return $this->belongsToMany(Peserta::class, 'piket_peserta');
+        return $this->belongsToMany(Peserta::class, 'piket_peserta', 'piket_id', 'peserta_id');
     }
+
 
     public function cabang()
     {

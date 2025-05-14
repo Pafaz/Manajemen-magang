@@ -52,6 +52,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/izin', [IzinController::class, 'store']);
         Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
         Route::get('/complete/magang', [PesertaController::class, 'isMagang']);
+        Route::get('/piket-peserta', [PiketController::class,'getPiketPeserta']);
     });
 
     //Perusahaan

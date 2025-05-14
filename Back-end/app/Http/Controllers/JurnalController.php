@@ -64,9 +64,9 @@ class JurnalController extends Controller
     public function update(Request $request, $id)
     {
         $jurnal = $request->validate([
-            'judul' => 'required|string',
-            'deskripsi' => 'required|string',
-            'bukti' => 'required|image|mimes:png,jpg,jpeg',
+            'judul' => 'sometimes|string',
+            'deskripsi' => 'sometimes|string',
+            'bukti' => 'sometimes|image|mimes:png,jpg,jpeg',
         ]);
         return $this->jurnalService->simpanJurnal($jurnal, true, $id);
     }

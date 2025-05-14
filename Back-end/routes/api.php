@@ -45,10 +45,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('peserta', PesertaController::class);
         Route::apiResource('jurnal',JurnalController::class);
         Route::apiResource('jurusan', JurusanController::class);
+        Route::get('/peserta/detail',[PesertaController::class, 'show']);
         Route::post('/magang', [MagangController::class, 'store']);
-        // Route::post('/absensi', [AbsensiController::class, 'store']);
-        // Route::get('/absensi', [AbsensiController::class, 'index']);
         Route::post('/kehadiran', [KehadiranController::class, 'store']);
+        Route::get('/kehadiran',[KehadiranController::class, 'index']);
         Route::post('/izin', [IzinController::class, 'store']);
         Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
         Route::get('/complete/magang', [PesertaController::class, 'isMagang']);

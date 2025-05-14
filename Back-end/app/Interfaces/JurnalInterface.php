@@ -10,5 +10,6 @@ use App\Interfaces\Base\UpdateInterface;
 
 interface JurnalInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface,UpdateInterface
 {
-    //
+    public function findByPesertaAndTanggal($idPeserta, $tanggal);
+
 }

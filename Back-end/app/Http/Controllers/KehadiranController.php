@@ -16,4 +16,9 @@ class KehadiranController extends Controller
     {
         return $this->kehadiranService->simpanKehadiran();
     }
+
+    public function index()
+    {
+        return $this->kehadiranService->getKehadiran();
+    }
 }

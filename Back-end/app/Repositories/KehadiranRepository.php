@@ -11,7 +11,7 @@ class KehadiranRepository implements KehadiranInterface
 {
     public function getAll(): Collection
     {
-        return Kehadiran::all();
+        return Kehadiran::where('id_peserta', auth('sanctum')->user()->peserta->id)->get();
     }
 
     public function find(int $id): ? Kehadiran

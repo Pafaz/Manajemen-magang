@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Peserta;
 use App\Interfaces\PesertaInterface;
@@ -18,16 +19,24 @@ class PesertaRepository implements PesertaInterface
 
     public function getByCabang($idCabang): Collection
     {
-        return Peserta::join('users', 'peserta.id_user', '=', 'users.id')
-            ->where('users.id_cabang_aktif', $idCabang)
-            ->select('peserta.*') 
+        return Peserta::with([
+                'user',
+                'magang',
+                'kehadiran',
+                'absensi',
+                'rekapKehadiran',
+                'jurnal' => function ($query) {
+                    $query->whereDate('tanggal', Carbon::now('Asia/Jakarta')->toDateString());
+                }
+            ])
+            ->whereHas('user', function ($query) use ($idCabang) {
+                $query->where('id_cabang_aktif', $idCabang);
+            })
             ->get();
     }
-
-
     public function find( $id): ? Peserta
     {
-        return Peserta::findOrFail($id)->first();
+        return Peserta::where('id_user', auth('sanctum')->user()->id);
     }
 
     public function create(array $data): ? Peserta

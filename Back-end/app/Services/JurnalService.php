@@ -49,6 +49,17 @@ class JurnalService
             return Api::response(null, 'Anda belum terdaftar magang.', Response::HTTP_FORBIDDEN);
         }
 
+        $tanggalHariIni = Carbon::now('Asia/Jakarta')->toDateString();
+
+        if (!$isUpdate) {
+            $jurnalHariIni = $this->jurnalInterface
+                ->findByPesertaAndTanggal($user->peserta->id, $tanggalHariIni);
+
+            if ($jurnalHariIni) {
+                return Api::response(null, 'Anda sudah membuat jurnal hari ini.', Response::HTTP_CONFLICT);
+            }
+        }
+
         $dataJurnal = [
             'id_peserta' => $user->peserta->id,
             'deskripsi' => $data['deskripsi'],

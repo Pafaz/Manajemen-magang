@@ -13,6 +13,12 @@ class JurnalRepository implements JurnalInterface
         return Jurnal::where('id_peserta', auth('sanctum')->user()->peserta->id)->get();
     }
 
+    public function findByPesertaAndTanggal($idPeserta, $tanggal)
+    {
+        return Jurnal::where('id_peserta', $idPeserta)
+            ->whereDate('tanggal', $tanggal)
+            ->first();
+    }
     public function find(int $id): ?Jurnal
     {
         return Jurnal::findOrFail($id)->first();

@@ -16,7 +16,10 @@ class RekapKehadiranService
     {
         $this->rekapKehadiranInterface = $rekapKehadiranInterface;
     }
-
+    public function getRekap()
+    {
+        return $this->rekapKehadiranInterface->getAll();
+    }
     // Untuk hadir
     public function updateRekapHarian($peserta,  $tanggal, bool $terlambat = false)
     {
@@ -33,7 +36,7 @@ class RekapKehadiranService
     // Untuk izin, sakit, alfa
     public function updateRekapAbsensi($peserta,  $tanggal, string $status)
     {
-        $rekap = $this->getOrCreateRekap($peserta, $tanggal);
+        $rekap = $this->getOrCreateRekap($peserta,  $tanggal);
 
         match ($status) {
             'izin' => $rekap->total_izin += 1,
@@ -45,10 +48,11 @@ class RekapKehadiranService
     }
 
     // Utility agar tidak duplikasi
-    private function getOrCreateRekap($peserta, Carbon $tanggal)
+    private function getOrCreateRekap($peserta, $tanggal)
     {
+        $tanggal = Carbon::parse($tanggal);
         return $this->rekapKehadiranInterface->findOrCreateByPesertaBulanTahun(
-            $peserta->id,
+            $peserta,
             $tanggal->format('m'),
             $tanggal->format('Y')
         );

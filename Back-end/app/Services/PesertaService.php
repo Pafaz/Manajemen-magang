@@ -37,8 +37,7 @@ class PesertaService
     public function getPesertaByCabang(){
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
         $data = $this->pesertaInterface->getByCabang($cabang);
-
-        dd($data);
+        // dd($data);
         return Api::response(
             PesertaResource::collection($data),
             'Peserta Fetched Successfully',

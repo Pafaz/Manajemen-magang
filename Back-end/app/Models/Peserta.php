@@ -33,7 +33,7 @@ class Peserta extends Model
     }
     public function magang()
     {
-        return $this->belongsTo(Magang::class, 'id_magang');
+        return $this->hasOne(Magang::class, 'id_peserta');
     }
     public function absensi()
     {
@@ -44,7 +44,8 @@ class Peserta extends Model
         return $this->hasMany(Izin::class, 'id_peserta');
     }
 
-    public function jurnal(){
+    public function jurnal()
+    {
     return $this->hasMany(Jurnal::class, 'id_peserta');
     }
 
@@ -61,5 +62,15 @@ class Peserta extends Model
     public function presentasi()
     {
         return $this->hasMany(Presentasi::class,'id_peserta');
+    }
+
+    public function kehadiran()
+    {
+        return $this->hasOne(Kehadiran::class, 'id_peserta');
+    }
+
+    public function rekapKehadiran()
+    {
+        return $this->hasMany(RekapKehadiran::class, 'id_peserta');
     }
 }

@@ -36,11 +36,19 @@ class KehadiranService
     {
 
         $Kehadiran = $this->kehadiranInterface->getAll();
-        if (!$Kehadiran) {
-            return Api::response(null, 'Absensi tidak ditemukan', Response::HTTP_NOT_FOUND);
-        }
+        $Absensi = $this->absensiInterface->getAll();
+        $rekap = $this->rekapKehadiranService->getRekap();
 
-        return Api::response($Kehadiran, 'Berhasil mengambil semua data absensi', Response::HTTP_OK);
+        if (!$Kehadiran) {
+            return Api::response(null, 'Kehadiran tidak ditemukan', Response::HTTP_NOT_FOUND);
+        }
+        $data = [
+            'kehadiran' => $Kehadiran,
+            'rekap' => $rekap,
+            'absensi' => $Absensi
+        ];
+
+        return Api::response($data, 'Berhasil mengambil semua data kehadiran', Response::HTTP_OK);
     }
 
     public function simpanKehadiran()

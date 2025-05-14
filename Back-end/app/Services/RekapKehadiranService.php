@@ -16,7 +16,10 @@ class RekapKehadiranService
     {
         $this->rekapKehadiranInterface = $rekapKehadiranInterface;
     }
-
+    public function getRekap()
+    {
+        return $this->rekapKehadiranInterface->getAll();
+    }
     // Untuk hadir
     public function updateRekapHarian($peserta,  $tanggal, bool $terlambat = false)
     {

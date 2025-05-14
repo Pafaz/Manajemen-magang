@@ -10,9 +10,8 @@ class JurnalRepository implements JurnalInterface
 {
     public function getAll(): Collection
     {
-        return Jurnal::where('id_peserta', auth('sanctum')->user()->peserta->id)->get();
+        return Jurnal::with('peserta')->where('id_peserta', auth('sanctum')->user()->peserta->id)->get();
     }
-
     public function findByPesertaAndTanggal($idPeserta, $tanggal)
     {
         return Jurnal::where('id_peserta', $idPeserta)

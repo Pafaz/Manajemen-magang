@@ -34,6 +34,14 @@ class PesertaRepository implements PesertaInterface
             })
             ->get();
     }
+
+    public function getJurnalPeserta($idCabang)
+    {
+        return Peserta::with('jurnal')->whereHas('user', function ($query) use ($idCabang) {
+                $query->where('id_cabang_aktif', $idCabang);
+            })
+            ->get();
+    }
     public function find( $id): ? Peserta
     {
         return Peserta::where('id_user', auth('sanctum')->user()->id);

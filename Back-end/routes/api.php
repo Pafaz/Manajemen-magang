@@ -40,6 +40,8 @@ Route::get('/lowongan-all', [LowonganController::class,'getAllLowongan']);
 Route::get('/lowongan/{id}/detail', [LowonganController::class,'show']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
+    Route::apiResource('divisi', DivisiController::class);
+
     //Peserta
     Route::group(['middleware' => 'role:peserta'], function () {
         Route::apiResource('peserta', PesertaController::class);
@@ -59,7 +61,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::group(['middleware' => 'role:perusahaan'], function () {
         Route::apiResource('mitra', SekolahController::class);
         Route::apiResource('admin', AdminCabangController::class);
-        Route::apiResource('divisi', DivisiController::class);
         Route::apiResource('cabang', CabangController::class)->only(['index','store']);
         Route::apiResource('mentor', MentorController::class);
         Route::apiResource('cabang', CabangController::class);
@@ -74,6 +75,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::put('/many/magang', [MagangController::class, 'approveMany']);
 
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
+        Route::get('/jurnal-peserta-cabang', [PesertaController::class, 'getJurnalPeserta']);
         Route::put('jam-kantor/{hari}/nonaktif', [JamKantorController::class, 'unactivatedJamKantor']);
         Route::put('jam-kantor/{hari}/aktif', [JamKantorController::class, 'activatedJamKantor']);
         Route::apiResource('surat', SuratController::class);

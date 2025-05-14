@@ -33,7 +33,7 @@ class Peserta extends Model
     }
     public function magang()
     {
-        return $this->belongsTo(Magang::class, 'id_magang');
+        return $this->belongsTo(Magang::class, 'id_peserta');
     }
     public function absensi()
     {

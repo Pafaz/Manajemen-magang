@@ -70,7 +70,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('piket', PiketController::class)->only(['index','store','update','destroy']);
         Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);
 
-        Route::apiResource('magang', MagangController::class);
+        Route::apiResource('magang', MagangController::class)->only(['index','show', 'update']);
         Route::put('/many/magang', [MagangController::class, 'approveMany']);
 
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);

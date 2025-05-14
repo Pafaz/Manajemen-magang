@@ -22,6 +22,7 @@ class PresentasiRepository implements PresentasiInterface
     {
         return Presentasi::create([
             "id_mentor"=> $data["id_mentor"],
+            "judul"=> $data["judul"],
             'kuota' => $data['kuota'],
             'link_zoom'=> $data['link_zoom'],
             'tanggal'=> $data['tanggal'],

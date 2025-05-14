@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jadwal_Presentasi;
+use App\Http\Requests\JadwalPresentasiRequest;
 use Illuminate\Http\Request;
+use App\Services\PresentasiService;
 
 class JadwalPresentasiController extends Controller
 {
+    private PresentasiService $presentasiService;
+
+    public function __construct(PresentasiService $presentasiService)
+    {
+        $this->presentasiService = $presentasiService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return $this->presentasiService->getJadwalPresentasi();
     }
 
     /**
@@ -20,29 +27,30 @@ class JadwalPresentasiController extends Controller
      */
     public function create()
     {
-        //
+        // return $this->presentasiService->create();
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(JadwalPresentasiRequest $request)
     {
-        //
+        // dd($request->all());
+        return $this->presentasiService->createJadwalPresentasi($request->validated());
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Jadwal_Presentasi $jadwal_Presentasi)
+    public function show($id)
     {
-        //
+        return $this->presentasiService->getDetailJadwalPresentasi( $id );
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Jadwal_Presentasi $jadwal_Presentasi)
+    public function edit($jadwal_Presentasi)
     {
         //
     }
@@ -50,7 +58,7 @@ class JadwalPresentasiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Jadwal_Presentasi $jadwal_Presentasi)
+    public function update(Request $request,$jadwal_Presentasi)
     {
         //
     }
@@ -58,7 +66,7 @@ class JadwalPresentasiController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Jadwal_Presentasi $jadwal_Presentasi)
+    public function destroy($jadwal_Presentasi)
     {
         //
     }

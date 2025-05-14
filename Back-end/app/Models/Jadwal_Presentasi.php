@@ -13,22 +13,23 @@ class Jadwal_Presentasi extends Model
     protected $table = 'jadwal_presentasi';
 
     protected $fillable = [
-        'id',
         'id_mentor',
+        'judul',
         'tanggal',
-        'jam_mulai',
-        'jam_selesai',
+        'waktu_mulai',
+        'waktu_selesai',
         'kuota',
         'tipe',
-        'link_zoom'
+        'link_zoom',
+        'lokasi',
     ];
 
     public function mentor()
     {
         return $this->belongsTo(Mentor::class, 'id_mentor');
     }
-    public function peserta()
+    public function presentasi()
     {
-        return $this->hasMany(Peserta::class, 'id_jadwal_presentasi');
+        return $this->hasMany(Presentasi::class,'id_jadwal_presentasi');
     }
 }

@@ -53,4 +53,9 @@ class Peserta extends Model
     {
         return $this->belongsToMany(Piket::class, 'piket_peserta', 'peserta_id', 'piket_id');
     }
+
+    public function presentasi()
+    {
+        return $this->hasMany(Presentasi::class,'id_peserta');
+    }
 }

@@ -3,15 +3,22 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use Illuminate\Support\Facades\DB;
 use App\Interfaces\PresentasiInterface;
+use App\Http\Resources\PresentasiResource;
+use App\Interfaces\JadwalPresentasiInterface;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\JadwalPresentasiResource;
 
 class PresentasiService
 {
+    private JadwalPresentasiInterface $jadwalPresentasiInterface;
     Private PresentasiInterface $presentasiInterface;
 
-    public function __construct(PresentasiInterface $presentasiInterface)
+    public function __construct(PresentasiInterface $presentasiInterface, JadwalPresentasiInterface $jadwalPresentasiInterface)
     {
         $this->presentasiInterface = $presentasiInterface;
+        $this->jadwalPresentasiInterface = $jadwalPresentasiInterface;
     }
 
     public function getPresentasi()
@@ -19,48 +26,88 @@ class PresentasiService
         return $this->presentasiInterface->getAll();
     }
 
-    public function createPresentasi(array $data)
+    public function createJadwalPresentasi(array $data)
     {
-        $id_mentor = auth('sanctum')->user()->id;
-        $data['id_mentor'] = $id_mentor;
-        $presentasi = $this->presentasiInterface->create($data);
+        DB::beginTransaction();
+        try {
+            $id_mentor = auth('sanctum')->user()->mentor->id;
 
-        return Api::response($presentasi, 'Jadwal Presentasi berhasil dibuat');
+            $data['id_mentor'] = $id_mentor;
+
+            if ($data['tipe'] === 'online') {
+                unset($data['lokasi']);
+            }
+
+            if ($data['tipe'] === 'offline') {
+                unset($data['link_zoom']);
+            }
+
+            $presentasi = $this->jadwalPresentasiInterface->create($data);
+
+            // dd($presentasi);
+
+            DB::commit();
+
+            return Api::response( JadwalPresentasiResource::make($presentasi), 
+            'Jadwal Presentasi berhasil dibuat',
+            Response::HTTP_CREATED
+            );
+            
+        }  catch (\Exception $e) {
+            DB::rollBack();
+            return Api::response(null, 'Gagal Menyimpan jadwal presentasi'. $e->getMessage());
+        }
     }
 
-    // public function applyToPresentation($idJadwal)
+    public function getDetailJadwalPresentasi($id)
+    {
+        $data = $this->jadwalPresentasiInterface->find($id);
+    }
+
+    public function getJadwalPresentasi()
+    {
+        $id_mentor = auth('sanctum')->user()->mentor->id;
+
+        $nama_mentor = auth('sanctum')->user()->nama;
+
+        $data = $this->jadwalPresentasiInterface->getAll($id_mentor);
+
+        return Api::response(
+            JadwalPresentasiResource::collection($data),
+            'Jadwal Presentasi '. $nama_mentor . ' berhasil ditampilkan'
+        );
+    }
+    
+    // public function getAllJadwalPresentasiForPeserta()
     // {
-    //     $jadwal = JadwalPresentasi::find($idJadwal);
+    //     $peserta = Auth::user();
+    //     if (!$peserta || !$peserta->hasRole('peserta')) {
+    //         throw new \Exception('Only participants can view their presentation schedules');
+    //     }
+
+    //     // Get all internships (magang) for this participant
+    //     $magangIds = Magang::where('peserta_id', $peserta->id)->pluck('id');
         
-    //     if ($jadwal->peserta()->count() >= $jadwal->kuota) {
-    //         return response()->json(['message' => 'Kuota penuh'], 400);
-    //     }
+    //     // Get unique mentor IDs from the participant's internships
+    //     $mentorIds = Magang::where('peserta_id', $peserta->id)
+    //         ->whereNotNull('mentor_id')
+    //         ->pluck('mentor_id')
+    //         ->unique();
 
-    //     $peserta = auth()->user(); // Asumsi menggunakan auth untuk mendapatkan peserta yang sedang login
-    //     $jadwal->peserta()->create([
-    //         'id_peserta' => $peserta->id,
-    //         'status_kehadiran' => false, // Status awal 'belum hadir'
-    //     ]);
+    //     // Get all presentations scheduled by these mentors
+    //     $presentasi = Presentasi::whereIn('mentor_id', $mentorIds)
+    //         ->orderBy('tanggal', 'asc')
+    //         ->orderBy('waktu_mulai', 'asc')
+    //         ->get();
 
-    //     return response()->json(['message' => 'Pendaftaran berhasil']);
+    //     // Add additional data about whether participant has already applied to this presentation
+    //     return $presentasi->map(function ($item) use ($peserta) {
+    //         $hasApplied = RiwayatPresentasi::where('presentasi_id', $item->id)
+    //             ->where('peserta_id', $peserta->id)
+    //             ->exists();
+            
+    //         $item->has_applied = $hasApplied;
+    //         return $item;
+    //     });
     // }
-
-    // public function updateAttendance($idJadwal, $idPeserta, $status)
-    // {
-    //     $pesertaPresentasi = PesertaPresentasi::where('id_jadwal_presentasi', $idJadwal)
-    //                                         ->where('id_peserta', $idPeserta)
-    //                                         ->first();
-
-    //     if (!$pesertaPresentasi) {
-    //         return response()->json(['message' => 'Peserta tidak terdaftar'], 404);
-    //     }
-
-    //     $pesertaPresentasi->update([
-    //         'status_kehadiran' => $status, // true untuk hadir, false untuk tidak hadir
-    //     ]);
-
-    //     return response()->json(['message' => 'Status kehadiran berhasil diperbarui']);
-    // }
-
-
 }

@@ -22,8 +22,9 @@ class JadwalPresentasiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_mentor' => 'required|uuid|exists:users,id',
+            'judul' => 'required|string',
             'kuota' => 'required|integer|min:1',
+            'lokasi'=> 'nullable|sting',
             'link_zoom' => 'nullable|url',
             'tanggal' => 'required|date|after:today',
             'waktu_mulai' => 'required|date_format:H:i',

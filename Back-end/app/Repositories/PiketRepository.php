@@ -2,9 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\CabangInterface;
 use App\Interfaces\PiketInterface;
-use App\Models\Cabang;
 use App\Models\Piket;
 use Illuminate\Database\Eloquent\Collection;
 

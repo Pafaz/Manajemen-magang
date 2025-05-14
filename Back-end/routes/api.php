@@ -25,6 +25,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
+use App\Http\Controllers\JadwalPresentasiController;
 use App\Http\Controllers\KehadiranController;
 
 Route::post('/login', [LoginController::class, 'login']);
@@ -99,7 +100,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Mentor
     Route::group(['role:mentor'], function () {
-        Route::apiResource('presentasi', PresentasiController::class);
+        Route::apiResource('presentasi', JadwalPresentasiController::class)->only(['index','store', 'show']);
     });
 
     //Superadmin

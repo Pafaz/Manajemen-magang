@@ -14,23 +14,25 @@ return new class extends Migration
         Schema::create('jadwal_presentasi', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_mentor');
-            // $table->string('judul');
+            $table->string('judul');
             $table->string('kuota');
             $table->string('link_zoom')->nullable();
+            $table->string('lokasi')->nullable();
             $table->date('tanggal');
             $table->time('waktu_mulai');
             $table->time('waktu_selesai');
             $table->enum('tipe',['offline', 'online']); 
             $table->timestamps();
 
-            $table->foreign('id_mentor')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('id_mentor')->references('id')->on('mentor')->onDelete('cascade');
         });
 
-        Schema::create('peserta_presentasi', function (Blueprint $table) {
+        Schema::create('presentasi', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_peserta');
             $table->unsignedBigInteger('id_jadwal_presentasi');
-            $table->boolean('status_kehadiran');
+            $table->enum('status', ['menunggu','hadir', 'tidak hadir'])->default('menunggu');
+            $table->string('projek')->nullable();
             $table->timestamps();
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');

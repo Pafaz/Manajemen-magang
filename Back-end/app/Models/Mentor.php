@@ -43,4 +43,9 @@ class Mentor extends Model
     {
         return $this->hasMany(Foto::class, 'id_referensi', 'id');
     }
+
+    public function presentasi()
+    {
+        return $this->hasMany(Jadwal_Presentasi::class,'id_mentor','id');
+    }
 }

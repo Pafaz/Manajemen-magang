@@ -13,13 +13,10 @@ class Presentasi extends Model
     protected $table = 'presentasi';
 
     protected $fillable = [
-        'id_mentor',
-        'kuota',
-        'link_zoom',
-        'tanggal',
-        'waktu_mulai',
-        'waktu_selesai',
-        'tipe',
+        'id_peserta',
+        'id_jadwal_presentasi',
+        'status',
+        'projek',
     ];
 
     public function jadwal()

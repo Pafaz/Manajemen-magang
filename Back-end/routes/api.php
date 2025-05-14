@@ -96,7 +96,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Admin
     Route::group(['middleware' => 'role:admin'], function () {
-        Route::apiResource('piket', PiketController::class);
+        // Route::apiResource('piket', PiketController::class);
         Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);
         Route::apiResource('kategori-proyek', KategoriController::class);
     });

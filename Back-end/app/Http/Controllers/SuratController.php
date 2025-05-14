@@ -58,9 +58,9 @@ class SuratController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Surat $surat)
+    public function update(SuratPeringatanRequest $request, $id)
     {
-        //
+        return $this->suratService->editSuratPeringatan($id, $request->validated());
     }
 
     /**

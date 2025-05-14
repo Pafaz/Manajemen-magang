@@ -114,8 +114,6 @@ class MagangService
                 'website_perusahaan' => $magang->lowongan->perusahaan->website,
                 'no_surat' => 'CARA PRAKOSO',
                 'sekolah' => $magang->peserta->sekolah,
-                // 'alamat_mitra' => $magang->peserta->sekolah->alamat,
-                // 'telepon_mitra' => $magang->peserta->sekolah->telepon,
                 'tanggal_mulai' => $magang->mulai,
                 'tanggal_selesai' => $magang->selesai,
                 'peserta'=> $magang->peserta->user->nama,
@@ -124,7 +122,6 @@ class MagangService
                 'jabatan_pj'=> $magang->lowongan->perusahaan->jabatan_penanggung_jawab,
             ];
 
-            // dd($dataSurat);
 
             if ($data['status'] == 'ditolak') {
                 $magang->delete();

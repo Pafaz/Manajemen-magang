@@ -10,6 +10,7 @@ use App\Interfaces\MagangInterface;
 use App\Interfaces\PesertaInterface;
 use App\Http\Resources\PesertaResource;
 use App\Http\Resources\PesertaDetailResource;
+use App\Http\Resources\PesertaJurnalResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class PesertaService
@@ -51,7 +52,7 @@ class PesertaService
         $data = $this->pesertaInterface->getJurnalPeserta($cabang);
         // dd($data);
         return Api::response(
-            $data,
+            PesertaJurnalResource::collection($data),
             'Peserta Fetched Successfully',
             Response::HTTP_OK
         );

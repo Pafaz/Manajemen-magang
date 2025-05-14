@@ -18,8 +18,9 @@ class JurnalResource extends JsonResource
             'id' => $this->id,
             'judul' => $this->judul,
             'deskripsi' => $this->deskripsi,
-            'tanggal' => $this->tanggal,
-            'bukti' => FotoResource::make($this->foto),
+            'created_at' => $this->created_at, 
+            'updated_at'=> $this->updated_at,
+            'bukti' => FotoResource::make($this->foto), 
         ];
     }
 }

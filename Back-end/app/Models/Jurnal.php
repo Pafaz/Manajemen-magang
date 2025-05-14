@@ -12,7 +12,6 @@ class Jurnal extends Model
         'id_peserta',
         'judul',
         'deskripsi',
-        'tanggal',
         'created_at',
         'updated_at'
     ];

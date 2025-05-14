@@ -52,7 +52,6 @@ class JurnalService
             'id_peserta' => $user->peserta->id,
             'deskripsi' => $data['deskripsi'],
             'judul' => $data['judul'],
-            'tanggal' => $data['tanggal'],
         ];
 
         $jurnal = $isUpdate

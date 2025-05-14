@@ -37,8 +37,7 @@ class JurnalController extends Controller
         $jurnal = $request->validate([
             'judul' => 'required|string',
             'deskripsi' => 'required|string',
-            'tanggal' => 'required|date',
-            'bukti' => 'required|image|mimes:,jpeg',
+            'bukti' => 'required|image|mimes:jpg,png,jpeg,',
         ]);
         return $this->jurnalService->simpanJurnal($jurnal);
     }

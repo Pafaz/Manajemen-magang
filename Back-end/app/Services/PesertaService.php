@@ -100,6 +100,23 @@ class PesertaService
         );
     }
 
+    public function isApplyLowongan()
+    {
+        $dataMagang = auth('sanctum')->user()->peserta->magang;
+
+        if ($dataMagang == null) {
+            return Api::response(
+                'false',
+                'Peserta belum Apply Lowongan'
+            );
+        } else {
+            return Api::response(
+                'true',
+                'Peserta telah Apply Lowongan'
+            );
+        }
+    }
+
     public function isMagang(){
         if (!auth('sanctum')->user()->id_cabang_aktif) {
             return Api::response(
@@ -113,6 +130,8 @@ class PesertaService
             'Peserta telah terdaftar magang',
         );
     }
+
+
 
     public function simpanProfilPeserta(array $data, bool $isUpdate = false, $id = null)
     {
@@ -183,7 +202,6 @@ class PesertaService
             );
         }
     }
-
 
     public function deletePeserta( $id)
     {

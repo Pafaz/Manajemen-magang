@@ -54,6 +54,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/izin', [IzinController::class, 'store']);
         Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
         Route::get('/complete/magang', [PesertaController::class, 'isMagang']);
+        Route::get('/complete/lowongan', [PesertaController::class,'isApplyLowongan']);
         Route::get('/piket-peserta', [PiketController::class,'getPiketPeserta']);
         Route::apiResource('presentasi', PresentasiController::class)->only(['index','store']);
     });

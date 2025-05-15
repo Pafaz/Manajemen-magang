@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Exception;
 use App\Helpers\Api;
 use Illuminate\Support\Str;
 use App\Services\FotoService;
@@ -9,8 +10,8 @@ use App\Interfaces\UserInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MentorInterface;
 use App\Http\Resources\MentorResource;
+use App\Http\Resources\MentorDetailResource;
 use Symfony\Component\HttpFoundation\Response;
-use Exception;
 
 class MentorService
 {
@@ -42,7 +43,7 @@ class MentorService
         $data = $this->mentorInterface->find($id);
 
         return Api::response(
-            MentorResource::make($data),
+            MentorDetailResource::make($data),
             'Mentor Berhasil Ditemukan',
             Response::HTTP_OK
         );

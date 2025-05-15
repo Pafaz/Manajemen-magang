@@ -13,6 +13,11 @@ class PresentasiRepository implements PresentasiInterface
         return Presentasi::all();
     }
 
+    public function getPresentasiPeserta(string $id_peserta)
+    {
+        return Presentasi::where('id_peserta', $id_peserta)->get();
+    }
+
     public function find(int $id): ? Presentasi
     {
         return Presentasi::findOrFail($id)->first();
@@ -21,14 +26,10 @@ class PresentasiRepository implements PresentasiInterface
     public function create(array $data): ? Presentasi
     {
         return Presentasi::create([
-            "id_mentor"=> $data["id_mentor"],
-            "judul"=> $data["judul"],
-            'kuota' => $data['kuota'],
-            'link_zoom'=> $data['link_zoom'],
-            'tanggal'=> $data['tanggal'],
-            'waktu_mulai'=> $data['waktu_mulai'],
-            'waktu_selesai'=> $data['waktu_selesai'],
-            'tipe'=> $data['tipe'],
+            "id_peserta"=> $data["id_peserta"],
+            "id_jadwal_presentasi"=> $data["id_jadwal_presentasi"],
+            "projek"=> $data["projek"],
+            "status"=> $data["status"],
         ]);
     }
 

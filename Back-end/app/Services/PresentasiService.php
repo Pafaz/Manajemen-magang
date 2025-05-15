@@ -27,6 +27,7 @@ class PresentasiService
         return $this->presentasiInterface->getAll();
     }
 
+    //For Mentor
     public function createJadwalPresentasi(array $data)
     {
         DB::beginTransaction();
@@ -34,6 +35,8 @@ class PresentasiService
             $id_mentor = auth('sanctum')->user()->mentor->id;
 
             $data['id_mentor'] = $id_mentor;
+
+            $data['status'] = 'dijadwalkan';
 
             if ($data['tipe'] === 'online') {
                 unset($data['lokasi']);
@@ -44,8 +47,6 @@ class PresentasiService
             }
 
             $presentasi = $this->jadwalPresentasiInterface->create($data);
-
-            // dd($presentasi);
 
             DB::commit();
 
@@ -81,6 +82,34 @@ class PresentasiService
         return Api::response(
             JadwalPresentasiResource::collection($data),
             'Jadwal Presentasi '. $nama_mentor . ' berhasil ditampilkan'
+        );
+    }
+
+    //For Peserta
+    public function applyPresentasi(array $data)
+    {
+        $data['id_peserta'] = auth('sanctum')->user()->peserta->id;
+        $data['status'] = 'menunggu';
+
+        $presentasi = $this->presentasiInterface->create($data);
+
+        return Api::response(
+            $presentasi,
+            'Berhasil Apply Presentasi',
+        );
+    }
+
+    public function getRiwayatPresentasi()
+    {
+        $id_peserta = auth('sanctum')->user()->peserta->id;
+
+        $riwayat = $this->presentasiInterface->getPresentasiPeserta($id_peserta);
+
+        // dd($riwayat);
+
+        return Api::response(
+            PresentasiResource::collection($riwayat),
+            'Riwayat Presentasi Berhasil ditampilkan',
         );
     }
 }

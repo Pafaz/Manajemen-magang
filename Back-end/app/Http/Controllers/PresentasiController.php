@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Presentasi;
 use Illuminate\Http\Request;
 use App\Services\PresentasiService;
-use App\Http\Requests\JadwalPresentasiRequest;
 
 class PresentasiController extends Controller
 {
@@ -20,7 +19,7 @@ class PresentasiController extends Controller
      */
     public function index()
     {
-        //
+        return $this->presentasiService->getRiwayatPresentasi();
     }
 
     /**
@@ -34,9 +33,14 @@ class PresentasiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(JadwalPresentasiRequest $request)
+    public function store(Request $request)
     {
-        return $this->presentasiService->createPresentasi($request->validated());
+        $presentasi = $request->validate([
+            "id_jadwal_presentasi"=> "required|numeric",
+            "projek"=> "required|string|exists:kategori_proyek,nama",
+        ]);
+
+        return $this->presentasiService->applyPresentasi($presentasi);
     }
 
     /**

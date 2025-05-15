@@ -9,5 +9,5 @@ use App\Interfaces\Base\GetAllInterface;
 
 interface PresentasiInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface
 {
-    //
+    public function getPresentasiPeserta(string $id_peserta);
 }

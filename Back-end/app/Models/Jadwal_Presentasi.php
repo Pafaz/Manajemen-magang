@@ -14,7 +14,6 @@ class Jadwal_Presentasi extends Model
 
     protected $fillable = [
         'id_mentor',
-        'judul',
         'tanggal',
         'waktu_mulai',
         'waktu_selesai',
@@ -22,6 +21,7 @@ class Jadwal_Presentasi extends Model
         'tipe',
         'link_zoom',
         'lokasi',
+        'status',
     ];
 
     public function mentor()

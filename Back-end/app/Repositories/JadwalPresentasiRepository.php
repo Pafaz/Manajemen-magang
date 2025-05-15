@@ -22,7 +22,6 @@ class JadwalPresentasiRepository implements JadwalPresentasiInterface
     {
         return Jadwal_Presentasi::create([
             "id_mentor"=> $data["id_mentor"],
-            "judul"=> $data["judul"],
             "tanggal"=> $data["tanggal"],
             "waktu_mulai"=> $data["waktu_mulai"],
             "waktu_selesai"=> $data["waktu_selesai"],
@@ -30,6 +29,7 @@ class JadwalPresentasiRepository implements JadwalPresentasiInterface
             "tipe"=> $data["tipe"],
             "link_zoom"=> $data["link_zoom"] ?? null,
             "lokasi" => $data["lokasi"] ?? null,
+            "status"=> $data["status"],
         ]);
     }
 

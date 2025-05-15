@@ -81,9 +81,9 @@ class KehadiranService
 
             if (!$kehadiranHariIni) {
                 // === ABSEN MASUK ===
-                if ($jamSekarang >= $jamKantor->awal_masuk && $jamSekarang <= $jamKantor->akhir_masuk) {
+                if ($jamSekarang >= $jamKantor->awal_masuk && $jamSekarang <= $jamKantor->awal_istirahat) {
                     // Hitung apakah terlambat
-                    $terlambat = $jamSekarang > $jamKantor->awal_masuk;
+                    $terlambat = $jamSekarang > $jamKantor->akhir_masuk;
                     $kehadiran = $this->kehadiranInterface->create([
                         'id_peserta' => $peserta->id,
                         'tanggal' => $tanggalHariIni,
@@ -93,17 +93,17 @@ class KehadiranService
                     ]);
                     $this->rekapKehadiranService->updateRekapHarian($peserta->id, $tanggalHariIni, $terlambat);
                 }
-                // === TERLAMBAT ABSEN, DICATAT ALFA ===
-                elseif ($jamSekarang > $jamKantor->akhir_masuk && $jamSekarang >= $jamKantor->awal_istirahat) {
-                    $absensi = $this->absensiInterface->create([
-                        'id_peserta' => $peserta->id,
-                        'tanggal' => $tanggalHariIni,
-                        'status' => 'alfa'
-                    ]);
-                    $this->rekapKehadiranService->updateRekapAbsensi($peserta->id, $tanggalHariIni, 'alfa');
-                    DB::commit();
-                    return Api::response($absensi, 'Anda tidak absen masuk dan dianggap alfa.', Response::HTTP_OK);
-                }
+                // // === TERLAMBAT ABSEN, DICATAT ALFA ===
+                // elseif ($jamSekarang > $jamKantor->akhir_masuk && $jamSekarang >= $jamKantor->awal_istirahat) {
+                //     $absensi = $this->absensiInterface->create([
+                //         'id_peserta' => $peserta->id,
+                //         'tanggal' => $tanggalHariIni,
+                //         'status' => 'alfa'
+                //     ]);
+                //     $this->rekapKehadiranService->updateRekapAbsensi($peserta->id, $tanggalHariIni, 'alfa');
+                //     DB::commit();
+                //     return Api::response($absensi, 'Anda tidak absen masuk dan dianggap alfa.', Response::HTTP_OK);
+                // }
                 else {
                     return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
                 }

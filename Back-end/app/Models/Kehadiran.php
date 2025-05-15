@@ -13,6 +13,7 @@ class Kehadiran extends Model
         'id_peserta',
         'tanggal',
         'metode',
+        'status_kehadiran',
         'jam_masuk',
         'jam_pulang',
         'jam_istirahat',

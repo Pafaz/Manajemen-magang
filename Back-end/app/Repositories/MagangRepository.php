@@ -17,6 +17,16 @@ class MagangRepository implements MagangInterface
             })->get();
     }
 
+    public function findByPesertaAndCabang($id_peserta, $id_cabang)
+    {
+        return Magang::where('id_peserta', $id_peserta)
+                ->whereHas('lowongan', function ($query) use ($id_cabang) {
+                $query->where('id_cabang', $id_cabang);
+            })
+                    ->first();
+    }
+
+
     public function find(int $id): ? Magang
     {
         return Magang::findOrFail($id);

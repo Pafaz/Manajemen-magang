@@ -70,33 +70,45 @@ class KehadiranService
                 return Api::response(null, 'Jam kantor untuk hari ini belum diatur.', Response::HTTP_NOT_FOUND);
             }
 
+            // Cek apakah peserta sedang izin/sakit
             $izin = $this->absensiInterface->findByDate($peserta->id, $tanggalHariIni);
-            if($izin) {
-                return Api::response(null, 'Anda sudah absen hari ini.', Response::HTTP_FORBIDDEN);
+            if ($izin) {
+                return Api::response(null, 'Anda sudah absen hari ini (izin/sakit).', Response::HTTP_FORBIDDEN);
             }
-            
+
             $kehadiranHariIni = $this->kehadiranInterface->findByDate($peserta->id, $tanggalHariIni);
             $kehadiran = null;
 
             if (!$kehadiranHariIni) {
-                // Absen Masuk
-                if ($jamSekarang >= $jamKantor->awal_masuk) {
-                    $terlambat = $jamSekarang >= $jamKantor->akhir_masuk && $jamSekarang <= $jamKantor->awal_istirahat;
-
+                // === ABSEN MASUK ===
+                if ($jamSekarang >= $jamKantor->awal_masuk && $jamSekarang <= $jamKantor->akhir_masuk) {
+                    // Hitung apakah terlambat
+                    $terlambat = $jamSekarang > $jamKantor->awal_masuk;
                     $kehadiran = $this->kehadiranInterface->create([
                         'id_peserta' => $peserta->id,
-                        'tanggal'    => $tanggalHariIni,
-                        'jam_masuk'  => $jamSekarang,
-                        'metode'     => self::METODE_ONLINE
+                        'tanggal' => $tanggalHariIni,
+                        'jam_masuk' => $jamSekarang,
+                        'metode' => self::METODE_ONLINE,
+                        'status_kehadiran' => $terlambat ? 1 : 0
                     ]);
-
                     $this->rekapKehadiranService->updateRekapHarian($peserta->id, $tanggalHariIni, $terlambat);
-                    return Api::response(null, $terlambat ? 'Absen berhasil, tetapi Anda terlambat.' : 'Absen berhasil.', Response::HTTP_OK);
-                } else {
+                }
+                // === TERLAMBAT ABSEN, DICATAT ALFA ===
+                elseif ($jamSekarang > $jamKantor->akhir_masuk && $jamSekarang >= $jamKantor->awal_istirahat) {
+                    $absensi = $this->absensiInterface->create([
+                        'id_peserta' => $peserta->id,
+                        'tanggal' => $tanggalHariIni,
+                        'status' => 'alfa'
+                    ]);
+                    $this->rekapKehadiranService->updateRekapAbsensi($peserta->id, $tanggalHariIni, 'alfa');
+                    DB::commit();
+                    return Api::response($absensi, 'Anda tidak absen masuk dan dianggap alfa.', Response::HTTP_OK);
+                }
+                else {
                     return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
                 }
             } else {
-                // Update sesi kehadiran berikutnya
+                // === SESI ISTIRAHAT, KEMBALI, PULANG ===
                 if (!$kehadiranHariIni->jam_istirahat && $jamSekarang >= $jamKantor->awal_istirahat && $jamSekarang <= $jamKantor->akhir_istirahat) {
                     $kehadiran = $this->kehadiranInterface->update($kehadiranHariIni->id, ['jam_istirahat' => $jamSekarang]);
                 } elseif (!$kehadiranHariIni->jam_kembali && $jamSekarang >= $jamKantor->awal_kembali && $jamSekarang <= $jamKantor->akhir_kembali) {
@@ -105,9 +117,10 @@ class KehadiranService
                     $kehadiran = $this->kehadiranInterface->update($kehadiranHariIni->id, ['jam_pulang' => $jamSekarang]);
                 }
             }
+
             if ($kehadiran) {
                 DB::commit();
-                return Api::response($kehadiran, 'Berhasil melakukan absen.', Response::HTTP_OK);
+                return Api::response($kehadiran, 'Berhasil mencatat absensi.', Response::HTTP_OK);
             } else {
                 DB::rollBack();
                 return Api::response(null, 'Semua sesi kehadiran sudah diisi atau waktu tidak valid.', Response::HTTP_FORBIDDEN);
@@ -117,5 +130,6 @@ class KehadiranService
             return Api::response(null, $th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
 }

@@ -12,4 +12,5 @@ interface PesertaInterface extends GetAllInterface, CreateInterface, DeleteInter
 {
     public function getByCabang($perusahaan);
     public function getJurnalPeserta($idCabang);
+    public function getKehadiranPeserta($idCabang);
 }

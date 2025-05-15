@@ -27,6 +27,7 @@ return new class extends Migration
             $table->uuid('id_peserta');
             $table->date('tanggal');
             $table->enum('metode', ['online', 'rfid'])->nullable();
+            $table->boolean('status_kehadiran');
 
             // Catatan waktu jika hadir normal
             $table->time('jam_masuk')->nullable();
@@ -66,15 +67,6 @@ return new class extends Migration
             $table->unique(['id_peserta', 'bulan', 'tahun']);
         });
 
-        // Schema::create('piket', function (Blueprint $table) {
-        //     $table->id()->primary();
-        //     $table->uuid('id_peserta');
-        //     $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
-        //     $table->timestamps();
-
-        //     $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
-        // });
-
         Schema::create('piket', function (Blueprint $table) {
             $table->id();
             $table->enum('shift', ['pagi', 'sore']);
@@ -110,18 +102,16 @@ return new class extends Migration
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
         });
-
-        // Schema::create('laporan_piket', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->foreignId('piket_id')->constrained('piket')->onDelete('cascade'); // jadwal piket
-        //     $table->foreignId('peserta_id')->constrained('peserta')->onDelete('cascade'); // peserta yg hadir
-        //     $table->date('tanggal');
-        //     $table->time('waktu_piket')->nullable();
-        //     $table->enum('kehadiran', ['hadir', 'tidak hadir', 'izin'])->default('hadir');
-        //     $table->text('catatan')->nullable();
-        //     $table->timestamps();
-        // });
         
+        Schema::create('route', function (Blueprint $table) {
+            $table->uuid('id_peserta');
+            $table->unsignedBigInteger('id_kategori');
+            $table->unsignedBigInteger('id_revisi');
+
+            $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
+            $table->foreign('id_kategori')->references('id')->on('kategori')->onDelete('cascade');
+            $table->foreign('id_revisi')->references('id')->on('revisi')->onDelete('cascade');
+        });
     }
 
     /**

@@ -10,6 +10,8 @@ use App\Interfaces\MagangInterface;
 use App\Interfaces\PesertaInterface;
 use App\Http\Resources\PesertaResource;
 use App\Http\Resources\PesertaDetailResource;
+use App\Http\Resources\PesertaJurnalResource;
+use App\Http\Resources\PesertaKehadiranResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class PesertaService
@@ -51,11 +53,35 @@ class PesertaService
         $data = $this->pesertaInterface->getJurnalPeserta($cabang);
         // dd($data);
         return Api::response(
-            $data,
+            PesertaJurnalResource::collection($data),
             'Peserta Fetched Successfully',
             Response::HTTP_OK
         );
     }
+
+    public function getKehadiranPesertaByCabang()
+    {
+        $cabang = auth('sanctum')->user()->id_cabang_aktif;
+        $data = $this->pesertaInterface->getKehadiranPeserta($cabang);
+        // dd($data);
+        return Api::response(
+            PesertaKehadiranResource::collection($data),
+            'Peserta Fetched Successfully',
+            Response::HTTP_OK
+        );
+    }
+
+    // public function getPesertaDivisi()
+    // {
+    //     $cabang = auth('sanctum')->user()->id_cabang_aktif;
+    //     $data = $this->pesertaInterface->getByCabang($cabang);
+    //     // dd($data);
+    //     return Api::response(
+    //         PesertaResource::collection($data),
+    //         'Peserta Fetched Successfully',
+    //         Response::HTTP_OK
+    //     );
+    // }
 
     public function isCompleteProfil()
     {

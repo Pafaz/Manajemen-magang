@@ -26,6 +26,16 @@ class MagangRepository implements MagangInterface
                     ->first();
     }
 
+    public function updateByPesertaAndCabang($id_peserta, $id_cabang, array $data)
+    {
+        return Magang::where('id_peserta', $id_peserta)
+            ->whereHas('lowongan', function ($query) use ($id_cabang) {
+                $query->where('id_cabang', $id_cabang);
+            })
+            ->update($data);
+    }
+
+
 
     public function find(int $id): ? Magang
     {

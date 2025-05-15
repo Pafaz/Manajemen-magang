@@ -92,19 +92,7 @@ class KehadiranService
                         'status_kehadiran' => $terlambat ? 1 : 0
                     ]);
                     $this->rekapKehadiranService->updateRekapHarian($peserta->id, $tanggalHariIni, $terlambat);
-                }
-                // // === TERLAMBAT ABSEN, DICATAT ALFA ===
-                // elseif ($jamSekarang > $jamKantor->akhir_masuk && $jamSekarang >= $jamKantor->awal_istirahat) {
-                //     $absensi = $this->absensiInterface->create([
-                //         'id_peserta' => $peserta->id,
-                //         'tanggal' => $tanggalHariIni,
-                //         'status' => 'alfa'
-                //     ]);
-                //     $this->rekapKehadiranService->updateRekapAbsensi($peserta->id, $tanggalHariIni, 'alfa');
-                //     DB::commit();
-                //     return Api::response($absensi, 'Anda tidak absen masuk dan dianggap alfa.', Response::HTTP_OK);
-                // }
-                else {
+                } else {
                     return Api::response(null, 'Saat ini bukan waktu yang valid untuk absen masuk.', Response::HTTP_FORBIDDEN);
                 }
             } else {

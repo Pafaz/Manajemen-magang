@@ -21,13 +21,7 @@ class PesertaRepository implements PesertaInterface
     {
         return Peserta::with([
                 'user',
-                'magang',
-                'kehadiran',
-                'absensi',
-                'rekapKehadiran',
-                'jurnal' => function ($query) {
-                    $query->whereDate('tanggal', Carbon::now('Asia/Jakarta')->toDateString());
-                }
+                'magang.lowongan.divisi'
             ])
             ->whereHas('user', function ($query) use ($idCabang) {
                 $query->where('id_cabang_aktif', $idCabang);

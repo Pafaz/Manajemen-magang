@@ -39,31 +39,20 @@ return new class extends Migration
             $table->foreign('id_jadwal_presentasi')->references('id')->on('jadwal_presentasi')->onDelete('cascade');
         });
 
-        Schema::create('revisi', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->unsignedBigInteger('id_presentasi');
-            $table->string('deskripsi');
-            $table->boolean('status');
-
-            $table->foreign('id_presentasi')->references('id')->on('jadwal_presentasi')->onDelete('cascade');
-        });
-
-        Schema::create('mentor_magang', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->uuid('id_peserta');
-            $table->uuid('id_mentor');
-
-            $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
-            $table->foreign('id_mentor')->references('id')->on('users')->onDelete('cascade');
-        });
-
         Schema::create('progress', function (Blueprint $table) {
             $table->id()->primary();
-            $table->unsignedBigInteger('id_mentor_magang');
             $table->string('deskripsi');
             $table->boolean('status');
 
-            $table->foreign('id_mentor_magang')->references('id')->on('mentor_magang')->onDelete('cascade');
+        });
+
+        Schema::create('revisi', function (Blueprint $table) {
+            $table->id()->primary();
+            $table->date('tanggal');
+            $table->boolean('status');
+            $table->unsignedBigInteger('id_progress');
+
+            $table->foreign('id_progress')->references('id')->on('progress')->onDelete('cascade');
         });
     }
 
@@ -75,7 +64,6 @@ return new class extends Migration
         Schema::dropIfExists('jadwal_presentasi');
         Schema::dropIfExists('peserta_presentasi');
         Schema::dropIfExists('revisi');
-        Schema::dropIfExists('mentor_magang');
         Schema::dropIfExists('progress');
     }
 };

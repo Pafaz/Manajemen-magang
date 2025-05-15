@@ -26,8 +26,12 @@ class MagangController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function setMentor($idMentor, Request $request)
     {
+        $data = $request->validate([
+            'pesertas' => 'required|array',
+        ]);
+        return $this->magangService->setMentor($idMentor, $data);
     }
 
     /**

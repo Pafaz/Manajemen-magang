@@ -18,6 +18,7 @@ class PesertaKehadiranResource extends JsonResource
             'nama' => $this->user->nama,
             'foto' => FotoResource::collection($this->foto),
             'kehadiran' => $this->kehadiran,
+            'absensi' => $this->absensi
         ];
     }
 }

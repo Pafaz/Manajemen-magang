@@ -71,6 +71,18 @@ class PesertaService
         );
     }
 
+    // public function getPesertaDivisi()
+    // {
+    //     $cabang = auth('sanctum')->user()->id_cabang_aktif;
+    //     $data = $this->pesertaInterface->getByCabang($cabang);
+    //     // dd($data);
+    //     return Api::response(
+    //         PesertaResource::collection($data),
+    //         'Peserta Fetched Successfully',
+    //         Response::HTTP_OK
+    //     );
+    // }
+
     public function isCompleteProfil()
     {
         if (!auth('sanctum')->user()->peserta) {

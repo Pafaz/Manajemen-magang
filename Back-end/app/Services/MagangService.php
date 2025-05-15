@@ -3,15 +3,16 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use App\Models\Surat;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Interfaces\UserInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
+use App\Interfaces\MentorInterface;
 use App\Http\Resources\MagangResource;
 use App\Http\Resources\PesertaResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\MagangDetailResource;
-use App\Models\Surat;
 use Symfony\Component\HttpFoundation\Response;
 
 class MagangService
@@ -22,12 +23,14 @@ class MagangService
     private SuratService $suratService;
     private UserInterface $userInterface;
 
-    public function __construct(MagangInterface $MagangInterface, FotoService $foto, UserInterface $userInterface, SuratService $suratService)
+    private MentorInterface $mentorInterface;
+    public function __construct(MagangInterface $MagangInterface, FotoService $foto, UserInterface $userInterface, SuratService $suratService, MentorInterface $mentorInterface)
     {
         $this->MagangInterface = $MagangInterface;
         $this->foto = $foto;
         $this->userInterface = $userInterface;
         $this->suratService = $suratService;
+        $this->mentorInterface = $mentorInterface;
     }
 
     public function getAllPesertaMagang()
@@ -213,4 +216,36 @@ class MagangService
             return Api::response(null, 'Terjadi kesalahan: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function setMentor($id_mentor, $pesertas)
+    {
+        $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
+
+        // Ambil data mentor untuk cek divisinya
+        $mentor = $this->mentorInterface->findByIdCabang($id_mentor, $id_cabang);
+        if (!$mentor) {
+            return Api::response(null, 'Mentor tidak ditemukan di cabang ini', Response::HTTP_NOT_FOUND);
+        }
+
+        $mentorDivisi = $mentor->id_divisi;
+
+        // Validasi semua peserta apakah divisinya sama dengan mentor
+        foreach ($pesertas as $id_peserta) {
+            $peserta = $this->MagangInterface->findByPesertaAndCabang($id_peserta, $id_cabang);
+            if (!$peserta || $peserta->lowongan->id_divisi != $mentorDivisi) {
+                return Api::response(null, 'Divisi peserta dan mentor tidak sama', Response::HTTP_NOT_FOUND);
+            }
+        }
+
+        // Jika lolos semua validasi, update mentor
+        foreach ($pesertas as $id_peserta) {
+            $peserta = $this->MagangInterface->findByPesertaAndCabang($id_peserta, $id_cabang);
+            $peserta->id_mentor = $id_mentor;
+            $peserta->save();
+        }
+
+        return Api::response($mentor, 'Mentor berhasil diatur', Response::HTTP_OK);
+    }
+
+
 }

@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
         Route::apiResource('magang', MagangController::class)->only(['index','show', 'update']);
         Route::put('/many/magang', [MagangController::class, 'approveMany']);
+        Route::put('/set-mentor/{mentorId}', [MagangController::class, 'setMentor']);
 
         //pendataan
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);

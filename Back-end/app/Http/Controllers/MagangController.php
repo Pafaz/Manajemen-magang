@@ -31,7 +31,7 @@ class MagangController extends Controller
         $data = $request->validate([
             'pesertas' => 'required|array',
         ]);
-        return $this->magangService->setMentor($idMentor, $data);
+        return $this->magangService->setMentor($idMentor, $data['pesertas']);
     }
 
     /**

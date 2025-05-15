@@ -9,6 +9,7 @@ use App\Interfaces\UserInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
 use App\Interfaces\MentorInterface;
+use Illuminate\Support\Facades\Log;
 use App\Http\Resources\MagangResource;
 use App\Http\Resources\PesertaResource;
 use Illuminate\Support\Facades\Storage;
@@ -221,7 +222,7 @@ class MagangService
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
 
-        // Ambil data mentor untuk cek divisinya
+        // Ambil data mentor dan validasi
         $mentor = $this->mentorInterface->findByIdCabang($id_mentor, $id_cabang);
         if (!$mentor) {
             return Api::response(null, 'Mentor tidak ditemukan di cabang ini', Response::HTTP_NOT_FOUND);
@@ -229,23 +230,28 @@ class MagangService
 
         $mentorDivisi = $mentor->id_divisi;
 
-        // Validasi semua peserta apakah divisinya sama dengan mentor
-        foreach ($pesertas as $id_peserta) {
+        // Ambil semua peserta dan validasi
+        $invalidPesertas = collect($pesertas)->filter(function ($id_peserta) use ($id_cabang, $mentorDivisi) {
             $peserta = $this->MagangInterface->findByPesertaAndCabang($id_peserta, $id_cabang);
-            if (!$peserta || $peserta->lowongan->id_divisi != $mentorDivisi) {
-                return Api::response(null, 'Divisi peserta dan mentor tidak sama', Response::HTTP_NOT_FOUND);
-            }
+            return !$peserta || $peserta->lowongan->id_divisi !== $mentorDivisi;
+        })->values()->all();
+
+        if (count($invalidPesertas) > 0) {
+            return Api::response([
+                'invalid_pesertas' => $invalidPesertas
+            ], 'Beberapa peserta tidak valid atau divisinya berbeda', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        // Jika lolos semua validasi, update mentor
+        // Update semua peserta valid
         foreach ($pesertas as $id_peserta) {
-            $peserta = $this->MagangInterface->findByPesertaAndCabang($id_peserta, $id_cabang);
-            $peserta->id_mentor = $id_mentor;
-            $peserta->save();
+            $this->MagangInterface->updateByPesertaAndCabang($id_peserta, $id_cabang, [
+                'id_mentor' => $id_mentor
+            ]);
         }
 
-        return Api::response($mentor, 'Mentor berhasil diatur', Response::HTTP_OK);
+        return Api::response($mentor, 'Mentor berhasil diatur untuk semua peserta', Response::HTTP_OK);
     }
+
 
 
 }

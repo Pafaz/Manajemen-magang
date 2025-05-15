@@ -15,13 +15,15 @@ class DetailJadwalPresentasiResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'judul' => $this->judul,
+            'id'=> $this->id,
             'tanggal' => $this->tanggal,
+            'tipe' => $this->tipe,
+            'status' => $this->status,
             'waktu_mulai' => $this->waktu_mulai,
             'waktu_selesai' => $this->waktu_selesai,
             'link_zoom' => $this->link_zoom ?? null,
             'lokasi' => $this->lokasi ?? null,
-            'peserta' => PesertaResource::collection($this->whenLoaded('id_peserta')),
+            'Peserta' => PresentasiResource::collection($this->presentasi),
         ];
     }
 }

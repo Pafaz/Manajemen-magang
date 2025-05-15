@@ -55,6 +55,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/complete/peserta', [PesertaController::class, 'isCompleteProfil']);
         Route::get('/complete/magang', [PesertaController::class, 'isMagang']);
         Route::get('/piket-peserta', [PiketController::class,'getPiketPeserta']);
+        Route::apiResource('presentasi', PresentasiController::class)->only(['index','store']);
     });
 
     //Perusahaan
@@ -100,14 +101,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Admin
     Route::group(['middleware' => 'role:admin'], function () {
-        // Route::apiResource('piket', PiketController::class);
         Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);
         Route::apiResource('kategori-proyek', KategoriController::class);
     });
 
     //Mentor
     Route::group(['middleware' => 'role:mentor'], function () {
-        Route::apiResource('presentasi', JadwalPresentasiController::class)->only(['index','store', 'show']);
+        Route::apiResource('jadwal-presentasi', JadwalPresentasiController::class)->only(['index','store', 'show']);
     });
 
     //Superadmin

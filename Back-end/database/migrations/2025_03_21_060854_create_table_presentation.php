@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('jadwal_presentasi', function (Blueprint $table) {
             $table->id()->primary();
             $table->uuid('id_mentor');
-            $table->string('judul');
-            $table->string('kuota');
+            $table->integer('kuota');
             $table->string('link_zoom')->nullable();
             $table->string('lokasi')->nullable();
             $table->date('tanggal');
             $table->time('waktu_mulai');
             $table->time('waktu_selesai');
             $table->enum('tipe',['offline', 'online']); 
+            $table->enum('status',['dijadwalkan','selesai']);
             $table->timestamps();
 
             $table->foreign('id_mentor')->references('id')->on('mentor')->onDelete('cascade');

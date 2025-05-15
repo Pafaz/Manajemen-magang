@@ -16,10 +16,10 @@ class JadwalPresentasiResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'judul' => $this->judul,
             'tanggal'=> $this->tanggal,
             'waktu_mulai' => $this->waktu_mulai,
-            'waktu_selesai' => $this->waktu_selesai
+            'waktu_selesai' => $this->waktu_selesai,
+            'status' => $this->status,
         ];
     }
 }

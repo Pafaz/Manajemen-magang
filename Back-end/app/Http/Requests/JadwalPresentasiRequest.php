@@ -22,11 +22,10 @@ class JadwalPresentasiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'judul' => 'required|string',
             'kuota' => 'required|integer|min:1',
             'lokasi'=> 'nullable|sting',
             'link_zoom' => 'nullable|url',
-            'tanggal' => 'required|date|after:today',
+            'tanggal' => 'required|date|after:yesterday',
             'waktu_mulai' => 'required|date_format:H:i',
             'waktu_selesai' => 'required|date_format:H:i|after:waktu_mulai',
             'tipe' => 'required|in:offline,online',

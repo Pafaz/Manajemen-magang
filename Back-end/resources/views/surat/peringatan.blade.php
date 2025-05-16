@@ -158,11 +158,11 @@
 <body>
     <div class="header">
         <!-- Gambar Header -->
-        <img src="{{ public_path('images/kop.png') }}" alt="Header Background" class="header-bg">
+        <img src="{{ asset('images/kop.png') }}" alt="Header Background" class="header-bg">
         
         <div class="logo">
             <!-- Logo perusahaan bisa diletakkan di sini -->
-            <img src="{{ public_path('images/logo.png') }}" alt="Logo Perusahaan">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Perusahaan">
         </div>
         <div class="company-info">
             <div class="company-name">{{ $perusahaan }}</div>
@@ -197,7 +197,7 @@
         <div class="footer">
             <div class="company-sign">{{ $perusahaan }}</div>
             <div class="qrcode">
-                <img src="{{ public_path('images/qrcode.jpeg') }}" alt="Header Background" class="header-bg">
+                <img src="{{ asset('images/qrcode.jpeg') }}" alt="Header Background" class="header-bg">
             </div>
             <div class="signature">
                 <strong>{{ $nama_penanggung_jawab }}</strong><br>

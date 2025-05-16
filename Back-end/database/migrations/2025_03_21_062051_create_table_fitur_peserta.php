@@ -102,16 +102,7 @@ return new class extends Migration
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
         });
-        
-        Schema::create('route', function (Blueprint $table) {
-            $table->uuid('id_peserta');
-            $table->unsignedBigInteger('id_kategori_proyek');
-            $table->unsignedBigInteger('id_revisi');
 
-            $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
-            $table->foreign('id_kategori_proyek')->references('id')->on('kategori_proyek')->onDelete('cascade');
-            $table->foreign('id_revisi')->references('id')->on('revisi')->onDelete('cascade');
-        });
     }
 
     /**

@@ -75,7 +75,8 @@ class PerusahaanSeeder extends Seeder
 
         $divisi_kategori = Divisi_Kategori::create([
             'id_divisi' => $divisi_record->id,
-            'id_kategori' => $kategori_record->id
+            'id_kategori' => $kategori_record->id,
+            'urutan' => 1
         ]);
 
         Jam_Kantor::create([

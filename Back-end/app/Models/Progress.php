@@ -13,8 +13,14 @@ class Progress extends Model
     protected $table = 'progress';
 
     protected $fillable = [
+        'id_revisi',
         'deskripsi',
         'status'
     ];
+
+    public function revisi()
+    {
+        return $this->belongsTo(Revisi::class, 'id_revisi');
+    }
 
 }

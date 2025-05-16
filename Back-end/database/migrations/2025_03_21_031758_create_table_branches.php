@@ -65,8 +65,10 @@ return new class extends Migration
         });
 
         Schema::create('divisi_kategori', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('id_divisi');
             $table->unsignedBigInteger('id_kategori');
+            $table->unsignedTinyInteger('urutan');
 
             $table->foreign('id_divisi')->references('id')->on('divisi')->onDelete('cascade');
             $table->foreign('id_kategori')->references('id')->on('kategori_proyek')->onDelete('cascade');

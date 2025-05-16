@@ -39,21 +39,38 @@ return new class extends Migration
             $table->foreign('id_jadwal_presentasi')->references('id')->on('jadwal_presentasi')->onDelete('cascade');
         });
 
-        Schema::create('progress', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->string('deskripsi');
-            $table->boolean('status');
+        Schema::create('route', function (Blueprint $table) {
+            $table->id();
+            $table->uuid('id_peserta');
+            $table->unsignedBigInteger('id_kategori_proyek');
+            $table->date('mulai')->nullable();
+            $table->date('selesai')->nullable();
 
+            $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
+            $table->foreign('id_kategori_proyek')->references('id')->on('kategori_proyek')->onDelete('cascade');
         });
 
         Schema::create('revisi', function (Blueprint $table) {
-            $table->id()->primary();
-            $table->date('tanggal');
-            $table->boolean('status');
-            $table->unsignedBigInteger('id_progress');
+            $table->id();
+            $table->uuid('id_peserta');
+            $table->unsignedBigInteger('id_route');
+            $table->boolean('status')->default(false); // false = belum diterima
+            $table->timestamps();
 
-            $table->foreign('id_progress')->references('id')->on('progress')->onDelete('cascade');
+            $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
+            $table->foreign('id_route')->references('id')->on('route')->onDelete('cascade');
         });
+
+        Schema::create('progress', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('id_revisi');
+            $table->string('deskripsi');
+            $table->boolean('status')->default(false); // false = belum selesai
+
+            $table->foreign('id_revisi')->references('id')->on('revisi')->onDelete('cascade');
+        });
+
+
     }
 
     /**
@@ -65,5 +82,6 @@ return new class extends Migration
         Schema::dropIfExists('peserta_presentasi');
         Schema::dropIfExists('revisi');
         Schema::dropIfExists('progress');
+        Schema::dropIfExists('route');
     }
 };

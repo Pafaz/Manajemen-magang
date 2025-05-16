@@ -51,14 +51,14 @@ class DivisiService
                 : $this->DivisiInterface->create($divisiData);
 
             $kategoriIds = [];
-            if (!empty($data['kategori_proyek'])) {
-                foreach ($data['kategori_proyek'] as $namaKategori) {
-                    $kategori = $this->kategoriInterface->create(['nama' => $namaKategori]);
-                    $kategoriIds[] = $kategori->id;
-                }
-
-                $divisi->kategori()->sync($kategoriIds);
+            foreach ($data['kategori_proyek'] as $kategoriItem) {
+                $kategori = $this->kategoriInterface->create([
+                    'nama' => $kategoriItem['nama'],
+                ]);
+                $kategoriIds[$kategori->id] = ['urutan' => $kategoriItem['urutan']];
             }
+            $divisi->kategori()->sync($kategoriIds);
+
 
             if (!empty($data['foto_cover'])) {
                 $isUpdate
@@ -90,8 +90,6 @@ class DivisiService
             );
         }
     }
-
-
     public function deleteDivisi(int $id)
     {
         $divisi = $this->DivisiInterface->find($id);

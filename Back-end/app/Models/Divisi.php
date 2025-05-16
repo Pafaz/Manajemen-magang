@@ -20,7 +20,9 @@ class Divisi extends Model
 
     public function kategori()
     {
-        return $this->belongsToMany(Kategori::class, 'divisi_kategori', 'id_divisi', 'id_kategori');
+        return $this->belongsToMany(Kategori::class, 'divisi_kategori', 'id_divisi', 'id_kategori')
+        ->withPivot('urutan')
+        ->orderBy('pivot_urutan');
     }
 
     public function cabang()

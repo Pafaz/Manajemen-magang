@@ -59,8 +59,10 @@ use App\Repositories\PerusahaanRepository;
 use App\Repositories\PresentasiRepository;
 use App\Interfaces\RekapKehadiranInterface;
 use App\Interfaces\JadwalPresentasiInterface;
+use App\Interfaces\RouteInterface;
 use App\Repositories\RekapKehadiranRepository;
 use App\Repositories\JadwalPresentasiRepository;
+use App\Repositories\RouteRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -97,6 +99,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(JurnalInterface::class, JurnalRepository::class);
         $this->app->bind(KehadiranInterface::class, KehadiranRepository::class);
         $this->app->bind(RekapKehadiranInterface::class, RekapKehadiranRepository::class);
+        $this->app->bind(RouteInterface::class, RouteRepository::class);
     }
 
     /**

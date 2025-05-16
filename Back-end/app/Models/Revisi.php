@@ -13,13 +13,15 @@ class Revisi extends Model
     protected $table = 'revisi';
 
     protected $fillable = [
-        'deskripsi',
+        'id_peserta',
+        'id_route',
         'status',
-        'presentasi_id',
+        'created_at',
+        'updated_at'
     ];
 
-    public function presentasi()
+    public function peserta()
     {
-        return $this->belongsTo(Presentasi::class);
+        return $this->belongsTo(Peserta::class, 'id_peserta');
     }
 }

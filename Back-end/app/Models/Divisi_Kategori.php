@@ -14,7 +14,8 @@ class Divisi_Kategori extends Model
 
     protected $fillable = [
         'id_divisi',
-        'id_kategori'
+        'id_kategori',
+        'urutan'
     ];
     public $timestamps = false;
 }

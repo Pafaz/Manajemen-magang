@@ -20,12 +20,12 @@ class RevisiRepository implements RevisiInterface
 
     public function create(array $data): ? Revisi
     {
-        return Revisi::create([ $data]);
+        return Revisi::create($data);
     }
 
     public function update(int $id, array $data): mixed
     {
-        return Revisi::where('id', $id)->update([$data]);
+        return Revisi::where('id', $id)->update($data);
     }
 
     public function delete(int $id): void

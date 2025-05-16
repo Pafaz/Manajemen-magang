@@ -19,6 +19,7 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'nama' => $this->nama,
+            'urutan' => $this->pivot->urutan
         ];
     }
 }

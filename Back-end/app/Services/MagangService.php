@@ -14,24 +14,31 @@ use App\Http\Resources\MagangResource;
 use App\Http\Resources\PesertaResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\MagangDetailResource;
+use App\Interfaces\RouteInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class MagangService
 {
     private MagangInterface $MagangInterface;
     private FotoService $foto;
-
     private SuratService $suratService;
     private UserInterface $userInterface;
-
     private MentorInterface $mentorInterface;
-    public function __construct(MagangInterface $MagangInterface, FotoService $foto, UserInterface $userInterface, SuratService $suratService, MentorInterface $mentorInterface)
+    private RouteInterface $routeInterface;
+    public function __construct(
+        MagangInterface $MagangInterface, 
+        FotoService $foto, 
+        UserInterface $userInterface, 
+        SuratService $suratService, 
+        MentorInterface $mentorInterface,
+        RouteInterface $routeInterface)
     {
         $this->MagangInterface = $MagangInterface;
         $this->foto = $foto;
         $this->userInterface = $userInterface;
         $this->suratService = $suratService;
         $this->mentorInterface = $mentorInterface;
+        $this->routeInterface = $routeInterface;
     }
 
     public function getAllPesertaMagang()
@@ -235,7 +242,17 @@ class MagangService
 
         $mentorDivisi = $mentor->id_divisi;
 
-        // Ambil semua peserta dan validasi
+        // Ambil kategori proyek urutan pertama dari divisi mentor
+        $kategoriPertama = $mentor->divisi
+            ->kategori()
+            ->orderByPivot('urutan')
+            ->first();
+
+        if (!$kategoriPertama) {
+            return Api::response(null, 'Divisi tidak memiliki kategori proyek', Response::HTTP_BAD_REQUEST);
+        }
+
+        // Validasi semua peserta
         $invalidPesertas = collect($pesertas)->filter(function ($id_peserta) use ($id_cabang, $mentorDivisi) {
             $peserta = $this->MagangInterface->findByPesertaAndCabang($id_peserta, $id_cabang);
             return !$peserta || $peserta->lowongan->id_divisi !== $mentorDivisi;
@@ -254,11 +271,12 @@ class MagangService
                 'id_mentor' => $id_mentor,
                 'id_divisi' => $mentorDivisi
             ]);
+
+            // Tambahkan route awal: kategori proyek pertama
+            $this->routeInterface->markStarted($id_peserta, $kategoriPertama->id);
         }
 
-        return Api::response($mentor, 'Mentor berhasil diatur untuk semua peserta', Response::HTTP_OK);
+        return Api::response(null, 'Mentor berhasil diatur & route awal diset untuk semua peserta', Response::HTTP_OK);
     }
-
-
 
 }

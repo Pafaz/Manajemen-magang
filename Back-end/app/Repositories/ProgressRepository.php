@@ -22,12 +22,12 @@ class ProgressRepository implements ProgressInterface
 
     public function create(array $data): ? Progress
     {
-        return Progress::create([ $data]);
+        return Progress::create( $data);
     }
 
     public function update(int $id, array $data): mixed
     {
-        return Progress::where('id', $id)->update([$data]);
+        return Progress::where('id', $id)->update($data);
     }
 
     public function delete(int $id): void

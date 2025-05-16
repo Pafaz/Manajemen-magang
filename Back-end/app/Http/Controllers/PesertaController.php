@@ -54,6 +54,10 @@ class PesertaController extends Controller
         return $this->pesertaService->isMagang();
     }
 
+    public function isApplyLowongan(){
+        return $this->pesertaService->isApplyLowongan();
+    }
+
     public function getJurnalPeserta()
     {
         return $this->pesertaService->getJurnalPesertaByCabang();

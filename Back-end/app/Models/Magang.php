@@ -17,6 +17,7 @@ class Magang extends Model
         'id_peserta',
         'id_mentor',
         'id_lowongan',
+        'id_divisi',
         'mulai',
         'selesai',
         'status', //menunggu, diterima, ditolak

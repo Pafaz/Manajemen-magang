@@ -85,6 +85,18 @@ class PresentasiService
         );
     }
 
+    public function getJadwalPresentasiPeserta()
+    {
+        $id_mentor = auth('sanctum')->user()->peserta->magang->id_mentor;
+
+        $data = $this->jadwalPresentasiInterface->getAll($id_mentor);
+
+        return Api::response(
+            JadwalPresentasiResource::collection($data),
+            'Jadwal Presentasi berhasil ditampilkan'
+        );
+    }
+
     //For Peserta
     public function applyPresentasi(array $data)
     {

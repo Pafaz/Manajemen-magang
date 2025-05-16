@@ -104,7 +104,11 @@ class MagangService
                 return Api::response(null, 'Status sudah sesuai', Response::HTTP_OK);
             }
 
+            $id_divisi = $magang->lowongan->id_divisi;
+
             $magang->status = $data['status'];
+            $magang->id_divisi = $id_divisi;
+            
             $magang->save();
             // dd($magang->lowongan->id_cabang);
             $dataSurat = [
@@ -175,6 +179,7 @@ class MagangService
                 }
 
                 $magang->status = $status;
+                $magang->id_divisi = $magang->lowongan->id_divisi;
                 $magang->save();
 
                 // Update user cabang aktif
@@ -243,9 +248,11 @@ class MagangService
         }
 
         // Update semua peserta valid
+        
         foreach ($pesertas as $id_peserta) {
             $this->MagangInterface->updateByPesertaAndCabang($id_peserta, $id_cabang, [
-                'id_mentor' => $id_mentor
+                'id_mentor' => $id_mentor,
+                'id_divisi' => $mentorDivisi
             ]);
         }
 

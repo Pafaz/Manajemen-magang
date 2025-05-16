@@ -74,4 +74,9 @@ class PresentasiController extends Controller
     {
         //
     }
+
+    public function getJadwalPresentasi()
+    {
+        return $this->presentasiService->getJadwalPresentasiPeserta();
+    }
 }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('id_peserta');
             $table->unsignedBigInteger('id_lowongan');
             $table->uuid('id_mentor')->nullable();
+            $table->unsignedBigInteger('id_divisi')->nullable();
             $table->enum('status', ['menunggu', 'diterima', 'ditolak'])->default('menunggu');
             $table->date('mulai');
             $table->date('selesai');
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
             $table->foreign('id_mentor')->references('id')->on('mentor')->onDelete('cascade');
             $table->foreign('id_lowongan')->references('id')->on('lowongan')->onDelete('cascade');
+            $table->foreign('id_divisi')->references('id')->on('divisi')->onDelete('cascade');
             $table->unique(['id_peserta', 'id_lowongan']);
             $table->index(['id_peserta', 'id_lowongan']); // pencarian spesifik
             $table->index(['id_lowongan', 'status']);

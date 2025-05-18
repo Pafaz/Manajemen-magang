@@ -32,7 +32,7 @@ class PesertaService
             : $this->pesertaInterface->getAll();
             
         return Api::response(
-            PesertaResource::collection($data),
+            PesertaDetailResource::collection($data),
             'Berhasil mengambil data peserta', 
         );
     }

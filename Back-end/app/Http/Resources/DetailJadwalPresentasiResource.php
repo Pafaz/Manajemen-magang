@@ -23,7 +23,7 @@ class DetailJadwalPresentasiResource extends JsonResource
             'waktu_selesai' => $this->waktu_selesai,
             'link_zoom' => $this->link_zoom ?? null,
             'lokasi' => $this->lokasi ?? null,
-            'Peserta' => PresentasiResource::collection($this->presentasi),
+            'Peserta' => PresentasiPesertaResource::collection($this->presentasi),
         ];
     }
 }

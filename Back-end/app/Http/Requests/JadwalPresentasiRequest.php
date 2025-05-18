@@ -23,7 +23,7 @@ class JadwalPresentasiRequest extends FormRequest
     {
         return [
             'kuota' => 'required|integer|min:1',
-            'lokasi'=> 'nullable|sting',
+            'lokasi'=> 'nullable|string',
             'link_zoom' => 'nullable|url',
             'tanggal' => 'required|date|after:yesterday',
             'waktu_mulai' => 'required|date_format:H:i',

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PresentasiResource extends JsonResource
+class PresentasiPesertaResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,7 +18,7 @@ class PresentasiResource extends JsonResource
             'id' => $this->id,
             'status' => $this->status,
             'projek' => $this->projek,
-            'jadwal_Presentasi' => JadwalPresentasiResource::make($this->jadwal)
+            'peserta' => PesertaResource::make($this->peserta)
         ];
     }
 }

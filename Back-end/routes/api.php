@@ -44,7 +44,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Peserta
     Route::group(['middleware' => 'role:peserta'], function () {
-        Route::apiResource('peserta', PesertaController::class);
+        Route::apiResource('peserta', PesertaController::class)->only(['store','update']);
         Route::apiResource('jurnal',JurnalController::class);
         Route::apiResource('jurusan', JurusanController::class);
         Route::get('/peserta/detail',[PesertaController::class, 'show']);
@@ -56,7 +56,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/complete/magang', [PesertaController::class, 'isMagang']);
         Route::get('/complete/lowongan', [PesertaController::class,'isApplyLowongan']);
         Route::get('/piket-peserta', [PiketController::class,'getPiketPeserta']);
-        Route::apiResource('presentasi', PresentasiController::class)->only(['index','store']);
+        Route::apiResource('riwayat-presentasi', PresentasiController::class)->only(['index','store']);
+        Route::get('presentasi', [PresentasiController::class, 'getJadwalPresentasi']);
     });
 
     //Perusahaan
@@ -109,6 +110,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //Mentor
     Route::group(['middleware' => 'role:mentor'], function () {
         Route::apiResource('jadwal-presentasi', JadwalPresentasiController::class)->only(['index','store', 'show']);
+        Route::put('presentasi/{id}', [JadwalPresentasiController::class,'update']);
     });
 
     //Superadmin

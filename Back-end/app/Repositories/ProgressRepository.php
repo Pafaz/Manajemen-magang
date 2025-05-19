@@ -17,7 +17,12 @@ class ProgressRepository implements ProgressInterface
 
     public function find(int $id): ? Progress
     {
-        return Progress::findOrFail($id)->first();
+        return Progress::findOrFail($id);
+    }
+
+    public function findByRevisi(int $id)
+    {
+        return Progress::where('id_revisi', $id)->get();
     }
 
     public function create(array $data): ? Progress
@@ -25,9 +30,11 @@ class ProgressRepository implements ProgressInterface
         return Progress::create( $data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Progress
     {
-        return Progress::where('id', $id)->update($data);
+        $progress = Progress::findOrFail($id);
+        $progress->update($data);
+        return $progress;
     }
 
     public function delete(int $id): void

@@ -16,7 +16,28 @@ class PesertaRepository implements PesertaInterface
         return Peserta::all();
     }
 
+    public function getDivisiRoute($idCabang)
+    {
+        return Peserta::with([
+            'user',
+            'magang.divisi.kategori',
+            'route'
+        ])->whereHas('user', function ($query) use ($idCabang) {
+                $query->where('id_cabang_aktif', $idCabang);
+            })
+            ->get();
+    }
 
+    public function getDetailRoute($idRoute, $idCabang)
+    {
+        return Peserta::with('revisi.progress')
+        ->whereHas('user', function ($query) use ($idCabang) {
+            $query->where('id_cabang_aktif', $idCabang);
+        })
+        ->whereHas('route', function ($query) use ($idRoute) {
+            $query->where('id', $idRoute);
+        })->get();
+    }
     public function getByCabang($idCabang): Collection
     {
         return Peserta::with([

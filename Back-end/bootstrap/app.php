@@ -94,7 +94,7 @@ return Application::configure(basePath: dirname(__DIR__))
                     return Api::response(null, $message, $status, [], 'error');
 
                 case $e instanceof RuntimeException:
-                    return Api::response(null, 'Runtime error occurred', Response::HTTP_INTERNAL_SERVER_ERROR, [], 'error');
+                    return Api::response(null, 'Runtime error occurred '. $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR, [], 'error');
 
                 default:
                     $status = $e instanceof HttpException

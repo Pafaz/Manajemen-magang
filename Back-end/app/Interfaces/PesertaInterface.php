@@ -14,4 +14,6 @@ interface PesertaInterface extends GetAllInterface, CreateInterface, DeleteInter
     public function getByDivisi($idDivisi);
     public function getJurnalPeserta($idCabang);
     public function getKehadiranPeserta($idCabang);
+    public function getDivisiRoute($idCabang);
+    public function getDetailRoute($idRoute, $idCabang);
 }

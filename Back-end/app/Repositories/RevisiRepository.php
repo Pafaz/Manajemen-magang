@@ -13,19 +13,20 @@ class RevisiRepository implements RevisiInterface
         return Revisi::all();
     }
 
-    public function find(int $id): ? Revisi
+    public function find(int $id): ?Revisi
     {
-        return Revisi::findOrFail($id)->first();
+        return Revisi::with('progress')->findOrFail($id);
     }
-
     public function create(array $data): ? Revisi
     {
         return Revisi::create($data);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Revisi
     {
-        return Revisi::where('id', $id)->update($data);
+        $revisi = Revisi::findOrFail($id);
+        $revisi->update($data);
+        return $revisi;
     }
 
     public function delete(int $id): void

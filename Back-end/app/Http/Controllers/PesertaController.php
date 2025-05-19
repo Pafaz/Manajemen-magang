@@ -67,6 +67,10 @@ class PesertaController extends Controller
     {
         return $this->pesertaService->getPesertaByCabang();
     }
+    public function getDivisiRoute()
+    {
+        return $this->pesertaService->getDivisiRoute();
+    }
 
     public function showByDivisi($id)
     {
@@ -89,6 +93,10 @@ class PesertaController extends Controller
         return $this->pesertaService->simpanProfilPeserta($request->all(), true, $id);
     }
 
+    public function getDetailRoute($route)
+    {
+        return $this->pesertaService->getDetailRoute($route);
+    }
     /**
      * Remove the specified resource from storage.
      */

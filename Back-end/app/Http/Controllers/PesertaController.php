@@ -57,6 +57,10 @@ class PesertaController extends Controller
     {
         return $this->pesertaService->getPesertaByCabang();
     }
+    public function showByDivisi($id)
+    {
+        return $this->pesertaService->getPesertaByDivisi($id);
+    }
     public function getKehadiranPesertabyCabang()
     {
         return $this->pesertaService->getKehadiranPesertaByCabang();

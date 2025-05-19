@@ -110,6 +110,11 @@ class CabangService
 
     public function deleteCabang($id)
     {
+        $user = auth('sanctum')->user();
+        if (!$user->perusahaan->cabang()->where('id', $id)->exists()) {
+            return Api::response(null, 'Cabang tidak valid untuk perusahaan ini', Response::HTTP_FORBIDDEN);
+        }
+
         $this->cabangInterface->delete($id);
         return Api::response(
             null,

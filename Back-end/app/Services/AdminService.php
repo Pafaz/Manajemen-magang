@@ -26,7 +26,8 @@ class AdminService
 
     public function getAllAdmin()
     {
-        $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
+        $id_cabang = auth()->user()->id_cabang_aktif;
+
         $data = $this->adminInterface->getAll($id_cabang);
 
         return Api::response(
@@ -70,6 +71,7 @@ class AdminService
                 $user = $this->userInterface->create([
                     'nama' => $data['nama'],
                     'email' => $data['email'],
+                    'id_cabang_aktif' => $id_cabang,
                     'telepon' => $data['telepon'],
                     'password' => bcrypt($data['password']),
                 ]);

@@ -58,9 +58,12 @@ class JadwalPresentasiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,$jadwal_Presentasi)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+            "status"=> "required|boolean",
+        ]);
+        return $this->presentasiService->updateRiwayat( $request->all(), $id);
     }
 
     /**
@@ -68,6 +71,6 @@ class JadwalPresentasiController extends Controller
      */
     public function destroy($jadwal_Presentasi)
     {
-        //
+        //pr
     }
 }

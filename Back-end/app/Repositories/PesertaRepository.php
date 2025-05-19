@@ -67,7 +67,7 @@ class PesertaRepository implements PesertaInterface
     }
     public function find( $id): ? Peserta
     {
-        return Peserta::where('id_user', auth('sanctum')->user()->id);
+        return Peserta::where('id', $id)->first();
     }
 
     public function create(array $data): ? Peserta

@@ -43,7 +43,7 @@ class PesertaController extends Controller
      */
     public function show()
     {
-        return $this->pesertaService->getPeserta();
+        return $this->pesertaService->getPesertaDetail();
     }
 
     public function isCompleteProfil(){

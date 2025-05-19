@@ -33,8 +33,22 @@ class PesertaService
             : $this->pesertaInterface->getAll();
             
         return Api::response(
-            PesertaResource::collection($data),
+            PesertaDetailResource::collection($data),
             'Berhasil mengambil data peserta', 
+        );
+    }
+
+    public function getPesertaDetail()
+    {
+        $id_peserta = auth('sanctum')->user()->peserta->id;
+
+        // dd($id_peserta);
+
+        $data = $this->pesertaInterface->find($id_peserta);
+
+        return Api::response(
+            PesertaResource::make($data),
+            'Data Peserta Berhasil Ditampilkan',
         );
     }
 

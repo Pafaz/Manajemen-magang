@@ -101,7 +101,6 @@ class PresentasiService
     public function applyPresentasi(array $data)
     {
         $data['id_peserta'] = auth('sanctum')->user()->peserta->id;
-        $data['status'] = 'menunggu';
 
         $presentasi = $this->presentasiInterface->create($data);
 
@@ -123,5 +122,26 @@ class PresentasiService
             PresentasiResource::collection($riwayat),
             'Riwayat Presentasi Berhasil ditampilkan',
         );
+    }
+
+    public function updateRiwayat( array $data, $id)
+    {
+        $nama = $this->presentasiInterface->find($id)->peserta->user->nama;
+
+        // dd($nama);
+
+        $this->presentasiInterface->update($id,  $data);
+
+        if ($data['status'] === 1) {
+            return Api::response(
+                null,
+                $nama.' telah hadir presentasi',
+            );
+        } else {
+            return Api::response(
+                null,
+                $nama.' tidak hadir presentasi',
+            );
+        }
     }
 }

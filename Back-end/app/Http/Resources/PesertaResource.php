@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Requests\MagangRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,7 +15,7 @@ class PesertaResource extends JsonResource
      */
     public function toArray(Request $request): array
     {   
-        return [
+        $response = [
             'id' => $this->id,
             'nama' => $this->user->nama,
             'telepon' => $this->user->telepon,
@@ -28,8 +29,14 @@ class PesertaResource extends JsonResource
             'alamat' => $this->alamat,
             'mulai_magang' => $this->magang?->mulai,
             'selesai_magang' => $this->magang?->selesai,
+            'perusahaan' => $this->magang?->lowongan->perusahaan->user->nama,
             'divisi' => $this->magang?->lowongan->divisi->nama,
-            'foto' => FotoResource::collection($this->foto?? collect()),
+            'foto' => FotoResource::collection($this->foto ?? collect()),
         ];
+         if ($this->magang) {
+            $response['berkas'] = FotoResource::collection($this->magang->foto);
+        }
+
+        return $response;
     }
 }

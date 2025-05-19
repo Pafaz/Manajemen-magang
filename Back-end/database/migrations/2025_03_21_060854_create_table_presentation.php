@@ -31,10 +31,10 @@ return new class extends Migration
             $table->id()->primary();
             $table->uuid('id_peserta');
             $table->unsignedBigInteger('id_jadwal_presentasi');
-            $table->enum('status', ['menunggu','hadir', 'tidak hadir'])->default('menunggu');
+            $table->boolean('status')->nullable();
             $table->string('projek')->nullable();
             $table->timestamps();
-
+            
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');
             $table->foreign('id_jadwal_presentasi')->references('id')->on('jadwal_presentasi')->onDelete('cascade');
         });

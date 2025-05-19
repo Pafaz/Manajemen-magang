@@ -67,32 +67,91 @@ class MagangService
 
     public function applyMagang(array $data)
     {
+        // Ambil user yang sedang login
         $user = auth('sanctum')->user();
-        if (!$user->peserta) {
-            return Api::response(null, 'Silahkan lengkapi data diri terlebih dahulu', Response::HTTP_FORBIDDEN);
-        }
 
-        if ($this->MagangInterface->alreadyApply($user->peserta->id, $data['id_lowongan'])) {
-            return Api::response(null, 'Anda sudah mengajukan magang di lowongan ini', Response::HTTP_FORBIDDEN);
-        }
+        // Mulai transaksi
+        DB::beginTransaction();
 
-        $magang = $this->MagangInterface->create([
-            'id_peserta' => $user->peserta->id,
-            'id_lowongan' => $data['id_lowongan'],
-            'mulai' => $data['mulai'],
-            'selesai' => $data['selesai'],
-            'status' => 'menunggu',
-        ]);
+        try {
+            // Jika peserta belum melengkapi data diri
+            if (!$user->peserta) {
+                Log::error('User ' . $user->id . ' mencoba mengajukan magang tanpa melengkapi data diri.');
+                DB::rollback(); // Rollback transaksi jika data diri tidak lengkap
+                return Api::response(null, 'Silahkan lengkapi data diri terlebih dahulu', Response::HTTP_FORBIDDEN);
+            }
 
-        if (!empty($data['surat_pernyataan_diri'])) {
-            $this->foto->createFoto($data['surat_pernyataan_diri'],  $magang->id, 'surat_pernyataan_diri', 'magang');
+            // Periksa apakah peserta sudah mengajukan magang di lowongan yang sama
+            if ($this->MagangInterface->alreadyApply($user->peserta->id, $data['id_lowongan'])) {
+                Log::warning('User ' . $user->id . ' sudah mengajukan magang di lowongan ' . $data['id_lowongan']);
+                DB::rollback(); // Rollback transaksi jika sudah mengajukan magang
+                return Api::response(null, 'Anda sudah mengajukan magang di lowongan ini', Response::HTTP_FORBIDDEN);
+            }
+
+            // Coba buat magang
+            $magang = $this->MagangInterface->create([
+                'id_peserta' => $user->peserta->id,
+                'id_lowongan' => $data['id_lowongan'],
+                'mulai' => $data['mulai'],
+                'selesai' => $data['selesai'],
+                'status' => 'menunggu',
+            ]);
+
+            // Jika ada surat pernyataan diri
+            if (!empty($data['surat_pernyataan_diri'])) {
+                $this->foto->createFoto($data['surat_pernyataan_diri'], $magang->id, 'surat_pernyataan_diri', 'magang');
+            }
+
+            // Commit transaksi jika berhasil
+            DB::commit();
+            
+            Log::info('User ' . $user->id . ' berhasil mengajukan magang di lowongan ' . $data['id_lowongan']);
+
+            return Api::response(
+                MagangDetailResource::make($magang),
+                'Berhasil mengajukan magang',
+                Response::HTTP_CREATED
+            );
+
+        } catch (\Exception $e) {
+            // Rollback transaksi jika terjadi kesalahan
+            DB::rollback();
+
+            // Menangkap error dan mencatatnya di log
+            Log::error('Terjadi kesalahan saat mengajukan magang: ' . $e->getMessage());
+            
+            return Api::response(null, 'Terjadi kesalahan saat mengajukan magang', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return Api::response(
-            MagangDetailResource::make($magang),
-            'Berhasil mengajukan magang',
-            Response::HTTP_CREATED
-        );
-    }
+    }  
+
+    // public function applyMagang(array $data)
+    // {
+    //     $user = auth('sanctum')->user();
+    //     if (!$user->peserta) {
+    //         return Api::response(null, 'Silahkan lengkapi data diri terlebih dahulu', Response::HTTP_FORBIDDEN);
+    //     }
+
+    //     if ($this->MagangInterface->alreadyApply($user->peserta->id, $data['id_lowongan'])) {
+    //         return Api::response(null, 'Anda sudah mengajukan magang di lowongan ini', Response::HTTP_FORBIDDEN);
+    //     }
+
+    //     $magang = $this->MagangInterface->create([
+    //         'id_peserta' => $user->peserta->id,
+    //         'id_lowongan' => $data['id_lowongan'],
+    //         'mulai' => $data['mulai'],
+    //         'selesai' => $data['selesai'],
+    //         'status' => 'menunggu',
+    //     ]);
+
+    //     if (!empty($data['surat_pernyataan_diri'])) {
+    //         $this->foto->createFoto($data['surat_pernyataan_diri'],  $magang->id, 'surat_pernyataan_diri', 'magang');
+    //     }
+    //     return Api::response(
+    //         MagangDetailResource::make($magang),
+    //         'Berhasil mengajukan magang',
+    //         Response::HTTP_CREATED
+    //     );
+    // }
 
     public function approvalMagang(int $id, array $data)
     {

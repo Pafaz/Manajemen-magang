@@ -42,7 +42,7 @@ Route::get('/lowongan/{id}/detail', [LowonganController::class,'show']);
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('divisi', DivisiController::class);
 
-    //Peserta
+    //role Peserta
     Route::group(['middleware' => 'role:peserta'], function () {
         Route::apiResource('peserta', PesertaController::class)->only(['store','update']);
         Route::apiResource('jurnal',JurnalController::class);
@@ -60,51 +60,56 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('presentasi', [PresentasiController::class, 'getJadwalPresentasi']);
     });
 
-    //Perusahaan
+    //role Perusahaan
     Route::group(['middleware' => 'role:perusahaan'], function () {
+        //manajemen mitra
         Route::apiResource('mitra', SekolahController::class);
+        //manajemen admin
         Route::apiResource('admin', AdminCabangController::class);
-        Route::apiResource('cabang', CabangController::class)->only(['index','store']);
-        Route::apiResource('mentor', MentorController::class);
-        Route::apiResource('cabang', CabangController::class);
-        Route::apiResource('lowongan', LowonganController::class);
-        Route::apiResource('jam-kantor', JamKantorController::class);
-        Route::get('/cabang-detail', [CabangController::class, 'show']);
-        Route::put('/cabang-update', [CabangController::class, 'update']);
-        Route::apiResource('piket', PiketController::class)->only(['index','store','update','destroy']);
-        Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);
-
-        Route::apiResource('magang', MagangController::class)->only(['index','show', 'update']);
-        Route::put('/many/magang', [MagangController::class, 'approveMany']);
-        Route::put('/set-mentor/{mentorId}', [MagangController::class, 'setMentor']);
-
-        //pendataan
-        Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
-        Route::get('/jurnal-peserta-cabang', [PesertaController::class, 'getJurnalPeserta']);
-        Route::get('/kehadiran-peserta-cabang', [PesertaController::class, 'getKehadiranPesertabyCabang']);
-
-        Route::put('jam-kantor/{hari}/nonaktif', [JamKantorController::class, 'unactivatedJamKantor']);
-        Route::put('jam-kantor/{hari}/aktif', [JamKantorController::class, 'activatedJamKantor']);
-        Route::apiResource('surat', SuratController::class);
-        Route::get('surat-peringatan', [SuratController::class,'getSuratPeringatan']);
+        //manajemen cabang
+        Route::apiResource('cabang', CabangController::class)->only(['index','store','destroy']);
+        //manajemen lowongan
+        Route::apiResource('lowongan', LowonganController::class)->only(['index','store']);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
+        //set cabang aktif
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);
-
-        Route::put('/many/izin', [IzinController::class, 'approveMany']);
-        Route::get('/izin', [IzinController::class, 'index']);
-        Route::put('/izin/{id}', [IzinController::class, 'update']);
-        Route::get('/izin/{id}', [IzinController::class, 'show']);
-        //perusahaan
+        //manajemen perusahaan
         Route::post('/perusahaan', [PerusahaanController::class, 'store']);
         Route::get('/perusahaan/detail', [PerusahaanController::class, 'show']);
         Route::put('/perusahaan/update', [PerusahaanController::class, 'update']);
         Route::get('/perusahaan/edit', [PerusahaanController::class, 'edit']);
     });
 
-    //Admin
-    Route::group(['middleware' => 'role:admin'], function () {
+    //role admin dan perusahaan
+    Route::group(['middleware' => ['checkRoles:admin,perusahaan']], function () {
+        //profile cabang       
+        Route::get('/cabang-detail', [CabangController::class, 'show']);
+        Route::put('/cabang-update', [CabangController::class, 'update']);
+        //pendataan
+        Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
+        Route::get('/jurnal-peserta-cabang', [PesertaController::class, 'getJurnalPeserta']);
+        Route::get('/kehadiran-peserta-cabang', [PesertaController::class, 'getKehadiranPesertabyCabang']);
+        //jam-kantor
+        Route::apiResource('jam-kantor', JamKantorController::class);
+        Route::put('jam-kantor/{hari}/nonaktif', [JamKantorController::class, 'unactivatedJamKantor']);
+        Route::put('jam-kantor/{hari}/aktif', [JamKantorController::class, 'activatedJamKantor']);
+        //surat
+        Route::apiResource('surat', SuratController::class);
+        Route::get('surat-peringatan', [SuratController::class,'getSuratPeringatan']);
+        //manajemen mentor
+        Route::apiResource('mentor', MentorController::class);
+        Route::put('/set-mentor/{mentorId}', [MagangController::class, 'setMentor']);
+        //manajemen piket
+        Route::apiResource('piket', PiketController::class)->only(['index','store','update','destroy']);
         Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);
-        Route::apiResource('kategori-proyek', KategoriController::class);
+        //approval magang peserta
+        Route::apiResource('magang', MagangController::class)->only(['index','show', 'update']);
+        Route::put('/many/magang', [MagangController::class, 'approveMany']);
+        //approval izin peserta
+        Route::put('/many/izin', [IzinController::class, 'approveMany']);
+        Route::get('/izin', [IzinController::class, 'index']);
+        Route::put('/izin/{id}', [IzinController::class, 'update']);
+        Route::get('/izin/{id}', [IzinController::class, 'show']);
     });
 
     //Mentor

@@ -10,10 +10,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ProgressRepository implements ProgressInterface
 {
-    public function getAll(): Collection
-    {
-        return Progress::all();
-    }
 
     public function find(int $id): ? Progress
     {
@@ -35,10 +31,5 @@ class ProgressRepository implements ProgressInterface
         $progress = Progress::findOrFail($id);
         $progress->update($data);
         return $progress;
-    }
-
-    public function delete(int $id): void
-    {
-        Progress::findOrFail($id)->delete();
     }
 }

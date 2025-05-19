@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use App\Http\Resources\JurnalResource;
+use App\Http\Resources\PesertabyMentorResource;
 use App\Services\FotoService;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
@@ -13,17 +14,21 @@ use App\Http\Resources\PesertaDetailResource;
 use App\Http\Resources\PesertaDivisiRouteResource;
 use App\Http\Resources\PesertaJurnalResource;
 use App\Http\Resources\PesertaKehadiranResource;
+use App\Http\Resources\ProgressPesertaResource;
+use App\Interfaces\RouteInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class PesertaService
 {
     private PesertaInterface $pesertaInterface;
+    private RouteInterface $routeInterface;
     private FotoService $foto;
 
-    public function __construct(PesertaInterface $pesertaInterface, FotoService $foto)
+    public function __construct(PesertaInterface $pesertaInterface, FotoService $foto, RouteInterface $routeInterface)
     {
         $this->foto = $foto;
         $this->pesertaInterface = $pesertaInterface;
+        $this->routeInterface = $routeInterface;
     }
 
     public function getPeserta($id = null, $isUpdate = false)
@@ -41,8 +46,6 @@ class PesertaService
     public function getPesertaDetail()
     {
         $id_peserta = auth('sanctum')->user()->peserta->id;
-
-        // dd($id_peserta);
 
         $data = $this->pesertaInterface->find($id_peserta);
 
@@ -81,6 +84,52 @@ class PesertaService
         // dd($data);
         return Api::response(
             PesertaKehadiranResource::collection($data),
+            'Peserta Fetched Successfully',
+            Response::HTTP_OK
+        );
+    }
+
+    public function markDoneRoute($idPeserta, $idKategoriProyek)
+    {
+        // Tandai kategori proyek saat ini sebagai selesai
+        $this->routeInterface->markFinished($idPeserta, $idKategoriProyek);
+
+        // Ambil peserta dan kategori-kategori divisinya yang diurutkan
+        $peserta = $this->pesertaInterface->find($idPeserta);
+        if (!$peserta || !$peserta->magang || !$peserta->magang->divisi) {
+            return Api::response(null, 'Peserta atau divisi tidak valid', Response::HTTP_NOT_FOUND);
+        }
+
+        $kategoriList = $peserta->magang->divisi->kategori->sortBy('pivot.urutan')->values();
+        // Cari indeks dari kategori saat ini
+        $currentIndex = $kategoriList->search(fn($kategori) => $kategori->id == $idKategoriProyek);
+        $nextKategori = $kategoriList->get($currentIndex + 1);
+        if ($nextKategori) {
+            $this->routeInterface->markStarted($idPeserta, $nextKategori->id);
+        }
+        return Api::response(
+            null,
+            'Berhasil menandai route selesai' . ($nextKategori ? ' dan memulai kategori berikutnya' : ''),
+        );
+    }
+
+    
+    public function getPesertaByProgress(){
+        $idMentor = auth()->user()->mentor->id;
+        $data = $this->pesertaInterface->getByProgress($idMentor);
+        return Api::response(
+            PesertabyMentorResource::collection($data),
+            'Peserta Fetched Successfully',
+            Response::HTTP_OK
+        );
+    }
+
+    public function getDetailProgressByMentor($idPeserta)
+    {
+        $idMentor = auth()->user()->mentor->id;
+        $data = $this->pesertaInterface->getDetailProgressByMentor($idMentor, $idPeserta);
+        return Api::response(
+            ProgressPesertaResource::make($data),
             'Peserta Fetched Successfully',
             Response::HTTP_OK
         );

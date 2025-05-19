@@ -35,6 +35,11 @@ class Magang extends Model
         return $this->belongsTo(Mentor::class, 'id_mentor');
     }
 
+    public function divisi()
+    {
+        return $this->belongsTo(Divisi::class, 'id_divisi');
+    }
+
     public function foto()
     {
         return $this->hasMany(Foto::class, 'id_referensi')->where('context', 'magang');

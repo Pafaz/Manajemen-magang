@@ -10,6 +10,7 @@ use App\Interfaces\MagangInterface;
 use App\Interfaces\PesertaInterface;
 use App\Http\Resources\PesertaResource;
 use App\Http\Resources\PesertaDetailResource;
+use App\Http\Resources\PesertaDivisiRouteResource;
 use App\Http\Resources\PesertaJurnalResource;
 use App\Http\Resources\PesertaKehadiranResource;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,17 +72,29 @@ class PesertaService
         );
     }
 
-    // public function getPesertaDivisi()
-    // {
-    //     $cabang = auth('sanctum')->user()->id_cabang_aktif;
-    //     $data = $this->pesertaInterface->getByCabang($cabang);
-    //     // dd($data);
-    //     return Api::response(
-    //         PesertaResource::collection($data),
-    //         'Peserta Fetched Successfully',
-    //         Response::HTTP_OK
-    //     );
-    // }
+    public function getDivisiRoute()
+    {
+        $cabang = auth('sanctum')->user()->id_cabang_aktif;
+        $data = $this->pesertaInterface->getDivisiRoute($cabang);
+        // dd($data);
+        return Api::response(
+            PesertaDivisiRouteResource::collection($data),
+            'Peserta Fetched Successfully',
+            Response::HTTP_OK
+        );
+    }
+
+    public function getDetailRoute($idRoute)
+    {
+        $cabang = auth('sanctum')->user()->id_cabang_aktif;
+        $data = $this->pesertaInterface->getDetailRoute($idRoute, $cabang);
+        // dd($data);
+        return Api::response(
+            $data,
+            'Peserta Fetched Successfully',
+            Response::HTTP_OK
+        );
+    }
 
     public function isCompleteProfil()
     {

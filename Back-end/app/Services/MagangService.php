@@ -51,7 +51,6 @@ class MagangService
             'Berhasil mendapatkan data peserta magang', 
         );
     }
-
     public function getMagangbyId($id){
         $data = $this->MagangInterface->find($id);
 

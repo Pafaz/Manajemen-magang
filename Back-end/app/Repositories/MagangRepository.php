@@ -23,7 +23,7 @@ class MagangRepository implements MagangInterface
                 ->whereHas('lowongan', function ($query) use ($id_cabang) {
                 $query->where('id_cabang', $id_cabang);
             })
-                    ->first();
+            ->first();
     }
 
     public function updateByPesertaAndCabang($id_peserta, $id_cabang, array $data)

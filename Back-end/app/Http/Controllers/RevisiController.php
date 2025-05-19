@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Revisi;
+use App\Services\RevisiService;
 use Illuminate\Http\Request;
 
 class RevisiController extends Controller
@@ -10,6 +11,11 @@ class RevisiController extends Controller
     /**
      * Display a listing of the resource.
      */
+    private RevisiService $revisiService;
+    public function __construct(RevisiService $revisiService)
+    {
+        $this->revisiService = $revisiService;
+    }
     public function index()
     {
         //
@@ -26,17 +32,17 @@ class RevisiController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, $route)
     {
-        //
+        return $this->revisiService->simpanRevisi($request->all(), $route);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Revisi $revisi)
+    public function show($revisi)
     {
-        //
+        return $this->revisiService->getRevisi($revisi);
     }
 
     /**
@@ -50,9 +56,9 @@ class RevisiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Revisi $revisi)
+    public function update(Request $request, $revisi)
     {
-        //
+        return $this->revisiService->updateRevisi($revisi, $request->all());
     }
 
     /**

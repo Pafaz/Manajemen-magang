@@ -24,4 +24,9 @@ class Revisi extends Model
     {
         return $this->belongsTo(Peserta::class, 'id_peserta');
     }
+
+    public function progress()
+    {
+        return $this->hasMany(Progress::class, 'id_revisi');
+    }
 }

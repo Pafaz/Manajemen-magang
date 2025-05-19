@@ -11,7 +11,7 @@ class Progress extends Model
     use HasFactory;
 
     protected $table = 'progress';
-
+    public $timestamps = false;
     protected $fillable = [
         'id_revisi',
         'deskripsi',

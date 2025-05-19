@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use App\Http\Resources\JurnalResource;
+use App\Http\Resources\PesertaByDivisiResource;
 use App\Services\FotoService;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
@@ -59,6 +60,18 @@ class PesertaService
             PesertaResource::collection($data),
             'Peserta Fetched Successfully',
             Response::HTTP_OK
+        );
+    }
+
+    public function getPesertaByDivisi($id_divisi)
+    {
+        // dd($id_divisi);
+        $data = $this->pesertaInterface->getByDivisi($id_divisi);
+
+        // dd($data);
+        return Api::response(
+            PesertaByDivisiResource::collection($data),
+            'Peserta sesuai divisi berhasil ditampilkan',
         );
     }
 

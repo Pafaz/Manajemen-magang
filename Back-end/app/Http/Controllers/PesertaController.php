@@ -68,6 +68,11 @@ class PesertaController extends Controller
         return $this->pesertaService->getPesertaByCabang();
     }
 
+    public function showByDivisi($id)
+    {
+        return $this->pesertaService->getPesertaByDivisi($id);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */

@@ -29,6 +29,19 @@ class PesertaRepository implements PesertaInterface
             ->get();
     }
 
+    public function getByDivisi($idDivisi)
+    {
+        return Peserta::with([
+                'user',
+                'magang.lowongan.divisi', // Pastikan relasi 'divisi' ada di model Lowongan
+            ])
+            ->whereHas('magang.lowongan.divisi', function ($query) use ($idDivisi) {
+                $query->where('id_divisi', $idDivisi); // Memfilter berdasarkan id_divisi yang ada di divisi
+            })
+            ->get();
+    }
+
+
     public function getJurnalPeserta($idCabang)
     {
         return Peserta::with('jurnal')->whereHas('user', function ($query) use ($idCabang) {

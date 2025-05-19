@@ -87,6 +87,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::put('/cabang-update', [CabangController::class, 'update']);
         //pendataan
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
+        Route::get('/peserta-by-divisi/{divisiId}', [PesertaController::class,'showByDivisi']);
         Route::get('/jurnal-peserta-cabang', [PesertaController::class, 'getJurnalPeserta']);
         Route::get('/kehadiran-peserta-cabang', [PesertaController::class, 'getKehadiranPesertabyCabang']);
         //jam-kantor

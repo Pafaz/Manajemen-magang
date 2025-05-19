@@ -11,6 +11,7 @@ use App\Interfaces\Base\UpdateInterface;
 interface PesertaInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
     public function getByCabang($perusahaan);
+    public function getByDivisi($idDivisi);
     public function getJurnalPeserta($idCabang);
     public function getKehadiranPeserta($idCabang);
 }

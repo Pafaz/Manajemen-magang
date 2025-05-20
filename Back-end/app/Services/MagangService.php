@@ -51,6 +51,7 @@ class MagangService
             'Berhasil mendapatkan data peserta magang', 
         );
     }
+
     public function getMagangbyId($id){
         $data = $this->MagangInterface->find($id);
 
@@ -342,10 +343,7 @@ class MagangService
         $mentorDivisi = $mentor->id_divisi;
 
         // Ambil kategori proyek urutan pertama dari divisi mentor
-        $kategoriPertama = $mentor->divisi
-            ->kategori()
-            ->orderByPivot('urutan')
-            ->first();
+        $kategoriPertama = $mentor->divisi->kategori->sortBy('pivot.urutan')->first();
 
         if (!$kategoriPertama) {
             return Api::response(null, 'Divisi tidak memiliki kategori proyek', Response::HTTP_BAD_REQUEST);

@@ -35,8 +35,6 @@ class MagangRepository implements MagangInterface
             ->update($data);
     }
 
-
-
     public function find(int $id): ? Magang
     {
         return Magang::findOrFail($id);

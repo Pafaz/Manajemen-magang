@@ -22,30 +22,6 @@ class PesertaController extends Controller
     {
         return $this->pesertaService->getPeserta();
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
-    {
-    }
-    
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(PesertaRequest $request)
-    {
-        return $this->pesertaService->simpanProfilPeserta($request->validated());
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show()
-    {
-        return $this->pesertaService->getPesertaDetail();
-    }
-
     public function isCompleteProfil(){
         return $this->pesertaService->isCompleteProfil();
     }
@@ -58,50 +34,67 @@ class PesertaController extends Controller
         return $this->pesertaService->isApplyLowongan();
     }
 
+    // MENTOR
+    public function showByProgress(){
+        return $this->pesertaService->getPesertaByProgress();
+    }
+
+    public function showDetailProgress($idPeserta){
+        return $this->pesertaService->getDetailProgressByMentor($idPeserta);
+    }
+
+    public function markDoneRoute($idPeserta, Request $request){
+        return $this->pesertaService->markDoneRoute($idPeserta, $request['id_kategori_proyek']);
+    }
+    // END MENTOR
+
+    // perusahaan & admin
     public function getJurnalPeserta()
     {
         return $this->pesertaService->getJurnalPesertaByCabang();
     }
-
     public function showByCabang()
     {
         return $this->pesertaService->getPesertaByCabang();
     }
-    public function getDivisiRoute()
-    {
-        return $this->pesertaService->getDivisiRoute();
-    }
-
     public function showByDivisi($id)
     {
         return $this->pesertaService->getPesertaByDivisi($id);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function getKehadiranPesertabyCabang()
     {
         return $this->pesertaService->getKehadiranPesertaByCabang();
     }
+    // END PERUSAHAAN & ADMIN
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // PROFILE PESERTA
+    public function store(PesertaRequest $request)
+    {
+        return $this->pesertaService->simpanProfilPeserta($request->validated());
+    }
+    public function show()
+    {
+        return $this->pesertaService->getPesertaDetail();
+    }
     public function update(PesertaRequest $request, $id)
     {
         return $this->pesertaService->simpanProfilPeserta($request->all(), true, $id);
     }
-
-    public function getDetailRoute($route)
-    {
-        return $this->pesertaService->getDetailRoute($route);
-    }
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id)
     {
         return $this->pesertaService->deletePeserta($id);
     }
+    // END PROFILE PESERTA
+
+    // ROUTE PESERTA
+    public function getDivisiRoute()
+    {
+        return $this->pesertaService->getDivisiRoute();
+    }
+    public function getDetailRoute($route)
+    {
+        return $this->pesertaService->getDetailRoute($route);
+    }
+    // END ROUTE PESERTA
+
 }

@@ -49,7 +49,6 @@ class PesertaRepository implements PesertaInterface
             })
             ->get();
     }
-
     public function getByDivisi($idDivisi)
     {
         return Peserta::with([
@@ -62,6 +61,19 @@ class PesertaRepository implements PesertaInterface
             ->get();
     }
 
+    public function getByProgress($idMentor): Collection
+    {
+        return Peserta::with([
+                'user',
+                'route',
+                'magang.mentor',
+                'revisi.progress'
+            ])
+            ->whereHas('magang.mentor', function ($query) use ($idMentor) {
+                $query->where('id', $idMentor);
+            })
+            ->get();
+    }
 
     public function getJurnalPeserta($idCabang)
     {
@@ -77,6 +89,19 @@ class PesertaRepository implements PesertaInterface
                 $query->where('id_cabang_aktif', $idCabang);
             })
             ->get();
+    }
+
+    public function getDetailProgressByMentor($idMentor, $idPeserta)
+    {
+        return Peserta::with([
+            'user',
+            'route',
+            'revisi.progress'
+        ])->whereHas('magang.mentor', function ($query) use ($idMentor) {
+                $query->where('id', $idMentor);
+            })
+        ->findOrFail($idPeserta);
+
     }
     public function find( $id): ? Peserta
     {

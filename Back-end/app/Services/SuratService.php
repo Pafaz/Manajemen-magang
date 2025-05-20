@@ -6,8 +6,8 @@ use App\Helpers\Api;
 use Illuminate\Support\Carbon;
 use App\Interfaces\SuratInterface;
 use Illuminate\Support\Facades\DB;
-// use Barryvdh\DomPDF\Facade\Pdf;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
+// use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\PesertaInterface;
 use Illuminate\Support\Facades\Storage;
@@ -149,9 +149,11 @@ class SuratService
 
         // $pdf = Pdf::loadView('surat.penerimaan', $data);
 
-        Pdf::view('surat.penerimaan', $data)
-            ->disk('public')
-            ->save($filePath);
+        $pdf = PDF::loadView('surat.penerimaan', $data)
+        ->setOption('isHtml5ParserEnabled', true)
+        ->setOption('isPhpEnabled', true);
+
+        Storage::disk('public')->put($filePath, $pdf->output());
 
         // Storage::disk('public')->put($filePath, $pdf->output());
         
@@ -160,7 +162,7 @@ class SuratService
 
     private function generateSuratPeringatan(array $data): string
     {
-        $perusahaan = auth('sanctum')->user();
+        $perusahaan = auth()->user();
         $peserta = $this->pesertaInterface->find($data['id_peserta']);
         
         $dataSurat = [
@@ -181,16 +183,15 @@ class SuratService
             'tanggal' => Carbon::now()->locale('id')->isoFormat('D MMMM YYYY')
         ];
         
-        $fileName = "surat-peringatan-{$data['id_peserta']}-{$data['keterangan_surat']}.pdf";
+        $fileName = "surat-peringatan-{$data['id_peserta']}-{$dataSurat['nama']}-{$data['keterangan_surat']}.pdf";
         $filePath = self::SURAT_PERINGATAN . '/' . $fileName;
 
-        // $pdf = Pdf::loadView('surat.peringatan', $dataSurat);
+        $pdf = PDF::loadView('surat.peringatan', $dataSurat)
+        ->setOption('isHtml5ParserEnabled', true)
+        ->setOption('isPhpEnabled', true)
+        ->download();
 
-        Pdf::view('surat.peringatan', $dataSurat)
-            ->disk('public')
-            ->save($filePath);
-
-        // Storage::disk('public')->put($filePath, $pdf->output());
+        Storage::disk('public')->put($filePath, $pdf);
         
         return $filePath;
     }

@@ -68,28 +68,23 @@ class MagangService
 
     public function applyMagang(array $data)
     {
-        // Ambil user yang sedang login
         $user = auth('sanctum')->user();
 
-        // Mulai transaksi
         DB::beginTransaction();
 
         try {
-            // Jika peserta belum melengkapi data diri
             if (!$user->peserta) {
                 Log::error('User ' . $user->id . ' mencoba mengajukan magang tanpa melengkapi data diri.');
-                DB::rollback(); // Rollback transaksi jika data diri tidak lengkap
+                DB::rollback();
                 return Api::response(null, 'Silahkan lengkapi data diri terlebih dahulu', Response::HTTP_FORBIDDEN);
             }
 
-            // Periksa apakah peserta sudah mengajukan magang di lowongan yang sama
             if ($this->MagangInterface->alreadyApply($user->peserta->id, $data['id_lowongan'])) {
                 Log::warning('User ' . $user->id . ' sudah mengajukan magang di lowongan ' . $data['id_lowongan']);
-                DB::rollback(); // Rollback transaksi jika sudah mengajukan magang
+                DB::rollback();
                 return Api::response(null, 'Anda sudah mengajukan magang di lowongan ini', Response::HTTP_FORBIDDEN);
             }
 
-            // Coba buat magang
             $magang = $this->MagangInterface->create([
                 'id_peserta' => $user->peserta->id,
                 'id_lowongan' => $data['id_lowongan'],
@@ -97,13 +92,9 @@ class MagangService
                 'selesai' => $data['selesai'],
                 'status' => 'menunggu',
             ]);
-
-            // Jika ada surat pernyataan diri
             if (!empty($data['surat_pernyataan_diri'])) {
                 $this->foto->createFoto($data['surat_pernyataan_diri'], $magang->id, 'surat_pernyataan_diri', 'magang');
             }
-
-            // Commit transaksi jika berhasil
             DB::commit();
             
             Log::info('User ' . $user->id . ' berhasil mengajukan magang di lowongan ' . $data['id_lowongan']);
@@ -115,10 +106,8 @@ class MagangService
             );
 
         } catch (\Exception $e) {
-            // Rollback transaksi jika terjadi kesalahan
             DB::rollback();
 
-            // Menangkap error dan mencatatnya di log
             Log::error('Terjadi kesalahan saat mengajukan magang: ' . $e->getMessage());
             
             return Api::response(null, 'Terjadi kesalahan saat mengajukan magang', Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -136,19 +125,15 @@ class MagangService
                 return Api::response(null, 'Status tidak valid', Response::HTTP_BAD_REQUEST);
             }
 
-            // No need to update the status if it's already the same
             if ($magang->status == $data['status']) {
                 return Api::response(null, 'Status sudah sesuai', Response::HTTP_OK);
             }
 
-            // Set divisi for magang
             $magang->status = $data['status'];
             $magang->id_divisi = $magang->lowongan->id_divisi;
 
-            // Use batch update here instead of saving individual rows
             $magang->save();
 
-            // Prepare data for surat
             $dataSurat = [
                 'id_peserta' => $magang->peserta->id,
                 'id_cabang' => $magang->lowongan->cabang->id,
@@ -158,7 +143,6 @@ class MagangService
                 'telepon_perusahaan' => $magang->lowongan->perusahaan->user->telepon,
                 'email_perusahaan' => $magang->lowongan->perusahaan->user->email,
                 'website_perusahaan' => $magang->lowongan->perusahaan->website,
-                'no_surat' => 'CARA PRAKOSO',
                 'sekolah' => $magang->peserta->sekolah,
                 'tanggal_mulai' => $magang->mulai,
                 'tanggal_selesai' => $magang->selesai,
@@ -168,7 +152,6 @@ class MagangService
                 'jabatan_pj'=> $magang->lowongan->perusahaan->jabatan_penanggung_jawab,
             ];
 
-            // If status is 'ditolak', delete the magang record
             if ($data['status'] == 'ditolak') {
                 $magang->delete();
                 $message = 'Berhasil menolak magang';
@@ -176,7 +159,6 @@ class MagangService
                 $message = 'Berhasil menyetujui magang';
                 $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
 
-                // Create the Surat Penerimaan
                 $this->suratService->createSurat($dataSurat, 'penerimaan');
             }
 
@@ -193,72 +175,6 @@ class MagangService
             return Api::response(null, 'Terjadi kesalahan, silakan coba lagi', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    // public function approvalMagang(int $id, array $data)
-    // {
-    //     // dd($id, $data);
-    //     DB::beginTransaction();
-
-    //     try {
-    //         $magang = $this->MagangInterface->find($id);
-
-    //         if (!in_array($data['status'], ['diterima', 'ditolak'])) {
-    //             return Api::response(null, 'Status tidak valid', Response::HTTP_BAD_REQUEST);
-    //         }
-
-    //         if ($magang->status == $data['status']) {
-    //             return Api::response(null, 'Status sudah sesuai', Response::HTTP_OK);
-    //         }
-
-    //         $id_divisi = $magang->lowongan->id_divisi;
-
-    //         $magang->status = $data['status'];
-    //         $magang->id_divisi = $id_divisi;
-            
-    //         $magang->save();
-    //         // dd($magang->lowongan->id_cabang);
-    //         $dataSurat = [
-    //             'id_peserta' => $magang->peserta->id,
-    //             'id_cabang' => $magang->lowongan->cabang->id,
-    //             'id_perusahaan' => $magang->lowongan->perusahaan->id,
-    //             'perusahaan' => $magang->lowongan->perusahaan->user->nama,
-    //             'alamat_perusahaan' => $magang->lowongan->perusahaan->alamat,
-    //             'telepon_perusahaan' => $magang->lowongan->perusahaan->user->telepon,
-    //             'email_perusahaan' => $magang->lowongan->perusahaan->user->email,
-    //             'website_perusahaan' => $magang->lowongan->perusahaan->website,
-    //             'no_surat' => 'CARA PRAKOSO',
-    //             'sekolah' => $magang->peserta->sekolah,
-    //             'tanggal_mulai' => $magang->mulai,
-    //             'tanggal_selesai' => $magang->selesai,
-    //             'peserta'=> $magang->peserta->user->nama,
-    //             'no_identitas' => $magang->peserta->nomor_identitas,
-    //             'penanggung_jawab' => $magang->lowongan->perusahaan->nama_penanggung_jawab,
-    //             'jabatan_pj'=> $magang->lowongan->perusahaan->jabatan_penanggung_jawab,
-    //         ];
-
-
-    //         if ($data['status'] == 'ditolak') {
-    //             $magang->delete();
-    //             $message = 'Berhasil menolak magang';
-    //         } else {
-    //             $message = 'Berhasil menyetujui magang';
-    //             $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
-    //             $surat = $this->suratService->createSurat($dataSurat, 'penerimaan');
-    //             dd($surat);
-    //         }
-    //         DB::commit();
-
-    //         return Api::response(
-    //             MagangResource::make($magang),
-    //             $message,
-    //             Response::HTTP_OK
-    //         );
-    //     } catch (\Exception $e) {
-    //         DB::rollBack();
-
-    //         return Api::response(null, 'Terjadi kesalahan, silakan coba lagi' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
-    // }
 
     public function approveMany(array $ids, string $status)
     {
@@ -289,7 +205,6 @@ class MagangService
                 $magang->id_divisi = $magang->lowongan->id_divisi;
                 $magang->save();
 
-                // Update user cabang aktif
                 $id_peserta = $magang->peserta->user->id;
                 $this->userInterface->update($id_peserta, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
 
@@ -305,7 +220,6 @@ class MagangService
                         'telepon_perusahaan' => $magang->lowongan->perusahaan->user->telepon,
                         'email_perusahaan' => $magang->lowongan->perusahaan->user->email,
                         'website_perusahaan' => $magang->lowongan->perusahaan->website,
-                        'no_surat' => 'CARA PRAKOSO',
                         'sekolah' => $magang->peserta->sekolah,
                         'tanggal_mulai' => $magang->mulai,
                         'tanggal_selesai' => $magang->selesai,
@@ -334,7 +248,6 @@ class MagangService
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
 
-        // Ambil data mentor dan validasi
         $mentor = $this->mentorInterface->findByIdCabang($id_mentor, $id_cabang);
         if (!$mentor) {
             return Api::response(null, 'Mentor tidak ditemukan di cabang ini', Response::HTTP_NOT_FOUND);
@@ -342,14 +255,12 @@ class MagangService
 
         $mentorDivisi = $mentor->id_divisi;
 
-        // Ambil kategori proyek urutan pertama dari divisi mentor
         $kategoriPertama = $mentor->divisi->kategori->sortBy('pivot.urutan')->first();
 
         if (!$kategoriPertama) {
             return Api::response(null, 'Divisi tidak memiliki kategori proyek', Response::HTTP_BAD_REQUEST);
         }
 
-        // Validasi semua peserta
         $invalidPesertas = collect($pesertas)->filter(function ($id_peserta) use ($id_cabang, $mentorDivisi) {
             $peserta = $this->MagangInterface->findByPesertaAndCabang($id_peserta, $id_cabang);
             return !$peserta || $peserta->lowongan->id_divisi !== $mentorDivisi;
@@ -360,20 +271,40 @@ class MagangService
                 'invalid_pesertas' => $invalidPesertas
             ], 'Beberapa peserta tidak valid atau divisinya berbeda', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
-
-        // Update semua peserta valid
         
         foreach ($pesertas as $id_peserta) {
             $this->MagangInterface->updateByPesertaAndCabang($id_peserta, $id_cabang, [
                 'id_mentor' => $id_mentor,
                 'id_divisi' => $mentorDivisi
             ]);
-
-            // Tambahkan route awal: kategori proyek pertama
             $this->routeInterface->markStarted($id_peserta, $kategoriPertama->id);
         }
 
         return Api::response(null, 'Mentor berhasil diatur & route awal diset untuk semua peserta', Response::HTTP_OK);
+    }
+
+    public function editDivisi($idPeserta, array $data)
+    {
+        $idCabang = auth('sanctum')->user()->id_cabang_aktif;
+
+        $mentor = $this->mentorInterface->findByIdCabang($data['id_mentor'], $idCabang);
+        if (!$mentor) {
+            return Api::response(null, 'Mentor tidak ditemukan di cabang ini', Response::HTTP_NOT_FOUND);
+        }
+
+        $kategoriPertama = $mentor->divisi->kategori->sortBy('pivot.urutan')->first();
+
+        dd($idCabang, $idPeserta, $data);
+        $data = $this->MagangInterface->updateByPesertaAndCabang($idPeserta, $idCabang, [
+            'id_divisi' => $data['id_divisi'],
+            'id_mentor' => $data['id_mentor']
+        ]);
+        $this->routeInterface->markStarted($idPeserta, $kategoriPertama->id);
+
+        return Api::response(
+            MagangResource::make($data),
+            'Divisi dan Mentor Peserta berhasil di update'
+        );
     }
 
 }

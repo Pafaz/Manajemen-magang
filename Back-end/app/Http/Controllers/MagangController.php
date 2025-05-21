@@ -71,9 +71,15 @@ class MagangController extends Controller
         return $this->magangService->approvalMagang($magang, $request->validated());
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function editDivisi(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'id_divisi' => 'required|exists:divisi,id',
+            'id_mentor' => 'required|exists:mentor,id',
+        ]);
+        return $this->magangService->editDivisi($id, $validated);
+    }
+
     public function destroy(Magang $magang)
     {
         //

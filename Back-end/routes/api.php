@@ -110,6 +110,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         //manajemen mentor
         Route::apiResource('mentor', MentorController::class);
         Route::put('/set-mentor/{mentorId}', [MagangController::class, 'setMentor']);
+        Route::put('/divisi/peserta/{pesertaId}', [MagangController::class, 'editDivisi']);
         //manajemen piket
         Route::apiResource('piket', PiketController::class)->only(['index','store','update','destroy']);
         Route::delete('piket/{piketId}/peserta/{pesertaId}', [PiketController::class, 'removePeserta']);

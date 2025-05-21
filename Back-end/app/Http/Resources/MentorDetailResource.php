@@ -22,6 +22,7 @@ class MentorDetailResource extends JsonResource
             'foto' => FotoResource::collection($this->foto),
             'peserta' => $this->magang->map(function ($magang) {
                 return [
+                    'id' => $magang->peserta->id,
                     'nama' => $magang->peserta->user->nama,
                     'email' => $magang->peserta->user->email,
                     'sekolah' => $magang->peserta->user->sekolah,

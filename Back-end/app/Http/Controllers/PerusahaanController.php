@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Api;
-use App\Models\Perusahaan;
 use App\Services\PerusahaanService;
 use App\Http\Requests\PerusahaanRequest;
-use App\Http\Resources\PerusahaanDetailResource;
-use App\Http\Resources\PerusahaanResource;
-use Symfony\Component\HttpFoundation\Response;
+use App\Services\RekapPerusahaanService;
 
 class PerusahaanController extends Controller
 {
@@ -17,9 +13,11 @@ class PerusahaanController extends Controller
      */
 
     private PerusahaanService $perusahaanService;
-    public function __construct(PerusahaanService $perusahaanService)
+    private RekapPerusahaanService $rekapPerusahaanService;
+    public function __construct(PerusahaanService $perusahaanService, RekapPerusahaanService $rekapPerusahaanService)
     {
         $this->perusahaanService = $perusahaanService;
+        $this->rekapPerusahaanService = $rekapPerusahaanService;
     }
     public function index()
     {
@@ -66,12 +64,16 @@ class PerusahaanController extends Controller
         return $this->perusahaanService->simpanProfil($request->validated(), true);
     }
 
-
     /**
      * Remove the specified resource from storage.
      */
     public function destroy($id)
     {
         return $this->perusahaanService->deletePerusahaan($id);
+    }
+
+    public function getRekap()
+    {
+        return $this->rekapPerusahaanService->updateRekapPerusahaan();
     }
 }

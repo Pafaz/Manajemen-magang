@@ -20,4 +20,10 @@ class RekapKehadiran extends Model
         'total_sakit', 
         'total_alpha', 
     ];
+
+    public function rekapPerusahaan()
+    {
+        return $this->belongsToMany(RekapPerusahaan::class, 'id');
+    }
 }
+

@@ -182,7 +182,7 @@
     </div>
 
     <div class="content">
-        <p>Nomor : {{ $nomor_surat }}/SP/{{ $bulan }}/{{ $tahun }}</p>
+        <p>Nomor : {{ $no_surat }}</p>
         <p>Lamp. : -</p>
         <p>Perihal : <strong>Surat Peringatan Kerja</strong></p>
 

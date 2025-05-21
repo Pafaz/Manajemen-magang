@@ -16,6 +16,7 @@ class Surat extends Model
         'id_peserta',
         'id_cabang',
         'keterangan_surat',
+        'no_surat',
         'alasan',
         'jenis',
         'file_path',

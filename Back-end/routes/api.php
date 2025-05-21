@@ -75,6 +75,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::apiResource('admin', AdminCabangController::class);
         //manajemen cabang
         Route::apiResource('cabang', CabangController::class)->only(['index','store','destroy']);
+        Route::put('/cabang-update', [CabangController::class,'update']);
         //manajemen lowongan
         Route::apiResource('lowongan', LowonganController::class)->only(['index','store', 'update']);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);

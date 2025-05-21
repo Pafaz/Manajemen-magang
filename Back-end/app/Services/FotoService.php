@@ -94,7 +94,7 @@ class FotoService
             return $updated;
         } catch (\Exception $e) {
             DB::rollBack();
-            return Api::response(null, 'Failed to update foto: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw $e;
         }
     }
 

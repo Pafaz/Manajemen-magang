@@ -35,6 +35,7 @@ return new class extends Migration
             $table->id()->primary();
             $table->uuid('id_peserta');
             $table->unsignedBigInteger('id_cabang');
+            $table->string('no_surat');
             $table->enum('jenis', ['penerimaan', 'peringatan']);
             $table->string('keterangan_surat')->nullable();
             $table->string('alasan')->nullable();

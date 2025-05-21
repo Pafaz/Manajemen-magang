@@ -6,8 +6,8 @@ use App\Helpers\Api;
 use Illuminate\Support\Carbon;
 use App\Interfaces\SuratInterface;
 use Illuminate\Support\Facades\DB;
-// use Barryvdh\DomPDF\Facade\Pdf;
-use Spatie\LaravelPdf\Facades\Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
+// use Spatie\LaravelPdf\Facades\Pdf;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\PesertaInterface;
 use Illuminate\Support\Facades\Storage;
@@ -101,20 +101,22 @@ class SuratService
 
         try {
             $isPenerimaan = $jenis === self::SURAT_PENERIMAAN;
+            // Generate nomor surat terlebih dahulu
+            $noSurat = $this->generateNomorSurat('PKL/HMTI', $jenis);
+            $data['no_surat'] = $noSurat;
+            
             $filePath = $this->generateSurat($data, $jenis);
-
-            // dd($filePath, $data, $jenis, $isPenerimaan);
 
             $this->suratInterface->create([
                 'id_peserta' => $data['id_peserta'],
                 'id_cabang' => $isPenerimaan ? $data['id_cabang'] : auth('sanctum')->user()->id_cabang_aktif,
                 'keterangan_surat'=> $isPenerimaan ? null : $data['keterangan_surat'],
+                'no_surat' => $noSurat,
                 'alasan'=> $isPenerimaan ? null : $data['alasan'],
                 'jenis' => $jenis,
                 'file_path' => $filePath
             ]);
 
-            // dd($cok);
             
             DB::commit();
             
@@ -136,33 +138,39 @@ class SuratService
     private function generateSurat(array $data, string $jenis): string
     {
         if ($jenis === self::SURAT_PENERIMAAN) {
-            return $this->generateSuratPenerimaan($data);
+            $noSurat = $this->generateNomorSurat('PKL/HMTI', $jenis);
+            $data['no_surat'] = $noSurat;
+            return $this->generateSuratPenerimaan($data, $noSurat);
         } else {
-            return $this->generateSuratPeringatan($data);
+            $noSurat = $this->generateNomorSurat('SP/HMTI', $jenis);
+            $data['no_surat'] = $noSurat;
+            return $this->generateSuratPeringatan($data, $noSurat);
         }
     }
 
-    private function generateSuratPenerimaan(array $data): string
+    private function generateSuratPenerimaan(array $data, $noSurat): string
     {
         $fileName = "surat-penerimaan-{$data['peserta']}-{$data['id_peserta']}.pdf";
         $filePath = self::SURAT_PENERIMAAN . '/' . $fileName;
 
-        // $pdf = Pdf::loadView('surat.penerimaan', $data);
+        // No_surat sudah ditambahkan di function generateSurat
 
-        Pdf::view('surat.penerimaan', $data)
-            ->disk('public')
-            ->save($filePath);
+        // Membuat PDF
+        $pdf = PDF::loadView('surat.penerimaan', $data)
+            ->setOption('isHtml5ParserEnabled', true)
+            ->setOption('isPhpEnabled', true);
 
-        // Storage::disk('public')->put($filePath, $pdf->output());
-        
+        Storage::disk('public')->put($filePath, $pdf->output());
+
         return $filePath;
     }
 
-    private function generateSuratPeringatan(array $data): string
+    private function generateSuratPeringatan(array $data, $noSurat): string
     {
-        $perusahaan = auth('sanctum')->user();
+        $perusahaan = auth()->user();
         $peserta = $this->pesertaInterface->find($data['id_peserta']);
-        
+
+        dd($noSurat);
         $dataSurat = [
             'nama' => $peserta->user->nama,
             'perusahaan' => $perusahaan->nama,
@@ -172,7 +180,7 @@ class SuratService
             'alasan' => $data['alasan'],
             'email' => $perusahaan->email,
             'website' => $perusahaan->perusahaan->website,
-            'nomor_surat' => '1313',
+            'no_surat' => $data['no_surat'],
             'sekolah' => $peserta->sekolah,
             'nama_penanggung_jawab' => $perusahaan->perusahaan->nama_penanggung_jawab,
             'jabatan_penanggung_jawab' => $perusahaan->perusahaan->jabatan_penanggung_jawab,
@@ -180,25 +188,24 @@ class SuratService
             'tahun' => Carbon::now()->locale('id')->isoFormat('YYYY'),
             'tanggal' => Carbon::now()->locale('id')->isoFormat('D MMMM YYYY')
         ];
-        
-        $fileName = "surat-peringatan-{$data['id_peserta']}-{$data['keterangan_surat']}.pdf";
+
+        $fileName = "surat-peringatan-{$data['id_peserta']}-{$dataSurat['nama']}-{$data['keterangan_surat']}.pdf";
         $filePath = self::SURAT_PERINGATAN . '/' . $fileName;
 
-        // $pdf = Pdf::loadView('surat.peringatan', $dataSurat);
+        $pdf = PDF::loadView('surat.peringatan', $dataSurat)
+            ->setOption('isHtml5ParserEnabled', true)
+            ->setOption('isPhpEnabled', true)
+            ->download();
 
-        Pdf::view('surat.peringatan', $dataSurat)
-            ->disk('public')
-            ->save($filePath);
+        Storage::disk('public')->put($filePath, $pdf);
 
-        // Storage::disk('public')->put($filePath, $pdf->output());
-        
         return $filePath;
     }
+
 
     public function editSuratPeringatan(int $idSurat, array $data)
     {
         DB::beginTransaction();
-
         try {
             $surat = $this->suratInterface->find($idSurat);
 
@@ -240,6 +247,33 @@ class SuratService
                 500
             );
         }
+    } 
+
+    private function generateNomorSurat($kodeSurat, $jenis = 'penerimaan')
+    {
+        $currentYear = Carbon::now()->year;
+        $currentMonth = Carbon::now()->month;
+
+        $romanNumerals = [
+            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
+            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+        ];
+
+        $monthInRoman = $romanNumerals[$currentMonth];
+
+        $lastNumber = DB::table('surat')
+            ->where('jenis', $jenis)
+            ->whereYear('created_at', $currentYear)
+            ->whereMonth('created_at', $currentMonth)
+            ->count();  // Gunakan count untuk menghitung jumlah surat bulan ini
+
+        $nextNumber = $lastNumber + 1;  // Angka berikutnya adalah jumlah surat + 1
+
+        $formattedNumber = str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+
+        $suratNumber = "{$formattedNumber}/{$kodeSurat}/{$monthInRoman}/{$currentYear}";
+
+        return $suratNumber;
     }
 
 }

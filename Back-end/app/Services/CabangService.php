@@ -27,6 +27,9 @@ class CabangService
     public function getCabang($id = null, $id_perusahaan = null)
     {
         // dd($id_perusahaan);
+        if ($id_perusahaan == null) {
+            return Api::response("anda harus melengkapi profil",404);
+        }
         $data = $id
                 ? collect([$this->cabangInterface->find($id, $id_perusahaan)]) 
                 : $this->cabangInterface->getCabangByPerusahaanId($id_perusahaan);

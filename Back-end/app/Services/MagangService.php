@@ -125,38 +125,8 @@ class MagangService
         }
     }  
 
-    // public function applyMagang(array $data)
-    // {
-    //     $user = auth('sanctum')->user();
-    //     if (!$user->peserta) {
-    //         return Api::response(null, 'Silahkan lengkapi data diri terlebih dahulu', Response::HTTP_FORBIDDEN);
-    //     }
-
-    //     if ($this->MagangInterface->alreadyApply($user->peserta->id, $data['id_lowongan'])) {
-    //         return Api::response(null, 'Anda sudah mengajukan magang di lowongan ini', Response::HTTP_FORBIDDEN);
-    //     }
-
-    //     $magang = $this->MagangInterface->create([
-    //         'id_peserta' => $user->peserta->id,
-    //         'id_lowongan' => $data['id_lowongan'],
-    //         'mulai' => $data['mulai'],
-    //         'selesai' => $data['selesai'],
-    //         'status' => 'menunggu',
-    //     ]);
-
-    //     if (!empty($data['surat_pernyataan_diri'])) {
-    //         $this->foto->createFoto($data['surat_pernyataan_diri'],  $magang->id, 'surat_pernyataan_diri', 'magang');
-    //     }
-    //     return Api::response(
-    //         MagangDetailResource::make($magang),
-    //         'Berhasil mengajukan magang',
-    //         Response::HTTP_CREATED
-    //     );
-    // }
-
     public function approvalMagang(int $id, array $data)
     {
-        // dd($id, $data);
         DB::beginTransaction();
 
         try {
@@ -166,17 +136,19 @@ class MagangService
                 return Api::response(null, 'Status tidak valid', Response::HTTP_BAD_REQUEST);
             }
 
+            // No need to update the status if it's already the same
             if ($magang->status == $data['status']) {
                 return Api::response(null, 'Status sudah sesuai', Response::HTTP_OK);
             }
 
-            $id_divisi = $magang->lowongan->id_divisi;
-
+            // Set divisi for magang
             $magang->status = $data['status'];
-            $magang->id_divisi = $id_divisi;
-            
+            $magang->id_divisi = $magang->lowongan->id_divisi;
+
+            // Use batch update here instead of saving individual rows
             $magang->save();
-            // dd($magang->lowongan->id_cabang);
+
+            // Prepare data for surat
             $dataSurat = [
                 'id_peserta' => $magang->peserta->id,
                 'id_cabang' => $magang->lowongan->cabang->id,
@@ -196,15 +168,18 @@ class MagangService
                 'jabatan_pj'=> $magang->lowongan->perusahaan->jabatan_penanggung_jawab,
             ];
 
-
+            // If status is 'ditolak', delete the magang record
             if ($data['status'] == 'ditolak') {
                 $magang->delete();
                 $message = 'Berhasil menolak magang';
             } else {
                 $message = 'Berhasil menyetujui magang';
                 $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
+
+                // Create the Surat Penerimaan
                 $this->suratService->createSurat($dataSurat, 'penerimaan');
             }
+
             DB::commit();
 
             return Api::response(
@@ -214,10 +189,76 @@ class MagangService
             );
         } catch (\Exception $e) {
             DB::rollBack();
-
-            return Api::response(null, 'Terjadi kesalahan, silakan coba lagi' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            Log::error('Error processing approval: ' . $e->getMessage());
+            return Api::response(null, 'Terjadi kesalahan, silakan coba lagi', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    // public function approvalMagang(int $id, array $data)
+    // {
+    //     // dd($id, $data);
+    //     DB::beginTransaction();
+
+    //     try {
+    //         $magang = $this->MagangInterface->find($id);
+
+    //         if (!in_array($data['status'], ['diterima', 'ditolak'])) {
+    //             return Api::response(null, 'Status tidak valid', Response::HTTP_BAD_REQUEST);
+    //         }
+
+    //         if ($magang->status == $data['status']) {
+    //             return Api::response(null, 'Status sudah sesuai', Response::HTTP_OK);
+    //         }
+
+    //         $id_divisi = $magang->lowongan->id_divisi;
+
+    //         $magang->status = $data['status'];
+    //         $magang->id_divisi = $id_divisi;
+            
+    //         $magang->save();
+    //         // dd($magang->lowongan->id_cabang);
+    //         $dataSurat = [
+    //             'id_peserta' => $magang->peserta->id,
+    //             'id_cabang' => $magang->lowongan->cabang->id,
+    //             'id_perusahaan' => $magang->lowongan->perusahaan->id,
+    //             'perusahaan' => $magang->lowongan->perusahaan->user->nama,
+    //             'alamat_perusahaan' => $magang->lowongan->perusahaan->alamat,
+    //             'telepon_perusahaan' => $magang->lowongan->perusahaan->user->telepon,
+    //             'email_perusahaan' => $magang->lowongan->perusahaan->user->email,
+    //             'website_perusahaan' => $magang->lowongan->perusahaan->website,
+    //             'no_surat' => 'CARA PRAKOSO',
+    //             'sekolah' => $magang->peserta->sekolah,
+    //             'tanggal_mulai' => $magang->mulai,
+    //             'tanggal_selesai' => $magang->selesai,
+    //             'peserta'=> $magang->peserta->user->nama,
+    //             'no_identitas' => $magang->peserta->nomor_identitas,
+    //             'penanggung_jawab' => $magang->lowongan->perusahaan->nama_penanggung_jawab,
+    //             'jabatan_pj'=> $magang->lowongan->perusahaan->jabatan_penanggung_jawab,
+    //         ];
+
+
+    //         if ($data['status'] == 'ditolak') {
+    //             $magang->delete();
+    //             $message = 'Berhasil menolak magang';
+    //         } else {
+    //             $message = 'Berhasil menyetujui magang';
+    //             $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
+    //             $surat = $this->suratService->createSurat($dataSurat, 'penerimaan');
+    //             dd($surat);
+    //         }
+    //         DB::commit();
+
+    //         return Api::response(
+    //             MagangResource::make($magang),
+    //             $message,
+    //             Response::HTTP_OK
+    //         );
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+
+    //         return Api::response(null, 'Terjadi kesalahan, silakan coba lagi' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
 
     public function approveMany(array $ids, string $status)
     {

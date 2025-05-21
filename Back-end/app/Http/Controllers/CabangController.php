@@ -21,6 +21,7 @@ class CabangController extends Controller
     public function index()
     {
         $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
+        
         return $this->cabangService->getCabang(null, $id_perusahaan);
     }
 

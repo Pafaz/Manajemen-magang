@@ -76,7 +76,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         //manajemen cabang
         Route::apiResource('cabang', CabangController::class)->only(['index','store','destroy']);
         //manajemen lowongan
-        Route::apiResource('lowongan', LowonganController::class)->only(['index','store']);
+        Route::apiResource('lowongan', LowonganController::class)->only(['index','store', 'update']);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         //set cabang aktif
         Route::post('/set-cabang-aktif', [CabangController::class, 'setCabangAktif']);

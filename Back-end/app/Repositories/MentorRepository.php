@@ -20,7 +20,8 @@ class MentorRepository implements MentorInterface
 
     public function find($id): ?Mentor
     {
-        return Mentor::findOrFail($id)->first();
+        $mentor = Mentor::findOrFail($id);
+        return $mentor;
     }
 
     public function create(array $data): ?Mentor
@@ -31,8 +32,7 @@ class MentorRepository implements MentorInterface
     public function update($id, array $data): Mentor
     {
         $mentor = Mentor::findOrFail($id);
-        $mentor->update($data);
-        return $mentor;
+        return $mentor->update($data);
     }
 
     public function delete($id): void

@@ -294,7 +294,6 @@ class MagangService
 
         $kategoriPertama = $mentor->divisi->kategori->sortBy('pivot.urutan')->first();
 
-        dd($idCabang, $idPeserta, $data);
         $data = $this->MagangInterface->updateByPesertaAndCabang($idPeserta, $idCabang, [
             'id_divisi' => $data['id_divisi'],
             'id_mentor' => $data['id_mentor']
@@ -302,7 +301,7 @@ class MagangService
         $this->routeInterface->markStarted($idPeserta, $kategoriPertama->id);
 
         return Api::response(
-            MagangResource::make($data),
+            null,
             'Divisi dan Mentor Peserta berhasil di update'
         );
     }

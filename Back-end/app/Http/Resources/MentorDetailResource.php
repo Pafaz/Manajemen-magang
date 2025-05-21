@@ -20,7 +20,16 @@ class MentorDetailResource extends JsonResource
             'user' => new UserResource($this->user),
             'divisi' => new DivisiResource($this->divisi),
             'foto' => FotoResource::collection($this->foto),
-            'peserta' => MagangResource::collection($this->magang->load('peserta')),
+            'peserta' => $this->magang->map(function ($magang) {
+                return [
+                    'nama' => $magang->peserta->user->nama,
+                    'email' => $magang->peserta->user->email,
+                    'sekolah' => $magang->peserta->user->sekolah,
+                    'foto' => new FotoResource(
+                        $magang->peserta->foto->where('type', 'profile')->first()
+                    ),
+                ];
+            }),
         ];
     }
 }

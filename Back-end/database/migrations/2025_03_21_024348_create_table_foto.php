@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('context'); // contoh: 'magang', 'sekolah', 'admin'
         
             // Index untuk mempercepat query berdasarkan referensi dan context
-            $table->index(['id_referensi', 'context', 'type']);
+            $table->index(['context', 'id_referensi', 'type']);
         });
         
     }

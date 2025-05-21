@@ -90,13 +90,9 @@ class AdminService
                 'cover' => 'cover'
             ];
 
-            if ((!empty($data['profile']) || !empty($data['cover'])) && $id) {
-                $this->foto->deleteFoto($admin->id);
-            }
-
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
-                    $this->foto->createFoto($data[$key], $admin->id, $tipe, 'admin');
+                    $this->foto->updateFoto($data[$key], $admin->id, $tipe, 'admin');
                 }
             }
 

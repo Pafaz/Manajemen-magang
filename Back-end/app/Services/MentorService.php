@@ -92,13 +92,9 @@ class MentorService
                 'cover' => 'cover'
             ];
 
-            if ((!empty($data['profile']) || !empty($data['cover'])) && $id) {
-                $this->foto->deleteFoto($mentor->id);
-            }
-
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
-                    $this->foto->createFoto($data[$key], $mentor->id, $tipe, 'mentor');
+                    $this->foto->updateFoto($data[$key], $mentor->id, $tipe, 'mentor');
                 }
             }
 

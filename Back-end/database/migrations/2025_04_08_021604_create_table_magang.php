@@ -58,7 +58,7 @@ return new class extends Migration
             $table->time('akhir_kembali')->nullable();
             $table->time('awal_pulang');
             $table->time('akhir_pulang')->nullable();
-            $table->boolean('status')->default(true);
+            $table->boolean('status');
 
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
         });

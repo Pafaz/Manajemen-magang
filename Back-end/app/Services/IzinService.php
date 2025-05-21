@@ -73,7 +73,7 @@ class IzinService
         $izin = $this->izinInterface->create($dataIzin);
 
         if (!empty($data['bukti'])) {
-            $this->foto->createFoto($data['bukti'], $izin->id, 'bukti', 'izin');
+            $this->foto->updateFoto($data['bukti'], $izin->id, 'bukti', 'izin');
         }
 
         return Api::response(

@@ -74,11 +74,7 @@ class SekolahService
             ];
             foreach ($files as $key => $type) {
                 if (!empty($data[$key])) {
-                    if ($isUpdate) {
-                        $this->foto->updateFoto($data[$key], $sekolah->id, $type, 'sekolah');
-                    } else {
-                        $this->foto->createFoto($data[$key], $sekolah->id, $type, 'sekolah');
-                    }
+                    $this->foto->updateFoto($data[$key], $sekolah->id, $type, 'sekolah');
                 }
             }
 

@@ -69,6 +69,7 @@ class KehadiranService
             if (!$jamKantor) {
                 return Api::response(null, 'Jam kantor untuk hari ini belum diatur.', Response::HTTP_NOT_FOUND);
             }
+            
 
             // Cek apakah peserta sedang izin/sakit
             $izin = $this->absensiInterface->findByDate($peserta->id, $tanggalHariIni);

@@ -72,9 +72,7 @@ class JurnalService
             : $this->jurnalInterface->create($dataJurnal);
 
         if (!empty($data['bukti'])) {
-            $isUpdate 
-            ? $this->foto->updateFoto($data['bukti'], $jurnal->id, 'bukti', 'jurnal')
-            : $this->foto->createFoto($data['bukti'], $jurnal->id, 'bukti', 'jurnal');
+            $this->foto->updateFoto($data['bukti'], $jurnal->id, 'bukti', 'jurnal');
         }
 
         return Api::response(

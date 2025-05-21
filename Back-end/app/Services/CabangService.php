@@ -48,7 +48,6 @@ class CabangService
     public function simpanCabang(array $data, bool $isUpdate = false, $id = null)
     {
         DB::beginTransaction();
-
         try {
             $user = auth('sanctum')->user();
 
@@ -82,14 +81,20 @@ class CabangService
             ];
 
             foreach ($files as $key => $type) {
-                if (!empty($data[$key])) {
-                    if ($isUpdate) {
-                        $this->foto->updateFoto($data[$key], $cabang->id, $type, 'cabang');
-                    } else {
-                        $this->foto->createFoto($data[$key], $cabang->id, $type, 'cabang');
-                    }
-                }
-            }
+    if (!empty($data[$key])) {
+        Log::info("Processing file: {$key} with type: {$type}");
+        try {
+            $result = $this->foto->updateFoto($data[$key], $cabang->id, $type, 'cabang');
+            Log::info("File processed successfully", ['result' => $result]);
+        } catch (\Exception $e) {
+            Log::error("Failed to process {$key}", [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+}
+
 
             DB::commit();
 

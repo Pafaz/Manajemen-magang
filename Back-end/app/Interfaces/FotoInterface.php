@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface FotoInterface extends  CreateInterface, DeleteInterface, UpdateInterface
 {
-    public function getByTypeandReferenceId(string $type, int $id_referensi): ?Foto;
+    public function getByTypeandReferenceId(string $type, int $id_referensi, $context): ?Foto;
 
     public function find( $idReferensi);
 }

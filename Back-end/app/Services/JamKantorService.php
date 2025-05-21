@@ -34,7 +34,7 @@ class JamKantorService
         if (!$user || !$user->id_cabang_aktif) {
             return null;
         }
-
+        
         $hariIni = strtolower(Carbon::now('Asia/Jakarta')->locale('id')->dayName);
         return $this->jamKantorInterface->getAll()
             ->where('id_cabang', $user->id_cabang_aktif)

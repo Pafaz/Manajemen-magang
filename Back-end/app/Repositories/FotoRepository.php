@@ -31,9 +31,9 @@ class FotoRepository implements FotoInterface
         Foto::findOrFail($id)->delete();
     }
 
-    public function getByTypeandReferenceId(string $type, $id_referensi): ?Foto
+    public function getByTypeandReferenceId(string $type, $id_referensi, $context): ?Foto
     {
-        $foto = Foto::where('type', $type)->where('id_referensi', $id_referensi)->first();
+        $foto = Foto::where('context', $context)->where('id_referensi', $id_referensi)->where('type', $type)->first();
         return $foto;
     }
 }

@@ -258,11 +258,7 @@ class PesertaService
 
             foreach ($files as $key => $tipe) {
                 if (!empty($data[$key])) {
-                    if ($isUpdate) {
-                        $this->foto->updateFoto($data[$key], $peserta->id, $tipe, 'peserta');
-                    } else {
-                        $this->foto->createFoto($data[$key], $peserta->id, $tipe, 'peserta');
-                    }
+                    $this->foto->updateFoto($data[$key], $peserta->id, $tipe, 'peserta');
                 }
             }
 

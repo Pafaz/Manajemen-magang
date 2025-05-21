@@ -24,9 +24,9 @@ class LowonganResource extends JsonResource
             'jobdesc' => $this->jobdesc,
             'status' => $this->status,
             'total_pendaftar' => $this->totalPeserta,
-            'perusahaan' => new PerusahaanDetailResource($this->perusahaan),
-            'cabang' => new CabangResource($this->cabang),
-            'divisi' => new DivisiResource($this->divisi)
+            'perusahaan' => PerusahaanResource::make($this->perusahaan),
+            'cabang' => CabangResource::make($this->cabang),
+            'divisi' => DivisiResource::make($this->divisi)
         ];
     }
 }

@@ -100,7 +100,7 @@ class MagangService
 
             // Jika ada surat pernyataan diri
             if (!empty($data['surat_pernyataan_diri'])) {
-                $this->foto->createFoto($data['surat_pernyataan_diri'], $magang->id, 'surat_pernyataan_diri', 'magang');
+                $this->foto->updateFoto($data['surat_pernyataan_diri'], $magang->id, 'surat_pernyataan_diri', 'magang');
             }
 
             // Commit transaksi jika berhasil

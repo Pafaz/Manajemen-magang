@@ -61,9 +61,7 @@ class DivisiService
 
 
             if (!empty($data['foto_cover'])) {
-                $isUpdate
-                    ? $this->foto->updateFoto($data['foto_cover'], $divisi->id, 'foto_cover', 'divisi')
-                    : $this->foto->createFoto($data['foto_cover'], $divisi->id, 'foto_cover', 'divisi');
+                $this->foto->updateFoto($data['foto_cover'], $divisi->id, 'foto_cover', 'divisi');
             }
 
             DB::commit();

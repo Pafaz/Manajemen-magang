@@ -25,7 +25,7 @@ class MentorDetailResource extends JsonResource
                     'id' => $magang->peserta->id,
                     'nama' => $magang->peserta->user->nama,
                     'email' => $magang->peserta->user->email,
-                    'sekolah' => $magang->peserta->user->sekolah,
+                    'sekolah' => $magang->peserta->sekolah,
                     'foto' => new FotoResource(
                         $magang->peserta->foto->where('type', 'profile')->first()
                     ),

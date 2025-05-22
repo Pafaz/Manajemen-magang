@@ -19,6 +19,7 @@ class JadwalPresentasiResource extends JsonResource
             'tanggal'=> $this->tanggal,
             'waktu_mulai' => $this->waktu_mulai,
             'waktu_selesai' => $this->waktu_selesai,
+            'tipe' => $this->tipe,
             'status' => $this->status,
             // 'mentor' => MentorResource::make($this->mentor)->load('user', 'foto'),
         ];

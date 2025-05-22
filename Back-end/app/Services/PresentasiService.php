@@ -101,6 +101,7 @@ class PresentasiService
     public function applyPresentasi(array $data)
     {
         $data['id_peserta'] = auth('sanctum')->user()->peserta->id;
+        $data['projek'] = auth('sanctum')->user()->peserta->route->kategoriProyek->nama;
 
         $presentasi = $this->presentasiInterface->create($data);
 
@@ -126,6 +127,7 @@ class PresentasiService
 
     public function updateRiwayat( array $data, $id)
     {
+        // dd($data, $id);
         $nama = $this->presentasiInterface->find($id)->peserta->user->nama;
 
         // dd($nama);

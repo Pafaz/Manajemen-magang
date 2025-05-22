@@ -28,14 +28,15 @@ class PresentasiRepository implements PresentasiInterface
         return Presentasi::create([
             "id_peserta"=> $data["id_peserta"],
             "id_jadwal_presentasi"=> $data["id_jadwal_presentasi"],
-            "projek"=> $data["projek"],
-            "status"=> $data["status"],
+            "projek"=> $data["projek"]
         ]);
     }
 
     public function update(int $id, array $data): Presentasi
     {
-        return Presentasi::where('id', $id)->update($data)->first();
+        $presentasi = Presentasi::findOrFail($id);
+        $presentasi->update($data);
+        return $presentasi;
     }
 
     public function delete(int $id): void

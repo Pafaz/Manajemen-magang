@@ -21,7 +21,9 @@ class JadwalPresentasiResource extends JsonResource
             'waktu_selesai' => $this->waktu_selesai,
             'tipe' => $this->tipe,
             'status' => $this->status,
-            'lokasi_atau_zoom' => $this->tipe == 'offline' ? $this->link_zoom : $this->lokasi,
+            'link_zoom' => $this->link_zoom ?? null,
+            'lokasi' => $this->lokasi ?? null,
+            // 'lokasi_atau_zoom' => $this->tipe == 'offline' ? $this->link_zoom : $this->lokasi,
             // 'mentor' => MentorResource::make($this->mentor)->load('user', 'foto'),
         ];
     }

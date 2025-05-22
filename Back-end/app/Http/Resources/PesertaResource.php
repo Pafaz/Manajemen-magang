@@ -31,6 +31,7 @@ class PesertaResource extends JsonResource
             'selesai_magang' => $this->magang?->selesai,
             'perusahaan' => $this->magang?->lowongan->perusahaan->user->nama,
             'divisi' => $this->magang?->lowongan->divisi->nama,
+            'cabang' => $this->magang?->lowongan->cabang->nama,
             'foto' => FotoResource::collection($this->foto ?? collect()),
         ];
          if ($this->magang) {

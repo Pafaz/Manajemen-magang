@@ -67,6 +67,18 @@ return new class extends Migration
             $table->unique(['id_peserta', 'bulan', 'tahun']);
         });
 
+        Schema::create('rekap_perusahaan', function (Blueprint $table){
+            $table->id();
+            $table->uuid('id_perusahaan');
+
+            $table->tinyInteger('total_cabang')->default(0);
+            $table->tinyInteger('total_peserta')->default(0);
+            $table->tinyInteger('total_jurnal')->default(0);
+            $table->tinyInteger('total_pendaftar')->default(0);
+
+            $table->timestamps();
+        });
+
         Schema::create('piket', function (Blueprint $table) {
             $table->id();
             $table->enum('shift', ['pagi', 'sore']);
@@ -115,5 +127,7 @@ return new class extends Migration
         Schema::dropIfExists('piket');
         Schema::dropIfExists('izin');
         Schema::dropIfExists('piket_peserta');
+        Schema::dropIfExists('rekap_kehadiran');
+        Schema::dropIfExists('rekap_perusahaan');
     }
 };

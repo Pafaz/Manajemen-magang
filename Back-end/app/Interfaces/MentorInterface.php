@@ -11,4 +11,5 @@ use App\Interfaces\Base\UpdateInterface;
 interface MentorInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
         public function findByIdCabang($id_mentor, $id_cabang);
+        public function getMentorPerDivisi($id_cabang);
 }

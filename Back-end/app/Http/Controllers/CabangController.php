@@ -6,14 +6,17 @@ use App\Models\Cabang;
 use Illuminate\Http\Request;
 use App\Services\CabangService;
 use App\Http\Requests\CabangRequest;
+use App\Services\RekapCabangService;
 
 class CabangController extends Controller
 {
     private CabangService $cabangService;
+    private RekapCabangService $rekapCabangService;
 
-    public function __construct(CabangService $cabangService)
+    public function __construct(CabangService $cabangService, RekapCabangService $rekapCabangService)
     {
         $this->cabangService = $cabangService;
+        $this->rekapCabangService = $rekapCabangService;
     }
     /**
      * Display a listing of the resource.
@@ -61,5 +64,10 @@ class CabangController extends Controller
     public function setCabangAktif(Request $request)
     {
         return $this->cabangService->setCabangAktif($request->id_cabang);
+    }
+
+    public function getRekapCabang()
+    {
+        return $this->rekapCabangService->getRekapCabang();
     }
 }

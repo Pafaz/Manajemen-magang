@@ -2,8 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\MentorInterface;
 use App\Models\Mentor;
+use Illuminate\Support\Facades\DB;
+use App\Interfaces\MentorInterface;
 use Illuminate\Database\Eloquent\Collection;
 
 class MentorRepository implements MentorInterface
@@ -39,5 +40,14 @@ class MentorRepository implements MentorInterface
     public function delete($id): void
     {
         Mentor::findOrFail($id)->delete();
+    }
+
+    public function getMentorPerDivisi($id_cabang)
+    {
+        return Mentor::select('id_divisi', DB::raw('COUNT(*) as total'))
+            ->where('id_cabang', $id_cabang)
+            ->groupBy('id_divisi')
+            ->with('divisi:id,nama')
+            ->get();
     }
 }

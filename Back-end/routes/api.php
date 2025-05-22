@@ -11,11 +11,9 @@ use App\Http\Controllers\JurnalController;
 use App\Http\Controllers\MagangController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\RevisiController;
-use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\PesertaController;
 use App\Http\Controllers\SekolahController;
-use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LowonganController;
 use App\Http\Controllers\JamKantorController;
 use App\Http\Controllers\KehadiranController;
@@ -88,6 +86,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/perusahaan/edit', [PerusahaanController::class, 'edit']);
         //Rekap Perusahaan
         Route::get('/perusahaan/rekap', [PerusahaanController::class, 'getRekap']);
+        Route::get('/cabang/rekap/{cabangId}', [CabangController::class, 'getRekapCabang']);
     });
 
     //role admin dan perusahaan
@@ -95,7 +94,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         //profile cabang       
         Route::get('/cabang-detail', [CabangController::class, 'show']);
         Route::put('/cabang-update', [CabangController::class, 'update']);
-        Route::get('/rekap-cabang', [CabangController::class, 'getRekapCabang']);
+        Route::get('/cabang/rekap', [CabangController::class, 'getRekapCabang']);
         //pendataan
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
         Route::get('/peserta-by-divisi/{divisiId}', [PesertaController::class,'showByDivisi']);
@@ -136,11 +135,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Superadmin
     Route::group(['middleware' => 'role:superadmin'], function () {});
-
-    //foto
-    Route::post('/foto/{foto}/update', [FotoController::class, 'update']);
-    Route::post('/foto', [FotoController::class, 'store']);
-    Route::delete('/foto/{foto}', [FotoController::class, 'destroy']);
 
     //auth
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);

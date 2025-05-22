@@ -26,10 +26,20 @@ class RekapCabangService
         $this->divisiInterface = $divisiInterface;
     }
 
-    public function getRekapCabang()
+    public function getRekapCabang($id)
     {
-        $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
+        if (auth()->user()->hasRole('admin')) {
+            $id_cabang = auth()->user()->id_cabang_aktif;
+        } else if($id == null) {
+                        return Api::response(
+                'null',
+                'Masukkan ID Cabang',
+            );
+        } else {
+            $id_cabang = $id;
+        }
 
+        // dd($id_cabang);
         $total_peserta = $this->magangInterface->countPeserta($id_cabang);
         $total_admin = $this->adminInterface->getByCabang($id_cabang)->count();
         $total_mentor = $this->mentorInterface->getAll($id_cabang)->count();
@@ -37,7 +47,6 @@ class RekapCabangService
 
         $pesertaPerDivisi = $this->magangInterface->getMagangPerDivisi($id_cabang);
         $mentorPerDivisi = $this->mentorInterface->getMentorPerDivisi($id_cabang);
-        // dd($mentorPerDivisi);
 
         $rekap = [
             'total_peserta' => $total_peserta,
@@ -65,11 +74,4 @@ class RekapCabangService
             'Rekap Cabang berhasil ditampilkan',
         );
     }
-
-    private function getTotalAdmin()
-    {
-        
-    }
-
-
 }

@@ -15,6 +15,7 @@ class PesertabyMentorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            "id_peserta"=> $this->id,
             'nama' => $this->user->nama,
             'email' => $this->user->email,
             'nomor_identitas' => $this->nomor_identitas,

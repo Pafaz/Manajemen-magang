@@ -36,8 +36,7 @@ class PresentasiController extends Controller
     public function store(Request $request)
     {
         $presentasi = $request->validate([
-            "id_jadwal_presentasi"=> "required|numeric",
-            "projek"=> "required|string|exists:kategori_proyek,nama",
+            "id_jadwal_presentasi"=> "required|numeric"
         ]);
 
         return $this->presentasiService->applyPresentasi($presentasi);

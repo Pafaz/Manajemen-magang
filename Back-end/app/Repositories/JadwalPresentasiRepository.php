@@ -15,7 +15,9 @@ class JadwalPresentasiRepository implements JadwalPresentasiInterface
 
     public function find(int $id): ? Jadwal_Presentasi
     {
-        return Jadwal_Presentasi::findOrFail($id)->first();
+        $presentasi = Jadwal_Presentasi::findOrFail($id);
+        $presentasi->first();
+        return $presentasi;
     }
 
     public function create(array $data): ? Jadwal_Presentasi

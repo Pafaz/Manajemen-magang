@@ -33,9 +33,9 @@ class PresentasiRepository implements PresentasiInterface
         ]);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Presentasi
     {
-        return Presentasi::where('id', $id)->update([$data]);
+        return Presentasi::where('id', $id)->update($data)->first();
     }
 
     public function delete(int $id): void

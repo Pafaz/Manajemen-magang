@@ -3,10 +3,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
-use App\Helpers\Api;
-use App\Http\Resources\JurusanResource;
 use App\Interfaces\RekapKehadiranInterface;
-use Symfony\Component\HttpFoundation\Response;
 
 class RekapKehadiranService
 {
@@ -52,11 +49,7 @@ class RekapKehadiranService
     private function getOrCreateRekap($peserta, $tanggal)
     {
         $tanggal = Carbon::parse($tanggal);
-        return $this->rekapKehadiranInterface->findOrCreateByPesertaBulanTahun(
-            $peserta,
-            $tanggal->format('m'),
-            $tanggal->format('Y')
-        );
+        return $this->rekapKehadiranInterface->findOrCreateByPeserta($peserta);
     }
 
 }

@@ -55,8 +55,6 @@ return new class extends Migration
         Schema::create('rekap_kehadiran', function (Blueprint $table) {
             $table->id();
             $table->uuid('id_peserta');
-            $table->tinyInteger('bulan'); // 1 - 12
-            $table->smallInteger('tahun');
 
             $table->tinyInteger('total_terlambat')->default(0);
             $table->tinyInteger('total_hadir')->default(0);
@@ -64,7 +62,7 @@ return new class extends Migration
             $table->tinyInteger('total_sakit')->default(0);
             $table->tinyInteger('total_alpha')->default(0);
 
-            $table->unique(['id_peserta', 'bulan', 'tahun']);
+            $table->unique('id_peserta');
         });
 
         Schema::create('rekap_perusahaan', function (Blueprint $table){

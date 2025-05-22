@@ -12,8 +12,6 @@ class RekapKehadiran extends Model
     protected $guarded = ['id'];
     protected $fillable = [
         'id_peserta',
-        'bulan', 
-        'tahun', 
         'total_terlambat', 
         'total_hadir', 
         'total_izin',

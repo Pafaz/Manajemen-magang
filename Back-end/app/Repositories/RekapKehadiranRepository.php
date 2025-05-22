@@ -13,12 +13,10 @@ class RekapKehadiranRepository implements RekapKehadiranInterface
         return RekapKehadiran::where('id_peserta', auth('sanctum')->user()->peserta->id)->get();
     }
 
-    public function findOrCreateByPesertaBulanTahun( $peserta_id, $bulan, $tahun)
+    public function findOrCreateByPeserta( $peserta_id)
     {
         return RekapKehadiran::firstOrCreate([
             'id_peserta' => $peserta_id,
-            'bulan' => $bulan,
-            'tahun' => $tahun,
         ]);
     }
 

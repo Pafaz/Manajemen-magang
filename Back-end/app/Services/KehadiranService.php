@@ -37,14 +37,12 @@ class KehadiranService
 
         $Kehadiran = $this->kehadiranInterface->getAll();
         $Absensi = $this->absensiInterface->getAll();
-        $rekap = $this->rekapKehadiranService->getRekap();
 
         if (!$Kehadiran) {
             return Api::response(null, 'Kehadiran tidak ditemukan', Response::HTTP_NOT_FOUND);
         }
         $data = [
             'kehadiran' => $Kehadiran,
-            'rekap' => $rekap,
             'absensi' => $Absensi
         ];
 

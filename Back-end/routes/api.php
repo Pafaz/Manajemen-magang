@@ -50,6 +50,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/magang', [MagangController::class, 'store']);
         Route::post('/kehadiran', [KehadiranController::class, 'store']);
         Route::get('/kehadiran',[KehadiranController::class, 'index']);
+        Route::get('/rekap/kehadiran', [KehadiranController::class, 'getRekapKehadiran']);
         Route::post('/izin', [IzinController::class, 'store']);
         Route::post('/revisi/{route}', [RevisiController::class, 'store']);
         Route::get('/revisi/{revisi}', [RevisiController::class, 'show']);

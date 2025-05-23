@@ -59,7 +59,6 @@ return new class extends Migration
             $table->tinyInteger('total_terlambat')->default(0);
             $table->tinyInteger('total_hadir')->default(0);
             $table->tinyInteger('total_izin')->default(0);
-            $table->tinyInteger('total_sakit')->default(0);
             $table->tinyInteger('total_alpha')->default(0);
 
             $table->unique('id_peserta');

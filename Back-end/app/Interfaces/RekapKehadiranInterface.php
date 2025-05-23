@@ -7,7 +7,8 @@ use App\Interfaces\Base\CreateInterface;
 use App\Interfaces\Base\DeleteInterface;
 use App\Interfaces\Base\GetAllInterface;
 
-interface RekapKehadiranInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface
+interface RekapKehadiranInterface extends CreateInterface, DeleteInterface, FindInterface
 {
     public function findOrCreateByPeserta($peserta_id);
+    public function get();
 }

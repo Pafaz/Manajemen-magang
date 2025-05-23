@@ -15,7 +15,6 @@ class RekapKehadiran extends Model
         'total_terlambat', 
         'total_hadir', 
         'total_izin',
-        'total_sakit', 
         'total_alpha', 
     ];
 

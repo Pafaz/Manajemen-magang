@@ -3,11 +3,12 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use App\Models\RekapCabang;
-use App\Interfaces\MagangInterface;
 use App\Interfaces\AdminInterface;
-use App\Interfaces\MentorInterface;
-use App\Interfaces\DivisiInterface;
 use App\Jobs\UpdateRekapCabangJob;
+use App\Interfaces\DivisiInterface;
+use App\Interfaces\MagangInterface;
+use App\Interfaces\MentorInterface;
+use App\Interfaces\RekapCabangInterface;
 
 class RekapCabangService
 {
@@ -15,27 +16,20 @@ class RekapCabangService
     private AdminInterface $adminInterface;
     private MentorInterface $mentorInterface;
     private DivisiInterface $divisiInterface;
+    private RekapCabangInterface $rekapCabangInterface;
 
-    public function __construct(MagangInterface $magangInterface, AdminInterface $adminInterface, MentorInterface $mentorInterface, DivisiInterface $divisiInterface)
+    public function __construct(MagangInterface $magangInterface, AdminInterface $adminInterface, MentorInterface $mentorInterface, DivisiInterface $divisiInterface, RekapCabangInterface $rekapCabangInterface)
     {
         $this->magangInterface = $magangInterface;
         $this->adminInterface = $adminInterface;
         $this->mentorInterface = $mentorInterface;
         $this->divisiInterface = $divisiInterface;
+        $this->rekapCabangInterface = $rekapCabangInterface;
     }
 
-        public function getRekapCabang($id)
+    public function getRekapCabang()
     {
-        if (auth()->user()->hasRole('admin')) {
-            $id_cabang = auth()->user()->id_cabang_aktif;
-        } else if($id == null) {
-                        return Api::response(
-                'null',
-                'Masukkan ID Cabang',
-            );
-        } else {
-            $id_cabang = $id;
-        }
+        $id_cabang = auth()->user()->id_cabang_aktif;   
 
         // dd($id_cabang);
         $total_peserta = $this->magangInterface->countPeserta($id_cabang);
@@ -115,10 +109,7 @@ class RekapCabangService
             }),
         ];
 
-        $rekapCabang = RekapCabang::updateOrCreate(
-            ['id_cabang' => $id_cabang],
-            $rekap
-        );
+        $rekapCabang = $this->rekapCabangInterface->update($id_cabang, $rekap);
 
         return Api::response(
             $rekapCabang,

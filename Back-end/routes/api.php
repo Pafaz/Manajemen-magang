@@ -86,7 +86,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/perusahaan/edit', [PerusahaanController::class, 'edit']);
         //Rekap Perusahaan
         Route::get('/perusahaan/rekap', [PerusahaanController::class, 'getRekap']);
-        Route::get('/cabang/rekap/{cabangId}', [CabangController::class, 'getRekapCabang']);
     });
 
     //role admin dan perusahaan

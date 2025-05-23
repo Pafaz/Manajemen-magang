@@ -1,14 +1,13 @@
 <?php
-
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Models\Magang;
-use App\Interfaces\AdminInterface;
-use Illuminate\Support\Facades\DB;
-use App\Interfaces\DivisiInterface;
+use App\Models\RekapCabang;
 use App\Interfaces\MagangInterface;
+use App\Interfaces\AdminInterface;
 use App\Interfaces\MentorInterface;
+use App\Interfaces\DivisiInterface;
+use App\Jobs\UpdateRekapCabangJob;
 
 class RekapCabangService
 {
@@ -16,7 +15,6 @@ class RekapCabangService
     private AdminInterface $adminInterface;
     private MentorInterface $mentorInterface;
     private DivisiInterface $divisiInterface;
-    
 
     public function __construct(MagangInterface $magangInterface, AdminInterface $adminInterface, MentorInterface $mentorInterface, DivisiInterface $divisiInterface)
     {
@@ -26,12 +24,12 @@ class RekapCabangService
         $this->divisiInterface = $divisiInterface;
     }
 
-    public function getRekapCabang($id)
+    public function simpanRekap($id = null)
     {
         if (auth()->user()->hasRole('admin')) {
             $id_cabang = auth()->user()->id_cabang_aktif;
-        } else if($id == null) {
-                        return Api::response(
+        } else if ($id == null) {
+            return Api::response(
                 'null',
                 'Masukkan ID Cabang',
             );
@@ -39,7 +37,6 @@ class RekapCabangService
             $id_cabang = $id;
         }
 
-        // dd($id_cabang);
         $total_peserta = $this->magangInterface->countPeserta($id_cabang);
         $total_admin = $this->adminInterface->getByCabang($id_cabang)->count();
         $total_mentor = $this->mentorInterface->getAll($id_cabang)->count();
@@ -69,8 +66,31 @@ class RekapCabangService
             }),
         ];
 
+        $rekapCabang = RekapCabang::updateOrCreate(
+            ['id_cabang' => $id_cabang],
+            $rekap
+        );
+
         return Api::response(
-            $rekap,
+            $rekapCabang,
+            'Rekap Cabang berhasil disimpan',
+        );
+    }
+
+    public function getRekap($id = null)
+    {
+        $id_cabang = $id ?? auth()->user()->id_cabang_aktif;
+
+        $rekapCabang = RekapCabang::where('id_cabang', $id_cabang)->first();
+        if (!$rekapCabang) {
+            return Api::response(
+                'null',
+                'Rekap Cabang tidak ditemukan',
+            );
+        }
+
+        return Api::response(
+            $rekapCabang,
             'Rekap Cabang berhasil ditampilkan',
         );
     }

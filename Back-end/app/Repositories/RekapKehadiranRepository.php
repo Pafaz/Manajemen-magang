@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class RekapKehadiranRepository implements RekapKehadiranInterface
 {
-    public function getAll(): Collection
+    public function get()
     {
-        return RekapKehadiran::where('id_peserta', auth('sanctum')->user()->peserta->id)->get();
+        return RekapKehadiran::where('id_peserta', auth('sanctum')->user()->peserta->id)->first();
     }
 
     public function findOrCreateByPeserta( $peserta_id)

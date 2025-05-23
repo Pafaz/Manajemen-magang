@@ -16,29 +16,29 @@ class RekapCabangService
     private AdminInterface $adminInterface;
     private MentorInterface $mentorInterface;
     private DivisiInterface $divisiInterface;
-    private RekapCabangInterface $rekapCabangInterface;
+    // private RekapCabangInterface $rekapCabangInterface;
 
-    public function __construct(MagangInterface $magangInterface, AdminInterface $adminInterface, MentorInterface $mentorInterface, DivisiInterface $divisiInterface, RekapCabangInterface $rekapCabangInterface)
+    public function __construct(MagangInterface $magangInterface, AdminInterface $adminInterface, MentorInterface $mentorInterface, DivisiInterface $divisiInterface)
     {
         $this->magangInterface = $magangInterface;
         $this->adminInterface = $adminInterface;
         $this->mentorInterface = $mentorInterface;
         $this->divisiInterface = $divisiInterface;
-        $this->rekapCabangInterface = $rekapCabangInterface;
+        // $this->rekapCabangInterface = $rekapCabangInterface;
     }
 
-    public function getRekapCabang()
+    public function getRekapCabang($id = null)
     {
-        $id_cabang = auth()->user()->id_cabang_aktif;   
+        $id ? $id : $id = auth()->user()->id_cabang_aktif;   
 
         // dd($id_cabang);
-        $total_peserta = $this->magangInterface->countPeserta($id_cabang);
-        $total_admin = $this->adminInterface->getByCabang($id_cabang)->count();
-        $total_mentor = $this->mentorInterface->getAll($id_cabang)->count();
-        $total_divisi = $this->divisiInterface->getAll($id_cabang)->count();
+        $total_peserta = $this->magangInterface->countPeserta($id);
+        $total_admin = $this->adminInterface->getByCabang($id)->count();
+        $total_mentor = $this->mentorInterface->getAll($id)->count();
+        $total_divisi = $this->divisiInterface->getAll($id)->count();
 
-        $pesertaPerDivisi = $this->magangInterface->getMagangPerDivisi($id_cabang);
-        $mentorPerDivisi = $this->mentorInterface->getMentorPerDivisi($id_cabang);
+        $pesertaPerDivisi = $this->magangInterface->getMagangPerDivisi($id);
+        $mentorPerDivisi = $this->mentorInterface->getMentorPerDivisi($id);
 
         $rekap = [
             'total_peserta' => $total_peserta,
@@ -67,71 +67,71 @@ class RekapCabangService
         );
     }
 
-    public function simpanRekap($id = null)
-    {
-        if (auth()->user()->hasRole('admin')) {
-            $id_cabang = auth()->user()->id_cabang_aktif;
-        } else if ($id == null) {
-            return Api::response(
-                'null',
-                'Masukkan ID Cabang',
-            );
-        } else {
-            $id_cabang = $id;
-        }
+    // public function simpanRekap($id = null)
+    // {
+    //     if (auth()->user()->hasRole('admin')) {
+    //         $id_cabang = auth()->user()->id_cabang_aktif;
+    //     } else if ($id == null) {
+    //         return Api::response(
+    //             'null',
+    //             'Masukkan ID Cabang',
+    //         );
+    //     } else {
+    //         $id_cabang = $id;
+    //     }
 
-        $total_peserta = $this->magangInterface->countPeserta($id_cabang);
-        $total_admin = $this->adminInterface->getByCabang($id_cabang)->count();
-        $total_mentor = $this->mentorInterface->getAll($id_cabang)->count();
-        $total_divisi = $this->divisiInterface->getAll($id_cabang)->count();
+    //     $total_peserta = $this->magangInterface->countPeserta($id_cabang);
+    //     $total_admin = $this->adminInterface->getByCabang($id_cabang)->count();
+    //     $total_mentor = $this->mentorInterface->getAll($id_cabang)->count();
+    //     $total_divisi = $this->divisiInterface->getAll($id_cabang)->count();
 
-        $pesertaPerDivisi = $this->magangInterface->getMagangPerDivisi($id_cabang);
-        $mentorPerDivisi = $this->mentorInterface->getMentorPerDivisi($id_cabang);
+    //     $pesertaPerDivisi = $this->magangInterface->getMagangPerDivisi($id_cabang);
+    //     $mentorPerDivisi = $this->mentorInterface->getMentorPerDivisi($id_cabang);
 
-        $rekap = [
-            'total_peserta' => $total_peserta,
-            'total_admin' => $total_admin,
-            'total_mentor' => $total_mentor,
-            'total_divisi' => $total_divisi,
-            'peserta_per_divisi' => $pesertaPerDivisi->map(function ($item) {
-                return [
-                    'id_divisi' => $item->id_divisi,
-                    'nama_divisi' => $item->divisi->nama ?? '-',
-                    'total_peserta' => $item->total,
-                ];
-            }),
-            'mentor_per_divisi' => $mentorPerDivisi->map(function ($item) {
-                return [
-                    'id_divisi' => $item->id_divisi,
-                    'nama_divisi' => $item->divisi->nama ?? '-',
-                    'total_mentor' => $item->total,
-                ];
-            }),
-        ];
+    //     $rekap = [
+    //         'total_peserta' => $total_peserta,
+    //         'total_admin' => $total_admin,
+    //         'total_mentor' => $total_mentor,
+    //         'total_divisi' => $total_divisi,
+    //         'peserta_per_divisi' => $pesertaPerDivisi->map(function ($item) {
+    //             return [
+    //                 'id_divisi' => $item->id_divisi,
+    //                 'nama_divisi' => $item->divisi->nama ?? '-',
+    //                 'total_peserta' => $item->total,
+    //             ];
+    //         }),
+    //         'mentor_per_divisi' => $mentorPerDivisi->map(function ($item) {
+    //             return [
+    //                 'id_divisi' => $item->id_divisi,
+    //                 'nama_divisi' => $item->divisi->nama ?? '-',
+    //                 'total_mentor' => $item->total,
+    //             ];
+    //         }),
+    //     ];
 
-        $rekapCabang = $this->rekapCabangInterface->update($id_cabang, $rekap);
+    //     $rekapCabang = $this->rekapCabangInterface->update($id_cabang, $rekap);
 
-        return Api::response(
-            $rekapCabang,
-            'Rekap Cabang berhasil disimpan',
-        );
-    }
+    //     return Api::response(
+    //         $rekapCabang,
+    //         'Rekap Cabang berhasil disimpan',
+    //     );
+    // }
 
-    public function getRekap($id = null)
-    {
-        $id_cabang = $id ?? auth()->user()->id_cabang_aktif;
+    // public function getRekap($id = null)
+    // {
+    //     $id_cabang = $id ?? auth()->user()->id_cabang_aktif;
 
-        $rekapCabang = RekapCabang::where('id_cabang', $id_cabang)->first();
-        if (!$rekapCabang) {
-            return Api::response(
-                'null',
-                'Rekap Cabang tidak ditemukan',
-            );
-        }
+    //     $rekapCabang = RekapCabang::where('id_cabang', $id_cabang)->first();
+    //     if (!$rekapCabang) {
+    //         return Api::response(
+    //             'null',
+    //             'Rekap Cabang tidak ditemukan',
+    //         );
+    //     }
 
-        return Api::response(
-            $rekapCabang,
-            'Rekap Cabang berhasil ditampilkan',
-        );
-    }
+    //     return Api::response(
+    //         $rekapCabang,
+    //         'Rekap Cabang berhasil ditampilkan',
+    //     );
+    // }
 }

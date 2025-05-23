@@ -9,6 +9,7 @@ use App\Interfaces\RfidInterface;
 use App\Interfaces\UserInterface;
 use App\Interfaces\AdminInterface;
 use App\Interfaces\PiketInterface;
+use App\Interfaces\RouteInterface;
 use App\Interfaces\SuratInterface;
 use App\Interfaces\CabangInterface;
 use App\Interfaces\DivisiInterface;
@@ -30,6 +31,7 @@ use App\Interfaces\LowonganInterface;
 use App\Interfaces\ProgressInterface;
 use App\Repositories\AdminRepository;
 use App\Repositories\PiketRepository;
+use App\Repositories\RouteRepository;
 use App\Repositories\SuratRepository;
 use Illuminate\Support\Facades\Event;
 use App\Interfaces\JamKantorInterface;
@@ -49,6 +51,7 @@ use App\Repositories\JurusanRepository;
 use App\Repositories\PesertaRepository;
 use App\Repositories\SekolahRepository;
 use Illuminate\Support\ServiceProvider;
+use App\Interfaces\RekapCabangInterface;
 use App\Repositories\KategoriRepository;
 use App\Repositories\LowonganRepository;
 use App\Repositories\ProgressRepository;
@@ -58,13 +61,10 @@ use App\Repositories\NotifikasiRepository;
 use App\Repositories\PerusahaanRepository;
 use App\Repositories\PresentasiRepository;
 use App\Interfaces\RekapKehadiranInterface;
+use App\Repositories\RekapCabangRepository;
 use App\Interfaces\JadwalPresentasiInterface;
-use App\Interfaces\RekapPerusahaanInterface;
-use App\Interfaces\RouteInterface;
 use App\Repositories\RekapKehadiranRepository;
 use App\Repositories\JadwalPresentasiRepository;
-use App\Repositories\RekapPerusahaanRepository;
-use App\Repositories\RouteRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -102,7 +102,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(KehadiranInterface::class, KehadiranRepository::class);
         $this->app->bind(RekapKehadiranInterface::class, RekapKehadiranRepository::class);
         $this->app->bind(RouteInterface::class, RouteRepository::class);
-        $this->app->bind(RekapPerusahaanInterface::class, RekapPerusahaanRepository::class);
+        $this->app->bind(RekapCabangInterface::class, RekapCabangRepository::class);
     }
 
     /**

@@ -26,6 +26,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\JadwalPresentasiController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
+use App\Models\Cabang;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register/{role}', [RegisterController::class, 'register']);
@@ -94,6 +95,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/cabang-detail', [CabangController::class, 'show']);
         Route::put('/cabang-update', [CabangController::class, 'update']);
         Route::get('/cabang/rekap/{cabangID?}', [CabangController::class, 'getRekapCabang']);
+        Route::post('/cabang/rekap/{cabangID?}', [CabangController::class, 'simpanRekap']);
         //pendataan
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
         Route::get('/peserta-by-divisi/{divisiId}', [PesertaController::class,'showByDivisi']);

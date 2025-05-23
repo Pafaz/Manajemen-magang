@@ -1,26 +1,27 @@
 <?php
+
 namespace App\Jobs;
 
-use Illuminate\Queue\Jobs\Job;
 use App\Services\RekapCabangService;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Log;
 
 class UpdateRekapCabangJob implements ShouldQueue
 {
-    protected $id_cabang;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct($id_cabang)
+    public int $idCabang;
+
+    public function __construct(int $idCabang)
     {
-        $this->id_cabang = $id_cabang;
+        $this->idCabang = $idCabang;
     }
 
-    public function handle(RekapCabangService $rekapCabangService)
+    public function handle(RekapCabangService $service): void
     {
-        $rekapCabangService->simpanRekap($this->id_cabang);
+        $service->simpanRekap($this->idCabang);
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('rekap_cabangs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_cabang')->constrained(); // Pastikan ada relasi ke tabel cabang
+            $table->unsignedBigInteger('id_cabang');
             $table->integer('total_peserta');
             $table->integer('total_admin');
             $table->integer('total_mentor');
@@ -21,6 +21,8 @@ return new class extends Migration
             $table->json('peserta_per_divisi');
             $table->json('mentor_per_divisi');
             $table->timestamps();
+
+            $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');
         });
     }
 

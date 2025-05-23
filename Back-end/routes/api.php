@@ -96,7 +96,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/cabang-detail', [CabangController::class, 'show']);
         Route::put('/cabang-update', [CabangController::class, 'update']);
         Route::get('/cabang/rekap/{cabangID?}', [CabangController::class, 'getRekapCabang']);
-        Route::post('/cabang/rekap/{cabangID?}', [CabangController::class, 'simpanRekap']);
         //pendataan
         Route::get('/peserta-by-cabang', [PesertaController::class, 'showByCabang']);
         Route::get('/peserta-by-divisi/{divisiId}', [PesertaController::class,'showByDivisi']);

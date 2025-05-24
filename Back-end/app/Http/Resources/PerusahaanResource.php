@@ -16,7 +16,6 @@ class PerusahaanResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'id_user' => $this->id_user,
             'nama' => $this->user->nama,
             'telepon' => $this->user->telepon,
             'email' => $this->user->email,
@@ -32,6 +31,8 @@ class PerusahaanResource extends JsonResource
             'nomor_penanggung_jawab' => $this->nomor_penanggung_jawab,
             'jabatan_penanggung_jawab' => $this->jabatan_penanggung_jawab,
             'email_penanggung_jawab' => $this->email_penanggung_jawab,
+            'created_at' => $this->created_at,
+            'updated_at'=> $this->updated_at
         ];
     }
 }

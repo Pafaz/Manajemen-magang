@@ -66,7 +66,6 @@ class PerusahaanService
     public function simpanProfil(array $data, bool $isUpdate = false)
     {
         DB::beginTransaction();
-
         try {
             $user = auth('sanctum')->user();
 
@@ -96,7 +95,7 @@ class PerusahaanService
                 'logo' => 'profile',
                 'npwp' => 'npwp',
                 'surat_legalitas' => 'surat_legalitas',
-                'profil_background' => 'profil_background',
+                'profil_cover' => 'profil_cover',
             ];
             
             foreach ($files as $key => $type) {

@@ -44,4 +44,11 @@ class JurnalRepository implements JurnalInterface
     {
         Jurnal::findOrFail($id)->delete();
     }
+
+    public function countByPerusahaan($id_perusahaan): int
+    {
+        return Jurnal::whereHas('peserta.magang.lowongan', function ($query) use ($id_perusahaan) {
+            $query->where('id_perusahaan', $id_perusahaan);
+        })->count();
+    }
 }

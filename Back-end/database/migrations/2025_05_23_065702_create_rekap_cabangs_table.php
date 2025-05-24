@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('total_divisi');
             $table->json('peserta_per_divisi');
             $table->json('mentor_per_divisi');
+            $table->json('absensi_12_bulan');
             $table->timestamps();
 
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');

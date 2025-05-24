@@ -31,4 +31,8 @@ class Absensi extends Model
     {
         return $this->belongsTo(Izin::class, 'izin_id');
     }
+    public function peserta()
+    {
+        return $this->belongsTo(Peserta::class, 'id_peserta');
+    }
 }

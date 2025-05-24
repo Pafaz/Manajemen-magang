@@ -11,4 +11,5 @@ use App\Interfaces\Base\UpdateInterface;
 interface AbsensiInterface extends GetAllInterface, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
     public function findByDate($idPeserta, $tanggal);
+    public function countAbsensiByCabang(int $idCabang, int $bulan, int $tahun, string $status);
 }

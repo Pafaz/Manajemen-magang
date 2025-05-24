@@ -26,6 +26,7 @@ class RekapCabangRepository implements RekapCabangInterface
 
     public function update(int $id_cabang, array $data): RekapCabang
     {
+        $data['absensi_12_bulan'] = json_encode($data['absensi_12_bulan']);
         $rekap = RekapCabang::updateOrCreate(['id_cabang' => $id_cabang], $data);
 
         return $rekap;

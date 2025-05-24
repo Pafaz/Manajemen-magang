@@ -11,6 +11,7 @@ class RekapCabang extends Model
         'total_admin',
         'total_mentor',
         'total_divisi',
+        'absensi_12_bulan',
         'peserta_per_divisi',
         'mentor_per_divisi',
     ];

@@ -42,4 +42,14 @@ class AbsensiRepository implements AbsensiInterface
     {
         Absensi::findOrFail($id)->delete();
     }
+
+    public function countAbsensiByCabang(int $idCabang, int $bulan, int $tahun, string $status)
+    {
+        return Absensi::where('status', $status)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->whereHas('peserta.magang.lowongan', function ($query) use ($idCabang) {
+                $query->where('id_cabang', $idCabang);
+            })->count();
+    }
 }

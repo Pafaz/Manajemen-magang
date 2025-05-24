@@ -2,6 +2,8 @@
 
 use App\Helpers\Api;
 use Illuminate\Http\Request;
+use App\Jobs\UpdateRekapAlfaJob;
+use App\Jobs\UpdateRekapHadirJob;
 use App\Jobs\UpdateRekapCabangJob;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Application;
@@ -37,10 +39,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withSchedule(function (Schedule $schedule) {
-        // Penjadwalan command harian
-        $schedule->command('app:generate-alfa-harian')->dailyAt('18:00');
-
-        // Penjadwalan job untuk semua cabang setiap menit
+        $schedule->job(new UpdateRekapAlfaJob)->dailyAt('08:30');
+        $schedule->job(new UpdateRekapHadirJob)->dailyAt('17:00');
+        
         $schedule->call(function () {
             $cabangIds = \App\Models\Cabang::pluck('id');
             foreach ($cabangIds as $id) {

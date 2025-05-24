@@ -24,4 +24,5 @@ class UpdateRekapCabangJob implements ShouldQueue
     {
         $service->simpanRekap($this->idCabang);
     }
+
 }

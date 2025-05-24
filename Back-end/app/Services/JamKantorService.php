@@ -88,21 +88,23 @@ class JamKantorService
         DB::beginTransaction();
 
         try {
-            $jamKantor = $this->jamKantorInterface->find($hari);
+            $jamKantor = $this->jamKantorInterface->findByHariAndCabang($hari, $id_cabang);
 
-            if ($jamKantor && $jamKantor->id_cabang == $id_cabang) {
+            if ($jamKantor) {
                 $jamKantor->status = $status;
                 $jamKantor->save();
 
                 DB::commit();
 
+                $message = $status ? 'Jam kantor berhasil diaktifkan' : 'Jam kantor berhasil dinonaktifkan';
+
                 return Api::response(
                     new JamKantorResource($jamKantor),
-                    '',
+                    $message,
                     Response::HTTP_OK
                 );
             } else {
-                return Api::response(null, 'Jam Kantor tidak ditemukan atau tidak sesuai dengan cabang aktif', Response::HTTP_NOT_FOUND);
+                return Api::response(null, 'Jam kantor tidak ditemukan untuk cabang ini', Response::HTTP_NOT_FOUND);
             }
         } catch (\Exception $e) {
             DB::rollBack();

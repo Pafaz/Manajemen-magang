@@ -63,6 +63,7 @@ class JamKantorService
                     'akhir_kembali'=> $data['akhir_kembali'],
                     'awal_pulang'=> $data['awal_pulang'],
                     'akhir_pulang'=> $data['akhir_pulang'],
+                    'status' => true,
                 ]);
             }
 

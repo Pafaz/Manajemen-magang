@@ -45,6 +45,11 @@ class JamKantorRepository implements JamKantorInterface
         return $jamKantor;
     }
 
+    public function findByHariAndCabang($hari, $id_cabang): ?Jam_Kantor
+    {
+        return Jam_Kantor::where('hari', $hari)->where('id_cabang', $id_cabang)->first();
+    }
+
 
 
     public function delete(int $id): void

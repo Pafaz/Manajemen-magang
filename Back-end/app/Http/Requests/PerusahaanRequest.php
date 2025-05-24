@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Perusahaan;
+
 class PerusahaanRequest extends BaseFormRequest
 {
     /**
@@ -11,10 +13,12 @@ class PerusahaanRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        if ($this->isUpdate()) {
+
+        if ($this->method() == "PUT") {
             return [
                 'nama' => 'sometimes|string',
-                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon',
+                'telepon' => 'sometimes|numeric|digits_between:10,12|unique:users,telepon,'.$this->user()->id,
+                'email' => 'sometimes|email',
                 'deskripsi' => 'sometimes|string',
                 'provinsi' => 'sometimes|string',
                 'kota' => 'sometimes|string',
@@ -24,25 +28,25 @@ class PerusahaanRequest extends BaseFormRequest
                 'website' => 'sometimes|url',
                 'tanggal_berdiri' => 'sometimes|date',
                 'nama_penanggung_jawab' => 'sometimes|string',
-                'nomor_penanggung_jawab' => 'sometimes|numeric|digits_between:10,12',
+                'nomor_penanggung_jawab' => 'sometimes|numeric|digits_between:10,13',
                 'email_penanggung_jawab' => 'sometimes|email',
                 'jabatan_penanggung_jawab' => 'sometimes|string',
                 'logo' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
                 'npwp' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
                 'surat_legalitas' => 'sometimes|image|mimes:png,jpeg,jpg|max:2048',
-                'profil_background' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
+                'profil_cover' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
             ];
         }
 
         return [
             'nama_penanggung_jawab' => 'required|string',
-            'nomor_penanggung_jawab' => 'required|numeric|digits_between:10,12',
+            'nomor_penanggung_jawab' => 'required|numeric|digits_between:10,13',
             'email_penanggung_jawab' => 'required|email',
             'jabatan_penanggung_jawab' => 'required|string',
             'nama' => 'required|string',
             'tanggal_berdiri' => 'required|date',
             'deskripsi' => 'required|string',
-            'telepon' => 'required|numeric|digits_between:10,12|unique:users,telepon',
+            'telepon' => 'required|numeric|digits_between:10,13|unique:users,telepon',
             'provinsi' => 'required|string',
             'kota' => 'required|string',
             'kecamatan' => 'required|string',
@@ -52,7 +56,7 @@ class PerusahaanRequest extends BaseFormRequest
             'logo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'npwp' => 'nullable|image|mimes:png,jpeg,jpg|max:2048',
             'surat_legalitas' => 'nullable|image|mimes:png,jpeg,jpg|max:2048',
-            'profil_background' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'profil_cover' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 

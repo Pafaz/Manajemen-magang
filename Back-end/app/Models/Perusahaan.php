@@ -14,7 +14,6 @@ class Perusahaan extends Model
     protected $table = 'perusahaan';
     protected $keyType = 'string';
     public $incrementing = false;
-    public $timestamps = false;
     
     protected $fillable = [
         'id_user',
@@ -33,6 +32,8 @@ class Perusahaan extends Model
         'jabatan_penanggung_jawab',
         'email_penanggung_jawab',
         'tanggal_berdiri',
+        'created_at',
+        'updated_at'
     ];
 
     public function foto()

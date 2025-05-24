@@ -15,7 +15,8 @@ class RekapCabangRepository implements RekapCabangInterface
 
     public function find(int $id): ? RekapCabang
     {
-        $rekap = RekapCabang::findOrFail($id)->first();
+        // $rekap = RekapCabang::findOrFail($id)->first();
+        $rekap = RekapCabang::where('id_cabang', $id)->first();
         return $rekap;
     }
 

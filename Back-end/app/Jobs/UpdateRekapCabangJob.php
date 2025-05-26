@@ -2,27 +2,32 @@
 
 namespace App\Jobs;
 
-use App\Services\RekapCabangService;
+use App\Models\Cabang;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use App\Services\RekapCabangService;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
 
 class UpdateRekapCabangJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $idCabang;
+    // public int $idCabang;
 
-    public function __construct(int $idCabang)
-    {
-        $this->idCabang = $idCabang;
-    }
+    // public function __construct(int $idCabang)
+    // {
+    //     $this->idCabang = $idCabang;
+    // }
 
     public function handle(RekapCabangService $service): void
     {
-        $service->simpanRekap($this->idCabang);
+        $cabangIds = Cabang::pluck("id");
+        foreach ($cabangIds as $id) {
+                Log::info('Dispatching UpdateRekapCabangJob for Cabang ID: ' . $id);
+                $service->simpanRekap($id);
+        }
     }
-
 }

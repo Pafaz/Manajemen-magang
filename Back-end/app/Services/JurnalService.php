@@ -82,4 +82,16 @@ class JurnalService
         );
     }
 
+    public function createJunalKosong($peserta)
+    {
+        $dataJurnal = [
+            'id_peserta' => $peserta->id,
+            'deskripsi' => 'kosong',
+            'tanggal' => Carbon::yesterday('Asia/Jakarta'),
+            'judul' => 'kosong',
+        ];
+        
+        $this->jurnalInterface->create($dataJurnal);
+    }
+
 }

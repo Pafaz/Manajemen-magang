@@ -29,6 +29,8 @@ class PesertaSeeder extends Seeder
                     'password' => bcrypt('password'),
                 ]);
 
+                $user->assignRole('peserta');
+
                 $peserta = Peserta::create([
                     'id_user' => $user->id,
                     'jurusan' => $faker->word,

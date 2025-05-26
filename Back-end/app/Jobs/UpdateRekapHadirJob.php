@@ -4,8 +4,8 @@ namespace App\Jobs;
 use App\Models\Peserta;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Queue\SerializesModels;
 use App\Services\RekapKehadiranService;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,15 +17,38 @@ class UpdateRekapHadirJob implements ShouldQueue
     public function handle(RekapKehadiranService $service): void
     {
         $today = now()->toDateString();
-        $pesertas = Peserta::where('status', 'aktif')->get();
+
+        // Mengambil peserta yang memiliki magang diterima
+        $pesertas = Peserta::whereHas('magang', function ($query) {
+            $query->where('status', 'diterima');
+        })
+        ->get();
 
         foreach ($pesertas as $peserta) {
-            $absensi = $peserta->absensi()->whereDate('tanggal', $today)->first();
+            try {
+                // Mengambil absensi berdasarkan tanggal hari ini
+                $absensi = $peserta->absensi()->whereDate('tanggal', $today)->first();
 
-            if ($absensi) {
-                $terlambat = $absensi->jam_masuk > '08:15';
-                $service->updateRekapHarian($peserta, $today, $terlambat);
-                Log::info("HADIR: Peserta {$peserta->id} tanggal $today (Terlambat: ".($terlambat ? 'YA' : 'TIDAK').")");
+                if ($absensi) {
+                    // Mengambil jam masuk terakhir (terlambat)
+                    $terlambat = $absensi->jam_masuk_akhir;
+                    
+                    // Update rekap harian
+                    $service->updateRekapHarian($peserta->id, $today, $terlambat);
+
+                    // Log informasi berhasil
+                    Log::info("HADIR: {$peserta->user->nama} tanggal $today (Terlambat: " . ($terlambat ? 'YA' : 'TIDAK') . ")");
+                } else {
+                    Log::info("HADIR: {$peserta->user->nama} tanggal $today tidak memiliki absensi.");
+                }
+            } catch (\Exception $e) {
+                // Tangkap error dan log informasi error
+                Log::error("Gagal memperbarui rekap kehadiran untuk Peserta {$peserta->nama} tanggal $today", [
+                    'error' => $e->getMessage(),
+                    'stack_trace' => $e->getTraceAsString(),
+                    'peserta_id' => $peserta->id,
+                    'tanggal' => $today,
+                ]);
             }
         }
     }

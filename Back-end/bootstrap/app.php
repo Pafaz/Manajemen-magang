@@ -1,6 +1,7 @@
 <?php
 
 use App\Helpers\Api;
+use App\Jobs\UpdateRekapJurnalJob;
 use Illuminate\Http\Request;
 use App\Jobs\UpdateRekapAlfaJob;
 use App\Jobs\UpdateRekapHadirJob;
@@ -39,16 +40,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->job(new UpdateRekapAlfaJob)->dailyAt('08:30');
-        $schedule->job(new UpdateRekapHadirJob)->dailyAt('17:00');
-        
-        $schedule->call(function () {
-            $cabangIds = \App\Models\Cabang::pluck('id');
-            foreach ($cabangIds as $id) {
-                Log::info('Dispatching UpdateRekapCabangJob for Cabang ID: ' . $id);
-                dispatch(new UpdateRekapCabangJob($id));
-            }
-        })->everyMinute();
+        $schedule->job(new UpdateRekapAlfaJob)->everyMinute();
+        $schedule->job(new UpdateRekapHadirJob)->everyMinute();
+        $schedule->job(new UpdateRekapJurnalJob)->everyMinute();
+        $schedule->job(new UpdateRekapCabangJob)->everyMinute();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->report(function (Throwable $e) {

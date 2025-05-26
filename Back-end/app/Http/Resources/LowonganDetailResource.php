@@ -14,6 +14,19 @@ class LowonganDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        // dd($this);
+        return [
+            'id' => $this->id,
+            'tanggal_mulai' => $this->tanggal_mulai,
+            'tanggal_selesai' => $this->tanggal_selesai,
+            'max_kuota' => $this->max_kuota,
+            'requirement' => $this->requirement,
+            'jobdesc' => $this->jobdesc,
+            'status' => $this->status,
+            'total_pendaftar' => $this->totalPeserta,
+            'perusahaan' => PerusahaanDetailResource::make($this->perusahaan),
+            'cabang' => CabangResource::make($this->cabang),
+            'divisi' => DivisiResource::make($this->divisi)
+        ];
     }
 }

@@ -16,11 +16,11 @@ class CabangResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'id_perusahaan'=> $this->id_perusahaan,
             'nama' => $this->nama,
             'bidang_usaha' => $this->bidang_usaha,
             'provinsi' => $this->provinsi,
             'kota' => $this->kota,
-            'created_at' => $this->created_at,
             'foto' => FotoResource::collection($this->foto),
         ];
     }

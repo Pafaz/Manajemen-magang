@@ -141,8 +141,9 @@ class CabangService
         $this->userInterface->update($user->id, ['id_cabang_aktif' => $idCabang]);
 
         $cabang = $this->cabangInterface->find($idCabang, $user->perusahaan->id);
+
         return Api::response(
-            $cabang,
+            CabangResource::make($cabang),
             'Berhasil akses cabang',
         );
     }

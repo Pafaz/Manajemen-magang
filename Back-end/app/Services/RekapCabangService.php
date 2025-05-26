@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use App\Http\Resources\RekapCabangResource;
 use App\Interfaces\AbsensiInterface;
 use App\Models\RekapCabang;
 use App\Interfaces\AdminInterface;
@@ -41,6 +42,7 @@ class RekapCabangService
 
         $pesertaPerDivisi = $this->magangInterface->getMagangPerDivisi($id);
         $mentorPerDivisi = $this->mentorInterface->getMentorPerDivisi($id);
+        $pesertaPerBulanDanTahun = $this->magangInterface->countPesertaPerBulanDanTahun($id);
         
         $rekap_absensi_bulanan = [];
         for ($bulan = 1; $bulan <= 12; $bulan++) {
@@ -59,6 +61,7 @@ class RekapCabangService
             'total_admin' => $total_admin,
             'total_mentor' => $total_mentor,
             'total_divisi' => $total_divisi,
+            'peserta_per_bulan_tahun' => $pesertaPerBulanDanTahun,
             'absensi_12_bulan' => $rekap_absensi_bulanan,
             'peserta_per_divisi' => $pesertaPerDivisi->map(function ($item) {
                 return [
@@ -84,7 +87,6 @@ class RekapCabangService
         $id ? $id : $id = auth('sanctum')->user()->id_cabang_aktif; 
 
         $rekapCabang = $this->rekapCabangInterface->find($id);
-        $rekapCabang['absensi_12_bulan'] = json_decode($rekapCabang['absensi_12_bulan']);
         
         if (!$rekapCabang) {
             return Api::response(
@@ -94,8 +96,9 @@ class RekapCabangService
         }
 
         return Api::response(
-            $rekapCabang,
+            RekapCabangResource::make($rekapCabang),
             'Rekap Cabang berhasil ditampilkan',
         );
     }
 }
+

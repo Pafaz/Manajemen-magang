@@ -26,6 +26,16 @@ class MagangRepository implements MagangInterface
             })->count();
     }
 
+    public function countPesertaPerBulanDanTahun($id)
+    {
+        return Magang::whereHas('lowongan', function ($query) use ($id) {
+                $query->where('id_cabang', $id);
+            })
+            ->selectRaw('YEAR(mulai) as tahun, MONTH(mulai) as bulan, COUNT(*) as total_peserta')
+            ->groupBy('tahun', 'bulan')
+            ->get();
+    }
+
     public function findByPesertaAndCabang($id_peserta, $id_cabang)
     {
         return Magang::where('id_peserta', $id_peserta)
@@ -74,17 +84,6 @@ class MagangRepository implements MagangInterface
         return Magang::where('id_lowongan', $lowonganId)->count();
     }
 
-    public function getMagangPerBulan($id_cabang, $bulan, $tahun)
-    {
-        $magang = Magang::where('id_cabang', $id_cabang);
-
-        $magang->whereMonth('mulai', $bulan)
-        ->whereYear('mulai', $tahun)
-        ->count();
-
-        return $magang;
-    }
-
     public function getMagangPerDivisi($id_cabang)
     {
         return Magang::select('id_divisi', DB::raw('COUNT(*) as total'))
@@ -92,7 +91,7 @@ class MagangRepository implements MagangInterface
             $query->where('id_cabang', $id_cabang);
         })
         ->groupBy('id_divisi')
-        ->with('divisi:id,nama') // menampilkan nama divisi (opsional)
+        ->with('divisi:id,nama') 
         ->get();
     }
 }

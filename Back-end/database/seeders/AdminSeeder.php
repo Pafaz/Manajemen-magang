@@ -16,10 +16,12 @@ class AdminSeeder extends Seeder
         $cabangs = Cabang::all();
 
         foreach ($cabangs as $cabang) {
+            $namaCabang = strtolower($cabang->nama);
+            $namaCabang = str_replace(' ', '', $namaCabang);
             $user = User::create([
                 'id' => Str::uuid(),
                 'nama' => 'Admin ' . $cabang->nama,
-                'email' => 'admin_' . strtolower($cabang->nama) . '@hummatech.com',
+                'email' => 'admin_' . $namaCabang . '@hummatech.com',
                 'id_cabang_aktif' => $cabang->id,
                 'telepon' => $this->generateRandomPhoneNumber(),
                 'password' => bcrypt('password'),

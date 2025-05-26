@@ -63,7 +63,7 @@ class PerusahaanSeeder extends Seeder
                 // Memanggil fungsi uploadFoto untuk menyimpan gambar perusahaan
                 Log::info("Processing file: {$key} with type: {$type}");
                 try {
-                    $foto = \App\Models\Foto::uploadFoto($filePath, $perusahaan->id, $type, 'perusahaan');
+                    $foto = \App\Models\Foto::uploadFoto($filePath, $perusahaan_record->id, $type, 'perusahaan');
                     Log::info("File processed successfully", ['foto' => $foto]);
                 } catch (\Exception $e) {
                     Log::error("Failed to process {$key}", [

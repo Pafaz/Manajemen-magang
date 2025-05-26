@@ -45,10 +45,12 @@ class PesertaRepository implements PesertaInterface
                 'magang.lowongan.divisi'
             ])
             ->whereHas('user', function ($query) use ($idCabang) {
-                $query->where('id_cabang_aktif', $idCabang);
+                $query->where('id_cabang_aktif', $idCabang)
+                    ->whereNotNull('id_cabang_aktif');
             })
             ->get();
     }
+
     public function getByDivisi($idDivisi)
     {
         return Peserta::with([

@@ -27,7 +27,6 @@ class PesertaSeeder extends Seeder
                     'email' => $faker->unique()->safeEmail,
                     'telepon' => $this->generateRandomPhoneNumber(),
                     'password' => bcrypt('password'),
-                    'id_cabang_aktif' => $lowongan->id_cabang,
                 ]);
 
                 $peserta = Peserta::create([

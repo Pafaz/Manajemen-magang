@@ -47,9 +47,9 @@ return new class extends Migration
         });
 
         Schema::create('jam_kantor', function (Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
             $table->unsignedBigInteger('id_cabang');
-            $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
+            $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu']);
             $table->time('awal_masuk');
             $table->time('akhir_masuk')->nullable();
             $table->time('awal_istirahat')->nullable();

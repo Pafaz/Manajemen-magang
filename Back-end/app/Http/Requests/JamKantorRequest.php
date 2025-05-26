@@ -26,7 +26,7 @@ class JamKantorRequest extends BaseFormRequest
         }
 
         return [
-            'hari' => 'required|string|in:senin,selasa,rabu,kamis,jumat',
+            'hari' => 'required|string|in:senin,selasa,rabu,kamis,jumat,sabtu,minggu',
             'awal_masuk' => 'required|date_format:H:i|before:akhir_masuk',
             'akhir_masuk' => 'date_format:H:i|after:awal_masuk',
             'awal_istirahat' => 'date_format:H:i|before:akhir_istirahat',

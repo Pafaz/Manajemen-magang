@@ -24,7 +24,7 @@ class JamKantorService
         $idCabang = auth('sanctum')->user()->id_cabang_aktif;
         $data = $this->jamKantorInterface->getAll()->where('id_cabang', $idCabang);
 
-        return Api::response($data, 'Jam Kantor Berhasil ditampilkan');
+        return Api::response(JamKantorResource::collection($data), 'Jam Kantor Berhasil ditampilkan');
     }
 
     public function getJamKantorToday()

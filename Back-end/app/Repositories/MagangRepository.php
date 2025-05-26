@@ -26,6 +26,22 @@ class MagangRepository implements MagangInterface
             })->count();
     }
 
+    public function countPesertaByPerusahaan($id)
+    {
+        return Magang::with('peserta', 'lowongan')
+            ->whereHas('lowongan', function ($query) use ($id) {
+                $query->where('id_perusahaan', $id);
+        })->count();
+    }
+
+    public function countPesertaAktif($id)
+    {
+        return Magang::with('peserta', 'lowongan')
+            ->whereHas('lowongan', function ($query) use ($id) {
+                $query->where('id_cabang', $id);
+            })->count();
+    }
+
     public function countPesertaPerBulanDanTahun($id)
     {
         return Magang::whereHas('lowongan', function ($query) use ($id) {

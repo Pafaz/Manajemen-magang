@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\PerusahaanService;
 use App\Http\Requests\PerusahaanRequest;
+use App\Services\RekapPerusahaanService;
 
 class PerusahaanController extends Controller
 {
@@ -12,9 +13,11 @@ class PerusahaanController extends Controller
      */
 
     private PerusahaanService $perusahaanService;
-    public function __construct(PerusahaanService $perusahaanService)
+    private RekapPerusahaanService $rekapPerusahaanService;
+    public function __construct(PerusahaanService $perusahaanService, RekapPerusahaanService $rekapPerusahaanService)
     {
         $this->perusahaanService = $perusahaanService;
+        $this->rekapPerusahaanService = $rekapPerusahaanService;
     }
     public function index()
     {
@@ -67,5 +70,25 @@ class PerusahaanController extends Controller
     public function destroy($id)
     {
         return $this->perusahaanService->deletePerusahaan($id);
+    }
+
+    public function getRekap()
+    {
+        return $this->rekapPerusahaanService->simpanRekap();
+    }
+
+    public function getRekapAbsensi($id_cabang)
+    {
+        return $this->rekapPerusahaanService->getRekapAbsensi($id_cabang);
+    }
+
+    public function getMitra()
+    {
+        return $this->perusahaanService->getMitra();
+    }
+
+    public function showMitra($id)
+    {
+        return $this->perusahaanService->showMitra($id);
     }
 }

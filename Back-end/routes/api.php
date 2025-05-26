@@ -38,6 +38,10 @@ Route::post('/verify-otp', [PasswordResetController::class, 'verifyOtp']);
 Route::post('/update-password-otp', [PasswordResetController::class, 'updatePassword']);
 Route::get('/lowongan-all', [LowonganController::class,'getAllLowongan']);
 Route::get('/lowongan/{id}/detail', [LowonganController::class,'show']);
+//show mitra di dashboard
+Route::get('/mitra-all', [PerusahaanController::class, 'getMitra']);
+Route::get('/mitra/{id}/detail', [PerusahaanController::class,'showMitra']);
+
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::apiResource('divisi', DivisiController::class);
@@ -88,6 +92,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/perusahaan/edit', [PerusahaanController::class, 'edit']);
         //Rekap Perusahaan
         Route::get('/perusahaan/rekap', [PerusahaanController::class, 'getRekap']);
+        Route::get('/absensi/rekap/{cabangID?}', [PerusahaanController::class, 'getRekapAbsensi']);
     });
 
     //role admin dan perusahaan

@@ -3,28 +3,32 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\PerusahaanDetailResource;
 use App\Services\FotoService;
+use App\Interfaces\UserInterface;
+use Illuminate\Support\Facades\DB;
+use App\Interfaces\MagangInterface;
 use Illuminate\Support\Facades\Log;
+use App\Http\Resources\MitraResource;
 use App\Interfaces\PerusahaanInterface;
 use Illuminate\Database\QueryException;
 use App\Http\Resources\PerusahaanResource;
-use App\Interfaces\UserInterface;
+use App\Http\Resources\MitraDetailResource;
 use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\DB;
-
+use App\Http\Resources\PerusahaanDetailResource;
 
 class PerusahaanService
 {
     private PerusahaanInterface $PerusahaanInterface;
     private FotoService $foto;
     private UserInterface $userInterface;
+    private MagangInterface $magangInterface;
 
-    public function __construct(PerusahaanInterface $PerusahaanInterface, FotoService $foto, UserInterface $userInterface)
+    public function __construct(PerusahaanInterface $PerusahaanInterface, FotoService $foto, UserInterface $userInterface, MagangInterface $magangInterface)
     {
         $this->PerusahaanInterface = $PerusahaanInterface;
         $this->foto = $foto;
         $this->userInterface = $userInterface;
+        $this->magangInterface = $magangInterface;
     }
 
     public function getPerusahaan()
@@ -33,6 +37,27 @@ class PerusahaanService
         
         return Api::response(
             PerusahaanResource::collection($data),
+            'Berhasil mengambil data perusahaan',
+        );
+    }
+
+    public function getMitra()
+    {
+        $data = $this->PerusahaanInterface->getAll();
+
+        return Api::response(
+            MitraResource::collection($data),
+            'Berhasil mengambil data perusahaan',
+        );
+    }
+
+    public function showMitra($id_mitra)
+    {
+        $total_peserta = $this->magangInterface->countPesertaByPerusahaan($id_mitra);
+        $data = $this->PerusahaanInterface->find($id_mitra);    
+        $data['total_peserta'] = $total_peserta;
+        return Api::response(
+            MitraDetailResource::make($data),
             'Berhasil mengambil data perusahaan',
         );
     }

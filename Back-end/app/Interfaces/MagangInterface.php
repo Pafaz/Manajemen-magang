@@ -17,4 +17,5 @@ interface MagangInterface extends CreateInterface, DeleteInterface, FindInterfac
     public function countPeserta($id);
     public function countPesertaPerBulanDanTahun($id);
     public function getMagangPerDivisi($id_cabang);
+    public function countPesertaByPerusahaan($id);
 }

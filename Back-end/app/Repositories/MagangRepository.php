@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use Carbon\Carbon;
 use App\Models\Magang;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
@@ -15,31 +16,49 @@ class MagangRepository implements MagangInterface
             ->where('status', 'menunggu')
             ->whereHas('lowongan', function ($query) use ($id) {
                 $query->where('id_cabang', $id);
-            })->get();
+            })
+            ->get();
     }
 
-    public function countPeserta($id)
+    public function getPesertaByCabang($id_cabang)
     {
         return Magang::with('peserta', 'lowongan')
-            ->whereHas('lowongan', function ($query) use ($id) {
-                $query->where('id_cabang', $id);
-            })->count();
+            ->whereHas('lowongan', function ($query) use ($id_cabang) {
+                $query->where('id_cabang', $id_cabang);
+            })
+            ->where('status', 'diterima')
+            ->WhereDate('selesai', '>=', Carbon::today())
+            ->get();
     }
 
-    public function countPesertaByPerusahaan($id)
+    public function countPesertaByPerusahaan($id_perusahaan)
     {
         return Magang::with('peserta', 'lowongan')
-            ->whereHas('lowongan', function ($query) use ($id) {
-                $query->where('id_perusahaan', $id);
-        })->count();
+            ->whereHas('lowongan', function ($query) use ($id_perusahaan) {
+                $query->where('id_perusahaan', $id_perusahaan);
+            })
+            ->where('status', 'diterima')
+            ->WhereDate('selesai', '>=', Carbon::today())
+            ->count();
     }
 
-    public function countPesertaAktif($id)
+    public function countPesertaMenungguByPerusahaan($id_perusahaan)
     {
         return Magang::with('peserta', 'lowongan')
-            ->whereHas('lowongan', function ($query) use ($id) {
-                $query->where('id_cabang', $id);
-            })->count();
+            ->whereHas('lowongan', function ($query) use ($id_perusahaan) {
+                $query->where('id_perusahaan', $id_perusahaan);
+            })
+            ->where('status', 'menunggu')
+            ->count();
+    }
+
+    public function countAlumniByPerusahaan($id_perusahaan)
+    {
+        return Magang::whereHas('lowongan', function ($query) use ($id_perusahaan) {
+                $query->where('id_perusahaan', $id_perusahaan);
+            })
+            ->whereDate('selesai', '<', Carbon::today())
+            ->count();
     }
 
     public function countPesertaPerBulanDanTahun($id)

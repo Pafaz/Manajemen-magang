@@ -11,43 +11,46 @@ use App\Interfaces\JurnalInterface;
 use App\Interfaces\MagangInterface;
 use App\Interfaces\MentorInterface;
 use App\Interfaces\AbsensiInterface;
+use App\Interfaces\PesertaInterface;
 use App\Interfaces\RekapCabangInterface;
+use App\Models\RekapCabang;
 
 class RekapPerusahaanService
 {
     private CabangInterface $cabangInterface;
-    private MagangInterface $magangInterface;
     private JurnalInterface $jurnalInterface;
-    private AbsensiInterface $absensiInterface;
+    private PesertaInterface $pesertaInterface;
+    private RekapCabangInterface $rekapCabangInterface;
+    private MagangInterface $magangInterface;
 
-    public function __construct(MagangInterface $magangInterface, CabangInterface $cabangInterface, JurnalInterface $jurnalInterface, AbsensiInterface $absensiInterface)   
+    public function __construct(CabangInterface $cabangInterface, JurnalInterface $jurnalInterface, PesertaInterface $pesertaInterface, RekapCabangInterface $rekapCabangInterface, MagangInterface $magangInterface)   
     {
-        $this->magangInterface = $magangInterface;
         $this->cabangInterface = $cabangInterface;
         $this->jurnalInterface = $jurnalInterface;
-        $this->absensiInterface = $absensiInterface;
+        $this->pesertaInterface = $pesertaInterface;
+        $this->rekapCabangInterface = $rekapCabangInterface;
+        $this->magangInterface = $magangInterface;
     }
 
-    public function simpanRekap($id = null)
+    public function simpanRekap()
     {
-        $id ? $id : $id = auth('sanctum')->user()->id_cabang_aktif; 
+        $id = auth('sanctum')->user()->perusahaan->id; 
 
-        $total_peserta = $this->magangInterface->countPeserta($id);
+        $peserta_aktif = $this->magangInterface->countPesertaByPerusahaan($id);
+        $peserta_menunggu = $this->magangInterface->countPesertaMenungguByPerusahaan($id);
+        $peserta_alumni = $this->magangInterface->countAlumniByPerusahaan($id);
         $total_cabang = $this->cabangInterface->getCabangByPerusahaanId($id)->count();
         $total_jurnal = $this->jurnalInterface->countByPerusahaan($id);
-        $hadir_per_cabang = $this->absensiInterface->countAbsensiByCabang();
 
         $rekap = [
-            'total_peserta' => $total_peserta,
             'total_cabang' => $total_cabang,
             'total_jurnal' => $total_jurnal,
-            'hadir_per_cabang' => $hadir_per_cabang->map(function ($item) {
-                return [
-                    'id_cabang' => $item->id_cabang,
-                    'nama_cabang' => $item->cabang->nama ?? '-',
-                    'total_hadir' => $item->total,
-                ];
-            })
+            'peserta' => [
+                'aktif' => $peserta_aktif,
+                'menunggu' => $peserta_menunggu,
+                'alumni' => $peserta_alumni,
+                'total' => $peserta_aktif + $peserta_menunggu + $peserta_alumni
+            ]
         ];
 
         return Api::response(
@@ -72,6 +75,43 @@ class RekapPerusahaanService
         return Api::response(
             $rekapCabang,
             'Rekap Cabang berhasil ditampilkan',
+        );
+    }
+
+    public function getRekapAbsensi($id_cabang)
+    {
+        $rekapCabang = $this->rekapCabangInterface->find($id_cabang);
+
+        $absensi = json_decode($rekapCabang['absensi_12_bulan']);
+
+        return Api::response(
+            $absensi,
+            'Rekap Peserta berhasil ditampilkan',
+        );
+    }
+
+    public function getPesertaCabang($id_cabang)
+    {
+        $rekapCabang = $this->rekapCabangInterface->find($id_cabang);
+
+        $peserta = json_decode($rekapCabang['peserta_per_bulan_tahun']);
+
+        return Api::response(
+            $peserta,
+            'Rekap Peserta berhasil ditampilkan',
+        );
+    }
+
+    public function getJurnalCabang($id_cabang)
+    {
+        // dd($id_cabang);
+        $rekapCabang = $this->rekapCabangInterface->find($id_cabang);
+
+        $jurnal = json_decode($rekapCabang['rekap_jurnal_peserta']);
+
+        return Api::response(
+            $jurnal,
+            'Rekap Jurnal berhasil ditampilkan',
         );
     }
 }

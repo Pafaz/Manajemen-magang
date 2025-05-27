@@ -82,6 +82,16 @@ class PerusahaanController extends Controller
         return $this->rekapPerusahaanService->getRekapAbsensi($id_cabang);
     }
 
+    public function getRekapPeserta($id_cabang)
+    {
+        return $this->rekapPerusahaanService->getPesertaCabang($id_cabang);
+    }
+
+    public function getRekapJurnal($id_cabang)
+    {
+        return $this->rekapPerusahaanService->getJurnalCabang($id_cabang);
+    }
+
     public function getMitra()
     {
         return $this->perusahaanService->getMitra();

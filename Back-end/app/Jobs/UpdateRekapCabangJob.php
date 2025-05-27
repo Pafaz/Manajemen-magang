@@ -15,13 +15,6 @@ class UpdateRekapCabangJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    // public int $idCabang;
-
-    // public function __construct(int $idCabang)
-    // {
-    //     $this->idCabang = $idCabang;
-    // }
-
     public function handle(RekapCabangService $service): void
     {
         $cabangIds = Cabang::pluck("id");

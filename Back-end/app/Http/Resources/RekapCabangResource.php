@@ -20,8 +20,6 @@ class RekapCabangResource extends JsonResource
             'total_admin' => $this->total_admin,
             'total_mentor' => $this->total_mentor,
             'total_divisi' => $this->total_divisi,
-            'peserta_per_bulan_tahun' => json_decode($this->peserta_per_bulan_tahun),
-            'absensi_12_bulan' => json_decode($this->absensi_12_bulan),
             'peserta_per_divisi' => $this->peserta_per_divisi,
             'mentor_per_divisi' => $this->mentor_per_divisi,
         ];

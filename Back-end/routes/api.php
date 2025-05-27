@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FotoController;
 use App\Http\Controllers\IzinController;
 use App\Http\Controllers\PiketController;
 use App\Http\Controllers\SuratController;
@@ -26,7 +25,6 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\JadwalPresentasiController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
-use App\Models\Cabang;
 
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/register/{role}', [RegisterController::class, 'register']);
@@ -93,6 +91,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         //Rekap Perusahaan
         Route::get('/perusahaan/rekap', [PerusahaanController::class, 'getRekap']);
         Route::get('/absensi/rekap/{cabangID?}', [PerusahaanController::class, 'getRekapAbsensi']);
+        Route::get('/peserta/rekap/{cabangID?}', [PerusahaanController::class, 'getRekapPeserta']);
+        Route::get('/jurnal/rekap/{cabangID?}', [PerusahaanController::class, 'getRekapJurnal']);
     });
 
     //role admin dan perusahaan

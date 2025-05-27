@@ -4,9 +4,10 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use Illuminate\Support\Facades\DB;
+use App\Interfaces\CabangInterface;
 use App\Interfaces\LowonganInterface;
 use App\Http\Resources\LowonganResource;
-use App\Interfaces\CabangInterface;
+use App\Http\Resources\LowonganDetailResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class LowonganService
@@ -59,7 +60,7 @@ class LowonganService
         $data->totalPeserta = $totalPeserta;
 
         return Api::response(
-            LowonganResource::collection([$data]),
+            LowonganDetailResource::collection([$data]),
             'Lowongan Berhasil ditampilkan'
         );
     }

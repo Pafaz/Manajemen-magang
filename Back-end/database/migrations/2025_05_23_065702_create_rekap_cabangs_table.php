@@ -22,6 +22,7 @@ return new class extends Migration
             $table->json('peserta_per_divisi');
             $table->json('mentor_per_divisi');
             $table->json('absensi_12_bulan');
+            $table->json('rekap_jurnal_peserta');
             $table->timestamps();
 
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');

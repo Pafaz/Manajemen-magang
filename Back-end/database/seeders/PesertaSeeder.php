@@ -1,14 +1,15 @@
 <?php
 namespace Database\Seeders;
 
-use App\Models\Lowongan;
-use App\Models\Peserta;
-use App\Models\User;
 use App\Models\Foto;
+use App\Models\User;
 use App\Models\Magang;
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use App\Models\Peserta;
+use App\Models\Lowongan;
 use Faker\Factory as Faker;
+use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 
 class PesertaSeeder extends Seeder
@@ -42,12 +43,15 @@ class PesertaSeeder extends Seeder
                     'alamat' => $faker->address,
                 ]);
 
+                $mulai = Carbon::now()->addDays(rand(1, 30)); // tanggal mulai 1–30 hari ke depan
+                $selesai = (clone $mulai)->addMonths(rand(3, 6));
+
                 $magang = Magang::create([
                     'id_peserta' => $peserta->id,
                     'id_lowongan' => $lowongan->id,
                     'status' => 'menunggu',
-                    'mulai' => $faker->date(),
-                    'selesai' => $faker->date(),
+                    'mulai' => $mulai,
+                    'selesai' => $selesai,
                 ]);
 
                 $files = [

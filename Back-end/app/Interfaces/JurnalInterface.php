@@ -12,4 +12,5 @@ interface JurnalInterface extends GetAllInterface, CreateInterface, DeleteInterf
 {
     public function findByPesertaAndTanggal($idPeserta, $tanggal);
     public function countByPerusahaan($id_perusahaan);
+    public function getRekapJurnalByPeserta(array $idPeserta);
 }

@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class PesertaDivisiRouteResource extends JsonResource
+class RouteDetailPesertaResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,9 +14,13 @@ class PesertaDivisiRouteResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // dd($this);
         return [
+            'nama' => $this->user->nama,
+            'divisi' => $this->magang->divisi->nama,
             'route' => $this->route,
-            'kategori' => CategoryResource::collection($this->magang->divisi->kategori),
+            'revisi' => $this->revisi,
+            'mentor' => MentorResource::make($this->magang->mentor)
         ];
     }
 }

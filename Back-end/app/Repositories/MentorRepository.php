@@ -16,8 +16,11 @@ class MentorRepository implements MentorInterface
 
     public function findByIdCabang($id_mentor, $id_cabang): ?Mentor
     {
-        return Mentor::findOrFail( $id_mentor)->where('id_cabang', $id_cabang)->first();
+        return Mentor::where('id', $id_mentor)  // Pertama pilih mentor berdasarkan ID
+            ->where('id_cabang', $id_cabang)    // Filter berdasarkan id_cabang
+            ->firstOrFail();  // Ambil hasil pertama yang ditemukan, atau gagal jika tidak ada
     }
+
 
     public function find($id): ?Mentor
     {

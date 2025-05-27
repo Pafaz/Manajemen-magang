@@ -38,7 +38,7 @@ class MagangRepository implements MagangInterface
 
     public function findByPesertaAndCabang($id_peserta, $id_cabang)
     {
-        return Magang::where('id_peserta', $id_peserta)
+        return Magang::where('id_peserta', operator: $id_peserta)
                 ->whereHas('lowongan', function ($query) use ($id_cabang) {
                 $query->where('id_cabang', $id_cabang);
             })

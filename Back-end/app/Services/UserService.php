@@ -56,9 +56,7 @@ class UserService
     {
         $user = $this->UserInterface->find($data['email']);
 
-        // dd($data);
-
-        if (!$user || !password_verify($data['password'], $user->password)) {
+        if (!Hash::check($data['password'], $user->password)) {
             return Api::response(
                 null,
                 'Password Salah',

@@ -16,6 +16,7 @@ use App\Http\Resources\PesertaDivisiRouteResource;
 use App\Http\Resources\PesertaJurnalResource;
 use App\Http\Resources\PesertaKehadiranResource;
 use App\Http\Resources\ProgressPesertaResource;
+use App\Http\Resources\RouteDetailPesertaResource;
 use App\Interfaces\RouteInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -167,7 +168,7 @@ class PesertaService
         $data = $this->pesertaInterface->getDetailRoute($idRoute, $cabang);
         // dd($data);
         return Api::response(
-            $data,
+            RouteDetailPesertaResource::make($data),
             'Peserta Fetched Successfully',
             Response::HTTP_OK
         );

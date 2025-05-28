@@ -247,7 +247,7 @@ class MagangService
     public function setMentor($id_mentor, $pesertas)
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
-
+        
         $mentor = $this->mentorInterface->findByIdCabang($id_mentor, $id_cabang);
         if (!$mentor) {
             return Api::response(null, 'Mentor tidak ditemukan di cabang ini', Response::HTTP_NOT_FOUND);

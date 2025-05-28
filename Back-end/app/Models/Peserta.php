@@ -76,7 +76,7 @@ class Peserta extends Model
 
     public function route()
     {
-        return $this->hasOne(Route::class, 'id_peserta');
+        return $this->hasMany(Route::class, 'id_peserta');
     }
 
     public function revisi()

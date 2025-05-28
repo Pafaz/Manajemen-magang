@@ -30,13 +30,13 @@ class PesertaRepository implements PesertaInterface
 
     public function getDetailRoute($idRoute, $idCabang)
     {
-        return Peserta::with('revisi.progress')
+        return Peserta::with('revisi.progress', 'route', 'magang.mentor', 'user', 'magang.divisi')
         ->whereHas('user', function ($query) use ($idCabang) {
             $query->where('id_cabang_aktif', $idCabang);
         })
         ->whereHas('route', function ($query) use ($idRoute) {
             $query->where('id', $idRoute);
-        })->get();
+        })->first();
     }
     public function getByCabang($idCabang): Collection
     {

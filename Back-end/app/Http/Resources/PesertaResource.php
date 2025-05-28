@@ -14,7 +14,7 @@ class PesertaResource extends JsonResource
      * @return array<string, mixed>
      */
     public function toArray(Request $request): array
-    {   
+    {
         $response = [
             'id' => $this->id,
             'nama' => $this->user->nama,
@@ -34,7 +34,7 @@ class PesertaResource extends JsonResource
             'cabang' => $this->magang?->lowongan->cabang->nama,
             'foto' => FotoResource::collection($this->foto ?? collect()),
         ];
-         if ($this->magang) {
+        if ($this->magang) {
             $response['berkas'] = FotoResource::collection($this->magang->foto);
         }
 

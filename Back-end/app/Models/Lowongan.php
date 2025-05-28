@@ -21,7 +21,6 @@ class Lowongan extends Model
         'tanggal_selesai',
         'max_kuota',
         'requirement',
-        'durasi',
         'jobdesc',
         'status',
         'kategori'

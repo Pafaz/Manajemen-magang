@@ -23,7 +23,6 @@ class LowonganDetailResource extends JsonResource
             'requirement' => $this->requirement,
             'jobdesc' => $this->jobdesc,
             'status' => $this->status,
-            'durasi' => $this->durasi,
             'total_pendaftar' => $this->totalPeserta,
             'perusahaan' => PerusahaanDetailResource::make($this->perusahaan),
             'cabang' => CabangResource::make($this->cabang),

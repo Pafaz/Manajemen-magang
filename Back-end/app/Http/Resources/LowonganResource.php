@@ -22,7 +22,6 @@ class LowonganResource extends JsonResource
             'max_kuota' => $this->max_kuota,
             'requirement' => $this->requirement,
             'jobdesc' => $this->jobdesc,
-            'durasi' => $this->durasi,
             'status' => $this->status,
             'total_pendaftar' => $this->totalPeserta,
             'perusahaan' => PerusahaanResource::make($this->perusahaan),

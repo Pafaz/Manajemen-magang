@@ -74,7 +74,7 @@ class PerusahaanController extends Controller
 
     public function getRekap()
     {
-        return $this->rekapPerusahaanService->simpanRekap();
+        return $this->rekapPerusahaanService->getRekap();
     }
 
     public function getRekapAbsensi($id_cabang)

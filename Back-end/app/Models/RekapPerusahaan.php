@@ -12,4 +12,8 @@ class RekapPerusahaan extends Model
         'total_jurnal',
         'peserta'
     ];
+
+    protected $casts = [
+        'peserta' => 'array',
+    ];
 }

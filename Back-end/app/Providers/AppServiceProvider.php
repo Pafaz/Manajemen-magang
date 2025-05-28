@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Helpers\Api;
 use App\Interfaces\FotoInterface;
 use App\Interfaces\IzinInterface;
+use App\Interfaces\RekapPerusahaanInterface;
 use App\Interfaces\RfidInterface;
 use App\Interfaces\UserInterface;
 use App\Interfaces\AdminInterface;
@@ -24,6 +25,7 @@ use App\Interfaces\PesertaInterface;
 use App\Interfaces\SekolahInterface;
 use App\Repositories\FotoRepository;
 use App\Repositories\IzinRepository;
+use App\Repositories\RekapPerusahaanRepository;
 use App\Repositories\RfidRepository;
 use App\Repositories\UserRepository;
 use App\Interfaces\KategoriInterface;
@@ -103,6 +105,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(RekapKehadiranInterface::class, RekapKehadiranRepository::class);
         $this->app->bind(RouteInterface::class, RouteRepository::class);
         $this->app->bind(RekapCabangInterface::class, RekapCabangRepository::class);
+        $this->app->bind(RekapPerusahaanInterface::class, RekapPerusahaanRepository::class);
     }
 
     /**

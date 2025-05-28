@@ -2,40 +2,35 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Models\Jurnal;
-use App\Models\Absensi;
-use App\Interfaces\AdminInterface;
 use App\Interfaces\CabangInterface;
-use App\Interfaces\DivisiInterface;
 use App\Interfaces\JurnalInterface;
 use App\Interfaces\MagangInterface;
-use App\Interfaces\MentorInterface;
-use App\Interfaces\AbsensiInterface;
-use App\Interfaces\PesertaInterface;
 use App\Interfaces\RekapCabangInterface;
-use App\Models\RekapCabang;
+use App\Interfaces\RekapPerusahaanInterface;
+
 
 class RekapPerusahaanService
 {
-    private CabangInterface $cabangInterface;
     private JurnalInterface $jurnalInterface;
-    private PesertaInterface $pesertaInterface;
-    private RekapCabangInterface $rekapCabangInterface;
     private MagangInterface $magangInterface;
+    private CabangInterface $cabangInterface;
+    private RekapPerusahaanInterface $rekapPerusahaanInterface;
+    private RekapCabangInterface $rekapCabangInterface;
 
-    public function __construct(CabangInterface $cabangInterface, JurnalInterface $jurnalInterface, PesertaInterface $pesertaInterface, RekapCabangInterface $rekapCabangInterface, MagangInterface $magangInterface)   
+    public function __construct(JurnalInterface $jurnalInterface, MagangInterface $magangInterface, RekapPerusahaanInterface $rekapPerusahaanInterface, CabangInterface $cabangInterface, RekapCabangInterface $rekapCabangInterface)   
     {
-        $this->cabangInterface = $cabangInterface;
         $this->jurnalInterface = $jurnalInterface;
-        $this->pesertaInterface = $pesertaInterface;
-        $this->rekapCabangInterface = $rekapCabangInterface;
         $this->magangInterface = $magangInterface;
+        $this->rekapPerusahaanInterface = $rekapPerusahaanInterface;
+        $this->rekapCabangInterface = $rekapCabangInterface;
+        $this->cabangInterface = $cabangInterface;
     }
 
     public function simpanRekap()
     {
         $id = auth('sanctum')->user()->perusahaan->id; 
 
+        // dd($id);
         $peserta_aktif = $this->magangInterface->countPesertaByPerusahaan($id);
         $peserta_menunggu = $this->magangInterface->countPesertaMenungguByPerusahaan($id);
         $peserta_alumni = $this->magangInterface->countAlumniByPerusahaan($id);
@@ -53,28 +48,25 @@ class RekapPerusahaanService
             ]
         ];
 
-        return Api::response(
-            $rekap,
-            'Rekap Cabang berhasil disimpan',
-        );
+        $this->rekapPerusahaanInterface->update($id, $rekap);
     }
 
     public function getRekap($id = null)
     {
-        $id ? $id : $id = auth('sanctum')->user()->id_cabang_aktif; 
+        $id = auth('sanctum')->user()->perusahaan->id; 
 
-        $rekapCabang = $this->rekapCabangInterface->find($id);
+        $rekapPerusahaan = $this->rekapPerusahaanInterface->find($id);
 
-        if (!$rekapCabang) {
+        if (!$rekapPerusahaan) {
             return Api::response(
                 'null',
-                'Rekap Cabang tidak ditemukan',
+                'Rekap Perusahaan tidak ditemukan',
             );
         }
 
         return Api::response(
-            $rekapCabang,
-            'Rekap Cabang berhasil ditampilkan',
+            $rekapPerusahaan,
+            'Rekap Perusahaan berhasil ditampilkan',
         );
     }
 

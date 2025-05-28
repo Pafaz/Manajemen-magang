@@ -97,7 +97,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //role admin dan perusahaan
     Route::group(['middleware' => ['checkRoles:admin,perusahaan']], function () {
-        //profile cabang       
+        //profile cabang 
         Route::get('/cabang-detail', [CabangController::class, 'show']);
         Route::put('/cabang-update', [CabangController::class, 'update']);
         Route::get('/cabang/rekap/{cabangID?}', [CabangController::class, 'getRekapCabang']);

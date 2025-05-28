@@ -21,7 +21,7 @@ class PesertaSeeder extends Seeder
         $lowongans = Lowongan::all();
 
         foreach ($lowongans as $lowongan) {
-            for ($i = 0; $i < 50; $i++) {
+            for ($i = 0; $i < 10; $i++) {
                 $user = User::create([
                     'id' => Str::uuid(),
                     'nama' => $faker->name,

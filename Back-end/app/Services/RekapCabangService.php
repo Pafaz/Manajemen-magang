@@ -13,32 +13,32 @@ use App\Interfaces\MentorInterface;
 use App\Interfaces\AbsensiInterface;
 use App\Interfaces\RekapCabangInterface;
 use App\Http\Resources\RekapCabangResource;
+use App\Interfaces\RekapKehadiranInterface;
 
 class RekapCabangService
 {
+    private RekapKehadiranInterface $rekapKehadiranInterface;
     private MagangInterface $magangInterface;
     private AdminInterface $adminInterface;
     private MentorInterface $mentorInterface;
     private DivisiInterface $divisiInterface;
     private RekapCabangInterface $rekapCabangInterface;
-    private AbsensiInterface $absensiInterface;
     private JurnalInterface $jurnalInterface;
 
-    public function __construct(MagangInterface $magangInterface, AdminInterface $adminInterface, MentorInterface $mentorInterface, DivisiInterface $divisiInterface, RekapCabangInterface $rekapCabangInterface, AbsensiInterface $absensiInterface, JurnalInterface $jurnalInterface)
+    public function __construct(MagangInterface $magangInterface, AdminInterface $adminInterface, MentorInterface $mentorInterface, DivisiInterface $divisiInterface, RekapCabangInterface $rekapCabangInterface, AbsensiInterface $absensiInterface, JurnalInterface $jurnalInterface, RekapKehadiranInterface $rekapKehadiranInterface)
     {
         $this->magangInterface = $magangInterface;
         $this->adminInterface = $adminInterface;
         $this->mentorInterface = $mentorInterface;
         $this->divisiInterface = $divisiInterface;
         $this->rekapCabangInterface = $rekapCabangInterface;
-        $this->absensiInterface = $absensiInterface;
+        $this->rekapKehadiranInterface = $rekapKehadiranInterface;
         $this->jurnalInterface = $jurnalInterface;
     }
 
     public function simpanRekap($id = null)
     {
         $id ? $id : $id = auth('sanctum')->user()->id_cabang_aktif; 
-        $tahun = now()->year;
         $total_peserta = $this->magangInterface->getPesertaByCabang($id)->count();
         $total_admin = $this->adminInterface->getByCabang($id)->count();
         $total_mentor = $this->mentorInterface->getAll($id)->count();
@@ -49,17 +49,25 @@ class RekapCabangService
         $pesertaPerBulanDanTahun = $this->magangInterface->countPesertaPerBulanDanTahun($id);
         $rekapJurnalPeserta = $this->getRekapJurnalMingguan($id);
         
-        $rekap_absensi_bulanan = [];
+        $rekapPerBulan = $this->rekapKehadiranInterface->getByCabangPerBulan($id);
+
+        $rekapKehadiranGabungan = [];
+        $tahun = now()->year;
+
         for ($bulan = 1; $bulan <= 12; $bulan++) {
-            $rekap_absensi_bulanan[] = [
-                'bulan' => $bulan,
-                'tahun' => $tahun,
-                'hadir' => $this->absensiInterface->countAbsensiByCabang($id, $bulan, $tahun, 'hadir'),
-                'izin' => $this->absensiInterface->countAbsensiByCabang($id, $bulan, $tahun, 'izin'),
-                'sakit' => $this->absensiInterface->countAbsensiByCabang($id, $bulan, $tahun, 'sakit'),
-                'alfa' => $this->absensiInterface->countAbsensiByCabang($id, $bulan, $tahun, 'alfa'),
+            $formatBulan = sprintf('%d-%02d', $tahun, $bulan);
+
+            $dataBulanIni = $rekapPerBulan->firstWhere('bulan', $formatBulan);
+
+            $rekapKehadiranGabungan[] = [
+                'bulan' => Carbon::create($tahun, $bulan)->translatedFormat('F'),
+                'hadir' => $dataBulanIni->total_hadir ?? 0,
+                'izin' => $dataBulanIni->total_izin ?? 0,
+                'alpha' => $dataBulanIni->total_alpha ?? 0,
+                'terlambat' => $dataBulanIni->total_terlambat ?? 0,
             ];
         }
+
 
         $rekap = [
             'total_peserta' => $total_peserta,
@@ -67,7 +75,7 @@ class RekapCabangService
             'total_mentor' => $total_mentor,
             'total_divisi' => $total_divisi,
             'peserta_per_bulan_tahun' => $pesertaPerBulanDanTahun,
-            'absensi_12_bulan' => $rekap_absensi_bulanan,
+            'absensi_12_bulan' => $rekapKehadiranGabungan,
             'rekap_jurnal_peserta' => $rekapJurnalPeserta,
             'peserta_per_divisi' => $pesertaPerDivisi->map(function ($item) {
                 return [
@@ -85,7 +93,8 @@ class RekapCabangService
             })
         ];
 
-        $this->rekapCabangInterface->update($id, $rekap);
+        return $rekap;
+        // $this->rekapCabangInterface->update($id, $rekap);
     }
 
     public function getRekap($id = null)

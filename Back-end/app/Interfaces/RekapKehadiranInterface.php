@@ -11,4 +11,6 @@ interface RekapKehadiranInterface extends CreateInterface, DeleteInterface, Find
 {
     public function findOrCreateByPeserta($peserta_id);
     public function get();
+    public function getByCabang($id_cabang);
+    public function getByCabangPerBulan($id_cabang);
 }

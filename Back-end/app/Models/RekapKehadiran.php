@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class RekapKehadiran extends Model
 {
     protected $table = 'rekap_kehadiran';
-
-    public $timestamps = false;
+    public $timestamps = true;
     protected $guarded = ['id'];
     protected $fillable = [
         'id_peserta',
@@ -18,5 +17,9 @@ class RekapKehadiran extends Model
         'total_alpha', 
     ];
 
+    public function peserta()
+    {
+        return $this->belongsTo(Peserta::class, 'id_peserta', 'id');
+    }
 }
 

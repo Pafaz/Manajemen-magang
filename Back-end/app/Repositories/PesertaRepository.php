@@ -45,7 +45,7 @@ class PesertaRepository implements PesertaInterface
                 'magang.lowongan.divisi'
             ])
             ->whereHas('user', function ($query) use ($idCabang) {
-                $query->where('id_cabang_aktif', $idCabang)
+                $query->where('id_cabang_aktif', $idCabang)->where('status','diterima')
                     ->whereNotNull('id_cabang_aktif');
             })
             ->get();
@@ -58,7 +58,7 @@ class PesertaRepository implements PesertaInterface
                 'magang.lowongan.divisi', // Pastikan relasi 'divisi' ada di model Lowongan
             ])
             ->whereHas('magang.lowongan.divisi', function ($query) use ($idDivisi) {
-                $query->where('id_divisi', $idDivisi); // Memfilter berdasarkan id_divisi yang ada di divisi
+                $query->where('id_divisi', $idDivisi)->where('status', 'diterima'); // Memfilter berdasarkan id_divisi yang ada di divisi
             })
             ->get();
     }

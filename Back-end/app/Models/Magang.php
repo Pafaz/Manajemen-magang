@@ -44,4 +44,9 @@ class Magang extends Model
     {
         return $this->hasMany(Foto::class, 'id_referensi')->where('context', 'magang');
     }
+
+    public function rekapKehadiran()
+    {
+        return $this->hasOne(RekapKehadiran::class, 'id_peserta');
+    }
 }

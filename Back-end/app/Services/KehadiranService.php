@@ -79,6 +79,7 @@ class KehadiranService
             $kehadiran = null;
 
             if (!$kehadiranHariIni) {
+                // dd($jamSekarang, $jamKantor->awal_masuk, $jamKantor->awal_istirahat);
                 // === ABSEN MASUK ===
                 if ($jamSekarang >= $jamKantor->awal_masuk && $jamSekarang <= $jamKantor->awal_istirahat) {
                     // Hitung apakah terlambat

@@ -83,4 +83,10 @@ class Peserta extends Model
     {
         return $this->hasMany(Revisi::class, 'id_peserta');
     }
+
+    public function magangAktif()
+    {
+        return $this->hasOne(Magang::class, 'id_peserta')->where('status', 'diterima');
+    }
+
 }

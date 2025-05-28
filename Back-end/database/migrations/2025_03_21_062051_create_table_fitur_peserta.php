@@ -60,6 +60,7 @@ return new class extends Migration
             $table->tinyInteger('total_hadir')->default(0);
             $table->tinyInteger('total_izin')->default(0);
             $table->tinyInteger('total_alpha')->default(0);
+            $table->timestamps();
 
             $table->unique('id_peserta');
         });
@@ -69,9 +70,8 @@ return new class extends Migration
             $table->uuid('id_perusahaan');
 
             $table->tinyInteger('total_cabang')->default(0);
-            $table->tinyInteger('total_peserta')->default(0);
             $table->tinyInteger('total_jurnal')->default(0);
-            $table->tinyInteger('total_pendaftar')->default(0);
+            $table->json('peserta');
 
             $table->timestamps();
         });

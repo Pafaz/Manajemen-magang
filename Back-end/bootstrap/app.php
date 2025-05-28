@@ -37,9 +37,14 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
             'checkRoles' => \App\Http\Middleware\CheckRole::class,
+            'checkViewRoles' => \App\Http\Middleware\CheckViewOnlyRole::class,
+
         ]);
     })
     ->withSchedule(function (Schedule $schedule) {
+        // $schedule->job(new UpdateRekapAlfaJob)->dailyAt('00:00');
+        // $schedule->job(new UpdateRekapHadirJob)->dailyAt('09:00');
+        // $schedule->job(new UpdateRekapJurnalJob)->dailyAt('00:00');
         $schedule->job(new UpdateRekapAlfaJob)->everyMinute();
         $schedule->job(new UpdateRekapHadirJob)->everyMinute();
         $schedule->job(new UpdateRekapJurnalJob)->everyMinute();

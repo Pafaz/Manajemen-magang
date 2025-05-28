@@ -63,7 +63,7 @@ class PesertaSeeder extends Seeder
                 foreach ($files as $key => $type) {
                     $filePath = public_path("seeders/images/{$key}.jpg");
 
-                    if ($key === 'profile') {
+                    if ($key === 'profile' || $key === 'cv') {
                         $filePath = public_path("seeders/images/{$key}.jpg");
                     } else {
                         $filePath = public_path("seeders/images/{$key}.pdf");
@@ -71,8 +71,14 @@ class PesertaSeeder extends Seeder
 
                     if (file_exists($filePath)) {
                         Log::info("Processing file: {$key} with type: {$type} for Peserta");
+
                         try {
-                            $foto = Foto::uploadFoto($filePath, $magang->id, $type, 'magang');
+                            if ($key === 'surat_pernyataan_diri') {
+                                $foto = Foto::uploadFoto($filePath, $magang->id, $type, 'magang');
+                            } else {
+                                $foto = Foto::uploadFoto($filePath, $peserta->id, $type, 'peserta');
+                            }
+
                             Log::info("File processed successfully", ['foto' => $foto]);
                         } catch (\Exception $e) {
                             Log::error("Failed to process {$key} for Magang {$magang->id}", [
@@ -84,6 +90,7 @@ class PesertaSeeder extends Seeder
                         Log::warning("File {$key} does not exist for Magang {$magang->id}.");
                     }
                 }
+
             }
         }
     }

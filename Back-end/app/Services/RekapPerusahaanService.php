@@ -43,9 +43,11 @@ class RekapPerusahaanService
                 'aktif' => $peserta_aktif,
                 'menunggu' => $peserta_menunggu,
                 'alumni' => $peserta_alumni,
-                'total' => $peserta_aktif + $peserta_menunggu + $peserta_alumni
+                'total' => $peserta_aktif + $peserta_alumni
             ]
         ];
+
+        // dd($rekap);
 
         $this->rekapPerusahaanInterface->update($id, $rekap);
     }

@@ -74,6 +74,7 @@ class PerusahaanController extends Controller
 
     public function getRekap()
     {
+        // $id = auth()->user()->perusahaan->id;
         return $this->rekapPerusahaanService->getRekap();
     }
 

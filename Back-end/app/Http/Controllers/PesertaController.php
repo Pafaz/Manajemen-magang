@@ -23,7 +23,7 @@ class PesertaController extends Controller
         return $this->pesertaService->getPeserta();
     }
     public function isCompleteProfil(){
-        return $this->pesertaService->isCompleteProfil();
+        return $this->pesertaService->checkAllStatus();
     }
 
     public function isMagang(){

@@ -47,6 +47,14 @@ class PesertaService
 
     public function getPesertaDetail()
     {
+        
+        if (!auth('sanctum')->user()->peserta) {
+            return Api::response(
+                null,
+                'Data Peserta Tidak Ditemukan',
+                Response::HTTP_NOT_FOUND
+            );
+        }
         $id_peserta = auth('sanctum')->user()->peserta->id;
 
         $data = $this->pesertaInterface->find($id_peserta);
@@ -176,7 +184,7 @@ class PesertaService
 
     public function isCompleteProfil()
     {
-        if (!auth('sanctum')->user()->peserta) {
+        if (!auth()->user()->peserta) {
             return Api::response(
                 'false',
                 'Peserta belum melengkapi profil',
@@ -193,7 +201,7 @@ class PesertaService
 
     public function isApplyLowongan()
     {
-        $dataMagang = auth('sanctum')->user()->peserta->magang;
+        $dataMagang = auth()->user()->peserta->magang;
 
         if ($dataMagang == null) {
             return Api::response(
@@ -209,7 +217,7 @@ class PesertaService
     }
 
     public function isMagang(){
-        if (!auth('sanctum')->user()->id_cabang_aktif) {
+        if (!auth()->user()->id_cabang_aktif) {
             return Api::response(
                 'false',
                 'Peserta belum terdaftar magang',
@@ -222,7 +230,25 @@ class PesertaService
         );
     }
 
+    public function checkAllStatus()
+    {
+        $user = auth('sanctum')->user();
 
+        $peserta = $user->peserta;
+        $id_cabang_aktif = $user->id_cabang_aktif;
+
+        $isProfilLengkap = $peserta !== null;
+        $isMagang = $id_cabang_aktif !== null;
+
+        return Api::response(
+            [
+                'is_profil_lengkap' => $isProfilLengkap,
+                'is_magang' => $isMagang,
+            ],
+            'Status berhasil diambil',
+            200,
+        );
+    }
 
     public function simpanProfilPeserta(array $data, bool $isUpdate = false, $id = null)
     {

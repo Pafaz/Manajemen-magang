@@ -68,33 +68,32 @@ class RekapCabangService
             ];
         }
 
-
         $rekap = [
             'total_peserta' => $total_peserta,
             'total_admin' => $total_admin,
             'total_mentor' => $total_mentor,
             'total_divisi' => $total_divisi,
-            'peserta_per_bulan_tahun' => $pesertaPerBulanDanTahun,
-            'absensi_12_bulan' => $rekapKehadiranGabungan,
-            'rekap_jurnal_peserta' => $rekapJurnalPeserta,
-            'peserta_per_divisi' => $pesertaPerDivisi->map(function ($item) {
+            'peserta_per_bulan_tahun' => json_encode($pesertaPerBulanDanTahun),  // Pastikan dienkode JSON
+            'absensi_12_bulan' => json_encode($rekapKehadiranGabungan),  // Pastikan dienkode JSON
+            'rekap_jurnal_peserta' => json_encode($rekapJurnalPeserta),  // Pastikan dienkode JSON
+            'peserta_per_divisi' => json_encode($pesertaPerDivisi->map(function ($item) {
                 return [
                     'id_divisi' => $item->id_divisi,
                     'nama_divisi' => $item->divisi->nama ?? '-',
                     'total_peserta' => $item->total,
                 ];
-            }),
-            'mentor_per_divisi' => $mentorPerDivisi->map(function ($item) {
+            })),  // Pastikan dienkode JSON
+            'mentor_per_divisi' => json_encode($mentorPerDivisi->map(function ($item) {
                 return [
                     'id_divisi' => $item->id_divisi,
                     'nama_divisi' => $item->divisi->nama ?? '-',
                     'total_mentor' => $item->total,
                 ];
-            })
+            })),  // Pastikan dienkode JSON
         ];
 
-        return $rekap;
-        // $this->rekapCabangInterface->update($id, $rekap);
+        $this->rekapCabangInterface->update($id, $rekap);
+
     }
 
     public function getRekap($id = null)

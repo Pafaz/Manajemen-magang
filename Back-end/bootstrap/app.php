@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Jobs\UpdateRekapAlfaJob;
 use App\Jobs\UpdateRekapHadirJob;
 use App\Jobs\UpdateRekapCabangJob;
+use App\Jobs\UpdateRekapPerusahaanJob;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Foundation\Application;
 use Illuminate\Database\QueryException;
@@ -49,6 +50,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->job(new UpdateRekapHadirJob)->everyMinute();
         $schedule->job(new UpdateRekapJurnalJob)->everyMinute();
         $schedule->job(new UpdateRekapCabangJob)->everyMinute();
+        $schedule->job(new UpdateRekapPerusahaanJob)->everyMinute();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->report(function (Throwable $e) {

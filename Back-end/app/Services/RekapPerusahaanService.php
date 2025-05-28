@@ -26,9 +26,9 @@ class RekapPerusahaanService
         $this->cabangInterface = $cabangInterface;
     }
 
-    public function simpanRekap()
+    public function simpanRekap($id)
     {
-        $id = auth('sanctum')->user()->perusahaan->id; 
+        // $id = auth('sanctum')->user()->perusahaan->id; 
 
         $peserta_aktif = $this->magangInterface->countPesertaByPerusahaan($id);
         $peserta_menunggu = $this->magangInterface->countPesertaMenungguByPerusahaan($id);

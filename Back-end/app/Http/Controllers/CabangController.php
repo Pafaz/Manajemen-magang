@@ -69,6 +69,6 @@ class CabangController extends Controller
     public function getRekapCabang($cabangID = null)
     {
         // dd(vars: 'tes');
-        return $this->rekapCabangService->simpanRekap($cabangID);
+        return $this->rekapCabangService->getRekap($cabangID);
     }
 }

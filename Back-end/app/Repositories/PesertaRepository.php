@@ -57,8 +57,11 @@ class PesertaRepository implements PesertaInterface
                 'user',
                 'magang.lowongan.divisi',
             ])
-            ->whereHas('magang.lowongan.divisi', function ($query) use ($idDivisi) {
-                $query->where('id_divisi', $idDivisi)->where('status', 'diterima'); // Memfilter berdasarkan id_divisi yang ada di divisi
+            ->whereHas('magang', function ($query) use ($idDivisi) {
+                $query->where('status', 'diterima') // Memfilter berdasarkan status di tabel magang
+                    ->whereHas('lowongan.divisi', function ($query) use ($idDivisi) {
+                        $query->where('id_divisi', $idDivisi); // Memfilter berdasarkan id_divisi yang ada di divisi
+                    });
             })
             ->get();
     }

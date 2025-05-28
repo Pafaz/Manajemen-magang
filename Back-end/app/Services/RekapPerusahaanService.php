@@ -30,7 +30,6 @@ class RekapPerusahaanService
     {
         $id = auth('sanctum')->user()->perusahaan->id; 
 
-        // dd($id);
         $peserta_aktif = $this->magangInterface->countPesertaByPerusahaan($id);
         $peserta_menunggu = $this->magangInterface->countPesertaMenungguByPerusahaan($id);
         $peserta_alumni = $this->magangInterface->countAlumniByPerusahaan($id);

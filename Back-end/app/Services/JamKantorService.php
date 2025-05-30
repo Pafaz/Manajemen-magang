@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Interfaces\JamKantorInterface;
 use App\Http\Resources\JamKantorResource;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class JamKantorService
@@ -22,7 +23,11 @@ class JamKantorService
     public function getJamKantor()
     {
         $idCabang = auth('sanctum')->user()->id_cabang_aktif;
-        $data = $this->jamKantorInterface->getAll()->where('id_cabang', $idCabang);
+        $keyCache = 'jam_kantor_cabang_'. $idCabang;
+
+        $data = Cache::remember($keyCache, 3600, function () use ($idCabang) {
+            return $this->jamKantorInterface->getAll()->where('id_cabang', $idCabang);
+        });
 
         return Api::response(JamKantorResource::collection($data), 'Jam Kantor Berhasil ditampilkan');
     }

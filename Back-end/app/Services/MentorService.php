@@ -9,6 +9,7 @@ use App\Services\FotoService;
 use App\Interfaces\UserInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MentorInterface;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\MentorResource;
 use App\Http\Resources\MentorDetailResource;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,11 @@ class MentorService
     public function getAllMentor()
     {
         $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
-        $data = $this->mentorInterface->getAll($id_cabang);
+        $cacheKey = 'mentor_cabang_'. $id_cabang;
+
+        $data = Cache::remember($cacheKey, 3600, function () use ($id_cabang) {
+            return $this->mentorInterface->getAll($id_cabang);
+        });
 
         return Api::response(
             MentorResource::collection($data),

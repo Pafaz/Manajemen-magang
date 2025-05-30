@@ -6,7 +6,9 @@ use App\Helpers\Api;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\CabangInterface;
 use App\Interfaces\LowonganInterface;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\LowonganResource;
+use App\Http\Resources\LowonganPageResource;
 use App\Http\Resources\LowonganDetailResource;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,12 +28,24 @@ class LowonganService
 
     public function getAllLowongan()
     {
-        $data = $this->lowonganInterface->getAll();
+        $cachekey = 'lowongan';
+
+        $data = Cache::remember($cachekey, 3600, function () {
+            $lowongan = $this->lowonganInterface->getAll();
+
+            return $lowongan->map(function ($lowongan) {
+                $totalPeserta = $this->magangService->countPendaftar($lowongan->id);
+                $lowongan->totalPeserta = $totalPeserta;
+                return $lowongan;
+            });
+        });
+
         return Api::response(          
-            LowonganResource::collection($data),
+            LowonganPageResource::collection($data),
             'Lowongan Berhasil ditampilkan'
         );
     }
+
 
     public function getLowonganByPerusahaan()
     {
@@ -45,7 +59,20 @@ class LowonganService
 
     public function getLowonganById($id)
     {
-        $data = $this->lowonganInterface->find($id);
+        $cacheKey = 'lowongan_' . $id;
+
+        $data = Cache::remember($cacheKey, 3600, function () use ($id) {
+            $data = $this->lowonganInterface->find($id);
+
+            if (!$data) {
+                return null;
+            }
+
+            $totalPeserta = $this->magangService->countPendaftar($id);
+            $data->totalPeserta = $totalPeserta;
+
+            return $data;
+        });
 
         if (!$data) {
             return Api::response(
@@ -55,15 +82,12 @@ class LowonganService
             );
         }
 
-        $totalPeserta = $this->magangService->countPendaftar($id);
-
-        $data->totalPeserta = $totalPeserta;
-
         return Api::response(
             LowonganDetailResource::collection([$data]),
             'Lowongan Berhasil ditampilkan'
         );
     }
+
 
     public function simpanLowongan(int $id = null, array $data)
     {

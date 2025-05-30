@@ -21,7 +21,7 @@ class LowonganRepository implements LowonganInterface
 
     public function find(int $id): ?Lowongan
     {
-        return Lowongan::findOrFail($id)->first();
+        return Lowongan::findOrFail($id);
     }
 
     public function create(array $data): ?Lowongan

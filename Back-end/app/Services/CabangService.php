@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use App\Helpers\Api;
+use App\Interfaces\UserInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\CabangInterface;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\CabangResource;
-use App\Interfaces\UserInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -26,13 +27,18 @@ class CabangService
 
     public function getCabang($id = null, $id_perusahaan = null)
     {
-        // dd($id_perusahaan);
         if ($id_perusahaan == null) {
-            return Api::response("anda harus melengkapi profil",404);
+            return Api::response("anda harus melengkapi profil", 404);
         }
-        $data = $id
-                ? collect([$this->cabangInterface->find($id, $id_perusahaan)]) 
-                : $this->cabangInterface->getCabangByPerusahaanId($id_perusahaan);
+
+        $cacheKey = 'cabang_' . ($id ? $id : $id_perusahaan);
+
+        $data = Cache::remember($cacheKey, 3600, function () use ($id, $id_perusahaan) {
+            if ($id) {
+                return collect([$this->cabangInterface->find($id, $id_perusahaan)]);
+            }
+            return $this->cabangInterface->getCabangByPerusahaanId($id_perusahaan);
+        });
 
         $message = $id
             ? 'Berhasil mengambil data cabang'
@@ -44,6 +50,7 @@ class CabangService
             Response::HTTP_OK
         );
     }
+
 
     public function simpanCabang(array $data, bool $isUpdate = false, $id = null)
     {
@@ -81,20 +88,19 @@ class CabangService
             ];
 
             foreach ($files as $key => $type) {
-    if (!empty($data[$key])) {
-        Log::info("Processing file: {$key} with type: {$type}");
-        try {
-            $result = $this->foto->updateFoto($data[$key], $cabang->id, $type, 'cabang');
-            Log::info("File processed successfully", ['result' => $result]);
-        } catch (\Exception $e) {
-            Log::error("Failed to process {$key}", [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-        }
-    }
-}
-
+                if (!empty($data[$key])) {
+                    Log::info("Processing file: {$key} with type: {$type}");
+                    try {
+                        $result = $this->foto->updateFoto($data[$key], $cabang->id, $type, 'cabang');
+                        Log::info("File processed successfully", ['result' => $result]);
+                    } catch (\Exception $e) {
+                        Log::error("Failed to process {$key}", [
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString()
+                        ]);
+                    }
+                }
+            }
 
             DB::commit();
 

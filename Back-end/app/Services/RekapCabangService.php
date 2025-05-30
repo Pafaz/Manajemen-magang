@@ -14,6 +14,7 @@ use App\Interfaces\AbsensiInterface;
 use App\Interfaces\RekapCabangInterface;
 use App\Http\Resources\RekapCabangResource;
 use App\Interfaces\RekapKehadiranInterface;
+use Illuminate\Support\Facades\Cache;
 
 class RekapCabangService
 {
@@ -100,7 +101,10 @@ class RekapCabangService
     {
         $id ? $id : $id = auth('sanctum')->user()->id_cabang_aktif; 
 
-        $rekapCabang = $this->rekapCabangInterface->find($id);
+        $keyCache = 'rekap_cabang_'.$id;
+        $rekapCabang = Cache::remember($keyCache, 3600, function () use ( $id ) {
+            return $this->rekapCabangInterface->find($id);
+        });
         
         if (!$rekapCabang) {
             return Api::response(

@@ -3,22 +3,23 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\JurnalResource;
-use App\Http\Resources\PesertaByDivisiResource;
-use App\Http\Resources\PesertabyMentorResource;
 use App\Services\FotoService;
+use App\Interfaces\RouteInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
 use App\Interfaces\PesertaInterface;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Resources\JurnalResource;
 use App\Http\Resources\PesertaResource;
 use App\Http\Resources\PesertaDetailResource;
-use App\Http\Resources\PesertaDivisiRouteResource;
 use App\Http\Resources\PesertaJurnalResource;
-use App\Http\Resources\PesertaKehadiranResource;
-use App\Http\Resources\ProgressPesertaResource;
-use App\Http\Resources\RouteDetailPesertaResource;
-use App\Interfaces\RouteInterface;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\PesertaByDivisiResource;
+use App\Http\Resources\PesertabyMentorResource;
+use App\Http\Resources\ProgressPesertaResource;
+use App\Http\Resources\PesertaKehadiranResource;
+use App\Http\Resources\PesertaDivisiRouteResource;
+use App\Http\Resources\RouteDetailPesertaResource;
 
 class PesertaService
 {
@@ -35,9 +36,11 @@ class PesertaService
 
     public function getPeserta($id = null, $isUpdate = false)
     {
-        $data = $isUpdate
-            ? $this->pesertaInterface->find($id)
-            : $this->pesertaInterface->getAll();
+        $cacheKey = $isUpdate ? "peserta_". $id : "peserta_all";
+
+        $data = Cache::remember($cacheKey, 3600, function () use ($id, $isUpdate) {
+            $isUpdate ? $this->pesertaInterface->find($id) : $this->pesertaInterface->getAll();
+        });
             
         return Api::response(
             PesertaDetailResource::collection($data),
@@ -47,7 +50,6 @@ class PesertaService
 
     public function getPesertaDetail()
     {
-        
         if (!auth('sanctum')->user()->peserta) {
             return Api::response(
                 null,
@@ -57,7 +59,10 @@ class PesertaService
         }
         $id_peserta = auth('sanctum')->user()->peserta->id;
 
-        $data = $this->pesertaInterface->find($id_peserta);
+        $cacheKey = 'peserta_detail_'. $id_peserta;
+        $data = Cache::remember($cacheKey, 3600, function () use ($id_peserta) {
+            $this->pesertaInterface->find($id_peserta);
+        });
 
         return Api::response(
             PesertaResource::make($data),
@@ -68,7 +73,10 @@ class PesertaService
     public function getPesertaByCabang()
     {
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
-        $data = $this->pesertaInterface->getByCabang($cabang);
+        $cacheKey = 'peserta_cabang_'. $cabang;
+        $data = Cache::remember($cacheKey, 360, function () use ( $cabang ) {
+            $this->pesertaInterface->getByCabang($cabang);
+        });
 
         return Api::response(
             PesertaResource::collection($data),
@@ -79,10 +87,11 @@ class PesertaService
 
     public function getPesertaByDivisi($id_divisi)
     {
-        // dd($id_divisi);
-        $data = $this->pesertaInterface->getByDivisi($id_divisi);
+        $cacheKey = 'peserta_divisi_'. $id_divisi;
+        $data = Cache::remember($cacheKey, 120, function () use ($id_divisi) {
+            $this->pesertaInterface->getByDivisi($id_divisi);
+        });
 
-        // dd($data);
         return Api::response(
             PesertaByDivisiResource::collection($data),
             'Peserta sesuai divisi berhasil ditampilkan',
@@ -91,8 +100,11 @@ class PesertaService
 
     public function getJurnalPesertaByCabang(){
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
-        $data = $this->pesertaInterface->getJurnalPeserta($cabang);
-        // dd($data);
+        $cacheKey = 'jurnal_cabang_'. $cabang;
+        $data = Cache::remember($cacheKey, 3600, function () use ($cabang) {
+            $this->pesertaInterface->getJurnalPeserta($cabang);
+        });
+
         return Api::response(
             PesertaJurnalResource::collection($data),
             'Peserta Fetched Successfully',
@@ -103,8 +115,11 @@ class PesertaService
     public function getKehadiranPesertaByCabang()
     {
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
-        $data = $this->pesertaInterface->getKehadiranPeserta($cabang);
-        // dd($data);
+        $cacheKey = 'presensi_cabang'. $cabang;
+        $data = Cache::remember($cacheKey,3600, function () use ($cabang) {
+            $this->pesertaInterface->getKehadiranPeserta($cabang);
+        });
+
         return Api::response(
             PesertaKehadiranResource::collection($data),
             'Peserta Fetched Successfully',
@@ -139,7 +154,11 @@ class PesertaService
     
     public function getPesertaByProgress(){
         $idMentor = auth()->user()->mentor->id;
-        $data = $this->pesertaInterface->getByProgress($idMentor);
+        $cacheKey = 'progres_peserta_'. $idMentor;
+        $data = Cache::remember($cacheKey, 3600, function () use ($idMentor) {
+            $this->pesertaInterface->getByProgress($idMentor);
+        });
+        
         return Api::response(
             PesertabyMentorResource::collection($data),
             'Peserta Fetched Successfully',

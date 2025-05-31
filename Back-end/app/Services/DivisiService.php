@@ -6,6 +6,7 @@ use App\Helpers\Api;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\DivisiInterface;
 use App\Interfaces\KategoriInterface;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\DivisiResource;
 use App\Http\Resources\JurusanResource;
 use App\Http\Resources\DivisiCabangResource;
@@ -25,7 +26,12 @@ class DivisiService
 
     public function getDivisi($id = null)
     {
-        $divisi = $id ? $this->DivisiInterface->find($id) : $this->DivisiInterface->getAll(auth('sanctum')->user()->id_cabang_aktif);
+        $cacheKey = $id ? "divisi_". $id : "divisi_all";
+        
+        $divisi = Cache::remember($cacheKey, 3600, function () use ( $id ) {
+            $divisi = $id ? $this->DivisiInterface->find($id) : $this->DivisiInterface->getAll(auth('sanctum')->user()->id_cabang_aktif);
+        });
+
         if (!$divisi) {
             return Api::response(null, 'Divisi tidak ditemukan', Response::HTTP_NOT_FOUND);
         }
@@ -102,7 +108,10 @@ class DivisiService
 
     public function getByCabang(int $id)
     {
-        $divisi = $this->DivisiInterface->getByCabang($id);
+
+        $divisi = Cache::remember('divisi_cabang_'. $id, 3600, function () use ($id) {
+            $this->DivisiInterface->getByCabang($id);
+        });
 
         return Api::response(
             DivisiCabangResource::collection($divisi),

@@ -45,7 +45,10 @@ class MentorService
 
     public function findMentor(string $id)
     {
-        $data = $this->mentorInterface->find($id);
+        $cacheKey = 'mentor_'.$id;
+        $data = Cache::remember($cacheKey,3600, function () use ($id) {
+            $this->mentorInterface->find($id);
+        });
 
         return Api::response(
             MentorDetailResource::make($data),

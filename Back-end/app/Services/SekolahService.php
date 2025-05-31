@@ -6,6 +6,7 @@ use App\Helpers\Api;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\JurusanInterface;
 use App\Interfaces\SekolahInterface;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\SchoolResource;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -25,8 +26,10 @@ class SekolahService
     public function getSchools($id = null)
     {
         $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
-        
-        $school = $id ? $this->SekolahInterface->find($id) : $this->SekolahInterface->getAll($id_perusahaan);
+        $cacheKey = $id ? 'mitra_'.$id : 'mitra_perusahaan_'. $id_perusahaan;
+        $school = Cache::remember($cacheKey, 3600, function () use ($id_perusahaan, $id) {
+            $id ? $this->SekolahInterface->find($id) : $this->SekolahInterface->getAll($id_perusahaan);
+        });
 
         if (!$school) {
             return Api::response(null, 'Sekolah tidak ditemukan', Response::HTTP_NOT_FOUND);
@@ -102,72 +105,6 @@ class SekolahService
             );
         }
     }
-
-    // {
-    //     DB::beginTransaction();
-    //     try {
-
-    //         $dataSekolah = collect($data)->only(['nama'])->toArray();
-    //         $sekolah = $isUpdate
-    //             ? $this->SekolahInterface->update($id, $dataSekolah)
-    //             : $this->SekolahInterface->create($dataSekolah);
-
-    //         $jurusanIds = [];
-    //         if (!empty($data['jurusan'])) {
-    //             foreach ($data['jurusan'] as $namaJurusan) {
-    //                 $jurusan = $this->JurusanInterface->firstOrCreate(['nama' => $namaJurusan]);
-    //                 $jurusanIds[] = $jurusan->id;
-    //             }
-    //             $sekolah->jurusan()->sync($jurusanIds);
-    //         }
-
-    //         $files = [
-    //             'foto_header' => 'foto_header',
-    //             'logo' => 'logo',
-    //         ];
-    //         foreach ($files as $key => $type) {
-    //             if (!empty($data[$key])) {
-    //                 if ($isUpdate) {
-    //                     $this->foto->updateFoto($data[$key], $sekolah->id, $type, 'sekolah');
-    //                 } else {
-    //                     $this->foto->createFoto($data[$key], $sekolah->id, $type, 'sekolah');
-    //                 }
-    //             }
-    //         }
-
-    //         DB::commit();
-
-    //         $message = $isUpdate
-    //             ? 'Sekolah & jurusan berhasil diperbarui'
-    //             : 'Sekolah & jurusan berhasil disimpan';
-
-    //         $statusCode = $isUpdate
-    //             ? Response::HTTP_OK
-    //             : Response::HTTP_CREATED;
-
-    //         return Api::response(
-    //             SchoolResource::make($sekolah->load('jurusan', 'foto')),
-    //             $message,
-    //             $statusCode
-    //         );
-    //     } catch (\Throwable $th) {
-    //         DB::rollBack();
-    //         return Api::response(
-    //             null,
-    //             'Gagal menyimpan sekolah: ' . $th->getMessage(),
-    //             Response::HTTP_INTERNAL_SERVER_ERROR
-    //         );
-    //     }
-    // }
-
-    // public function getMitrabyPeserta()
-    // {
-    //     return Api::response(
-    //         SchoolResource::collection($this->SekolahInterface->getAllSekolah()),
-    //         'Berhasil mengambil semua data sekolah',
-    //         Response::HTTP_OK
-    //     );
-    // }
 
     public function deleteSchool(int $id)
     {

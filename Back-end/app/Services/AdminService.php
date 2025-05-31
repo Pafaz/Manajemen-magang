@@ -9,6 +9,7 @@ use App\Interfaces\UserInterface;
 use App\Interfaces\AdminInterface;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\AdminResource;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminService
@@ -27,8 +28,10 @@ class AdminService
     public function getAllAdmin()
     {
         $id_cabang = auth()->user()->id_cabang_aktif;
-
-        $data = $this->adminInterface->getAll($id_cabang);
+        $caheKey = 'admin_cabang_'.$id_cabang;
+        $data = Cache::remember($caheKey, now()->addDay(), function () use ($id_cabang) {
+            $this->adminInterface->getAll($id_cabang);
+        });
 
         return Api::response(
             AdminResource::collection($data),
@@ -39,7 +42,10 @@ class AdminService
 
     public function findAdmin(string $id)
     {
-        $data = $this->adminInterface->find($id);
+        $cacheKey = 'admin_'.$id;
+        $data = Cache::remember($cacheKey, now()->addDay(), function () use ($id) {
+            $this->adminInterface->find($id);
+        });
 
         return Api::response(
             AdminResource::make($data),

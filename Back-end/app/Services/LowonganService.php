@@ -50,7 +50,11 @@ class LowonganService
     public function getLowonganByPerusahaan()
     {
         $user = auth('sanctum')->user();
-        $data = $this->lowonganInterface->getByPerusahaan($user->perusahaan->id);
+        $cacheKey = 'lowongan_perusahaan_'.$user->perusahaan->id;
+        $data = Cache::remember($cacheKey,3600, function () use ($user) {
+            $this->lowonganInterface->getByPerusahaan($user->perusahaan->id);
+        });
+        
         return Api::response(
             LowonganResource::collection($data),
             'Lowongan '.$user->nama.' Berhasil ditampilkan'

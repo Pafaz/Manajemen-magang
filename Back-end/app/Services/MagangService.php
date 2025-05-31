@@ -6,15 +6,16 @@ use App\Helpers\Api;
 use App\Models\Surat;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Interfaces\UserInterface;
+use App\Interfaces\RouteInterface;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
 use App\Interfaces\MentorInterface;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\MagangResource;
 use App\Http\Resources\PesertaResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\MagangDetailResource;
-use App\Interfaces\RouteInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class MagangService
@@ -44,7 +45,10 @@ class MagangService
     public function getAllPesertaMagang()
     {
         $id = auth('sanctum')->user()->id_cabang_aktif;
-        $data = $this->MagangInterface->getAll($id);
+        $cacheKey = 'magang_cabang_'. $id;
+        $data = Cache::remember($cacheKey, 3600, function () use ($id) {
+            $this->MagangInterface->getAll($id);
+        });
 
         return Api::response(
             MagangResource::collection($data),
@@ -53,7 +57,10 @@ class MagangService
     }
 
     public function getMagangbyId($id){
-        $data = $this->MagangInterface->find($id);
+        $cacheKey = 'magang_detail_'. $id;
+        $data = Cache::remember($cacheKey, 360, function () use ($id) {
+            $this->MagangInterface->find($id);
+        });
 
         return Api::response(
             new MagangDetailResource($data),

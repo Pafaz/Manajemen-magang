@@ -70,4 +70,9 @@ class DivisiController extends Controller
     {
         return $this->divisiService->deleteDivisi($divisi);
     }
+
+    public function getByCabang($id)
+    {
+        return $this->divisiService->getByCabang($id);
+    }
 }

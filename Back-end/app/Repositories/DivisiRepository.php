@@ -34,4 +34,9 @@ class DivisiRepository implements DivisiInterface
     {
         Divisi::findOrFail($id)->delete();
     }
+
+    public function getByCabang(int $id): Collection
+    {
+        return Divisi::where('id_cabang', $id)->get();
+    }
 }

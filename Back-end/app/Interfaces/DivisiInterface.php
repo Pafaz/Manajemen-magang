@@ -10,5 +10,5 @@ use App\Interfaces\Base\UpdateInterface;
 
 interface DivisiInterface extends DivisiInterfaceInBase, CreateInterface, DeleteInterface, FindInterface, UpdateInterface
 {
-    //
+    public function getByCabang(int $id);
 }

@@ -3,11 +3,12 @@
 namespace App\Services;
 
 use App\Helpers\Api;
-use App\Http\Resources\DivisiResource;
 use Illuminate\Support\Facades\DB;
-use App\Http\Resources\JurusanResource;
 use App\Interfaces\DivisiInterface;
 use App\Interfaces\KategoriInterface;
+use App\Http\Resources\DivisiResource;
+use App\Http\Resources\JurusanResource;
+use App\Http\Resources\DivisiCabangResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class DivisiService
@@ -95,8 +96,17 @@ class DivisiService
         $divisi->delete();
         return Api::response(
             null,
-            'Divisi berhasil dihapus',
-            Response::HTTP_OK
+            'Divisi berhasil dihapus'
+        );
+    }
+
+    public function getByCabang(int $id)
+    {
+        $divisi = $this->DivisiInterface->getByCabang($id);
+
+        return Api::response(
+            DivisiCabangResource::collection($divisi),
+            'Divisi Berhasil ditampilkan'
         );
     }
 }

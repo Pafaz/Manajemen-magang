@@ -71,6 +71,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //role Perusahaan
     Route::group(['middleware' => 'role:perusahaan'], function () {
+        Route::get('/divisi/cabang/{cabangId}', [DivisiController::class, 'getByCabang']);
         Route::put('/cabang-update', [CabangController::class,'update']);
         Route::put('/lowongan/{id}/tutup', [LowonganController::class, 'tutupLowongan']);
         //set cabang aktif

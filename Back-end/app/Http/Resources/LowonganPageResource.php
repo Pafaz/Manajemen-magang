@@ -23,8 +23,8 @@ class LowonganPageResource extends JsonResource
             'status' => $this->status,
             'total_pendaftar' => $this->totalPeserta,
             'perusahaan'=> $this->perusahaan->user->nama,
-            'provinsi' => $this->perusahaan->provinsi,
-            'kota' => $this->perusahaan->kota,
+            'provinsi' => $this->cabang->provinsi,
+            'kota' => $this->cabang->kota,
             'divisi' => $this->divisi->nama,
             'foto' => FotoResource::collection($this->perusahaan->foto),
         ];

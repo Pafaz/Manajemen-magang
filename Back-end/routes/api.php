@@ -87,7 +87,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/peserta/rekap/{cabangID?}', [PerusahaanController::class, 'getRekapPeserta']);
         Route::get('/jurnal/rekap/{cabangID?}', [PerusahaanController::class, 'getRekapJurnal']);
         //manajemen lowongan
-        Route::apiResource('lowongan', LowonganController::class)->only(['index','store', 'update']);
+        Route::apiResource('lowongan', LowonganController::class)->only(['index','store', 'update', 'show']);
         //manajemen mitra
         Route::apiResource('mitra', SekolahController::class);
         //manajemen admin

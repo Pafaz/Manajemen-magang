@@ -30,6 +30,7 @@ class DivisiService
         
         $divisi = Cache::remember($cacheKey, 3600, function () use ( $id ) {
             $divisi = $id ? $this->DivisiInterface->find($id) : $this->DivisiInterface->getAll(auth('sanctum')->user()->id_cabang_aktif);
+            return $divisi;
         });
 
         if (!$divisi) {
@@ -110,7 +111,7 @@ class DivisiService
     {
 
         $divisi = Cache::remember('divisi_cabang_'. $id, 3600, function () use ($id) {
-            $this->DivisiInterface->getByCabang($id);
+            return $this->DivisiInterface->getByCabang($id);
         });
 
         return Api::response(

@@ -47,7 +47,7 @@ class MagangService
         $id = auth('sanctum')->user()->id_cabang_aktif;
         $cacheKey = 'magang_cabang_'. $id;
         $data = Cache::remember($cacheKey, 3600, function () use ($id) {
-            $this->MagangInterface->getAll($id);
+            return $this->MagangInterface->getAll($id);
         });
 
         return Api::response(
@@ -59,7 +59,7 @@ class MagangService
     public function getMagangbyId($id){
         $cacheKey = 'magang_detail_'. $id;
         $data = Cache::remember($cacheKey, 360, function () use ($id) {
-            $this->MagangInterface->find($id);
+            return $this->MagangInterface->find($id);
         });
 
         return Api::response(

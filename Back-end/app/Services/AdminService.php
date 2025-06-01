@@ -30,7 +30,7 @@ class AdminService
         $id_cabang = auth()->user()->id_cabang_aktif;
         $caheKey = 'admin_cabang_'.$id_cabang;
         $data = Cache::remember($caheKey, now()->addDay(), function () use ($id_cabang) {
-            $this->adminInterface->getAll($id_cabang);
+            return $this->adminInterface->getAll($id_cabang);
         });
 
         return Api::response(
@@ -44,7 +44,7 @@ class AdminService
     {
         $cacheKey = 'admin_'.$id;
         $data = Cache::remember($cacheKey, now()->addDay(), function () use ($id) {
-            $this->adminInterface->find($id);
+            return $this->adminInterface->find($id);
         });
 
         return Api::response(

@@ -39,7 +39,8 @@ class PesertaService
         $cacheKey = $isUpdate ? "peserta_". $id : "peserta_all";
 
         $data = Cache::remember($cacheKey, 3600, function () use ($id, $isUpdate) {
-            $isUpdate ? $this->pesertaInterface->find($id) : $this->pesertaInterface->getAll();
+            $peserta = $isUpdate ? $this->pesertaInterface->find($id) : $this->pesertaInterface->getAll();
+            return $peserta;
         });
             
         return Api::response(
@@ -61,7 +62,7 @@ class PesertaService
 
         $cacheKey = 'peserta_detail_'. $id_peserta;
         $data = Cache::remember($cacheKey, 3600, function () use ($id_peserta) {
-            $this->pesertaInterface->find($id_peserta);
+            return $this->pesertaInterface->find($id_peserta);
         });
 
         return Api::response(
@@ -75,7 +76,7 @@ class PesertaService
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
         $cacheKey = 'peserta_cabang_'. $cabang;
         $data = Cache::remember($cacheKey, 360, function () use ( $cabang ) {
-            $this->pesertaInterface->getByCabang($cabang);
+            return $this->pesertaInterface->getByCabang($cabang);
         });
 
         return Api::response(
@@ -89,7 +90,7 @@ class PesertaService
     {
         $cacheKey = 'peserta_divisi_'. $id_divisi;
         $data = Cache::remember($cacheKey, 120, function () use ($id_divisi) {
-            $this->pesertaInterface->getByDivisi($id_divisi);
+            return $this->pesertaInterface->getByDivisi($id_divisi);
         });
 
         return Api::response(
@@ -102,7 +103,7 @@ class PesertaService
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
         $cacheKey = 'jurnal_cabang_'. $cabang;
         $data = Cache::remember($cacheKey, 3600, function () use ($cabang) {
-            $this->pesertaInterface->getJurnalPeserta($cabang);
+            return $this->pesertaInterface->getJurnalPeserta($cabang);
         });
 
         return Api::response(
@@ -117,7 +118,7 @@ class PesertaService
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
         $cacheKey = 'presensi_cabang'. $cabang;
         $data = Cache::remember($cacheKey,3600, function () use ($cabang) {
-            $this->pesertaInterface->getKehadiranPeserta($cabang);
+            return $this->pesertaInterface->getKehadiranPeserta($cabang);
         });
 
         return Api::response(
@@ -156,7 +157,7 @@ class PesertaService
         $idMentor = auth()->user()->mentor->id;
         $cacheKey = 'progres_peserta_'. $idMentor;
         $data = Cache::remember($cacheKey, 3600, function () use ($idMentor) {
-            $this->pesertaInterface->getByProgress($idMentor);
+            return $this->pesertaInterface->getByProgress($idMentor);
         });
         
         return Api::response(

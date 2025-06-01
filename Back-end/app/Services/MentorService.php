@@ -47,7 +47,7 @@ class MentorService
     {
         $cacheKey = 'mentor_'.$id;
         $data = Cache::remember($cacheKey,3600, function () use ($id) {
-            $this->mentorInterface->find($id);
+            return $this->mentorInterface->find($id);
         });
 
         return Api::response(
@@ -57,7 +57,7 @@ class MentorService
         );
     }
 
-        public function simpanMentor( $id = null, array $data)
+    public function simpanMentor( $id = null, array $data)
     {
         DB::beginTransaction();
 

@@ -28,7 +28,8 @@ class SekolahService
         $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
         $cacheKey = $id ? 'mitra_'.$id : 'mitra_perusahaan_'. $id_perusahaan;
         $school = Cache::remember($cacheKey, 3600, function () use ($id_perusahaan, $id) {
-            $id ? $this->SekolahInterface->find($id) : $this->SekolahInterface->getAll($id_perusahaan);
+            $data = $id ? $this->SekolahInterface->find($id) : $this->SekolahInterface->getAll($id_perusahaan);
+            return $data;
         });
 
         if (!$school) {

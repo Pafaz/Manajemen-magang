@@ -34,19 +34,22 @@ class UserService
         return Api::response($data, 'success get data user', Response::HTTP_OK);
     }
 
-    public function register(array $data, $role)
+    public function register(array $data)
     {
+        return $this->UserInterface->create($data);
+    }
 
-        $user = $this->UserInterface->create($data);
+    public function assignRole($request, $role)
+    {
+        $user = $this->UserInterface->findId($request->id_user);
 
         $user->assignRole($role);
-
         $token = $user->createToken('auth_token')->plainTextToken;
 
         $responseData = [
-            'user' => new UserResource($user),
-            'token' => $token,
-            'role' => $user->getRoleNames()->first(),
+            'user'=> new UserResource($user),
+            'token'=> $token,
+            'role' => $role
         ];
 
         return Api::response($responseData, 'User  registered successfully', Response::HTTP_CREATED);

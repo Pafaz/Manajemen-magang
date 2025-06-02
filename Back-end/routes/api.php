@@ -27,7 +27,8 @@ use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Auth\UpdatePasswordController;
 
 Route::post('/login', [LoginController::class, 'login']);
-Route::post('/register/{role}', [RegisterController::class, 'register']);
+Route::post('/register', [RegisterController::class, 'register']);
+Route::post('/assign/{role}', [RegisterController::class, 'assignRole']);
 Route::get('/auth/{role}', [GoogleAuthController::class, 'redirectAuth']);
 Route::get('/auth/callback/peserta', [GoogleAuthController::class, 'callbackPeserta']);
 Route::get('/auth/callback/perusahaan', [GoogleAuthController::class, 'callbackPerusahaan']);

@@ -11,11 +11,12 @@ class RekapCabang extends Model
         'total_admin',
         'total_mentor',
         'total_divisi',
-        'peserta_per_bulan_tahun',
+        'peserta_per_bulan',
         'rekap_jurnal_peserta',
         'absensi_12_bulan',
         'peserta_per_divisi',
         'mentor_per_divisi',
+        'pendaftar_per_bulan'
     ];
 
     protected $casts = [

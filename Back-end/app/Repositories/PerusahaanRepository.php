@@ -13,9 +13,9 @@ class PerusahaanRepository implements PerusahaanInterface
         return Perusahaan::all();
     }
 
-    public function find( $id): ? Perusahaan
+    public function find( $id): Perusahaan
     {
-        return Perusahaan::findOrFail($id)->first();
+        return Perusahaan::findOrFail($id);
     }
 
 

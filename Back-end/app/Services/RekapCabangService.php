@@ -39,7 +39,8 @@ class RekapCabangService
 
     public function simpanRekap($id = null)
     {
-        $id ? $id : $id = auth('sanctum')->user()->id_cabang_aktif; 
+        $id = $id ?: auth('sanctum')->user()->id_cabang_aktif;
+        // dd($id);
         $total_peserta = $this->magangInterface->getPesertaByCabang($id)->count();
         $total_admin = $this->adminInterface->getByCabang($id)->count();
         $total_mentor = $this->mentorInterface->getAll($id)->count();
@@ -47,7 +48,8 @@ class RekapCabangService
 
         $pesertaPerDivisi = $this->magangInterface->getMagangPerDivisi($id);
         $mentorPerDivisi = $this->mentorInterface->getMentorPerDivisi($id);
-        $pesertaPerBulanDanTahun = $this->magangInterface->countPesertaPerBulanDanTahun($id);
+        $pesertaPerBulan = $this->magangInterface->countPesertaPerBulan($id);
+        $pendaftarPerBulan = $this->magangInterface->countPesertaPerBulan($id);
         $rekapJurnalPeserta = $this->getRekapJurnalMingguan($id);
         
         $rekapPerBulan = $this->rekapKehadiranInterface->getByCabangPerBulan($id);
@@ -74,7 +76,8 @@ class RekapCabangService
             'total_admin' => $total_admin,
             'total_mentor' => $total_mentor,
             'total_divisi' => $total_divisi,
-            'peserta_per_bulan_tahun' => json_encode($pesertaPerBulanDanTahun),  // Pastikan dienkode JSON
+            'peserta_per_bulan' => json_encode($pesertaPerBulan),
+            'pendaftar_per_bulan' => json_encode($pendaftarPerBulan),
             'absensi_12_bulan' => json_encode($rekapKehadiranGabungan),  // Pastikan dienkode JSON
             'rekap_jurnal_peserta' => json_encode($rekapJurnalPeserta),  // Pastikan dienkode JSON
             'peserta_per_divisi' => json_encode($pesertaPerDivisi->map(function ($item) {
@@ -99,7 +102,7 @@ class RekapCabangService
 
     public function getRekap($id = null)
     {
-        $id ? $id : $id = auth('sanctum')->user()->id_cabang_aktif; 
+        $id = $id ?: auth('sanctum')->user()->id_cabang_aktif;
 
         $keyCache = 'rekap_cabang_'.$id;
         $rekapCabang = Cache::remember($keyCache, 3600, function () use ( $id ) {

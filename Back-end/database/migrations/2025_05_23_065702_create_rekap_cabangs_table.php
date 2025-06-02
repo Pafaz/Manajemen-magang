@@ -18,11 +18,12 @@ return new class extends Migration
             $table->integer('total_admin');
             $table->integer('total_mentor');
             $table->integer('total_divisi');
-            $table->json('peserta_per_bulan_tahun');
+            $table->json('peserta_per_bulan');
             $table->json('peserta_per_divisi');
             $table->json('mentor_per_divisi');
             $table->json('absensi_12_bulan');
             $table->json('rekap_jurnal_peserta');
+            $table->json('pendaftar_per_bulan');
             $table->timestamps();
 
             $table->foreign('id_cabang')->references('id')->on('cabang')->onDelete('cascade');

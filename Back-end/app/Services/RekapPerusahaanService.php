@@ -87,7 +87,7 @@ class RekapPerusahaanService
     {
         $rekapCabang = $this->rekapCabangInterface->find($id_cabang);
 
-        $peserta = json_decode($rekapCabang['peserta_per_bulan_tahun']);
+        $peserta = json_decode($rekapCabang['peserta_per_bulan']);
 
         return Api::response(
             $peserta,
@@ -105,6 +105,17 @@ class RekapPerusahaanService
         return Api::response(
             $jurnal,
             'Rekap Jurnal berhasil ditampilkan',
+        );
+    }
+
+    public function getRekapPendaftar($id_cabang)
+    {
+        $rekapPendaftar = $this->rekapCabangInterface->find($id_cabang);
+        $pendaftar = json_decode($rekapPendaftar['pendaftar_per_bulan']);
+
+        return Api::response(
+            $pendaftar,
+            'Rekap Pendaftar berhasil ditampilkan',
         );
     }
 }

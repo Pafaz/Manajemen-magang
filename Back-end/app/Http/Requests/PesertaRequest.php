@@ -25,7 +25,7 @@ class PesertaRequest extends BaseFormRequest
                 'sekolah' => 'sometimes|string',
                 'jurusan' => 'sometimes|string',
                 'profile' => 'sometimes|image|mimes:jpeg,png,jpg|max:2048',
-                'cv' => 'sometimes|mimes:pdf,doc,docx|max:2048',
+                'cv' => 'sometimes|mimes:jpg,jpeg,png,pdf|max:2048',
             ];
         }
         return [
@@ -39,7 +39,7 @@ class PesertaRequest extends BaseFormRequest
             'sekolah' => 'required|string',
             'jurusan' => 'required|string',
             'profile' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'cv' => 'required|mimes:pdf,doc,docx|max:2048',
+            'cv' => 'required|mimes:jpg,jpeg,png,pdf|max:2048',
         ];
     }
 

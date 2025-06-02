@@ -21,7 +21,7 @@ class MagangRequest extends BaseFormRequest
             'id_lowongan' => 'required|numeric',
             'mulai' => 'required|date',
             'selesai' => 'required|date|after:mulai',
-            'surat_pernyataan_diri' => 'required|mimes:jpeg,png,jpg,pdf,doc,docx|max:2048',
+            'surat_pernyataan_diri' => 'required|mimes:jpeg,png,jpg,pdf|max:2048',
         ];
     }
 }

@@ -139,13 +139,29 @@ class UserService
             return Api::response(null, 'Autentikasi Google gagal', 401);
         }
 
-        $user = User::where('email', $socialiteUser->getEmail())->first();
+        $user = $this->UserInterface->find($socialiteUser->getEmail());
 
         if ($user) {
             $user->update([
                 'google_id' => $socialiteUser->getId(),
                 'avatar' => $socialiteUser->getAvatar()
             ]);
+
+            if ($user->getRoleNames()->isNotEmpty()) {
+                $user->tokens()->delete();
+                $token = $user->createToken('google-token')->plainTextToken;
+                Auth::login($user);
+
+                return Api::response([
+                    'user' => new UserResource($user),
+                    'token' => $token
+                ], 'Login berhasil');
+            } else {
+                return Api::response(
+                    new UserResource($user), 
+                    'Google register berhasil, namun role belum ditetapkan'
+                );
+            }
 
         } else {
             $user = User::create([
@@ -155,14 +171,12 @@ class UserService
                 'avatar' => $socialiteUser->getAvatar(),
                 'email_verified_at' => now()
             ]);
+
+            return Api::response(
+                new UserResource($user),
+                'Google register berhasil, namun role belum ditetapkan'
+            );
         }
-
-        $user->tokens()->delete();
-
-        return Api::response(
-            new UserResource($user), 
-            'register google berhasil'
-        );
     }
 
     public function sendOtp($request)

@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Requests\SocialiteCallbackRequest;
-use App\Services\UserService;
 
 class GoogleAuthController extends Controller
 
@@ -17,41 +18,25 @@ class GoogleAuthController extends Controller
     {
         $this->userService = $userService;
     }
-
-    public function redirectAuth($role): JsonResponse
+    public function redirectAuth(): JsonResponse
     {
-        // dd($role);
-        if ($role === 'peserta') {
-            $redirectUri = env('GOOGLE_REDIRECT_URI_PESERTA');
-            $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
-        } else if($role === 'perusahaan') {
-            $redirectUri = env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
-            $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
-        }
+        $redirectUri = env('GOOGLE_REDIRECT_URI');
+
+        $url = Socialite::with('google')
+                        ->stateless()
+                        ->scopes(['email', 'profile'])
+                        ->redirectUrl($redirectUri)
+                        ->redirect()
+                        ->getTargetUrl();
+
+        Log::info("Generated Google OAuth URL: " . $url);
 
         return response()->json(['url' => $url]);
     }
-    // public function redirectAuth($role): JsonResponse
-    // {
-    //     // dd($role);
-    //     if ($role == 'peserta') {
-    //         $redirectUri = env('GOOGLE_REDIRECT_URI_PESERTA');
-    //         $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
-    //     } else if($role == 'perusahaan') {
-    //         $redirectUri = env('GOOGLE_REDIRECT_URI_PERUSAHAAN');
-    //         $url = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->redirect()->getTargetUrl();
-    //     }
 
-    //     return response()->json(['url' => $url]);
-    // }
 
-    public function callbackPerusahaan(SocialiteCallbackRequest $request)
+    public function callback(SocialiteCallbackRequest $request)
     {
-        return $this->userService->handleGooglecallback($request->validated(),'perusahaan');
-    }
-
-    public function callbackPeserta(SocialiteCallbackRequest $request)
-    {
-        return $this->userService->handleGoogleCallback($request->validated(), 'peserta');
+        return $this->userService->handleGoogleCallback($request->validated());
     }
 }

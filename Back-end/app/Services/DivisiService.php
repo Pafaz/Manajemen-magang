@@ -60,6 +60,7 @@ class DivisiService
 
             if ($isUpdate == true) {
                 Cache::forget('divisi_'. $id);
+                Cache::forget('divisi_cabang'. $divisiData['id_cabang']);
             } else {
                 Cache::forget('divisi_cabang'. $divisiData['id_cabang']);
             }

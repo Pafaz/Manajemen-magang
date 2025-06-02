@@ -17,6 +17,7 @@ class MagangRepository implements MagangInterface
             ->whereHas('lowongan', function ($query) use ($id) {
                 $query->where('id_cabang', $id);
             })
+            ->orderByDesc('id')
             ->get();
     }
 

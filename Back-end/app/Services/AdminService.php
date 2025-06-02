@@ -73,6 +73,8 @@ class AdminService
                 $id_user = $admin->user->id;
                 $updatedAdmin = $this->adminInterface->update($id, $data);
                 $this->userInterface->update($id_user, $data);
+                Cache::forget('admin_'. $id);
+                Cache::forget('admin_cabang'. $id_cabang);
             } else {
                 $user = $this->userInterface->create([
                     'nama' => $data['nama'],
@@ -89,6 +91,7 @@ class AdminService
                     'id_cabang' => $id_cabang,
                     'id_user' => $id_user,
                 ]);
+                Cache::forget('admin_cabang'. $id_cabang);
             }
 
             $files = [
@@ -121,12 +124,14 @@ class AdminService
 
     public function deleteAdmin(string $id)
     {
-        $id_user = $this->adminInterface->find($id)->id_user;
-
+        $admin = $this->adminInterface->find($id);
+        
         $this->adminInterface->delete($id);
 
-        $this->userInterface->delete($id_user);
+        $this->userInterface->delete($admin->id_user);
 
+        Cache::forget('admin_cabang_'. $admin->id_cabang);
+        
         return Api::response(
             null,
             'Admin Deleted Successfully',

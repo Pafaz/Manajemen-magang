@@ -26,10 +26,12 @@ class DivisiService
 
     public function getDivisi($id = null)
     {
-        $cacheKey = $id ? "divisi_". $id : "divisi_all";
+        $id_cabang = auth('sanctum')->user()->id_cabang_aktif;
+
+        $cacheKey = $id ? "divisi_". $id : "divisi_cabang_". $id_cabang;
         
-        $divisi = Cache::remember($cacheKey, 3600, function () use ( $id ) {
-            $divisi = $id ? $this->DivisiInterface->find($id) : $this->DivisiInterface->getAll(auth('sanctum')->user()->id_cabang_aktif);
+        $divisi = Cache::remember($cacheKey, 3600, function () use ( $id, $id_cabang ) {
+            $divisi = $id ? $this->DivisiInterface->find($id) : $this->DivisiInterface->getAll($id_cabang);
             return $divisi;
         });
 
@@ -54,9 +56,13 @@ class DivisiService
         try {
             $divisiData = collect($data)->only(['nama'])->toArray();
             $divisiData['id_cabang'] = auth('sanctum')->user()->id_cabang_aktif;
-            $divisi = $isUpdate
-                ? $this->DivisiInterface->update($id, $divisiData)
-                : $this->DivisiInterface->create($divisiData);
+            $divisi = $isUpdate ? $this->DivisiInterface->update($id, $divisiData) : $this->DivisiInterface->create($divisiData);
+
+            if ($isUpdate == true) {
+                Cache::forget('divisi_'. $id);
+            } else {
+                Cache::forget('divisi_cabang'. $divisiData['id_cabang']);
+            }
 
             $kategoriIds = [];
             foreach ($data['kategori_proyek'] as $kategoriItem) {
@@ -101,6 +107,7 @@ class DivisiService
         $divisi = $this->DivisiInterface->find($id);
         $divisi->kategori()->detach();
         $divisi->delete();
+        Cache::forget('divisi_cabang_'.$divisi->id_cabang);
         return Api::response(
             null,
             'Divisi berhasil dihapus'
@@ -109,7 +116,6 @@ class DivisiService
 
     public function getByCabang(int $id)
     {
-
         $divisi = Cache::remember('divisi_cabang_'. $id, 3600, function () use ($id) {
             return $this->DivisiInterface->getByCabang($id);
         });

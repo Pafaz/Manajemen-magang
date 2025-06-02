@@ -54,10 +54,12 @@ class CabangService
 
     public function simpanCabang(array $data, bool $isUpdate = false, $id = null)
     {
+        // dd($isUpdate);
         DB::beginTransaction();
         try {
             $user = auth('sanctum')->user();
 
+            // dd($user->perusahaan->id);
             if (!$user->perusahaan) {
                 throw new \Exception("Lengkapi profil perusahaan anda terlebih dahulu");
             }
@@ -81,6 +83,13 @@ class CabangService
             $cabang = $isUpdate
                 ? $this->cabangInterface->update($id, array_filter($cabangData))
                 : $this->cabangInterface->create(array_filter($cabangData));
+            
+            if ($isUpdate === true) {
+                Cache::forget('cabang_'. $id);
+                Cache::forget('cabang_'. $user->perusahaan->id);
+            } else {
+                Cache::forget('cabang_'. $user->perusahaan->id);
+            }
 
             $files = [
                 'logo' => 'logo',
@@ -130,6 +139,7 @@ class CabangService
         }
 
         $this->cabangInterface->delete($id);
+        Cache::forget('cabang_'.$user->perusahaan->id);
         return Api::response(
             null,
             'Berhasil menghapus cabang',

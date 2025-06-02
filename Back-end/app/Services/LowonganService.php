@@ -125,6 +125,9 @@ class LowonganService
                 }
 
                 $lowongan = $this->lowonganInterface->update($id, $data);
+                Cache::forget('lowongan_'. $id);
+                Cache::forget('lowongan_perusahaan'. $perusahaan->id);
+
             } else {
                 if (!$perusahaan->cabang()->where('id', $data['id_cabang'])->exists()) {
                     return Api::response(null, 'Cabang tidak valid untuk perusahaan ini', Response::HTTP_FORBIDDEN);
@@ -141,6 +144,8 @@ class LowonganService
                     'jobdesc' => $data['jobdesc'],
                     'status' => true
                 ]);
+
+                Cache::forget('lowongan_perusahaan'. $perusahaan->id);
             }
 
             if (!$lowongan) {
@@ -182,7 +187,7 @@ class LowonganService
             $data = ['status' => false];
     
             $updatedLowongan = $this->lowonganInterface->update($id, $data);
-    
+            Cache::forget('lowongan_'. $id);
             DB::commit();
     
             return Api::response(

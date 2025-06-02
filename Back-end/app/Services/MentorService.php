@@ -78,6 +78,8 @@ class MentorService
                 $id_user = $mentor->user->id;
                 $this->userInterface->update($id_user, $data);
                 $updatedMentor = $this->mentorInterface->update($id, $data);
+                Cache::forget('mentor_'. $id);
+                Cache::forget('mentor_cabang'. $id_cabang);
             } else {
                 $user = $this->userInterface->create([
                     'nama' => $data['nama'],
@@ -94,6 +96,7 @@ class MentorService
                     'id_user' => $user->id,
                     'id_cabang' => $id_cabang
                 ]);
+                Cache::forget('mentor_cabang'. $id_cabang);
             }
             $files = [
                 'profile' => 'profile',
@@ -126,10 +129,12 @@ class MentorService
 
     public function deleteMentor(string $id)
     {
-        $id_user = $this->mentorInterface->find($id)->id_user;
+        $mentor = $this->mentorInterface->find($id);
 
         $this->mentorInterface->delete($id);
-        $this->userInterface->delete($id_user);
+        $this->userInterface->delete($mentor->id_user);
+
+        Cache::forget('mentor_cabang'. $mentor->id_cabang);
 
         return Api::response(
             null,

@@ -130,17 +130,16 @@ class PesertaService
 
     public function markDoneRoute($idPeserta, $idKategoriProyek)
     {
-        // Tandai kategori proyek saat ini sebagai selesai
         $this->routeInterface->markFinished($idPeserta, $idKategoriProyek);
 
-        // Ambil peserta dan kategori-kategori divisinya yang diurutkan
         $peserta = $this->pesertaInterface->find($idPeserta);
         if (!$peserta || !$peserta->magang || !$peserta->magang->divisi) {
             return Api::response(null, 'Peserta atau divisi tidak valid', Response::HTTP_NOT_FOUND);
         }
 
+        Cache::forget('peserta_detail_' . $idPeserta);
+
         $kategoriList = $peserta->magang->divisi->kategori->sortBy('pivot.urutan')->values();
-        // Cari indeks dari kategori saat ini
         $currentIndex = $kategoriList->search(fn($kategori) => $kategori->id == $idKategoriProyek);
         $nextKategori = $kategoriList->get($currentIndex + 1);
         if ($nextKategori) {
@@ -151,7 +150,6 @@ class PesertaService
             'Berhasil menandai route selesai' . ($nextKategori ? ' dan memulai kategori berikutnya' : ''),
         );
     }
-
     
     public function getPesertaByProgress(){
         $idMentor = auth()->user()->mentor->id;
@@ -312,6 +310,9 @@ class PesertaService
 
             DB::commit();
 
+            Cache::forget('peserta_all');
+            Cache::forget('peserta_detail_' . $peserta->id);
+
             $message = $isUpdate
                 ? 'Peserta berhasil memperbarui profil'
                 : 'Peserta berhasil melengkapi profil';
@@ -339,6 +340,10 @@ class PesertaService
     public function deletePeserta( $id)
     {
         $this->pesertaInterface->delete($id);
+
+        Cache::forget('peserta_detail_' . $id);
+        Cache::forget('peserta_all');
+
         return Api::response(
             null,
             'Peserta Deleted Successfully',

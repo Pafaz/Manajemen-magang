@@ -99,6 +99,10 @@ class MagangService
                 'selesai' => $data['selesai'],
                 'status' => 'menunggu',
             ]);
+
+            $cacheKey = 'magang_cabang_' . auth('sanctum')->user()->id_cabang_aktif;
+            Cache::forget($cacheKey);
+
             if (!empty($data['surat_pernyataan_diri'])) {
                 $this->foto->updateFoto($data['surat_pernyataan_diri'], $magang->id, 'surat_pernyataan_diri', 'magang');
             }
@@ -140,6 +144,9 @@ class MagangService
             $magang->id_divisi = $magang->lowongan->id_divisi;
 
             $magang->save();
+
+            $cacheKey = 'magang_detail_' . $id;
+            Cache::forget($cacheKey);
 
             $dataSurat = [
                 'id_peserta' => $magang->peserta->id,
@@ -211,6 +218,9 @@ class MagangService
                 $magang->status = $status;
                 $magang->id_divisi = $magang->lowongan->id_divisi;
                 $magang->save();
+
+                $cacheKey = 'magang_detail_' . $id;
+                Cache::forget($cacheKey);
 
                 $id_peserta = $magang->peserta->user->id;
                 $this->userInterface->update($id_peserta, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);

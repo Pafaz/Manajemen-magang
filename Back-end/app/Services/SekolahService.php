@@ -88,6 +88,15 @@ class SekolahService
                 ? 'Sekolah & jurusan berhasil diperbarui'
                 : 'Sekolah & jurusan berhasil disimpan';
 
+            $id_perusahaan = auth('sanctum')->user()->perusahaan->id;
+
+            if ($isUpdate === true) {
+                Cache::forget('mitra_'.$id);
+                Cache::forget('mitra_perusahaan_'.$id_perusahaan);
+            } else {
+                Cache::forget('mitra_perusahaan_'.$id_perusahaan);
+            }
+
             $statusCode = $isUpdate
                 ? Response::HTTP_OK
                 : Response::HTTP_CREATED;

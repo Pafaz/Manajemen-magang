@@ -137,8 +137,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/peserta-progress', [PesertaController::class, 'showByProgress']);
         Route::get('/peserta-progress/{id}', [PesertaController::class, 'showDetailProgress']);
         Route::put('/peserta-progress/{id}', [PesertaController::class, 'markDoneRoute']);
-        Route::put('presentasi/{id}', [JadwalPresentasiController::class,'update']);
-        Route::apiResource('jadwal-presentasi', JadwalPresentasiController::class)->only(['index','store', 'show']);
+        Route::put('presentasi/{id}', [JadwalPresentasiController::class,'updateRiwayat']);
+        Route::apiResource('jadwal-presentasi', JadwalPresentasiController::class)->only(['index','store', 'show', 'update']);
     });
 
     //Superadmin

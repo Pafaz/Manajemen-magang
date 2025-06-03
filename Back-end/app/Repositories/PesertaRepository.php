@@ -110,7 +110,7 @@ class PesertaRepository implements PesertaInterface
     }
     public function find( $id): ? Peserta
     {
-        return Peserta::where('id', $id)->first();
+        return Peserta::findOrFail('id', $id);
     }
 
     public function create(array $data): ? Peserta

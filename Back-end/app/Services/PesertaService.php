@@ -51,15 +51,15 @@ class PesertaService
 
     public function getPesertaDetail()
     {
-        if (!auth('sanctum')->user()->peserta) {
+        if (!auth()->user()->peserta) {
             return Api::response(
                 null,
                 'Data Peserta Tidak Ditemukan',
                 Response::HTTP_NOT_FOUND
             );
         }
-        $id_peserta = auth('sanctum')->user()->peserta->id;
-
+        $id_peserta = auth()->user()->peserta->id;
+        dd($id_peserta);
         $cacheKey = 'peserta_detail_'. $id_peserta;
         $data = Cache::remember($cacheKey, 3600, function () use ($id_peserta) {
             return $this->pesertaInterface->find($id_peserta);

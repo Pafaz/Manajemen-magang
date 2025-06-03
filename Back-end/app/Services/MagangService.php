@@ -145,8 +145,13 @@ class MagangService
 
             $magang->save();
 
-            $cacheKey = 'magang_detail_' . $id;
-            Cache::forget($cacheKey);
+            $cacheKeys = [
+                    'magang_cabang_' . auth('sanctum')->user()->id_cabang_aktif,
+                    'peserta_cabang_' . auth('sanctum')->user()->id_cabang_aktif,
+                    'magang_detail_' . $id
+            ];
+
+            array_map(fn($key) => Cache::forget($key), $cacheKeys);
 
             $dataSurat = [
                 'id_peserta' => $magang->peserta->id,
@@ -219,8 +224,13 @@ class MagangService
                 $magang->id_divisi = $magang->lowongan->id_divisi;
                 $magang->save();
 
-                $cacheKey = 'magang_detail_' . $id;
-                Cache::forget($cacheKey);
+                $cacheKeys = [
+                    'magang_cabang_' . auth('sanctum')->user()->id_cabang_aktif,
+                    'peserta_cabang_' . auth('sanctum')->user()->id_cabang_aktif,
+                    'magang_detail_' . $id
+                ];
+
+                array_map(fn($key) => Cache::forget($key), $cacheKeys);
 
                 $id_peserta = $magang->peserta->user->id;
                 $this->userInterface->update($id_peserta, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);

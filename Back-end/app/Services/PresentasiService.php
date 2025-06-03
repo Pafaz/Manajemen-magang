@@ -61,6 +61,43 @@ class PresentasiService
         }
     }
 
+    public function updateJadwalPresentasi(int $id, array $data)
+    {
+        DB::beginTransaction();
+        try {
+            $id_mentor = auth('sanctum')->user()->mentor->id;
+
+            $data['id_mentor'] = $id_mentor;
+
+            if ($data['tipe'] === 'online') {
+                unset($data['lokasi']);
+            }
+
+            if ($data['tipe'] === 'offline') {
+                unset($data['link_zoom']);
+            }
+
+            $jadwalPresentasi = $this->jadwalPresentasiInterface->find($id);
+            if (!$jadwalPresentasi) {
+                return Api::response(null, 'Jadwal presentasi tidak ditemukan', Response::HTTP_NOT_FOUND);
+            }
+
+            $updatedJadwal = $this->jadwalPresentasiInterface->update($id, $data);
+
+            DB::commit();
+
+            return Api::response(
+                JadwalPresentasiResource::make($updatedJadwal),
+                'Jadwal Presentasi berhasil diperbarui',
+                Response::HTTP_OK
+            );
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return Api::response(null, 'Gagal memperbarui jadwal presentasi: ' . $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     public function getDetailJadwalPresentasi($id)
     {
         $data = $this->jadwalPresentasiInterface->find($id);

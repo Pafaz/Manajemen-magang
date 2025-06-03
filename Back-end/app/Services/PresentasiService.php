@@ -100,8 +100,11 @@ class PresentasiService
     //For Peserta
     public function applyPresentasi(array $data)
     {
-        $data['id_peserta'] = auth('sanctum')->user()->peserta->id;
-        $data['projek'] = auth('sanctum')->user()->peserta->route->kategoriProyek->nama;
+        $peserta = auth('sanctum')->user()->peserta;
+        $projek = $peserta->route->where('selesai', null)->first()->kategoriProyek->nama;
+
+        $data['id_peserta'] = $peserta->id;
+        $data['projek'] = $projek;
 
         $presentasi = $this->presentasiInterface->create($data);
 

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class JadwalPresentasiRequest extends FormRequest
+class JadwalPresentasiRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,6 +21,17 @@ class JadwalPresentasiRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->isUpdate()) {
+            return [
+                'kuota' => 'sometimes|integer|min:1',
+                'lokasi'=> 'nullable|string',
+                'link_zoom' => 'nullable|url',
+                'tanggal' => 'sometimes|date|after:yesterday',
+                'waktu_mulai' => 'sometimes|date_format:H:i',
+                'waktu_selesai' => 'sometimes|date_format:H:i|after:waktu_mulai',
+                'tipe' => 'sometimes|in:offline,online',
+            ];
+        }
         return [
             'kuota' => 'required|integer|min:1',
             'lokasi'=> 'nullable|string',

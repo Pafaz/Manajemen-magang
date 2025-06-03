@@ -170,7 +170,6 @@ class SuratService
         $perusahaan = auth()->user();
         $peserta = $this->pesertaInterface->find($data['id_peserta']);
 
-        // dd($noSurat);
         $dataSurat = [
             'nama' => $peserta->user->nama,
             'perusahaan' => $perusahaan->nama,

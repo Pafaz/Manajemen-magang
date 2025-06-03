@@ -38,6 +38,7 @@ class PesertaRepository implements PesertaInterface
             $query->where('id', $idRoute);
         })->first();
     }
+
     public function getByCabang($idCabang): Collection
     {
         return Peserta::with([
@@ -59,6 +60,7 @@ class PesertaRepository implements PesertaInterface
             ])
             ->whereHas('magang', function ($query) use ($idDivisi) {
                 $query->where('status', 'diterima') 
+                    ->where('id_mentor', null)
                     ->whereHas('lowongan.divisi', function ($query) use ($idDivisi) {
                         $query->where('id_divisi', $idDivisi); 
                     });
@@ -108,9 +110,11 @@ class PesertaRepository implements PesertaInterface
         ->findOrFail($idPeserta);
 
     }
-    public function find( $id): ? Peserta
+    public function find( $id): Peserta
     {
-        return Peserta::findOrFail('id', $id);
+        $peserta = Peserta::findOrFail( $id);
+        $peserta->first();
+        return $peserta;
     }
 
     public function create(array $data): ? Peserta

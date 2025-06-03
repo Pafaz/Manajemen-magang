@@ -88,10 +88,8 @@ class PesertaService
 
     public function getPesertaByDivisi($id_divisi)
     {
-        $cacheKey = 'peserta_divisi_'. $id_divisi;
-        $data = Cache::remember($cacheKey, 120, function () use ($id_divisi) {
-            return $this->pesertaInterface->getByDivisi($id_divisi);
-        });
+        $data = $this->pesertaInterface->getByDivisi($id_divisi);
+
 
         return Api::response(
             PesertaByDivisiResource::collection($data),

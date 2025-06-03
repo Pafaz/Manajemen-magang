@@ -149,8 +149,7 @@ class UserService
 
             if ($user->getRoleNames()->isNotEmpty()) {
                 $user->tokens()->delete();
-                $token = $user->createToken('google-token')->plainTextToken;
-                Auth::login($user);
+                $token = $user->createToken('auth_token')->plainTextToken;
 
                 return Api::response([
                     'user' => new UserResource($user),

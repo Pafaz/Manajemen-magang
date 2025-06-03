@@ -149,11 +149,9 @@ class PesertaService
     }
     
     public function getPesertaByProgress(){
+        // dd('tes');
         $idMentor = auth()->user()->mentor->id;
-        $cacheKey = 'progres_peserta_'. $idMentor;
-        $data = Cache::remember($cacheKey, 120, function () use ($idMentor) {
-            return $this->pesertaInterface->getByProgress($idMentor);
-        });
+        $data = $this->pesertaInterface->getByProgress($idMentor);
         
         return Api::response(
             PesertabyMentorResource::collection($data),

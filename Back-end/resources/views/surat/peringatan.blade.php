@@ -15,10 +15,10 @@
         }
 
         .header {
-            background-image: url('{{ public_path("images/kop.png") }}');
+            /* background-image: url('{{ public_path("images/kop.png") }}'); */
             background-size: cover;
             background-position: center;
-            background-color: #00b8e6;
+            background-color: #0069AB;
             padding: 15px;
             color: white;
             text-align: center;
@@ -123,7 +123,7 @@
         }
 
         .page-footer {
-            background-color: #00b8e6;
+            background-color: #0069AB;
             color: white;
             text-align: center;
             padding: 8px;
@@ -165,7 +165,7 @@
             <tr>
                 <td class="logo-cell">
                     <div class="logo">
-                        <img src="{{ public_path('images/logo.png') }}" alt="Logo Perusahaan">
+                        <img src="{{ $logo }}" alt="Logo Perusahaan">
                     </div>
                 </td>
                 <td class="company-info">

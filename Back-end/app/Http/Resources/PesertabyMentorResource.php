@@ -20,9 +20,9 @@ class PesertabyMentorResource extends JsonResource
             'email' => $this->user->email,
             'nomor_identitas' => $this->nomor_identitas,
             'sekolah' => $this->sekolah,
-            'mulai' => $this->route->mulai,
-            'selesai' => $this->route->selesai,
-            'project' => $this->route->kategoriProyek->nama,
+            'mulai' => $this->route->first()->mulai,
+            'selesai' => $this->route->first()->selesai,
+            'project' => $this->route->first()->kategoriProyek->nama,
             'foto' => FotoResource::collection($this->foto)
         ];
     }

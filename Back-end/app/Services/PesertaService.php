@@ -59,7 +59,6 @@ class PesertaService
             );
         }
         $id_peserta = auth()->user()->peserta->id;
-        dd($id_peserta);
         $cacheKey = 'peserta_detail_'. $id_peserta;
         $data = Cache::remember($cacheKey, 3600, function () use ($id_peserta) {
             return $this->pesertaInterface->find($id_peserta);

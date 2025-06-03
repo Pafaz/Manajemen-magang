@@ -108,9 +108,9 @@ class PesertaRepository implements PesertaInterface
         ->findOrFail($idPeserta);
 
     }
-    public function find( $id): ? Peserta
+    public function find($id): Peserta
     {
-        return Peserta::findOrFail('id', $id);
+        return Peserta::findOrFail($id);
     }
 
     public function create(array $data): ? Peserta

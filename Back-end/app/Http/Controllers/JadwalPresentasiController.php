@@ -60,10 +60,8 @@ class JadwalPresentasiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            "status"=> "required|boolean",
-        ]);
-        return $this->presentasiService->updateRiwayat( $request->all(), $id);
+        $data = $request->all();
+        return $this->presentasiService->updateJadwalPresentasi($id, $data);
     }
 
     /**
@@ -72,5 +70,13 @@ class JadwalPresentasiController extends Controller
     public function destroy($jadwal_Presentasi)
     {
         //pr
+    }
+
+    public function updateRiwayat(Request $request, $id)
+    {
+        $request->validate([
+            "status"=> "required|boolean",
+        ]);
+        return $this->presentasiService->updateRiwayat( $request->all(), $id);
     }
 }

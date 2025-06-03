@@ -101,7 +101,7 @@ class PesertaService
     public function getJurnalPesertaByCabang(){
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
         $cacheKey = 'jurnal_cabang_'. $cabang;
-        $data = Cache::remember($cacheKey, 3600, function () use ($cabang) {
+        $data = Cache::remember($cacheKey, 120, function () use ($cabang) {
             return $this->pesertaInterface->getJurnalPeserta($cabang);
         });
 
@@ -116,7 +116,7 @@ class PesertaService
     {
         $cabang = auth('sanctum')->user()->id_cabang_aktif;
         $cacheKey = 'presensi_cabang'. $cabang;
-        $data = Cache::remember($cacheKey,3600, function () use ($cabang) {
+        $data = Cache::remember($cacheKey,120, function () use ($cabang) {
             return $this->pesertaInterface->getKehadiranPeserta($cabang);
         });
 
@@ -153,7 +153,7 @@ class PesertaService
     public function getPesertaByProgress(){
         $idMentor = auth()->user()->mentor->id;
         $cacheKey = 'progres_peserta_'. $idMentor;
-        $data = Cache::remember($cacheKey, 3600, function () use ($idMentor) {
+        $data = Cache::remember($cacheKey, 120, function () use ($idMentor) {
             return $this->pesertaInterface->getByProgress($idMentor);
         });
         

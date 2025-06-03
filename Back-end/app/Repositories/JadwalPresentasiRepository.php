@@ -35,9 +35,11 @@ class JadwalPresentasiRepository implements JadwalPresentasiInterface
         ]);
     }
 
-    public function update(int $id, array $data): mixed
+    public function update(int $id, array $data): Jadwal_Presentasi
     {
-        return Jadwal_Presentasi::where('id', $id)->update([$data]);
+        $jadwal_Presentasi = Jadwal_Presentasi::findOrFail($id);
+        $jadwal_Presentasi->update($data);
+        return $jadwal_Presentasi;
     }
 
     public function delete(int $id): void

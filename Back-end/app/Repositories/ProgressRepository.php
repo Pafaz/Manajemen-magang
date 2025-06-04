@@ -32,4 +32,9 @@ class ProgressRepository implements ProgressInterface
         $progress->update($data);
         return $progress;
     }
+
+    public function delete(int $id): void
+    {
+        Progress::destroy($id);
+    }
 }

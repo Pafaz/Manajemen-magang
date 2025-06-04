@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Progress;
+use App\Services\ProgressService;
 use Illuminate\Http\Request;
 
 class ProgressController extends Controller
 {
+    private ProgressService $progressService;
+
+    public function __construct(ProgressService $progressService)
+    {
+        $this->progressService = $progressService;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -50,16 +57,16 @@ class ProgressController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Progress $progress)
+    public function update($id)
     {
-        //
+        return $this->progressService->updateProgress($id);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Progress $progress)
+    public function destroy($id)
     {
-        //
+        return $this->progressService->deleteProgress($id);
     }
 }

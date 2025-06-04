@@ -128,15 +128,13 @@ class UserService
         return Api::response(null, 'Password berhasil diperbarui', Response::HTTP_OK);
     }
 
-    public function handleGoogleCallback(array $data)
+    public function handleGoogleCallback()
     {
         try {
-            $redirectUri = env('GOOGLE_REDIRECT_URI');
-            
-            $socialiteUser = Socialite::with('google')->stateless()->redirectUrl($redirectUri)->user($data['code']);
+            $socialiteUser = Socialite::with('google')->stateless()->user();
         } catch (ClientException $e) {
             Log::error("Google Auth Failed: " . $e->getMessage());
-            return Api::response(null, 'Autentikasi Google gagal', 401);
+            return Api::response(null, 'Autentikasi Google gagal', Response::HTTP_UNAUTHORIZED);
         }
 
         $user = $this->UserInterface->find($socialiteUser->getEmail());
@@ -153,11 +151,16 @@ class UserService
 
                 return Api::response([
                     'user' => new UserResource($user),
+                    'role' => $user->getRoleNames()[0],
                     'token' => $token
                 ], 'Login berhasil');
             } else {
-                return Api::response(
-                    new UserResource($user), 
+                $token = $user->createToken('auth_token')->plainTextToken;
+                return Api::response([
+                    'user' => new UserResource($user),
+                    'role' => null,
+                    'token' => $token
+                ],
                     'Google register berhasil, namun role belum ditetapkan'
                 );
             }
@@ -171,8 +174,12 @@ class UserService
                 'email_verified_at' => now()
             ]);
 
-            return Api::response(
-                new UserResource($user),
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return Api::response([
+                    'user' => new UserResource($user),
+                    'role' => null,
+                    'token' => $token
+                ],
                 'Google register berhasil, namun role belum ditetapkan'
             );
         }

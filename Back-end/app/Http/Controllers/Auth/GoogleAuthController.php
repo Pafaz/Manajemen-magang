@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
@@ -35,8 +36,9 @@ class GoogleAuthController extends Controller
     }
 
 
-    public function callback(SocialiteCallbackRequest $request)
+    public function callback(Request $request)
     {
-        return $this->userService->handleGoogleCallback($request->validated());
+        Log::info($request->all());
+        return $this->userService->handleGoogleCallback();
     }
 }

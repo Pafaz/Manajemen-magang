@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\ProgressController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IzinController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PiketController;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\CabangController;
@@ -47,6 +49,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //role Peserta
     Route::group(['middleware' => 'role:peserta'], function () {
         Route::get('/peserta/detail',[PesertaController::class, 'show']);
+        Route::get('/peserta/rekap',[PesertaController::class,'getRekapPeserta']);
         Route::post('/magang', [MagangController::class, 'store']);
         Route::post('/kehadiran', [KehadiranController::class, 'store']);
         Route::get('/kehadiran',[KehadiranController::class, 'index']);
@@ -55,6 +58,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('/revisi/{route}', [RevisiController::class, 'store']);
         Route::get('/revisi/{revisi}', [RevisiController::class, 'show']);
         Route::put('/revisi/{revisi}', [RevisiController::class, 'update']);
+        Route::delete('progress/{ProgressId}', [ProgressController::class, 'destroy']);
 
         Route::get('/route-peserta-detail/{route}', [PesertaController::class, 'getDetailRoute']);
         Route::get('/route-peserta', [PesertaController::class, 'getDivisiRoute']);
@@ -137,8 +141,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::get('/peserta-progress', [PesertaController::class, 'showByProgress']);
         Route::get('/peserta-progress/{id}', [PesertaController::class, 'showDetailProgress']);
         Route::put('/peserta-progress/{id}', [PesertaController::class, 'markDoneRoute']);
-        Route::put('presentasi/{id}', [JadwalPresentasiController::class,'update']);
-        Route::apiResource('jadwal-presentasi', JadwalPresentasiController::class)->only(['index','store', 'show']);
+        Route::put('presentasi/{id}', [JadwalPresentasiController::class,'updateRiwayat']);
+        Route::apiResource('jadwal-presentasi', JadwalPresentasiController::class)->only(['index','store', 'show', 'update']);
+        Route::put('progress{ProgressId}', [ProgressController::class, 'update']);
     });
 
     //Superadmin
@@ -149,4 +154,41 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/get-user', [LoginController::class, 'getData']);
     Route::post('/logout', [LoginController::class, 'logout']);
     Route::get('/get-user', [LoginController::class, 'getData']);
+});
+
+// Email Routes untuk Sistem Manajemen Magang
+Route::prefix('emails')->group(function () {
+    
+    // Authentication emails
+    Route::post('/otp', [EmailController::class, 'sendOtp']);
+    
+    // Registration emails
+    Route::post('/registration-success', [EmailController::class, 'sendRegistrationSuccess']);
+    
+    // Internship status emails
+    Route::post('/acceptance-notification', [EmailController::class, 'sendAcceptanceNotification']);
+    Route::post('/rejection-notification', [EmailController::class, 'sendRejectionNotification']);
+    
+    // Bulk operations
+    Route::post('/bulk-notification', [EmailController::class, 'sendBulkNotification']);
+    
+    // Email management
+    Route::get('/history', [EmailController::class, 'getEmailHistory']);
+    Route::post('/resend', [EmailController::class, 'resendEmail']);
+});
+
+// Alternative grouping dengan middleware auth jika diperlukan
+Route::middleware(['auth:sanctum'])->prefix('emails')->group(function () {
+    
+    // Admin only routes
+    Route::middleware(['role:admin'])->group(function () {
+        Route::post('/bulk-notification', [EmailController::class, 'sendBulkNotification']);
+        Route::get('/history', [EmailController::class, 'getEmailHistory']);
+        Route::post('/resend', [EmailController::class, 'resendEmail']);
+    });
+    
+    // User accessible routes
+    Route::post('/registration-success', [EmailController::class, 'sendRegistrationSuccess']);
+    Route::post('/acceptance-notification', [EmailController::class, 'sendAcceptanceNotification']);
+    Route::post('/rejection-notification', [EmailController::class, 'sendRejectionNotification']);
 });

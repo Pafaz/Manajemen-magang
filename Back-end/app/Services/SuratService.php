@@ -150,12 +150,16 @@ class SuratService
 
     private function generateSuratPenerimaan(array $data, $noSurat): string
     {
+        $logoPath = auth('sanctum')->user()->perusahaan->foto
+            ->where('type', 'profile')
+            ->pluck('path')
+            ->first();
+
+        $data['logo'] = public_path('storage/' . $logoPath);
+
         $fileName = "surat-penerimaan-{$data['peserta']}-{$data['id_peserta']}.pdf";
         $filePath = self::SURAT_PENERIMAAN . '/' . $fileName;
 
-        // No_surat sudah ditambahkan di function generateSurat
-
-        // Membuat PDF
         $pdf = PDF::loadView('surat.penerimaan', $data)
             ->setOption('isHtml5ParserEnabled', true)
             ->setOption('isPhpEnabled', true);
@@ -170,8 +174,8 @@ class SuratService
         $perusahaan = auth()->user();
         $peserta = $this->pesertaInterface->find($data['id_peserta']);
 
-        // dd($noSurat);
         $dataSurat = [
+            'logo' => public_path('storage/' . $perusahaan->perusahaan->foto->where('type', 'profile')->pluck('path')->first()),
             'nama' => $peserta->user->nama,
             'perusahaan' => $perusahaan->nama,
             'alamat_perusahaan' => $perusahaan->perusahaan->alamat,

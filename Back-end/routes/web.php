@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'surat.penerimaan', [
+    'logo'=> asset('images/logo.png'),
     'perusahaan'=> 'PT. Elang Jaya',
     'alamat_perusahaan'=> 'Banyuwangi',
     'telepon_perusahaan'=> '082192813',

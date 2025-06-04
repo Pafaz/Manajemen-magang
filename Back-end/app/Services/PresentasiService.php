@@ -63,6 +63,7 @@ class PresentasiService
 
     public function updateJadwalPresentasi(int $id, array $data)
     {
+        // dd($id, $data);
         DB::beginTransaction();
         try {
             $id_mentor = auth('sanctum')->user()->mentor->id;
@@ -138,18 +139,22 @@ class PresentasiService
     public function applyPresentasi(array $data)
     {
         $peserta = auth('sanctum')->user()->peserta;
-        $projek = $peserta->route->where('selesai', null)->first()->kategoriProyek->nama;
 
+        $existingPresentasi = $peserta->presentasi->where('id_jadwal_presentasi', $data['id_jadwal_presentasi'])->first();
+        if ($existingPresentasi) {
+            return Api::response(null, 'Anda sudah mengajukan presentasi untuk jadwal ini', Response::HTTP_FORBIDDEN);
+        }
+
+        $projek = $peserta->route->where('selesai', null)->first()->kategoriProyek->nama;
         $data['id_peserta'] = $peserta->id;
         $data['projek'] = $projek;
-
         $presentasi = $this->presentasiInterface->create($data);
-
         return Api::response(
             $presentasi,
             'Berhasil Apply Presentasi',
         );
     }
+
 
     public function getRiwayatPresentasi()
     {

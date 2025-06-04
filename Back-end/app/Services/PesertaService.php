@@ -87,10 +87,8 @@ class PesertaService
 
     public function getPesertaByDivisi($id_divisi)
     {
-        $cacheKey = 'peserta_divisi_'. $id_divisi;
-        $data = Cache::remember($cacheKey, 120, function () use ($id_divisi) {
-            return $this->pesertaInterface->getByDivisi($id_divisi);
-        });
+        $data = $this->pesertaInterface->getByDivisi($id_divisi);
+
 
         return Api::response(
             PesertaByDivisiResource::collection($data),
@@ -151,11 +149,9 @@ class PesertaService
     }
     
     public function getPesertaByProgress(){
+        // dd('tes');
         $idMentor = auth()->user()->mentor->id;
-        $cacheKey = 'progres_peserta_'. $idMentor;
-        $data = Cache::remember($cacheKey, 120, function () use ($idMentor) {
-            return $this->pesertaInterface->getByProgress($idMentor);
-        });
+        $data = $this->pesertaInterface->getByProgress($idMentor);
         
         return Api::response(
             PesertabyMentorResource::collection($data),

@@ -38,6 +38,7 @@ class PesertaRepository implements PesertaInterface
             $query->where('id', $idRoute);
         })->first();
     }
+
     public function getByCabang($idCabang): Collection
     {
         return Peserta::with([
@@ -59,6 +60,7 @@ class PesertaRepository implements PesertaInterface
             ])
             ->whereHas('magang', function ($query) use ($idDivisi) {
                 $query->where('status', 'diterima') 
+                    ->where('id_mentor', null)
                     ->whereHas('lowongan.divisi', function ($query) use ($idDivisi) {
                         $query->where('id_divisi', $idDivisi); 
                     });
@@ -66,18 +68,46 @@ class PesertaRepository implements PesertaInterface
             ->get();
     }
 
+    // public function getByProgress($idMentor): Collection
+    // {
+    //     return Peserta::with([
+    //         'user',
+    //         'route.kategoriProyek',
+    //         'foto',
+    //         'magang.mentor',
+    //         'revisi.progress'
+    //     ])
+    //     ->whereHas('magang.mentor', function ($query) use ($idMentor) {
+    //         $query->where('id', $idMentor);
+    //     })
+    //     ->get();
+    // }
+
     public function getByProgress($idMentor): Collection
     {
-        return Peserta::with([
+        $peserta = Peserta::with([
                 'user',
-                'route',
+                'route.kategoriProyek',
                 'magang.mentor',
-                'revisi.progress'
+                'revisi.progress',
+                'foto'
             ])
             ->whereHas('magang.mentor', function ($query) use ($idMentor) {
                 $query->where('id', $idMentor);
             })
             ->get();
+
+        $flattenedData = new Collection();
+        
+        foreach ($peserta as $p) {
+            foreach ($p->route as $route) {
+                $pesertaClone = clone $p;
+                $pesertaClone->current_route = $route;
+                $flattenedData->push($pesertaClone);
+            }
+        }
+        
+        return $flattenedData;
     }
 
     public function getJurnalPeserta($idCabang)
@@ -108,9 +138,11 @@ class PesertaRepository implements PesertaInterface
         ->findOrFail($idPeserta);
 
     }
-    public function find($id): Peserta
+    public function find( $id): Peserta
     {
-        return Peserta::findOrFail($id);
+        $peserta = Peserta::findOrFail( $id);
+        $peserta->first();
+        return $peserta;
     }
 
     public function create(array $data): ? Peserta

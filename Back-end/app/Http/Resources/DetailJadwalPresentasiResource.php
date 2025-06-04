@@ -21,6 +21,7 @@ class DetailJadwalPresentasiResource extends JsonResource
             'status' => $this->status,
             'waktu_mulai' => $this->waktu_mulai,
             'waktu_selesai' => $this->waktu_selesai,
+            'kuota'=> $this->kuota,
             'link_zoom' => $this->link_zoom ?? null,
             'lokasi' => $this->lokasi ?? null,
             'Peserta' => PresentasiPesertaResource::collection($this->presentasi),

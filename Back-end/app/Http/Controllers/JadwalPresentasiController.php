@@ -58,10 +58,10 @@ class JadwalPresentasiController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(JadwalPresentasiRequest $request, $id)
     {
-        $data = $request->all();
-        return $this->presentasiService->updateJadwalPresentasi($id, $data);
+        // dd($request->all());
+        return $this->presentasiService->updateJadwalPresentasi($id, $request->validated());
     }
 
     /**

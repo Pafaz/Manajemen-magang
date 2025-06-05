@@ -29,8 +29,4 @@ class RevisiRepository implements RevisiInterface
         return $revisi;
     }
 
-    public function delete(int $id): void
-    {
-        Revisi::findOrFail($id)->delete();
-    }
 }

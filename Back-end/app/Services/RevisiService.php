@@ -23,15 +23,13 @@ class RevisiService
     {
         $revisi = $this->revisiInterface->create([
             'id_peserta' => auth()->user()->peserta->id,
-            'id_route' => $route,
-            'status' => false
+            'id_route' => $route
         ]);
 
         foreach ($data['progress'] as $progress) {
             $this->progressInterface->create([
                 'id_revisi' => $revisi->id,
-                'deskripsi' => $progress,
-                'status' => false
+                'deskripsi' => $progress
             ]);
         }
 

@@ -152,7 +152,6 @@ class PesertaService
         // dd('tes');
         $idMentor = auth()->user()->mentor->id;
         $data = $this->pesertaInterface->getByProgress($idMentor);
-        
         return Api::response(
             PesertabyMentorResource::collection($data),
             'Peserta Fetched Successfully',

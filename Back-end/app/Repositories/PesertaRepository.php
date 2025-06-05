@@ -105,18 +105,8 @@ class PesertaRepository implements PesertaInterface
                 $query->where('id', $idMentor);
             })
             ->get();
-
-        $flattenedData = new Collection();
-        
-        foreach ($peserta as $p) {
-            foreach ($p->route as $route) {
-                $pesertaClone = clone $p;
-                $pesertaClone->current_route = $route;
-                $flattenedData->push($pesertaClone);
-            }
-        }
-        
-        return $flattenedData;
+            
+        return $peserta;
     }
 
     public function getJurnalPeserta($idCabang)

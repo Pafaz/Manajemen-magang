@@ -14,15 +14,14 @@ class PesertabyMentorResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        // dd($this->route);
         return [
             "id_peserta" => $this->id,
             'nama' => $this->user->nama,
             'email' => $this->user->email,
             'nomor_identitas' => $this->nomor_identitas,
             'sekolah' => $this->sekolah,
-            'mulai' => $this->current_route->mulai,
-            'selesai' => $this->current_route->selesai,
-            'project' => $this->current_route->kategoriProyek->nama,
+            'route' => $this->route,
             'foto' => FotoResource::collection($this->foto),
         ];
     }

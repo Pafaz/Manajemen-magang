@@ -3,12 +3,13 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Mail\Mailables\Content;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Mail\Mailables\Attachment;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class InternshipAcceptedEmail extends Mailable implements ShouldQueue
 {
@@ -55,10 +56,32 @@ class InternshipAcceptedEmail extends Mailable implements ShouldQueue
     {
         $attachments = [];
         
-        if ($this->pdfPath && file_exists($this->pdfPath)) {
-            $attachments[] = Attachment::fromPath($this->pdfPath)
-                ->as('Surat_Penerimaan_Magang.pdf')
-                ->withMime('application/pdf');
+        if ($this->pdfPath) {
+            Log::info('Attempting to attach PDF', ['pdf_path' => $this->pdfPath]);
+            
+            try {
+                // Gunakan disk public langsung
+                $attachments[] = Attachment::fromStorageDisk('public', $this->pdfPath)
+                    ->as('Surat-Penerimaan-Magang.pdf')
+                    ->withMime('application/pdf');
+                
+                Log::info('PDF attachment added successfully from public disk');
+            } catch (\Exception $e) {
+                Log::error('Failed to attach PDF', [
+                    'error' => $e->getMessage(),
+                    'pdf_path' => $this->pdfPath
+                ]);
+                
+                // Fallback: coba dengan path langsung
+                $fullPath = storage_path('app/public/' . $this->pdfPath);
+                if (file_exists($fullPath)) {
+                    $attachments[] = Attachment::fromPath($fullPath)
+                        ->as('Surat-Penerimaan-Magang.pdf')
+                        ->withMime('application/pdf');
+                    
+                    Log::info('PDF attachment added via fallback method');
+                }
+            }
         }
         
         return $attachments;

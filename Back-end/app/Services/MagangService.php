@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Helpers\Api;
 use App\Models\Surat;
+use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Interfaces\UserInterface;
 use App\Interfaces\RouteInterface;
@@ -11,8 +12,12 @@ use Illuminate\Support\Facades\DB;
 use App\Interfaces\MagangInterface;
 use App\Interfaces\MentorInterface;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\InternshipAcceptedEmail;
+use App\Mail\InternshipRejectedEmail;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Resources\MagangResource;
+use App\Mail\RegistrationSuccessEmail;
 use App\Http\Resources\PesertaResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\MagangDetailResource;
@@ -110,6 +115,10 @@ class MagangService
             
             Log::info('User ' . $user->id . ' berhasil mengajukan magang di lowongan ' . $data['id_lowongan']);
 
+            $dataMagang = $this->MagangInterface->findByPesertaAndCabang($user->id, $user->id_cabang_aktif);
+
+            $this->sendRegistrationSuccess($user, $dataMagang);
+
             return Api::response(
                 MagangDetailResource::make($magang),
                 'Berhasil mengajukan magang',
@@ -172,13 +181,14 @@ class MagangService
             ];
 
             if ($data['status'] == 'ditolak') {
+                $this->sendRejectionNotification($magang->peserta->user, $magang);
                 $magang->delete();
                 $message = 'Berhasil menolak magang';
             } else {
                 $message = 'Berhasil menyetujui magang';
                 $this->userInterface->update($magang->peserta->user->id, ['id_cabang_aktif' => $magang->lowongan->id_cabang]);
-
-                $this->suratService->createSurat($dataSurat, 'penerimaan');
+                $dataSurat = $this->suratService->createSurat($dataSurat, 'penerimaan');
+                $this->sendAcceptanceNotification($magang->peserta->user, $magang, $dataSurat);
             }
 
             DB::commit();
@@ -333,4 +343,45 @@ class MagangService
         );
     }
 
+    private function sendRegistrationSuccess($user, $magang)
+    {
+        $internshipData = [
+            'position' => $magang->lowongan->divisi->nama,
+            'company' => $magang->lowongan->perusahaan->cabang->nama
+        ];
+
+        Mail::to($user->email)->send(new RegistrationSuccessEmail($user, $internshipData));
+    }
+
+    private function sendAcceptanceNotification($user, $magang, $pdfPath)
+    {
+        $internshipData = [
+            'company_name' => $magang->lowongan->perusahaan->user->nama,
+            'position' => $magang->lowongan->divisi->nama,
+            'start_date' => $magang->mulai,
+            'end_date' => $magang->selesai,
+            'contact_person' => $magang->lowongan->perusahaan->nama_penanggung_jawab,
+            'contact_email' => $magang->lowongan->perusahaan->email_penanggung_jawab,
+            'contact_phone' => $magang->lowongan->perusahaan->user->telepon,
+            'address' => $magang->lowongan->perusahaan->alamat,
+            'additional_info' => '-',
+        ];
+
+        Mail::to($user->email)->send(new InternshipAcceptedEmail($user, $internshipData, $pdfPath));
+    }
+
+    private function sendRejectionNotification($user, $magang)
+    {
+        $internshipData = [
+                'company_name' => $magang->lowongan->perusahaan->user->nama,
+                'position' => $magang->divisi->nama,
+                'applied_date' => $magang->mulai ? 
+                    Carbon::parse($magang->mulai)->format('d M Y') : 
+                    Carbon::now()->format('d M Y')
+        ];
+
+        $rejectionReason = 'Setelah melalui proses seleksi yang ketat, kami memutuskan untuk memilih kandidat lain yang lebih sesuai dengan kebutuhan posisi saat ini.';
+
+        Mail::to($user->email)->send(new InternshipRejectedEmail($user, $internshipData, $rejectionReason));
+    }
 }

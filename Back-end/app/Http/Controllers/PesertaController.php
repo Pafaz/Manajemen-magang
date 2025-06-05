@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PesertaRequest;
 use App\Models\Peserta;
-use App\Services\PesertaService;
 use Illuminate\Http\Request;
+use App\Services\PesertaService;
+use App\Http\Requests\PesertaRequest;
+use App\Services\RekapPesertaService;
 
 class PesertaController extends Controller
 {
@@ -13,9 +14,11 @@ class PesertaController extends Controller
      * Display a listing of the resource.
      */
     private PesertaService $pesertaService;
-    public function __construct(PesertaService $pesertaService)
+    private RekapPesertaService $rekapPesertaService;
+    public function __construct(PesertaService $pesertaService, RekapPesertaService $rekapPesertaService)
     {
         $this->pesertaService = $pesertaService;
+        $this->rekapPesertaService = $rekapPesertaService;
     }
 
     public function index()
@@ -94,6 +97,10 @@ class PesertaController extends Controller
     public function getDetailRoute($route)
     {
         return $this->pesertaService->getDetailRoute($route);
+    }
+    public function getRekapPeserta()
+    {
+        return $this->rekapPesertaService->simpanRekap();
     }
     // END ROUTE PESERTA
 

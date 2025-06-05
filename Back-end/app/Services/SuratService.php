@@ -124,14 +124,11 @@ class SuratService
                 ? 'Surat Penerimaan berhasil dibuat' 
                 : 'Surat Peringatan berhasil dibuat';
                 
-            return Api::response(null, $message);
+            Log::info('Berhasil membuat Surat: ' . $message);
+            return $filePath;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error creating surat: ' . $e->getMessage());
-            return Api::response(
-                null,
-                'Terjadi kesalahan dalam pembuatan surat. Silakan coba lagi: ' . $e->getMessage()
-            );
         }
     }
 

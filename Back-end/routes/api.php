@@ -156,27 +156,6 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/get-user', [LoginController::class, 'getData']);
 });
 
-// Email Routes untuk Sistem Manajemen Magang
-Route::prefix('emails')->group(function () {
-    
-    // Authentication emails
-    Route::post('/otp', [EmailController::class, 'sendOtp']);
-    
-    // Registration emails
-    Route::post('/registration-success', [EmailController::class, 'sendRegistrationSuccess']);
-    
-    // Internship status emails
-    Route::post('/acceptance-notification', [EmailController::class, 'sendAcceptanceNotification']);
-    Route::post('/rejection-notification', [EmailController::class, 'sendRejectionNotification']);
-    
-    // Bulk operations
-    Route::post('/bulk-notification', [EmailController::class, 'sendBulkNotification']);
-    
-    // Email management
-    Route::get('/history', [EmailController::class, 'getEmailHistory']);
-    Route::post('/resend', [EmailController::class, 'resendEmail']);
-});
-
 // Alternative grouping dengan middleware auth jika diperlukan
 Route::middleware(['auth:sanctum'])->prefix('emails')->group(function () {
     

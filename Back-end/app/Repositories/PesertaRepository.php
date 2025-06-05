@@ -28,6 +28,30 @@ class PesertaRepository implements PesertaInterface
             ->get();
     }
 
+    public function getRouteById($idPeserta)
+    {
+        return Peserta::with([
+            'magang.divisi.kategori',
+            'route'
+        ])
+        ->where('id', $idPeserta)
+        ->get()
+        ->map(function ($peserta) {
+            $routes = $peserta->route->map(function ($route) use ($peserta) {
+                $kategoriProyek = $peserta->magang->divisi->kategori->firstWhere('id', $route->id_kategori_proyek);
+                return [
+                    'id_route' => $route->id,
+                    'nama_kategori_proyek' => $kategoriProyek ? $kategoriProyek->nama : 'Tidak Ditemukan',
+                    'mulai' => $route->mulai,
+                    'selesai' => $route->selesai
+                ];
+            });
+
+            return $routes;
+        })
+        ->flatten(1);
+    }
+
     public function getDetailRoute($idRoute, $idCabang)
     {
         return Peserta::with('revisi.progress', 'route', 'magang.mentor', 'user', 'magang.divisi')
@@ -136,8 +160,8 @@ class PesertaRepository implements PesertaInterface
                 $query->where('id', $idMentor);
             })
         ->findOrFail($idPeserta);
-
     }
+
     public function find( $id): Peserta
     {
         $peserta = Peserta::findOrFail( $id);

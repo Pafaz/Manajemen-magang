@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Jurnal;
+use App\Models\Peserta;
 use Illuminate\Support\Facades\DB;
 use App\Interfaces\JurnalInterface;
 use Illuminate\Database\Eloquent\Collection;
@@ -51,6 +52,21 @@ class JurnalRepository implements JurnalInterface
         return Jurnal::whereHas('peserta.magang.lowongan', function ($query) use ($id_perusahaan) {
             $query->where('id_perusahaan', $id_perusahaan);
         })->count();
+    }
+
+    public function hitungJurnalPerBulan($idPeserta, $bulan, $tahun)
+    {
+        $jurnalTerisi = Jurnal::where('id_peserta', $idPeserta)
+                            ->whereMonth('tanggal', $bulan)
+                            ->whereYear('tanggal', $tahun)
+                            ->count();
+
+        $jurnalTidakTerisi = $jurnalTerisi > 0 ? 0 : 1;
+
+        return [
+            'jurnal_terisi' => $jurnalTerisi,
+            'jurnal_tidak_terisi' => $jurnalTidakTerisi
+        ];
     }
 
     public function getRekapJurnalByPeserta(array $idPeserta)

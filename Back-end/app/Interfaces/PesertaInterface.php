@@ -18,4 +18,5 @@ interface PesertaInterface extends GetAllInterface, CreateInterface, DeleteInter
     public function getDetailRoute($idRoute, $idCabang);
     public function getByProgress($idMentor);
     public function getDetailProgressByMentor($idMentor, $idPeserta);
+    public function getRouteById($idPeserta);
 }

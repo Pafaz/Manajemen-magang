@@ -21,6 +21,7 @@ use App\Mail\RegistrationSuccessEmail;
 use App\Http\Resources\PesertaResource;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\MagangDetailResource;
+use App\Interfaces\LowonganInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class MagangService
@@ -31,13 +32,15 @@ class MagangService
     private UserInterface $userInterface;
     private MentorInterface $mentorInterface;
     private RouteInterface $routeInterface;
+    private LowonganInterface $lowonganInterface;
     public function __construct(
         MagangInterface $MagangInterface, 
         FotoService $foto, 
         UserInterface $userInterface, 
         SuratService $suratService, 
         MentorInterface $mentorInterface,
-        RouteInterface $routeInterface)
+        RouteInterface $routeInterface,
+        LowonganInterface $lowonganInterface)
     {
         $this->MagangInterface = $MagangInterface;
         $this->foto = $foto;
@@ -45,6 +48,7 @@ class MagangService
         $this->suratService = $suratService;
         $this->mentorInterface = $mentorInterface;
         $this->routeInterface = $routeInterface;
+        $this->lowonganInterface = $lowonganInterface;
     }
 
     public function getAllPesertaMagang()
@@ -115,7 +119,11 @@ class MagangService
             
             Log::info('User ' . $user->id . ' berhasil mengajukan magang di lowongan ' . $data['id_lowongan']);
 
-            $dataMagang = $this->MagangInterface->findByPesertaAndCabang($user->id, $user->id_cabang_aktif);
+            $lowongan = $this->lowonganInterface->find($data['id_lowongan']);
+            $dataMagang = [
+                'perusahaan' => $lowongan->cabang->nama,
+                'divisi' => $lowongan->divisi->nama
+            ];
 
             $this->sendRegistrationSuccess($user, $dataMagang);
 
@@ -346,8 +354,8 @@ class MagangService
     private function sendRegistrationSuccess($user, $magang)
     {
         $internshipData = [
-            'position' => $magang->lowongan->divisi->nama,
-            'company' => $magang->lowongan->perusahaan->cabang->nama
+            'position' => $magang['divisi'],
+            'company' => $magang['perusahaan']
         ];
 
         Mail::to($user->email)->send(new RegistrationSuccessEmail($user, $internshipData));

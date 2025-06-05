@@ -34,7 +34,7 @@ class RegistrationSuccessEmail extends Mailable implements ShouldQueue
         return new Content(
             view: 'emails.registration-success',
             with: [
-                'userName' => $this->user->name,
+                'userName' => $this->user->nama,
                 'userEmail' => $this->user->email,
                 'registrationDate' => now()->format('d M Y H:i'),
                 'internshipData' => $this->internshipData,

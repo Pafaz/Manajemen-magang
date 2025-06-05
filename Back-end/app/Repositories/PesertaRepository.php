@@ -92,21 +92,6 @@ class PesertaRepository implements PesertaInterface
             ->get();
     }
 
-    // public function getByProgress($idMentor): Collection
-    // {
-    //     return Peserta::with([
-    //         'user',
-    //         'route.kategoriProyek',
-    //         'foto',
-    //         'magang.mentor',
-    //         'revisi.progress'
-    //     ])
-    //     ->whereHas('magang.mentor', function ($query) use ($idMentor) {
-    //         $query->where('id', $idMentor);
-    //     })
-    //     ->get();
-    // }
-
     public function getByProgress($idMentor): Collection
     {
         $peserta = Peserta::with([
@@ -154,12 +139,13 @@ class PesertaRepository implements PesertaInterface
     {
         return Peserta::with([
             'user',
-            'route',
+            'route.kategoriProyek',
             'revisi.progress'
         ])->whereHas('magang.mentor', function ($query) use ($idMentor) {
                 $query->where('id', $idMentor);
             })
-        ->findOrFail($idPeserta);
+        ->find($idPeserta);
+
     }
 
     public function find( $id): Peserta

@@ -54,7 +54,6 @@ return new class extends Migration
             $table->id();
             $table->uuid('id_peserta');
             $table->unsignedBigInteger('id_route');
-            $table->boolean('status')->default(false); // false = belum selesai
             $table->timestamps();
 
             $table->foreign('id_peserta')->references('id')->on('peserta')->onDelete('cascade');

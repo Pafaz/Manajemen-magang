@@ -15,7 +15,6 @@ class Revisi extends Model
     protected $fillable = [
         'id_peserta',
         'id_route',
-        'status',
         'created_at',
         'updated_at'
     ];

@@ -57,4 +57,9 @@ class Perusahaan extends Model
     {
         return $this->hasMany(Divisi::class, 'id_perusahaan', 'id');
     }
+
+    public function rekap()
+    {
+        return $this->hasOne(RekapPerusahaan::class, 'id_perusahaan', 'id');
+    }
 }

@@ -147,7 +147,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     });
 
     //Superadmin
-    Route::group(['middleware' => 'role:superadmin'], function () {});
+    Route::group(['middleware' => 'role:superadmin'], function () {
+        Route::get('/perusahaan-all', [PerusahaanController::class, 'index']);
+    });
 
     //auth
     Route::post('/update-password', [UpdatePasswordController::class, 'updatePassword']);

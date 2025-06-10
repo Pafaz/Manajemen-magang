@@ -24,14 +24,14 @@ class PiketRequest extends BaseFormRequest
         if ($this->isUpdate()) {
             return [
                 "shift"=> "sometimes|in:pagi,sore",
-                "hari"=> "sometimes|in:senin,selasa,rabu,kamis,jumat",
+                "hari"=> "sometimes|in:senin,selasa,rabu,kamis,jumat,sabtu",
                 'peserta' => 'sometimes|array|min:1',
                 'peserta.*' => 'sometimes|string|max:50|distinct',
             ];
         }
         return [
             "shift"=> "required|in:pagi,sore",
-            "hari"=> "required|in:senin,selasa,rabu,kamis,jumat",
+            "hari"=> "required|in:senin,selasa,rabu,kamis,jumat,sabtu",
             'peserta' => 'required|array|min:1',
             'peserta.*' => 'required|string|max:50|distinct',
         ];

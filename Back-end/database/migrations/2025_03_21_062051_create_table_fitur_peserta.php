@@ -79,7 +79,7 @@ return new class extends Migration
         Schema::create('piket', function (Blueprint $table) {
             $table->id();
             $table->enum('shift', ['pagi', 'sore']);
-            $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat']);
+            $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu']);
             $table->foreignId('id_cabang')->constrained('cabang')->onDelete('cascade');
             $table->timestamps();
         });

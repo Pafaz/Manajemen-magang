@@ -13,6 +13,7 @@ use App\Interfaces\PerusahaanInterface;
 use Illuminate\Database\QueryException;
 use App\Http\Resources\PerusahaanResource;
 use App\Http\Resources\MitraDetailResource;
+use App\Http\Resources\PerusahaanViewResource;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\PerusahaanDetailResource;
 
@@ -36,7 +37,7 @@ class PerusahaanService
         $data = $this->PerusahaanInterface->getAll();
         
         return Api::response(
-            PerusahaanResource::collection($data),
+            PerusahaanViewResource::collection($data),
             'Berhasil mengambil data perusahaan',
         );
     }

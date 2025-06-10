@@ -188,16 +188,29 @@
         <p>Menindaklanjuti surat permohonan Praktek Kerja Lapangan yang Bapak/Ibu ajukan, bersama ini kami menyatakan bahwa dapat MENERIMA siswa {{ $sekolah }} untuk melaksanakan PKL di {{ $perusahaan }} pada tanggal {{ $tanggal_mulai }} - {{ $tanggal_selesai }}. Adapun nama siswa tersebut adalah sebagai berikut:</p>
 
         <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-            <tr>
-                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">No</th>
-                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Nama Lengkap</th>
-                <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Nomer Induk/NIM</th>
-            </tr>
-            <tr>
-                <td style="border: 1px solid #ddd; padding: 10px;">1</td>
-                <td style="border: 1px solid #ddd; padding: 10px;">{{ $peserta }}</td>
-                <td style="border: 1px solid #ddd; padding: 10px;">{{ $no_identitas }}</td>
-            </tr>
+                <tr>
+                    <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">No</th>
+                    <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Nama Lengkap</th>
+                    <th style="border: 1px solid #ddd; padding: 10px; text-align: left;">Nomor Induk/NIM</th>
+                </tr>
+                @if (is_array($peserta) || $peserta instanceof \Illuminate\Support\Collection)
+                        @foreach ($peserta as $index => $item)
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">{{ $index + 1 }}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">{{ $item->user->nama }}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">{{ $item->nomor_identitas }}</td>
+                        </tr>
+                        @endforeach
+                    
+                @elseif (is_string($peserta)) 
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 10px;">1</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">{{ $peserta }}</td>
+                            <td style="border: 1px solid #ddd; padding: 10px;">{{ $no_identitas }}</td>
+                        </tr>
+                @else
+                    <p>Error: Peserta tidak valid.</p>
+                @endif
         </table>
 
         <p>Demikian surat ini kami sampaikan dan atas kerja samanya kami ucapkan terima kasih.</p>

@@ -174,18 +174,12 @@ class MagangService
                 'id_peserta' => $magang->peserta->id,
                 'id_cabang' => $magang->lowongan->cabang->id,
                 'id_perusahaan' => $magang->lowongan->perusahaan->id,
-                'perusahaan' => $magang->lowongan->perusahaan->user->nama,
-                'alamat_perusahaan' => $magang->lowongan->perusahaan->alamat,
-                'telepon_perusahaan' => $magang->lowongan->perusahaan->user->telepon,
-                'email_perusahaan' => $magang->lowongan->perusahaan->user->email,
-                'website_perusahaan' => $magang->lowongan->perusahaan->website,
                 'sekolah' => $magang->peserta->sekolah,
                 'tanggal_mulai' => $magang->mulai,
                 'tanggal_selesai' => $magang->selesai,
                 'peserta'=> $magang->peserta->user->nama,
                 'no_identitas' => $magang->peserta->nomor_identitas,
-                'penanggung_jawab' => $magang->lowongan->perusahaan->nama_penanggung_jawab,
-                'jabatan_pj'=> $magang->lowongan->perusahaan->jabatan_penanggung_jawab,
+                'no_surat' => $data['no_surat']
             ];
 
             if ($data['status'] == 'ditolak') {
@@ -213,12 +207,13 @@ class MagangService
         }
     }
 
-    public function approveMany(array $ids, string $status)
+    public function approveMany(array $ids, string $status, string $noSurat)
     {
         DB::beginTransaction();
 
         try {
             $results = [];
+            $approvedPeserta = [];
 
             foreach ($ids as $id) {
                 $magang = $this->MagangInterface->find($id);
@@ -242,12 +237,16 @@ class MagangService
                 $magang->id_divisi = $magang->lowongan->id_divisi;
                 $magang->save();
 
+                if ($status === 'diterima') {
+                    $approvedPeserta[] = $magang->peserta;
+                }
+
+                // Hapus atau update cache
                 $cacheKeys = [
                     'magang_cabang_' . auth('sanctum')->user()->id_cabang_aktif,
                     'peserta_cabang_' . auth('sanctum')->user()->id_cabang_aktif,
                     'magang_detail_' . $id
                 ];
-
                 array_map(fn($key) => Cache::forget($key), $cacheKeys);
 
                 $id_peserta = $magang->peserta->user->id;
@@ -255,30 +254,24 @@ class MagangService
 
                 if ($status === 'ditolak') {
                     $magang->delete();
-                } else {
-                    $dataSurat = [
-                        'id_peserta' => $magang->peserta->id,
-                        'id_cabang' => $magang->lowongan->cabang->id,
-                        'id_perusahaan' => $magang->lowongan->perusahaan->id,
-                        'perusahaan' => $magang->lowongan->perusahaan->user->nama,
-                        'alamat_perusahaan' => $magang->lowongan->perusahaan->alamat,
-                        'telepon_perusahaan' => $magang->lowongan->perusahaan->user->telepon,
-                        'email_perusahaan' => $magang->lowongan->perusahaan->user->email,
-                        'website_perusahaan' => $magang->lowongan->perusahaan->website,
-                        'sekolah' => $magang->peserta->sekolah,
-                        'tanggal_mulai' => $magang->mulai,
-                        'tanggal_selesai' => $magang->selesai,
-                        'peserta'=> $magang->peserta->user->nama,
-                        'no_identitas' => $magang->peserta->nomor_identitas,
-                        'penanggung_jawab' => $magang->lowongan->perusahaan->nama_penanggung_jawab,
-                        'jabatan_pj'=> $magang->lowongan->perusahaan->jabatan_penanggung_jawab,
-                    ];
-
-                    $this->suratService->createSurat($dataSurat, 'penerimaan');
                 }
 
                 $results[] = ['id' => $id, 'status' => 'sukses'];
             }
+
+            if (!empty($approvedPeserta)) {
+                $dataSurat = [
+                    'no_surat' => $noSurat,
+                    'peserta' => $approvedPeserta,
+                    'sekolah' => $approvedPeserta[0]->magang->peserta->sekolah,
+                    'tanggal_mulai' => $approvedPeserta[0]->magang->mulai,
+                    'tanggal_selesai' => $approvedPeserta[0]->magang->selesai,
+                    'id_cabang' => $approvedPeserta[0]->magang->lowongan->cabang->id,
+                    'id_perusahaan' => $approvedPeserta[0]->magang->lowongan->perusahaan->id,
+                ];
+                $this->suratService->createSurat($dataSurat, 'penerimaan');
+            }
+
 
             DB::commit();
 

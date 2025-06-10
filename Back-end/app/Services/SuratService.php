@@ -101,29 +101,51 @@ class SuratService
 
         try {
             $isPenerimaan = $jenis === self::SURAT_PENERIMAAN;
-            // Generate nomor surat terlebih dahulu
-            $noSurat = $this->generateNomorSurat('PKL/HMTI', $jenis);
-            $data['no_surat'] = $noSurat;
-            
+
+            $noSurat = $data['no_surat'];
             $filePath = $this->generateSurat($data, $jenis);
 
-            $this->suratInterface->create([
-                'id_peserta' => $data['id_peserta'],
-                'id_cabang' => $isPenerimaan ? $data['id_cabang'] : auth('sanctum')->user()->id_cabang_aktif,
-                'keterangan_surat'=> $isPenerimaan ? null : $data['keterangan_surat'],
-                'no_surat' => $noSurat,
-                'alasan'=> $isPenerimaan ? null : $data['alasan'],
-                'jenis' => $jenis,
-                'file_path' => $filePath
-            ]);
+            if (!empty($data['peserta'])) {
+                foreach ($data['peserta'] as $peserta) {
+                    if (isset($peserta['magang']['id_peserta'])) {
+                        $idPeserta = $peserta['magang']['id_peserta'];
 
-            
+                        if ($idPeserta !== null) {
+                            Log::info('Membuat surat untuk peserta ID: ' . $idPeserta);
+                            $this->suratInterface->create([
+                                'id_peserta' => $idPeserta,
+                                'id_cabang' => $isPenerimaan ? $data['id_cabang'] : auth('sanctum')->user()->id_cabang_aktif,
+                                'keterangan_surat' => $isPenerimaan ? null : $data['keterangan_surat'],
+                                'no_surat' => $noSurat,
+                                'alasan' => $isPenerimaan ? null : $data['alasan'],
+                                'jenis' => $jenis,
+                                'file_path' => $filePath
+                            ]);
+                        } else {
+                            Log::error('id_peserta is null for participant');
+                        }
+                    } else {
+                        Log::error('id_peserta is not set for participant');
+                    }
+                }
+            } else {
+                $this->suratInterface->create([
+                    'id_peserta' => $data['id_peserta'],
+                    'id_cabang' => $isPenerimaan ? $data['id_cabang'] : auth('sanctum')->user()->id_cabang_aktif,
+                    'keterangan_surat' => $isPenerimaan ? null : $data['keterangan_surat'],
+                    'no_surat' => $noSurat,
+                    'alasan' => $isPenerimaan ? null : $data['alasan'],
+                    'jenis' => $jenis,
+                    'file_path' => $filePath
+                ]);
+            }
+
             DB::commit();
-            
-            $message = $isPenerimaan 
-                ? 'Surat Penerimaan berhasil dibuat' 
+
+            $message = $isPenerimaan
+                ? 'Surat Penerimaan berhasil dibuat'
                 : 'Surat Peringatan berhasil dibuat';
-                
+
             Log::info('Berhasil membuat Surat: ' . $message);
             return $filePath;
         } catch (\Exception $e) {
@@ -147,14 +169,26 @@ class SuratService
 
     private function generateSuratPenerimaan(array $data, $noSurat): string
     {
-        $logoPath = auth('sanctum')->user()->perusahaan->foto
+        $perusahaan = auth('sanctum')->user()->perusahaan;
+        $logoPath = $perusahaan->foto
             ->where('type', 'profile')
             ->pluck('path')
             ->first();
 
         $data['logo'] = public_path('storage/' . $logoPath);
+        $data['perusahaan'] = $perusahaan->user->nama;
+        $data['alamat_perusahaan'] = $perusahaan->alamat;
+        $data['telepon_perusahaan'] = $perusahaan->user->telepon;
+        $data['email_perusahaan'] = $perusahaan->user->email;
+        $data['website_perusahaan'] = $perusahaan->website;
+        $data['penanggung_jawab'] = $perusahaan->nama_penanggung_jawab;
+        $data['jabatan_pj'] = $perusahaan->jabatan_penanggung_jawab;
+        $sekolah = $data['sekolah'];
+        $tanggal = Carbon::now()->locale('id')->isoFormat('D MMMM YYYY');
 
-        $fileName = "surat-penerimaan-{$data['peserta']}-{$data['id_peserta']}.pdf";
+        Log::info('data di generate surat : ', $data);
+
+        $fileName = "surat-penerimaan-{$sekolah}-{$tanggal}.pdf";
         $filePath = self::SURAT_PENERIMAAN . '/' . $fileName;
 
         $pdf = PDF::loadView('surat.penerimaan', $data)
@@ -202,7 +236,6 @@ class SuratService
 
         return $filePath;
     }
-
 
     public function editSuratPeringatan(int $idSurat, array $data)
     {

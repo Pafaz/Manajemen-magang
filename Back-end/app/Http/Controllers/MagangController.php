@@ -58,17 +58,23 @@ class MagangController extends Controller
         $validated = $request->validate([
             'ids' => 'required|array',
             'status' => 'required|string|in:diterima,ditolak',
+            'no_surat' => 'required|string'
         ]);
     
-        return $this->magangService->approveMany($validated['ids'], $validated['status']);
+        return $this->magangService->approveMany($validated['ids'], $validated['status'], $validated['no_surat']);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(MagangRequest $request, $magang)
+    public function update(Request $request, $magang)
     {
-        return $this->magangService->approvalMagang($magang, $request->validated());
+        $validated = $request->validate([
+            'status' => 'required|string|in:diterima,ditolak',
+            'no_surat' => 'required|string'
+        ]);
+
+        return $this->magangService->approvalMagang($magang, $validated);
     }
 
     public function editDivisi(Request $request, string $id)

@@ -12,11 +12,12 @@ class MagangRequest extends BaseFormRequest
      */
     public function rules(): array
     {
-        if($this->isUpdate()){
-            return [
-                'status' => 'required|string',
-            ];
-        }
+        // if($this->isUpdate()){
+        //     return [
+        //         'status' => 'required|string',
+        //         'no_surat' => 'required|string'
+        //     ];
+        // }
         return [
             'id_lowongan' => 'required|numeric',
             'mulai' => 'required|date',

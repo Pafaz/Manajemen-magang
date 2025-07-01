@@ -58,7 +58,7 @@ class MagangController extends Controller
         $validated = $request->validate([
             'ids' => 'required|array',
             'status' => 'required|string|in:diterima,ditolak',
-            'no_surat' => 'required|string|exists:surat,no_surat'
+            'no_surat' => 'required|string'
         ]);
     
         return $this->magangService->approveMany($validated['ids'], $validated['status'], $validated['no_surat']);
@@ -71,7 +71,7 @@ class MagangController extends Controller
     {
         $validated = $request->validate([
             'status' => 'required|string|in:diterima,ditolak',
-            'no_surat' => 'required|string|exists:surat,no_surat'
+            'no_surat' => 'required|string'
         ]);
 
         return $this->magangService->approvalMagang($magang, $validated);
